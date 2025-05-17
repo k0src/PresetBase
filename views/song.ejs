@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= song.title %> - Details</title>
+  </head>
+  <body>
+    <h1><%= song.title %></h1>
+    <p><strong>Genre:</strong> <%= song.genre %></p>
+    <p><strong>Year:</strong> <%= song.year %></p>
+
+    <h2>Albums</h2>
+    <ul>
+      <% song.albums.forEach(album => { %>
+      <li><%= album %></li>
+      <% }) %>
+    </ul>
+
+    <h2>Artists</h2>
+    <ul>
+      <% song.artists.forEach(artist => { %>
+      <li><%= artist.name %> — <%= artist.role %></li>
+      <% }) %>
+    </ul>
+
+    <h2>Presets Used</h2>
+    <ul>
+      <% song.presets.forEach(preset => { %>
+      <li>
+        <strong><%= preset.name %></strong>
+        (Used for: <%= preset.usage_type %>, Synth: <%= preset.synth_name %>)
+      </li>
+      <% }) %>
+    </ul>
+  </body>
+</html>
