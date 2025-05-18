@@ -1,22 +1,133 @@
-/* <div class="result-box">
-        <div class="result-item">
-          <span class="material-icons">music_note</span>
-          <span class="result-text">Song Title</span>
-        </div>
-        <div class="result-item">
-          <span class="material-icons">piano</span>
-          <span class="result-text">Synth Name</span>
-        </div>
-        <div class="result-item">
-          <span class="material-icons">tune</span>
-          <span class="result-text">Preset Name</span>
-        </div>
-        <div class="result-item">
-          <span class="material-icons">album</span>
-          <span class="result-text">Album Title</span>
-        </div>
-        <div class="result-item">
-          <span class="material-icons">person</span>
-          <span class="result-text">Artist Name</span>
-        </div>
-      </div> */
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans&display=swap");
+
+html {
+  scroll-behavior: smooth;
+}
+
+#scrollToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-size: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#scrollToTop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.material-icons {
+  font-family: "Material Icons Round";
+  vertical-align: middle;
+}
+
+body {
+  background-color: #f4f4f4;
+}
+
+.content {
+  font-family: "DM Sans", sans-serif;
+  margin: 0;
+  padding: 20px;
+  animation: fadeInUp 0.5s ease-in-out forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) rotateX(20deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+h1 {
+  color: #000;
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+h2 {
+  color: #333;
+}
+
+.results {
+  display: flex;
+  flex-direction: column;
+}
+
+.section {
+  margin-bottom: 10px;
+}
+
+.result-info-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.result-card {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: box-shadow 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.result-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.result-img {
+  width: 64px;
+  height: 64px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  object-fit: cover;
+  margin-right: 15px;
+}
+
+.result-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.open-icon {
+  font-size: 20px;
+  color: #666;
+}
+
+.result-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.result-sub {
+  font-size: 14px;
+  color: #444;
+}

@@ -12,6 +12,7 @@ router.get("/", async (req, res) => {
     albums: [],
     synths: [],
     presets: [],
+    totalResults: 0,
   };
 
   const queriesCompleted = [];
@@ -24,10 +25,19 @@ router.get("/", async (req, res) => {
 
   // SONGS
   db.all(
-    `SELECT title FROM songs WHERE LOWER(title) LIKE ?`,
+    `
+    SELECT s.id, s.title, s.genre, s.image_url, a.name AS artist, al.title AS album
+    FROM songs s
+    LEFT JOIN song_artists sa ON s.id = sa.song_id
+    LEFT JOIN artists a ON sa.artist_id = a.id
+    LEFT JOIN album_songs als ON s.id = als.song_id
+    LEFT JOIN albums al ON als.album_id = al.id
+    WHERE LOWER(s.title) LIKE ?
+    GROUP BY s.id
+  `,
     [`%${searchQuery}%`],
     (err, rows) => {
-      if (!err) results.songs = rows.map((row) => row.title);
+      if (!err) results.songs = rows;
       queriesCompleted.push("songs");
       checkAndRender();
     }
@@ -35,10 +45,13 @@ router.get("/", async (req, res) => {
 
   // ARTISTS
   db.all(
-    `SELECT name FROM artists WHERE LOWER(name) LIKE ?`,
+    `
+    SELECT id, name, country, image_url FROM artists
+    WHERE LOWER(name) LIKE ?
+  `,
     [`%${searchQuery}%`],
     (err, rows) => {
-      if (!err) results.artists = rows.map((row) => row.name);
+      if (!err) results.artists = rows;
       queriesCompleted.push("artists");
       checkAndRender();
     }
@@ -46,10 +59,19 @@ router.get("/", async (req, res) => {
 
   // ALBUMS
   db.all(
-    `SELECT title FROM albums WHERE LOWER(title) LIKE ?`,
+    `
+    SELECT al.id, al.title, al.genre, al.image_url, a.name AS artist
+    FROM albums al
+    LEFT JOIN album_songs als ON al.id = als.album_id
+    LEFT JOIN songs s ON s.id = als.song_id
+    LEFT JOIN song_artists sa ON s.id = sa.song_id
+    LEFT JOIN artists a ON sa.artist_id = a.id
+    WHERE LOWER(al.title) LIKE ?
+    GROUP BY al.id
+  `,
     [`%${searchQuery}%`],
     (err, rows) => {
-      if (!err) results.albums = rows.map((row) => row.title);
+      if (!err) results.albums = rows;
       queriesCompleted.push("albums");
       checkAndRender();
     }
@@ -57,10 +79,13 @@ router.get("/", async (req, res) => {
 
   // SYNTHS
   db.all(
-    `SELECT synth_name FROM synths WHERE LOWER(synth_name) LIKE ?`,
+    `
+    SELECT id, synth_name, manufacturer, image_url FROM synths
+    WHERE LOWER(synth_name) LIKE ?
+  `,
     [`%${searchQuery}%`],
     (err, rows) => {
-      if (!err) results.synths = rows.map((row) => row.synth_name);
+      if (!err) results.synths = rows;
       queriesCompleted.push("synths");
       checkAndRender();
     }
@@ -68,10 +93,16 @@ router.get("/", async (req, res) => {
 
   // PRESETS
   db.all(
-    `SELECT preset_name FROM presets WHERE LOWER(preset_name) LIKE ?`,
+    `
+    SELECT p.id, p.preset_name, s.synth_name, s.image_url
+    FROM presets p
+    LEFT JOIN preset_synths ps ON p.id = ps.preset_id
+    LEFT JOIN synths s ON s.id = ps.synth_id
+    WHERE LOWER(p.preset_name) LIKE ?
+  `,
     [`%${searchQuery}%`],
     (err, rows) => {
-      if (!err) results.presets = rows.map((row) => row.preset_name);
+      if (!err) results.presets = rows;
       queriesCompleted.push("presets");
       checkAndRender();
     }

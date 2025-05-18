@@ -1,58 +1,114 @@
 <%- include('partials/navbar') %>
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <title>Search results for "<%= query %>"</title>
     <link rel="stylesheet" href="/styles/search_results.css" />
     <link rel="stylesheet" href="/styles/navbar.css" />
-    <meta charset="UTF-8" />
-    <title>Search results for "<%= query %>"</title>
   </head>
   <body>
-    <h1>Search results for "<%= query %>"</h1>
+    <div class="content">
+      <h1>
+        <%= results.songs.length + results.artists.length +
+        results.albums.length + results.synths.length + results.presets.length
+        %> results for "<%= query %>"
+      </h1>
 
-    <div class="results">
-      <% const hasResults = Object.values(results).some(arr => arr.length > 0);
-      %> <% if (hasResults) { %> <% if (results.songs.length > 0) { %>
-      <h2>Songs</h2>
-      <ul>
-        <% results.songs.forEach(song => { %>
-        <li><%= song %></li>
-        <% }) %>
-      </ul>
-      <% } %> <% if (results.artists.length > 0) { %>
-      <h2>Artists</h2>
-      <ul>
-        <% results.artists.forEach(artist => { %>
-        <li><%= artist %></li>
-        <% }) %>
-      </ul>
-      <% } %> <% if (results.albums.length > 0) { %>
-      <h2>Albums</h2>
-      <ul>
-        <% results.albums.forEach(album => { %>
-        <li><%= album %></li>
-        <% }) %>
-      </ul>
-      <% } %> <% if (results.synths.length > 0) { %>
-      <h2>Synths</h2>
-      <ul>
-        <% results.synths.forEach(synth => { %>
-        <li><%= synth %></li>
-        <% }) %>
-      </ul>
-      <% } %> <% if (results.presets.length > 0) { %>
-      <h2>Presets</h2>
-      <ul>
-        <% results.presets.forEach(preset => { %>
-        <li><%= preset %></li>
-        <% }) %>
-      </ul>
-      <% } %> <% } else { %>
-      <p>No results found.</p>
-      <% } %>
+      <div class="results">
+        <% if (results.songs.length) { %>
+        <div class="section">
+          <h2>Songs</h2>
+          <% results.songs.forEach(song => { %>
+          <a href="/song/<%= song.id %>" class="result-card">
+            <img src="<%= song.image_url %>" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title"><%= song.title %></span>
+                <span class="result-sub">
+                  <%= song.artist %> <% if (song.album !== "[SINGLE]") { %> —
+                  <%= song.album %><% } %> — <%= song.genre %>
+                </span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+
+          <% }) %>
+        </div>
+        <% } %> <% if (results.artists.length) { %>
+        <div class="section">
+          <h2>Artists</h2>
+          <% results.artists.forEach(artist => { %>
+          <a href="/artist/<%= artist.id %>" class="result-card">
+            <img src="<%= artist.image_url %>" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title"><%= artist.name %></span>
+                <span class="result-sub"><%= artist.country %></span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <% }) %>
+        </div>
+        <% if (results.albums.length) { %>
+        <div class="section">
+          <h2>Albums</h2>
+          <% results.albums.forEach(album => { if (album.title !== "[SINGLE]") {
+          %>
+          <a href="/album/<%= album.id %>" class="result-card">
+            <img src="<%= album.image_url %>" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title"><%= album.title %></span>
+                <span class="result-sub"
+                  ><%= album.artist %> — <%= album.genre %></span
+                >
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <% } }) %>
+        </div>
+        <% } %> <% } %> <% if (results.synths.length) { %>
+        <div class="section">
+          <h2>Synths</h2>
+          <% results.synths.forEach(synth => { %>
+          <a href="/synth/<%= synth.id %>" class="result-card">
+            <img src="<%= synth.image_url %>" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title"><%= synth.synth_name %></span>
+                <span class="result-sub"><%= synth.manufacturer %></span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <% }) %>
+        </div>
+        <% } %> <% if (results.presets.length) { %>
+        <div class="section">
+          <h2>Presets</h2>
+          <% results.presets.forEach(preset => { %>
+          <a href="/preset/<%= preset.id %>" class="result-card">
+            <img src="<%= preset.image_url %>" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title"><%= preset.preset_name %></span>
+                <span class="result-sub"><%= preset.synth_name %></span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <% }) %>
+        </div>
+        <% } %>
+      </div>
     </div>
-
-    <script src="/assets/search_results.js"></script>
+    <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+    <script src="/assets/scroll_to_top.js"></script>
   </body>
 </html>
