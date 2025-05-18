@@ -1,0 +1,48 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dependencies
+node_modules/
+/dist
+
+# Optional npm cache directory
+.npm
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Testing
+coverage/
+test_results/
+
+# Editor and IDE
+.idea
+.vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.swp
+
+# Temporary files
+tmp/
+*.tmp
+._*
+
+# macOS
+.DS_Store
+
+# Linux
+*.swp
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
