@@ -22,6 +22,8 @@ node_modules/
 coverage/
 test_results/
 
+db/
+
 # Editor and IDE
 .idea
 .vscode
