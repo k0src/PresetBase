@@ -1,0 +1,58 @@
+<%- include('partials/navbar') %>
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link rel="stylesheet" href="/styles/search_results.css" />
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <meta charset="UTF-8" />
+    <title>Search results for "<%= query %>"</title>
+  </head>
+  <body>
+    <h1>Search results for "<%= query %>"</h1>
+
+    <div class="results">
+      <% const hasResults = Object.values(results).some(arr => arr.length > 0);
+      %> <% if (hasResults) { %> <% if (results.songs.length > 0) { %>
+      <h2>Songs</h2>
+      <ul>
+        <% results.songs.forEach(song => { %>
+        <li><%= song %></li>
+        <% }) %>
+      </ul>
+      <% } %> <% if (results.artists.length > 0) { %>
+      <h2>Artists</h2>
+      <ul>
+        <% results.artists.forEach(artist => { %>
+        <li><%= artist %></li>
+        <% }) %>
+      </ul>
+      <% } %> <% if (results.albums.length > 0) { %>
+      <h2>Albums</h2>
+      <ul>
+        <% results.albums.forEach(album => { %>
+        <li><%= album %></li>
+        <% }) %>
+      </ul>
+      <% } %> <% if (results.synths.length > 0) { %>
+      <h2>Synths</h2>
+      <ul>
+        <% results.synths.forEach(synth => { %>
+        <li><%= synth %></li>
+        <% }) %>
+      </ul>
+      <% } %> <% if (results.presets.length > 0) { %>
+      <h2>Presets</h2>
+      <ul>
+        <% results.presets.forEach(preset => { %>
+        <li><%= preset %></li>
+        <% }) %>
+      </ul>
+      <% } %> <% } else { %>
+      <p>No results found.</p>
+      <% } %>
+    </div>
+
+    <script src="/assets/search_results.js"></script>
+  </body>
+</html>

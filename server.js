@@ -13,6 +13,9 @@ app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+const searchRoutes = require("./routes/search");
+app.use("/search", searchRoutes);
+
 const songRoutes = require("./routes/songs");
 app.use("/song", songRoutes);
 const synthRoutes = require("./routes/synths");

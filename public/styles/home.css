@@ -43,6 +43,11 @@ canvas {
   transition: transform 0.3s ease;
 }
 
+.logo:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
 @keyframes fadeInUp {
   from {
     opacity: 0;

@@ -38,7 +38,6 @@ router.get("/:id", (req, res) => {
       return res.status(404).send("Song not found");
     }
 
-    // Format results
     const song = {
       title: rows[0].song_title,
       genre: rows[0].song_genre,
