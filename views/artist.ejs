@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= artist.name %> - Artist Profile</title>
+  </head>
+  <body>
+    <h1><%= artist.name %></h1>
+    <p><strong>Country:</strong> <%= artist.country %></p>
+
+    <h2>Songs</h2>
+    <% if (artist.songs.length > 0) { %>
+    <ul>
+      <% artist.songs.forEach(song => { %>
+      <li>
+        <a href="/song/<%= song.id %>"><%= song.title %></a>
+        — <%= song.role %>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p>No songs found.</p>
+    <% } %>
+  </body>
+</html>

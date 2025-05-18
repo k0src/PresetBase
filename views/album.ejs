@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= album.title %> - Album</title>
+  </head>
+  <body>
+    <h1><%= album.title %></h1>
+    <p><strong>Release Year:</strong> <%= album.year %></p>
+
+    <h2>Songs</h2>
+    <% if (album.songs.length > 0) { %>
+    <ul>
+      <% album.songs.forEach(song => { %>
+      <li>
+        <a href="/song/<%= song.id %>"><%= song.title %></a>
+        <% if (song.artists.length > 0) { %> – by <%
+        song.artists.forEach((artist, index) => { %>
+        <a href="/artist/<%= artist.id %>"><%= artist.name %></a><%= index <
+        song.artists.length - 1 ? ', ' : '' %> <% }) %> <% } %>
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p>No songs in this album.</p>
+    <% } %>
+  </body>
+</html>

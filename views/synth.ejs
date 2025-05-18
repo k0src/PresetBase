@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= synth.name %> - Synth Details</title>
+  </head>
+  <body>
+    <h1><%= synth.name %></h1>
+    <p><strong>Manufacturer:</strong> <%= synth.manufacturer %></p>
+    <p><strong>Type:</strong> <%= synth.type %></p>
+    <p><strong>Release Year:</strong> <%= synth.year %></p>
+
+    <h2>Presets</h2>
+    <% Object.entries(synth.presets).forEach(([id, preset]) => { %>
+    <h3><%= preset.name %></h3>
+    <% if (preset.songs.length > 0) { %>
+    <ul>
+      <% preset.songs.forEach(song => { %>
+      <li>
+        <a href="/song/<%= song.id %>"><%= song.title %></a>
+        (Used for: <%= song.usage_type %>)
+      </li>
+      <% }) %>
+    </ul>
+    <% } else { %>
+    <p>No songs using this preset yet.</p>
+    <% } %> <% }) %>
+  </body>
+</html>

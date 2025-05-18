@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= usage.song_title %> – <%= usage.preset_name %></title>
+  </head>
+  <body>
+    <h1>Preset Used in Song</h1>
+
+    <h2>Song: <%= usage.song_title %></h2>
+    <% if (usage.song_url) { %>
+    <p>
+      <a href="<%= usage.song_url %>" target="_blank">Listen to full song</a>
+    </p>
+    <% } %>
+
+    <h3>Preset: <%= usage.preset_name %></h3>
+    <p>Synth: <%= usage.synth_name %></p>
+    <p>Usage Type: <%= usage.usage_type %></p>
+
+    <% if (usage.timestamp) { %>
+    <p>Timestamp: <%= usage.timestamp %></p>
+    <% } %> <% if (usage.demo_video_url) { %>
+    <h3>Demo Video</h3>
+    <iframe
+      width="560"
+      height="315"
+      src="<%= usage.demo_video_url %>"
+      frameborder="0"
+      allowfullscreen
+    ></iframe>
+    <% } %>
+
+    <p>
+      Submitted by: <%= usage.submitted_by %> <% if (usage.verified) { %>✔<% }
+      %>
+    </p>
+  </body>
+</html>
