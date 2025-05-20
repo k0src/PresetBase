@@ -16,9 +16,30 @@
         %> results for "<%= query %>"
       </h1>
 
+      <div class="filter-btns">
+        <button class="filter-btn" id="filter-all">
+          <span class="material-icons">all_inclusive</span> All
+        </button>
+        <button class="filter-btn" id="filter-songs">
+          <span class="material-icons">music_note</span> Songs
+        </button>
+        <button class="filter-btn" id="filter-artists">
+          <span class="material-icons">person</span> Artists
+        </button>
+        <button class="filter-btn" id="filter-albums">
+          <span class="material-icons">album</span> Albums
+        </button>
+        <button class="filter-btn" id="filter-synths">
+          <span class="material-icons">piano</span> Synths
+        </button>
+        <button class="filter-btn" id="filter-presets">
+          <span class="material-icons">tune</span> Presets
+        </button>
+      </div>
+
       <div class="results">
         <% if (results.songs.length) { %>
-        <div class="section">
+        <div class="section songs-section">
           <h2>Songs</h2>
           <% results.songs.forEach(song => { %>
           <a href="/song/<%= song.id %>" class="result-card">
@@ -38,7 +59,7 @@
           <% }) %>
         </div>
         <% } %> <% if (results.artists.length) { %>
-        <div class="section">
+        <div class="section artists-section">
           <h2>Artists</h2>
           <% results.artists.forEach(artist => { %>
           <a href="/artist/<%= artist.id %>" class="result-card">
@@ -54,7 +75,7 @@
           <% }) %>
         </div>
         <% } %> <% if (results.albums.length) { %>
-        <div class="section">
+        <div class="section albums-section">
           <h2>Albums</h2>
           <% results.albums.forEach(album => { if (album.title !== "[SINGLE]") {
           %>
@@ -73,7 +94,7 @@
           <% } }) %>
         </div>
         <% } %> <% if (results.synths.length) { %>
-        <div class="section">
+        <div class="section synths-section">
           <h2>Synths</h2>
           <% results.synths.forEach(synth => { %>
           <a href="/synth/<%= synth.id %>" class="result-card">
@@ -89,7 +110,7 @@
           <% }) %>
         </div>
         <% } %> <% if (results.presets.length) { %>
-        <div class="section">
+        <div class="section presets-section">
           <h2>Presets</h2>
           <% results.presets.forEach(preset => { %>
           <a href="/preset/<%= preset.id %>" class="result-card">
@@ -109,5 +130,6 @@
     </div>
     <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
     <script src="/assets/scroll_to_top.js"></script>
+    <script src="/assets/search_results.js"></script>
   </body>
 </html>

@@ -68,6 +68,32 @@ h2 {
   color: #333;
 }
 
+.filter-btns {
+  display: flex;
+  justify-content: center;
+}
+
+.filter-btn {
+  font-family: DM Sans, sans-serif;
+  background: #ffffff;
+  border: 2px solid #000;
+  border-radius: 10px;
+  padding: 5px 20px;
+  margin: 0 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.filter-btn:hover {
+  background: #000;
+  color: #ffffff;
+}
+
+.filter-btn-active {
+  background: #000;
+  color: #ffffff;
+}
+
 .results {
   display: flex;
   flex-direction: column;
