@@ -1,24 +1,23 @@
-const filterBtn = document.querySelectorAll(".filter-btn");
+const filterBtns = document.querySelectorAll(".filter-btn");
+const sections = document.getElementsByClassName("section");
 
 const toggleFilterButtons = function () {
-  const filterBtn = document.querySelectorAll(".filter-btn");
-  filterBtn.forEach((btn) => {
+  filterBtns.forEach((btn) => {
     if (btn.classList.contains("filter-btn-active")) {
       btn.classList.remove("filter-btn-active");
     }
   });
 };
 
-filterBtn.forEach((btn) =>
+filterBtns.forEach((btn) =>
   btn.addEventListener("click", function () {
     toggleFilterButtons();
     btn.classList.add("filter-btn-active");
-    const sections = document.getElementsByClassName("section");
-    showFilteredSections(sections, btn.id);
+    showFilteredSections(btn.id);
   })
 );
 
-const showFilteredSections = function (sections, filter) {
+const showFilteredSections = function (filter) {
   if (filter === "filter-all") {
     for (let i = 0; i < sections.length; i++) {
       sections[i].style.display = "block";
