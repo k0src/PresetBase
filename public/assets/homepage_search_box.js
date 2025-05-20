@@ -6,6 +6,7 @@ searchButton.addEventListener("click", function () {
   if (searchInput.value) {
     const searchValue = searchInput.value.trim().toLowerCase();
     window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
+    searchInput.value = "";
   }
 });
 
@@ -14,6 +15,7 @@ searchInput.addEventListener("keydown", function (event) {
     if (searchInput.value) {
       const searchValue = searchInput.value.trim().toLowerCase();
       window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
+      searchInput.value = "";
     }
   }
 });
