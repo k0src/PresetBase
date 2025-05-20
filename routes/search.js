@@ -94,7 +94,7 @@ router.get("/", async (req, res) => {
   // PRESETS
   db.all(
     `
-    SELECT p.id, p.preset_name, s.synth_name, s.image_url
+    SELECT p.id, p.preset_name, s.synth_name, s.image_url, s.id AS synth_id
     FROM presets p
     LEFT JOIN preset_synths ps ON p.id = ps.preset_id
     LEFT JOIN synths s ON s.id = ps.synth_id

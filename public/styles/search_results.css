@@ -97,6 +97,15 @@ h2 {
   color: #ffffff;
 }
 
+.no-results {
+  display: none;
+  justify-content: center;
+  align-items: center;
+  height: 75vh;
+  font-size: 60px;
+  color: #aaa;
+}
+
 .results {
   display: flex;
   flex-direction: column;
