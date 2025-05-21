@@ -2,6 +2,7 @@ const searchBox = document.querySelector(".search-box");
 const searchInput = document.querySelector(".search-input");
 const searchButton = document.querySelector(".search-button");
 const logo = document.querySelector(".logo");
+const body = document.querySelector("body");
 
 searchButton.addEventListener("click", (e) => {
   if (searchInput.value) {
@@ -22,3 +23,8 @@ searchInput.addEventListener("keydown", (e) => {
 });
 
 logo.addEventListener("click", (e) => {});
+
+window.addEventListener("load", (e) => {
+  logo.src = logo.dataset.src;
+  logo.classList.remove("lazy-img");
+});

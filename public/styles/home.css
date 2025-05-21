@@ -3,7 +3,6 @@
 
 body {
   font-family: "DM Sans", sans-serif;
-  /* background-color: #ffffff; */
   color: #000000;
   margin: 0;
   padding: 0;
@@ -12,6 +11,19 @@ body {
   justify-content: center;
   height: 100vh;
   overflow: hidden;
+
+  background-image: url("../assets/home-bg-lazy.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+.lazy-img {
+  filter: blur(20px);
+}
+
+.img {
+  transition: filter 0.3s ease;
 }
 
 canvas {
