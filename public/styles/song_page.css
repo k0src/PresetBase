@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
 
 html {
   scroll-behavior: smooth;
@@ -36,18 +37,18 @@ html {
   vertical-align: middle;
 }
 
-body {
-  background-color: #f4f4f4;
-}
-
 .animate {
   animation: fadeInUp 0.5s ease-in-out forwards;
+}
+
+body {
+  background-color: #f4f4f4;
 }
 
 .content {
   font-family: "DM Sans", sans-serif;
   margin: 0;
-  padding: 20px;
+  padding: 30px;
   opacity: 0;
 }
 
@@ -67,18 +68,23 @@ body {
 }
 
 h1 {
-  font-size: 40px;
+  font-family: "Sora", sans-serif;
+  /* font-size: clamp(1.5rem, 5vw, 3rem); */
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
   color: #000;
-  margin-bottom: 10px;
   margin-top: 10px;
 }
 
 h2 {
   color: #333;
+  margin-bottom: 10px;
 }
 
 p {
-  line-height: 1rem;
+  line-height: 1.8rem;
 }
 
 a:link {
@@ -104,7 +110,7 @@ a:active {
 .meta--section {
   background: #fff;
   padding: 30px;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   border-radius: 12px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
 }
@@ -123,12 +129,12 @@ a:active {
 }
 
 .cover-image {
-  width: 285;
-  height: 285;
+  width: 285px;
+  height: 285px;
   border: 5px solid #000;
   border-radius: 10px;
   object-fit: cover;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
 }
 
 .item-info {
@@ -151,7 +157,7 @@ a:active {
   color: #646464;
 }
 
-.preset-section {
+.synth-preset-info-container {
   margin-top: 20px;
 }
 

@@ -1,26 +1,31 @@
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans&display=swap");
 @import url("https://fonts.googleapis.com/icon?family=Material+Icons+Round");
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body,
+html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
 .material-icons {
   font-family: "Material Icons Round";
   vertical-align: middle;
   margin-right: 5px;
 }
 
-.navbar-container {
-  position: relative;
-  width: 100%;
-}
-
 .navbar-divider {
-  position: relative;
-  left: 50%;
-  right: 50%;
-  width: 100vw;
   height: 2px;
   background-color: #000;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  width: 100%;
+  margin: 0;
 }
 
 .navbar {
@@ -28,15 +33,18 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: auto;
   width: 100%;
-  padding: 0px 10px;
+  padding: 0px 20px;
   box-sizing: border-box;
-  z-index: 10;
   background: #fff;
+  z-index: 100;
 }
 
 .logo {
-  margin: 20px auto;
+  /* margin: 20px auto; */
+  margin-top: 20px;
+  margin-bottom: 15px;
   max-width: 100px;
   height: auto;
 }
