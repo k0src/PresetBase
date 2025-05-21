@@ -1,37 +1,75 @@
 <%- include('partials/navbar') %>
-
 <!DOCTYPE html>
 <html>
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= song.title %> - Details</title>
+    <link rel="stylesheet" href="/styles/song_page.css" />
+    <link rel="stylesheet" href="/styles/navbar.css" />
   </head>
-  <body>
-    <h1><%= song.title %></h1>
-    <p><strong>Genre:</strong> <%= song.genre %></p>
-    <p><strong>Year:</strong> <%= song.year %></p>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <div class="content animate">
+      <div class="meta--section">
+        <div class="song-details-container">
+          <div class="song-image-container">
+            <img
+              src="<%= song.image_url %>"
+              class="cover-image"
+              alt="<%= song.title %> cover"
+            />
+          </div>
+          <div class="item-info">
+            <h1><%= song.title %></h1>
+            <% song.artists.forEach(artist => { %> <% if (artist.role ===
+            "Main") { %>
+            <h2>
+              <a href="/artist/<%= artist.id %>"><%= artist.name %></a>
+            </h2>
+            <% } else { %>
+            <p>
+              <a href="/artist/<%= artist.id %>"><%= artist.name %></a>
+              <% if (artist.role) { %> — <%= artist.role %><% } %>
+            </p>
+            <% } %> <% }) %>
+            <p>
+              <% if (song.album[0] !== "[SINGLE]") { %> Album:
+              <strong>
+                <a href="/album/<%= song.album[1] %>"><%= song.album[0] %></a>
+              </strong>
+              <% } %>
+            </p>
+            <p>Release Year: <strong><%= song.year %></strong></p>
+            <p>Genre: <strong><%= song.genre %></strong></p>
+          </div>
+          <a href="<%= song.song_url %>" target="_blank">
+            <span class="material-icons open-video-link">play_circle</span>
+          </a>
+        </div>
+      </div>
 
-    <h2>Albums</h2>
-    <ul>
-      <% song.albums.forEach(album => { %>
-      <li><%= album %></li>
-      <% }) %>
-    </ul>
-
-    <h2>Artists</h2>
-    <ul>
-      <% song.artists.forEach(artist => { %>
-      <li><%= artist.name %> — <%= artist.role %></li>
-      <% }) %>
-    </ul>
-
-    <h2>Presets Used</h2>
-    <ul>
-      <% song.presets.forEach(preset => { %>
-      <li>
-        <strong><%= preset.name %></strong>
-        (Used for: <%= preset.usage_type %>, Synth: <%= preset.synth_name %>)
-      </li>
-      <% }) %>
-    </ul>
+      <div class="synth-preset-info-container">
+        <h2>Presets Used</h2>
+        <% song.presets.forEach(preset => { %>
+        <a href="/synth/<%= preset.synth_id %>" class="result-card">
+          <img src="<%= preset.synth_img %>" class="result-img" />
+          <div class="result-info-wrapper">
+            <div class="result-info">
+              <span class="result-title"><%= preset.name %></span>
+              <span class="result-usage-type"><%= preset.usage_type %></span>
+              <span class="result-sub"><%= preset.synth_name %></span>
+            </div>
+            <span class="material-icons open-icon">open_in_new</span>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+    </div>
   </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+  <script src="/assets/art_bg.js"></script>
+  <script src="/assets/scroll_to_top.js"></script>
 </html>

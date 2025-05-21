@@ -9,6 +9,8 @@ router.get("/:id", (req, res) => {
   const query = `
         SELECT 
             songs.title AS song_title,
+            songs.song_url,
+            songs.image_url,
             songs.genre AS song_genre,
             songs.release_year AS song_year,
             albums.title AS album_title,
@@ -16,7 +18,11 @@ router.get("/:id", (req, res) => {
             song_artists.role AS artist_role,
             presets.preset_name,
             song_presets.usage_type,
-            synths.synth_name
+            synths.synth_name,
+            artists.id AS artist_id,
+            albums.id AS album_id,
+            synths.id AS synth_id,
+            synths.image_url AS synth_img
         FROM songs
         LEFT JOIN album_songs ON songs.id = album_songs.song_id
         LEFT JOIN albums ON album_songs.album_id = albums.id
@@ -42,7 +48,9 @@ router.get("/:id", (req, res) => {
       title: rows[0].song_title,
       genre: rows[0].song_genre,
       year: rows[0].song_year,
-      albums: [...new Set(rows.map((r) => r.album_title))],
+      album: [rows[0].album_title, rows[0].album_id],
+      song_url: rows[0].song_url,
+      image_url: rows[0].image_url,
       artists: [],
       presets: [],
     };
@@ -52,24 +60,30 @@ router.get("/:id", (req, res) => {
 
     rows.forEach((row) => {
       if (row.artist_name && !artistMap.has(row.artist_name)) {
-        artistMap.set(row.artist_name, row.artist_role);
+        artistMap.set(row.artist_name, {
+          role: row.artist_role,
+          id: row.artist_id,
+        });
       }
       if (row.preset_name && !presetMap.has(row.preset_name)) {
         presetMap.set(row.preset_name, {
           usage_type: row.usage_type,
           synth_name: row.synth_name,
+          synth_id: row.synth_id,
+          synth_img: row.synth_img,
         });
       }
     });
 
-    song.artists = Array.from(artistMap.entries()).map(([name, role]) => ({
-      name,
-      role,
-    }));
+    song.artists = Array.from(artistMap.entries())
+      .map(([name, data]) => ({ name, ...data }))
+      .sort((a, b) => (a.role === "Main" ? -1 : b.role === "Main" ? 1 : 0));
     song.presets = Array.from(presetMap.entries()).map(([name, data]) => ({
       name,
       usage_type: data.usage_type,
       synth_name: data.synth_name,
+      synth_id: data.synth_id,
+      synth_img: data.synth_img,
     }));
 
     res.render("song", { song });

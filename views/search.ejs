@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="/styles/search_results.css" />
     <link rel="stylesheet" href="/styles/navbar.css" />
   </head>
-  <body>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
     <div class="content animate">
       <h1>
         <%= results.songs.length + results.artists.length +

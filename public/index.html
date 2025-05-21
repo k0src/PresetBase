@@ -6,7 +6,10 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   </head>
-  <body>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
     <div class="container">
       <a href="#"
         ><img src="/assets/logo.png" alt="presetbase logo" class="logo"
@@ -41,6 +44,6 @@
     </div>
     <canvas id="canvas" width="32" height="32"></canvas>
     <script src="assets/homepage_bg.js"></script>
-    <script src="assets/homepage_search_box.js"></script>
+    <script src="assets/homepage.js"></script>
   </body>
 </html>

@@ -1,8 +1,9 @@
 const searchBox = document.querySelector(".search-box");
 const searchInput = document.querySelector(".search-input");
 const searchButton = document.querySelector(".search-button");
+const logo = document.querySelector(".logo");
 
-searchButton.addEventListener("click", function () {
+searchButton.addEventListener("click", (e) => {
   if (searchInput.value) {
     const searchValue = searchInput.value.trim().toLowerCase();
     window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
@@ -10,8 +11,8 @@ searchButton.addEventListener("click", function () {
   }
 });
 
-searchInput.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
+searchInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
     if (searchInput.value) {
       const searchValue = searchInput.value.trim().toLowerCase();
       window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
@@ -19,3 +20,5 @@ searchInput.addEventListener("keydown", function (event) {
     }
   }
 });
+
+logo.addEventListener("click", (e) => {});
