@@ -3,17 +3,25 @@ const bg = document.querySelector(".meta--section");
 const songInfo = document.querySelector(".item-info");
 const openVideoLink = document.querySelector(".open-video-link");
 
-const getDominantColor = (url) =>
-  new Promise((resolve) => {
+const getDominantColor = (url) => {
+  const cacheKey = "dominantColor_" + btoa(url);
+  const cached = localStorage.getItem(cacheKey);
+  if (cached) {
+    // console.log(cached);
+    return Promise.resolve(cached);
+  }
+
+  return new Promise((resolve) => {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
     const img = new Image();
     img.crossOrigin = "Anonymous";
 
     img.onload = () => {
-      canvas.width = img.width;
-      canvas.height = img.height;
-      ctx.drawImage(img, 0, 0);
+      const scale = 0.1;
+      canvas.width = img.width * scale;
+      canvas.height = img.height * scale;
+      ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
       const { data } = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const colorMap = {};
@@ -51,11 +59,14 @@ const getDominantColor = (url) =>
       )
         .toString(16)
         .slice(1)}`;
+
+      localStorage.setItem(cacheKey, hex);
       resolve(hex);
     };
 
     img.src = url;
   });
+};
 
 const rgbToHsv = (r, g, b) => {
   r /= 255;

@@ -9,4 +9,4 @@ fitTextToWidth = function (el, maxFontSize = 50, minFontSize = 30) {
 };
 
 const h1 = document.getElementById("heading");
-fitTextToWidth(h1);
+fitTextToWidth(h1, h1.dataset.maxsize);

@@ -1,26 +1,64 @@
-<%- include('partials/navbar') %>
-
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= artist.name %> - Artist Profile</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title><%= artist.name %></title>
+    <link rel="stylesheet" href="/styles/artist_page.css" />
+    <link rel="stylesheet" href="/styles/navbar.css" />
   </head>
-  <body>
-    <h1><%= artist.name %></h1>
-    <p><strong>Country:</strong> <%= artist.country %></p>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('partials/navbar') %>
+    <div class="content animate">
+      <div class="meta--section">
+        <div class="artist-details-container">
+          <div class="artist-image-container">
+            <img
+              src="<%= artist.image_url %>"
+              class="cover-image"
+              alt="<%= artist.name %>"
+            />
+          </div>
+          <div class="item-info">
+            <h1 id="heading" data-maxsize="70"><%= artist.name %></h1>
+            <h2><%= artist.country %></h2>
+            <p><strong>Bio: </strong><%= artist.bio %></p>
+          </div>
+        </div>
+      </div>
 
-    <h2>Songs</h2>
-    <% if (artist.songs.length > 0) { %>
-    <ul>
-      <% artist.songs.forEach(song => { %>
-      <li>
-        <a href="/song/<%= song.id %>"><%= song.title %></a>
-        — <%= song.role %>
-      </li>
-      <% }) %>
-    </ul>
-    <% } else { %>
-    <p>No songs found.</p>
-    <% } %>
+      <h2>Songs by <%= artist.name %></h2>
+
+      <div class="song-list-container">
+        <% artist.songs.forEach(song => { %>
+        <a href="/song/<%= song.id %>" class="result-card">
+          <img src="<%= song.image %>" class="result-img" />
+          <div class="result-info-wrapper">
+            <div class="result-info">
+              <span class="result-title"><%= song.title %></span>
+              <% if (song.album !== "[SINGLE]") { %>
+              <span class="result-album"><%= song.album %></span>
+              <% } %> <% if (song.role !== "Main") { %>
+              <span
+                class="result-all-artists"
+                data-all-artists="<%- encodeURIComponent(JSON.stringify(song)) %>"
+              ></span>
+              <span class="result-role"><%= song.role %></span>
+              <% } %>
+            </div>
+            <span class="material-icons open-icon">open_in_new</span>
+          </div>
+        </a>
+        <% }) %>
+      </div>
+    </div>
   </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+  <script src="/assets/art_bg.js"></script>
+  <script src="/assets/scroll_to_top.js"></script>
+  <script src="/assets/resize_text.js"></script>
+  <script src="/assets/render_song_artists.js"></script>
 </html>

@@ -10,12 +10,30 @@ router.get("/:id", (req, res) => {
         SELECT 
             artists.name AS artist_name,
             artists.country,
+            artists.image_url,
+            artists.bio,
             songs.id AS song_id,
             songs.title AS song_title,
-            song_artists.role
+            albums.title AS album_title,
+            song_artists.role,
+            songs.image_url AS song_img,
+            (
+                SELECT JSON_GROUP_ARRAY(
+                    JSON_OBJECT(
+                        'artist_id', sa2.artist_id,
+                        'artist_name', a2.name,
+                        'role', sa2.role
+                    )
+                )
+                FROM song_artists sa2
+                JOIN artists a2 ON sa2.artist_id = a2.id
+                WHERE sa2.song_id = songs.id
+            ) AS all_artists
         FROM artists
         LEFT JOIN song_artists ON artists.id = song_artists.artist_id
         LEFT JOIN songs ON song_artists.song_id = songs.id
+        LEFT JOIN album_songs ON album_songs.song_id = songs.id
+        LEFT JOIN albums ON albums.id = album_songs.album_id 
         WHERE artists.id = ?
     `;
 
@@ -31,15 +49,28 @@ router.get("/:id", (req, res) => {
     const artist = {
       name: rows[0].artist_name,
       country: rows[0].country,
+      image_url: rows[0].image_url,
+      bio: rows[0].bio,
       songs: [],
     };
 
     rows.forEach((row) => {
       if (row.song_id) {
+        let allArtists = [];
+
+        if (row.all_artists) {
+          allArtists = JSON.parse(row.all_artists).filter((artist) => {
+            return artist.artist_name !== row.artist_name;
+          });
+        }
+
         artist.songs.push({
           id: row.song_id,
           title: row.song_title,
+          album: row.album_title,
           role: row.role,
+          image: row.song_img,
+          all_artists: allArtists,
         });
       }
     });

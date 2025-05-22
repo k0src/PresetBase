@@ -23,7 +23,7 @@
             />
           </div>
           <div class="item-info">
-            <h1 id="heading"><%= song.title %></h1>
+            <h1 id="heading" data-maxsize="50"><%= song.title %></h1>
             <% song.artists.forEach(artist => { %> <% if (artist.role ===
             "Main") { %>
             <h2>
@@ -51,7 +51,7 @@
         </div>
       </div>
 
-      <h2>Presets Used</h2>
+      <h2>Presets Used in <%= song.title %></h2>
 
       <div class="synth-preset-info-container">
         <% song.presets.forEach(preset => { %>
