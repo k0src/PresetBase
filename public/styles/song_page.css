@@ -97,11 +97,6 @@ a:visited {
   color: #000;
 }
 
-a:hover {
-  text-decoration: none;
-  color: #646464;
-}
-
 a:active {
   text-decoration: none;
   color: #000;
@@ -181,6 +176,31 @@ a:active {
   transform: translateY(-4px);
 }
 
+.result-card--active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-4px);
+}
+
+.preset-audio-container {
+  position: relative;
+  display: flex;
+}
+
+.preset-audio-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-68%, -50%);
+  font-size: 48px;
+  color: #000000;
+  opacity: 0;
+}
+
+.preset-audio-play--active {
+  opacity: 0.75;
+  transition: all 0.3s ease;
+}
+
 .result-img {
   width: 64px;
   height: 64px;
@@ -190,11 +210,27 @@ a:active {
   margin-right: 15px;
 }
 
+.result-img--active {
+  filter: grayscale(75%);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
 .result-info-wrapper {
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex: 1;
+}
+
+.result-info-wrapper:hover {
+  text-decoration: none;
+  color: #646464;
+}
+
+.result-info-wrapper:active {
+  text-decoration: none;
+  color: #000;
 }
 
 .result-info {

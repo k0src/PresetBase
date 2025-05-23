@@ -1,11 +1,20 @@
-<%- include('partials/navbar') %>
-
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="/assets/art_bg.js" defer></script>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <!-- <script src="/assets/resize_text.js" defer></script> -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= usage.song_title %> – <%= usage.preset_name %></title>
+    <link rel="stylesheet" href="/styles/song_preset_page.css" />
+    <link rel="stylesheet" href="/styles/navbar.css" />
   </head>
-  <body>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('partials/navbar') %>
     <h1>Preset Used in Song</h1>
 
     <h2>Song: <%= usage.song_title %></h2>

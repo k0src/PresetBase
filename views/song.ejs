@@ -4,6 +4,7 @@
     <script src="/assets/art_bg.js" defer></script>
     <script src="/assets/scroll_to_top.js" defer></script>
     <script src="/assets/resize_text.js" defer></script>
+    <script src="/assets/song_page.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= song.title %> - Details</title>
@@ -58,12 +59,19 @@
 
       <div class="synth-preset-info-container">
         <% song.presets.forEach(preset => { %>
-        <a
-          href="/song/<%= song.id %>/<%= preset.preset_id %>"
-          class="result-card"
-        >
-          <img src="<%= preset.synth_img %>" class="result-img" />
-          <div class="result-info-wrapper">
+        <div class="result-card">
+          <div class="preset-audio-container">
+            <img src="<%= preset.synth_img %>" class="result-img" />
+            <span class="preset-audio-play material-icons">play_circle</span>
+            <audio
+              class="preset--audio"
+              src="/assets/audio/<%= preset.song_presets_id %>.mp3"
+            ></audio>
+          </div>
+          <div
+            class="result-info-wrapper"
+            data-synth-id="<%- encodeURIComponent(JSON.stringify(preset.synth_id)) %>"
+          >
             <div class="result-info">
               <span class="result-title"><%= preset.name %></span>
               <span class="result-usage-type"><%= preset.usage_type %></span>
@@ -71,7 +79,7 @@
             </div>
             <span class="material-icons open-icon">open_in_new</span>
           </div>
-        </a>
+        </div>
         <% }) %>
       </div>
     </div>

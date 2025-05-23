@@ -22,6 +22,17 @@ searchInput.addEventListener("keydown", (e) => {
   }
 });
 
+logo.addEventListener("click", async () => {
+  try {
+    const response = await fetch("/random-song-preset");
+    const data = await response.json();
+
+    window.location.href = `/song/${data.id}`;
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 window.addEventListener("load", (e) => {
   logo.src = logo.dataset.src;
   logo.classList.remove("lazy-img");

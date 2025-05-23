@@ -26,6 +26,8 @@ const albumsRoutes = require("./routes/albums");
 app.use("/album", albumsRoutes);
 const songPresetRoute = require("./routes/songPreset");
 app.use("/song", songPresetRoute);
+const homeRoutes = require("./routes/home");
+app.use("/", homeRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

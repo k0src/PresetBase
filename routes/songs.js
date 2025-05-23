@@ -20,6 +20,7 @@ router.get("/:id", (req, res) => {
             presets.preset_name,
             presets.id AS preset_id,
             song_presets.usage_type,
+            song_presets.id as song_presets_id,
             synths.synth_name,
             artists.id AS artist_id,
             albums.id AS album_id,
@@ -75,6 +76,7 @@ router.get("/:id", (req, res) => {
           synth_id: row.synth_id,
           synth_img: row.synth_img,
           preset_id: row.preset_id,
+          song_presets_id: row.song_presets_id,
         });
       }
     });
@@ -89,6 +91,7 @@ router.get("/:id", (req, res) => {
       synth_id: data.synth_id,
       synth_img: data.synth_img,
       preset_id: data.preset_id,
+      song_presets_id: data.song_presets_id,
     }));
 
     res.render("song", { song });
