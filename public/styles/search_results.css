@@ -169,7 +169,12 @@ h2 {
   font-size: 18px;
 }
 
-.result-sub {
-  font-size: 14px;
+.result-sub-one {
+  font-size: 16px;
   color: #444;
+}
+
+.result-sub-two {
+  font-size: 14px;
+  color: #666;
 }

@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <script src="/assets/search_results.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Search results for "<%= query %>"</title>
@@ -53,10 +55,11 @@
             <div class="result-info-wrapper">
               <div class="result-info">
                 <span class="result-title"><%= song.title %></span>
-                <span class="result-sub">
-                  <%= song.artist %> <% if (song.album !== "[SINGLE]") { %> —
-                  <%= song.album %><% } %> — <%= song.genre %>
-                </span>
+                <span class="result-sub-one"><%= song.artist %></span>
+                <% if (song.album !== "[SINGLE]") { %>
+                <span class="result-sub-two"> <%= song.album %></span>
+                <% } %>
+                <span class="result-sub-two"><%= song.genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
@@ -73,7 +76,7 @@
             <div class="result-info-wrapper">
               <div class="result-info">
                 <span class="result-title"><%= artist.name %></span>
-                <span class="result-sub"><%= artist.country %></span>
+                <span class="result-sub-one"><%= artist.country %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
@@ -90,9 +93,8 @@
             <div class="result-info-wrapper">
               <div class="result-info">
                 <span class="result-title"><%= album.title %></span>
-                <span class="result-sub"
-                  ><%= album.artist %> — <%= album.genre %></span
-                >
+                <span class="result-sub-one"><%= album.artist %></span>
+                <span class="result-sub-two"><%= album.genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
@@ -108,7 +110,8 @@
             <div class="result-info-wrapper">
               <div class="result-info">
                 <span class="result-title"><%= synth.synth_name %></span>
-                <span class="result-sub"><%= synth.manufacturer %></span>
+                <span class="result-sub-one"><%= synth.manufacturer %></span>
+                <span class="result-sub-two"><%= synth.synth_type %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
@@ -124,7 +127,8 @@
             <div class="result-info-wrapper">
               <div class="result-info">
                 <span class="result-title"><%= preset.preset_name %></span>
-                <span class="result-sub"><%= preset.synth_name %></span>
+                <span class="result-sub-one"><%= preset.synth_name %></span>
+                <span class="result-sub-two"><%= preset.author %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
@@ -134,8 +138,6 @@
         <% } %>
       </div>
     </div>
-    <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
-    <script src="/assets/scroll_to_top.js"></script>
-    <script src="/assets/search_results.js"></script>
   </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
 </html>

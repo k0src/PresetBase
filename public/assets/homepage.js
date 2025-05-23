@@ -22,8 +22,6 @@ searchInput.addEventListener("keydown", (e) => {
   }
 });
 
-logo.addEventListener("click", (e) => {});
-
 window.addEventListener("load", (e) => {
   logo.src = logo.dataset.src;
   logo.classList.remove("lazy-img");

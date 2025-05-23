@@ -12,16 +12,21 @@ router.get("/:id", (req, res) => {
             synths.manufacturer,
             synths.synth_type,
             synths.release_year,
+            synths.image_url,
             presets.id AS preset_id,
             presets.preset_name,
             songs.id AS song_id,
             songs.title AS song_title,
+            artists.name AS artist_name,
+            song_artists.role AS artist_role,
             song_presets.usage_type
         FROM synths
         LEFT JOIN preset_synths ON synths.id = preset_synths.synth_id
         LEFT JOIN presets ON preset_synths.preset_id = presets.id
         LEFT JOIN song_presets ON presets.id = song_presets.preset_id
         LEFT JOIN songs ON song_presets.song_id = songs.id
+        LEFT JOIN song_artists ON songs.id = song_artists.song_id
+        LEFT JOIN artists ON song_artists.artist_id = artists.id
         WHERE synths.id = ?
     `;
 
@@ -39,6 +44,7 @@ router.get("/:id", (req, res) => {
       manufacturer: rows[0].manufacturer,
       type: rows[0].synth_type,
       year: rows[0].release_year,
+      image_url: rows[0].image_url,
       presets: {},
     };
 
@@ -52,10 +58,11 @@ router.get("/:id", (req, res) => {
         };
       }
 
-      if (row.song_id) {
+      if (row.song_id && row.artist_role === "Main") {
         synth.presets[row.preset_id].songs.push({
           id: row.song_id,
           title: row.song_title,
+          artist: row.artist_name,
           usage_type: row.usage_type,
         });
       }

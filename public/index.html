@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <script src="assets/homepage_bg.js" defer></script>
+    <script src="assets/homepage.js" defer></script>
     <title>presetbase</title>
     <link rel="stylesheet" href="styles/home.css" />
     <meta charset="UTF-8" />
@@ -11,13 +13,12 @@
     onload="document.body.style.opacity='1'"
   >
     <div class="container">
-      <a href="#"
-        ><img
-          src="/assets/logo-lazy.png"
-          data-src="/assets/logo.png"
-          alt="presetbase logo"
-          class="logo lazy-img"
-      /></a>
+      <img
+        src="/assets/logo-lazy.png"
+        data-src="/assets/logo.png"
+        alt="presetbase logo"
+        class="logo lazy-img"
+      />
       <div class="search-box">
         <input
           type="text"
@@ -47,7 +48,5 @@
       </div>
     </div>
     <canvas id="canvas" width="32" height="32"></canvas>
-    <script src="assets/homepage_bg.js"></script>
-    <script src="assets/homepage.js"></script>
   </body>
 </html>

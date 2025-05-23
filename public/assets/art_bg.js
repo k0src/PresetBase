@@ -7,7 +7,6 @@ const getDominantColor = (url) => {
   const cacheKey = "dominantColor_" + btoa(url);
   const cached = localStorage.getItem(cacheKey);
   if (cached) {
-    // console.log(cached);
     return Promise.resolve(cached);
   }
 
@@ -18,7 +17,7 @@ const getDominantColor = (url) => {
     img.crossOrigin = "Anonymous";
 
     img.onload = () => {
-      const scale = 0.1;
+      const scale = 0.5;
       canvas.width = img.width * scale;
       canvas.height = img.height * scale;
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);

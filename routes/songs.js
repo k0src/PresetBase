@@ -7,7 +7,8 @@ router.get("/:id", (req, res) => {
   const songId = req.params.id;
 
   const query = `
-        SELECT 
+        SELECT
+            songs.id AS song_id,
             songs.title AS song_title,
             songs.song_url,
             songs.image_url,
@@ -17,6 +18,7 @@ router.get("/:id", (req, res) => {
             artists.name AS artist_name,
             song_artists.role AS artist_role,
             presets.preset_name,
+            presets.id AS preset_id,
             song_presets.usage_type,
             synths.synth_name,
             artists.id AS artist_id,
@@ -45,6 +47,7 @@ router.get("/:id", (req, res) => {
     }
 
     const song = {
+      id: rows[0].song_id,
       title: rows[0].song_title,
       genre: rows[0].song_genre,
       year: rows[0].song_year,
@@ -71,6 +74,7 @@ router.get("/:id", (req, res) => {
           synth_name: row.synth_name,
           synth_id: row.synth_id,
           synth_img: row.synth_img,
+          preset_id: row.preset_id,
         });
       }
     });
@@ -84,6 +88,7 @@ router.get("/:id", (req, res) => {
       synth_name: data.synth_name,
       synth_id: data.synth_id,
       synth_img: data.synth_img,
+      preset_id: data.preset_id,
     }));
 
     res.render("song", { song });

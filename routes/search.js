@@ -80,7 +80,7 @@ router.get("/", async (req, res) => {
   // SYNTHS
   db.all(
     `
-    SELECT id, synth_name, manufacturer, image_url FROM synths
+    SELECT id, synth_name, manufacturer, image_url, synth_type FROM synths
     WHERE LOWER(synth_name) LIKE ?
   `,
     [`%${searchQuery}%`],
@@ -94,7 +94,7 @@ router.get("/", async (req, res) => {
   // PRESETS
   db.all(
     `
-    SELECT p.id, p.preset_name, s.synth_name, s.image_url, s.id AS synth_id
+    SELECT p.id, p.preset_name, p.author, s.synth_name, s.image_url, s.id AS synth_id
     FROM presets p
     LEFT JOIN preset_synths ps ON p.id = ps.preset_id
     LEFT JOIN synths s ON s.id = ps.synth_id
