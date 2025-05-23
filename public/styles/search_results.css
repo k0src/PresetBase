@@ -32,6 +32,7 @@ html {
 }
 
 .material-icons {
+  user-select: none;
   font-family: "Material Icons Round";
   vertical-align: middle;
 }

@@ -35,11 +35,11 @@
       </div>
 
       <h2><%= synth.name %> presets</h2>
-
+      <!-- FIX ME -->
       <div class="song-list-container">
         <% Object.entries(synth.presets).forEach(([id, preset]) => { %> <% if
         (preset.songs.length > 0) { %> <% preset.songs.forEach((song) => { %>
-        <a href="/song/<%= song.id %>/<%= id %>" class="result-card">
+        <a href="/song/<%= song.id %>/" class="result-card">
           <img src="<%= synth.image_url %>" class="result-img" />
           <div class="result-info-wrapper">
             <div class="result-info">
