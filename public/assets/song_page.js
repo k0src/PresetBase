@@ -4,25 +4,6 @@ const presetAudioPlayContainer = document.querySelectorAll(
 );
 const presetAudioPlayBtn = document.querySelectorAll(".preset-audio-play");
 
-// make sure all audio elements are at time = 0
-window.addEventListener("DOMContentLoaded", () => {
-  const audioElements = document.querySelectorAll(".preset--audio");
-  audioElements.forEach((audio) => {
-    audio.pause();
-    audio.currentTime = 0;
-  });
-});
-
-window.addEventListener("pageshow", (e) => {
-  if (e.persisted) {
-    const audioElements = document.querySelectorAll(".preset--audio");
-    audioElements.forEach((audio) => {
-      audio.pause();
-      audio.currentTime = 0;
-    });
-  }
-});
-
 cardLinks.forEach((element) => {
   const synth_id = JSON.parse(decodeURIComponent(element.dataset.synthId));
 

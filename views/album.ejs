@@ -28,7 +28,11 @@
           </div>
           <div class="item-info">
             <h1 id="heading" data-maxsize="70"><%= album.title %></h1>
-            <h2><%= album.artist %></h2>
+            <h2>
+              <a href="/artist/<%= album.artist_id %>"
+                ><%= album.artist_name %></a
+              >
+            </h2>
             <p>Release year: <strong><%= album.year %></strong></p>
             <p>Genre: <strong><%= album.genre %></strong></p>
           </div>

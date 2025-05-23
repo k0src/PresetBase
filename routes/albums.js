@@ -45,6 +45,8 @@ router.get("/:id", (req, res) => {
 
     const album = {
       title: rows[0].album_title,
+      artist_name: rows[0].artist_name,
+      artist_id: rows[0].artist_id,
       year: rows[0].release_year,
       genre: rows[0].genre,
       image_url: rows[0].image_url,
