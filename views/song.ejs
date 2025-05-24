@@ -49,9 +49,16 @@
             <p>Release Year: <strong><%= song.year %></strong></p>
             <p>Genre: <strong><%= song.genre %></strong></p>
           </div>
-          <a href="<%= song.song_url %>" target="_blank">
-            <span class="material-icons open-video-link">play_circle</span>
-          </a>
+          <div class="open-link--container">
+            <h1>
+              <a
+                href="<%= song.song_url %>"
+                target="_blank"
+                class="material-icons open-song-yt-link"
+                >open_in_new</a
+              >
+            </h1>
+          </div>
         </div>
       </div>
 

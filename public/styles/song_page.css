@@ -78,6 +78,11 @@ h1 {
   margin-top: 10px;
 }
 
+.open-song-yt-link {
+  color: #333 !important;
+  font-size: 24px;
+}
+
 h2 {
   color: #333;
   margin-bottom: 10px;
@@ -149,14 +154,10 @@ a:active {
   margin-top: 0px;
 }
 
-.open-video-link {
-  font-size: 48px;
-  color: #000000;
-  transition: color 0.3s ease;
-}
-
-.open-video-link:hover {
-  color: #646464;
+.open-link--container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .synth-preset-info-container {
