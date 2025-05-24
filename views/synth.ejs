@@ -4,6 +4,7 @@
     <script src="/assets/art_bg.js" defer></script>
     <script src="/assets/scroll_to_top.js" defer></script>
     <script src="/assets/resize_text.js" defer></script>
+    <script src="/assets/render_song_artists.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title><%= synth.name %> - Details</title>
@@ -34,24 +35,46 @@
         </div>
       </div>
 
-      <h2><%= synth.name %> presets</h2>
-      <!-- FIX ME -->
+      <h2>Songs featuring <%= synth.name %> presets</h2>
       <div class="song-list-container">
-        <% Object.entries(synth.presets).forEach(([id, preset]) => { %> <% if
-        (preset.songs.length > 0) { %> <% preset.songs.forEach((song) => { %>
-        <a href="/song/<%= song.id %>/" class="result-card">
-          <img src="<%= synth.image_url %>" class="result-img" />
-          <div class="result-info-wrapper">
-            <div class="result-info">
-              <span class="result-preset-name"><%= preset.name %></span>
-              <span class="result-song-title"><%= song.title %></span>
-              <span class="result-sub-one"><%= song.artist %></span>
-              <span class="result-sub-two"><%= song.usage_type %></span>
+        <% Object.entries(synth.songs).forEach(([id, song]) => { %> <% if
+        (song.presets.length > 0) { %>
+
+        <div class="song-preset-dropdown--container">
+          <div class="result-card">
+            <img src="<%= song.image_url %>" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title"><%= song.title %></span>
+                <% if (song.album !== "[SINGLE]") { %>
+                <span class="result-album"><%= song.album %></span>
+                <% } %> <% if (song.role !== "Main") { %>
+                <span
+                  class="result-all-artists"
+                  data-all-artists="<%- encodeURIComponent(JSON.stringify(song)) %>"
+                ></span>
+                <span class="result-role"><%= song.role %></span>
+                <% } %>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
             </div>
-            <span class="material-icons open-icon">open_in_new</span>
           </div>
-        </a>
-        <% }) %> <% } %> <% }) %>
+          <% song.presets.forEach((preset) => { %>
+          <div class="song-preset-dropdown--section--active">
+            <a href="/song/<%= song.id %>/" class="result-card">
+              <div class="result-info-wrapper">
+                <div class="result-info">
+                  <span class="result-preset-name"><%= preset.name %></span>
+                  <span class="result-usage-type"
+                    ><%= preset.usage_type %></span
+                  >
+                </div>
+                <span class="material-icons open-icon">open_in_new</span>
+              </div>
+            </a>
+          </div>
+          <% }) %> <% } %> <% }) %>
+        </div>
       </div>
     </div>
   </body>

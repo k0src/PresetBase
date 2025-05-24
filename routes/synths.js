@@ -7,7 +7,7 @@ router.get("/:id", (req, res) => {
   const synthId = req.params.id;
 
   const query = `
-        SELECT 
+        SELECT
             synths.synth_name,
             synths.manufacturer,
             synths.synth_type,
@@ -17,9 +17,22 @@ router.get("/:id", (req, res) => {
             presets.preset_name,
             songs.id AS song_id,
             songs.title AS song_title,
-            artists.name AS artist_name,
-            song_artists.role AS artist_role,
-            song_presets.usage_type
+            albums.title AS album,
+            songs.image_url AS song_image_url,
+            song_presets.usage_type,
+            (
+              SELECT JSON_GROUP_ARRAY(
+                JSON_OBJECT(
+                  'artist_id', sa2.artist_id,
+                  'artist_name', a2.name,
+                  'role', sa2.role
+                )
+              )
+              FROM song_artists sa2
+              JOIN artists a2 ON sa2.artist_id = a2.id
+              WHERE sa2.song_id = songs.id
+            ) AS all_artists
+ 
         FROM synths
         LEFT JOIN preset_synths ON synths.id = preset_synths.synth_id
         LEFT JOIN presets ON preset_synths.preset_id = presets.id
@@ -27,6 +40,8 @@ router.get("/:id", (req, res) => {
         LEFT JOIN songs ON song_presets.song_id = songs.id
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         LEFT JOIN artists ON song_artists.artist_id = artists.id
+        LEFT JOIN album_songs ON songs.id = album_songs.song_id
+        LEFT JOIN albums ON album_songs.album_id = albums.id
         WHERE synths.id = ?
     `;
 
@@ -45,25 +60,36 @@ router.get("/:id", (req, res) => {
       type: rows[0].synth_type,
       year: rows[0].release_year,
       image_url: rows[0].image_url,
-      presets: {},
+      songs: {},
     };
 
     rows.forEach((row) => {
-      if (!row.preset_id) return;
+      let allArtists = [];
 
-      if (!synth.presets[row.preset_id]) {
-        synth.presets[row.preset_id] = {
-          name: row.preset_name,
-          songs: [],
+      if (row.all_artists) {
+        allArtists = JSON.parse(row.all_artists);
+      }
+
+      if (!synth.songs[row.song_id]) {
+        synth.songs[row.song_id] = {
+          id: row.song_id,
+          title: row.song_title,
+          album: row.album,
+          image_url: row.song_image_url,
+          all_artists: allArtists,
+          presets: [],
         };
       }
 
-      if (row.song_id && row.artist_role === "Main") {
-        synth.presets[row.preset_id].songs.push({
-          id: row.song_id,
-          title: row.song_title,
-          artist: row.artist_name,
+      if (
+        row.preset_id &&
+        row.preset_name &&
+        !synth.songs[row.song_id].presets.some((p) => p.id === row.preset_id)
+      ) {
+        synth.songs[row.song_id].presets.push({
+          id: row.preset_id,
           usage_type: row.usage_type,
+          name: row.preset_name,
         });
       }
     });

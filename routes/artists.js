@@ -7,11 +7,12 @@ router.get("/:id", (req, res) => {
   const artistId = req.params.id;
 
   const query = `
-        SELECT 
+        SELECT DISTINCT
             artists.name AS artist_name,
             artists.country,
             artists.image_url,
-            artists.bio,
+            synths.id AS synth_id,
+            synths.synth_name,
             songs.id AS song_id,
             songs.title AS song_title,
             albums.title AS album_title,
@@ -32,6 +33,9 @@ router.get("/:id", (req, res) => {
         FROM artists
         LEFT JOIN song_artists ON artists.id = song_artists.artist_id
         LEFT JOIN songs ON song_artists.song_id = songs.id
+        LEFT JOIN song_presets ON songs.id = song_presets.song_id
+        LEFT JOIN preset_synths ON song_presets.preset_id = preset_synths.preset_id
+        LEFT JOIN synths ON preset_synths.synth_id = synths.id
         LEFT JOIN album_songs ON album_songs.song_id = songs.id
         LEFT JOIN albums ON albums.id = album_songs.album_id 
         WHERE artists.id = ?
@@ -50,9 +54,10 @@ router.get("/:id", (req, res) => {
       name: rows[0].artist_name,
       country: rows[0].country,
       image_url: rows[0].image_url,
-      bio: rows[0].bio,
       songs: [],
     };
+
+    let allSynths = [];
 
     rows.forEach((row) => {
       if (row.song_id) {
@@ -73,7 +78,28 @@ router.get("/:id", (req, res) => {
           all_artists: allArtists,
         });
       }
+
+      if (row.synth_id) {
+        allSynths.push({
+          id: row.synth_id,
+          name: row.synth_name,
+        });
+      }
     });
+
+    let synthFreq = {};
+    let favSynth;
+    let max = 0;
+
+    allSynths.forEach((synth) => {
+      synthFreq[synth.id] = (synthFreq[synth.id] || 0) + 1;
+      if (synthFreq[synth.id] > max) {
+        max = synthFreq[synth.id];
+        favSynth = synth;
+      }
+    });
+
+    artist.fav_synth = favSynth;
 
     res.render("artist", { artist });
   });

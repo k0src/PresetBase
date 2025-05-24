@@ -29,7 +29,14 @@
           <div class="item-info">
             <h1 id="heading" data-maxsize="70"><%= artist.name %></h1>
             <h2><%= artist.country %></h2>
-            <p><strong>Bio: </strong><%= artist.bio %></p>
+            <p>
+              Favorite synth:
+              <strong
+                ><a href="/synth/<%= artist.fav_synth.id %>"
+                  ><%= artist.fav_synth.name %></a
+                ></strong
+              >
+            </p>
           </div>
         </div>
       </div>

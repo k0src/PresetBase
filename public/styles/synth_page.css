@@ -193,27 +193,47 @@ a:active {
   flex-direction: column;
 }
 
+.result-title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.result-album {
+  font-size: 16px;
+  color: #444;
+}
+
+.result-all-artists {
+  font-size: 14px;
+  color: #444;
+}
+
+.result-role {
+  font-size: 14px;
+  color: #666;
+}
+
 .result-preset-name {
   font-weight: bold;
   font-size: 18px;
 }
 
-.result-song-title {
+.result-usage-type {
   font-size: 16px;
   color: #444;
-}
-
-.result-sub-one {
-  font-size: 14px;
-  color: #444;
-}
-
-.result-sub-two {
-  font-size: 14px;
-  color: #666;
 }
 
 .open-icon {
   font-size: 20px;
   color: #666;
+}
+
+.song-preset-dropdown--container {
+}
+.song-preset-dropdown--section--hidden {
+  display: none;
+}
+
+.song-preset-dropdown--section--active {
+  display: block;
 }
