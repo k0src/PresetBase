@@ -191,6 +191,17 @@ a:active {
 .result-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.result-info-wrapper:hover {
+  text-decoration: none;
+  color: #646464;
+}
+
+.result-info-wrapper:active {
+  text-decoration: none;
+  color: #000;
 }
 
 .result-img {

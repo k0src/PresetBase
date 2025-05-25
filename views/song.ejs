@@ -67,24 +67,26 @@
       <div class="synth-preset-info-container">
         <% song.presets.forEach(preset => { %>
         <div class="result-card">
-          <div class="preset-audio-container">
-            <img src="<%= preset.synth_img %>" class="result-img" />
-            <span class="preset-audio-play material-icons">play_circle</span>
-            <audio
-              class="preset--audio"
-              src="/assets/audio/<%= preset.song_presets_id %>.mp3"
-            ></audio>
-          </div>
           <div
-            class="result-info-wrapper"
+            class="open-synth-container"
             data-synth-id="<%- encodeURIComponent(JSON.stringify(preset.synth_id)) %>"
           >
+            <img src="<%= preset.synth_img %>" class="result-img" />
+            <span class="open-synth-overlay-icon material-icons"
+              >open_in_new</span
+            >
+          </div>
+          <div class="result-info-wrapper">
             <div class="result-info">
               <span class="result-title"><%= preset.name %></span>
               <span class="result-usage-type"><%= preset.usage_type %></span>
               <span class="result-sub"><%= preset.synth_name %></span>
             </div>
-            <span class="material-icons open-icon">open_in_new</span>
+            <span class="preset-audio-play material-icons">play_circle</span>
+            <audio
+              class="preset--audio"
+              src="/assets/audio/<%= preset.song_presets_id %>.mp3"
+            ></audio>
           </div>
         </div>
         <% }) %>
