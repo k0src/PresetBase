@@ -1,36 +1,40 @@
 const cardLinks = document.querySelectorAll(".result-info-wrapper");
-const presetAudioPlayContainer = document.querySelectorAll(
+const presetAudioPlayContainers = document.querySelectorAll(
   ".preset-audio-container"
 );
-const presetAudioPlayBtn = document.querySelectorAll(".preset-audio-play");
+const presetAudioPlayBtns = document.querySelectorAll(".preset-audio-play");
 
 cardLinks.forEach((element) => {
-  const synth_id = JSON.parse(decodeURIComponent(element.dataset.synthId));
+  const synthId = JSON.parse(decodeURIComponent(element.dataset.synthId));
 
   element.addEventListener("click", () => {
-    window.location.href = `/synth/${synth_id}`;
+    window.location.href = `/synth/${synthId}`;
   });
 });
 
-presetAudioPlayContainer.forEach((element) => {
+presetAudioPlayContainers.forEach((element) => {
   element.addEventListener("mouseover", () => {
-    element
-      .querySelector(".preset-audio-play")
-      .classList.add("preset-audio-play--active");
+    const synthImg = element.querySelector(".result-img");
+    const playBtn = element.querySelector(".preset-audio-play");
+
+    synthImg.classList.add("result-img--active");
+    playBtn.classList.add("preset-audio-play--active");
   });
 });
 
-presetAudioPlayContainer.forEach((element) => {
+presetAudioPlayContainers.forEach((element) => {
   element.addEventListener("mouseout", () => {
-    element
-      .querySelector(".preset-audio-play")
-      .classList.remove("preset-audio-play--active");
+    const synthImg = element.querySelector(".result-img");
+    const playBtn = element.querySelector(".preset-audio-play");
+
+    synthImg.classList.remove("result-img--active");
+    playBtn.classList.remove("preset-audio-play--active");
   });
 });
 
-presetAudioPlayBtn.forEach((element) => {
+presetAudioPlayBtns.forEach((element) => {
   element.addEventListener("click", () => {
-    presetAudioPlayBtn.forEach((btn) => {
+    presetAudioPlayBtns.forEach((btn) => {
       if (btn !== element) {
         const otherResultCard = btn.closest(".result-card");
         const otherSynthBGImg = otherResultCard.querySelector(".result-img");
@@ -52,9 +56,6 @@ presetAudioPlayBtn.forEach((element) => {
     const synthBGImg = resultCard.querySelector(".result-img");
     const audio = resultCard.querySelector(".preset--audio");
 
-    synthBGImg.classList.toggle("result-img--active");
-    resultCard.classList.toggle("result-card--active");
-    element.classList.toggle("preset-audio-play--active");
     element.textContent =
       element.textContent === "play_circle" ? "stop_circle" : "play_circle";
 

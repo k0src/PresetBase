@@ -153,6 +153,7 @@ a:active {
 }
 
 .result-card {
+  user-select: none;
   display: flex;
   align-items: center;
   justify-content: flex-start;
@@ -167,6 +168,26 @@ a:active {
   color: inherit;
 }
 
+.open-song-container {
+  position: relative;
+  display: flex;
+}
+
+.open-song-overlay-icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-68%, -50%);
+  font-size: 40px;
+  color: #000000;
+  opacity: 0;
+}
+
+.open-song-overlay-icon--active {
+  opacity: 0.75;
+  transition: all 0.3s ease;
+}
+
 .result-card:hover {
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-4px);
@@ -179,6 +200,12 @@ a:active {
   border-radius: 10px;
   object-fit: cover;
   margin-right: 15px;
+}
+
+.result-img--active {
+  filter: grayscale(75%);
+  opacity: 0.5;
+  transition: all 0.3s ease;
 }
 
 .result-info-wrapper {
@@ -223,17 +250,66 @@ a:active {
   color: #444;
 }
 
-.open-icon {
+.expand-icon {
   font-size: 20px;
   color: #666;
+  transition: all 0.3s ease;
 }
 
-.song-preset-dropdown--container {
-}
-.song-preset-dropdown--section--hidden {
-  display: none;
+.expand-icon--active {
+  transform: rotate(180deg);
+  transition: all 0.3s ease;
 }
 
-.song-preset-dropdown--section--active {
-  display: block;
+.song-presets--container {
+  overflow: hidden;
+  max-height: 0px;
+  transition: max-height 0.4s ease;
+}
+
+.preset-result-card {
+  user-select: none;
+  display: flex;
+  width: 98%;
+  align-items: center;
+  justify-content: flex-start;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.preset-result-card:hover,
+.preset-result-card--active {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  z-index: 10;
+}
+
+.result-preset-icon {
+  padding: 5px;
+}
+
+.song-preset-element-container {
+  overflow: visible;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.preset-audio-play {
+  font-size: 24px;
+  color: #666;
+  transition: all 0.2s ease;
+}
+
+.preset-audio-play--active {
+  transform: scale(1.1);
+  transition: all 0.2s ease;
 }

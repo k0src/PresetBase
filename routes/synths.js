@@ -20,6 +20,7 @@ router.get("/:id", (req, res) => {
             albums.title AS album,
             songs.image_url AS song_image_url,
             song_presets.usage_type,
+            song_presets.id as song_presets_id,
             (
               SELECT JSON_GROUP_ARRAY(
                 JSON_OBJECT(
@@ -90,6 +91,7 @@ router.get("/:id", (req, res) => {
           id: row.preset_id,
           usage_type: row.usage_type,
           name: row.preset_name,
+          song_presets_id: row.song_presets_id,
         });
       }
     });

@@ -24,8 +24,6 @@ const artistsRoutes = require("./routes/artists");
 app.use("/artist", artistsRoutes);
 const albumsRoutes = require("./routes/albums");
 app.use("/album", albumsRoutes);
-const songPresetRoute = require("./routes/songPreset");
-app.use("/song", songPresetRoute);
 const homeRoutes = require("./routes/home");
 app.use("/", homeRoutes);
 
