@@ -95,7 +95,12 @@ const isDark = (hex) => {
 };
 
 getDominantColor(imgSrc).then((color) => {
-  bg.style.backgroundColor = color;
+  bg.style.background = `
+    linear-gradient(135deg, rgba(255,255,255,0.2) 0%, rgba(0,0,0,0.2) 100%),
+    ${color}
+  `;
+  bg.style.backgroundBlendMode = "overlay, normal";
+
   const action = isDark(color) ? "add" : "remove";
   songInfo.classList[action]("invert");
   if (openVideoLink) {
