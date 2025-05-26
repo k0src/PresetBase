@@ -51,7 +51,7 @@
           <h2>Songs</h2>
           <% results.songs.forEach(song => { %>
           <a href="/song/<%= song.id %>" class="result-card">
-            <img src="<%= song.image_url %>" class="result-img" />
+            <img src="<%= song.image_url %>" class="result-img--song" />
             <div class="result-info-wrapper">
               <div class="result-info">
                 <span class="result-title"><%= song.title %></span>

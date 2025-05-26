@@ -27,6 +27,9 @@ app.use("/album", albumsRoutes);
 const homeRoutes = require("./routes/home");
 app.use("/", homeRoutes);
 
+const browseRoute = require("./routes/browse");
+app.use("/browse", browseRoute);
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

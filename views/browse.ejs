@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse</title>
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/browse.css" />
+  </head>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('partials/navbar') %>
+    <div class="content animate">
+      <h1>Browse</h1>
+
+      <div class="top-container">
+        <div class="popular-container">
+          <h2>Popular</h2>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <!-- ! backend will send 5 for each, 3 divs for testing only -->
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="view-more">
+            <div class="browse-all-card--info-wrapper">
+              <span class="view-more--title">View More</span>
+            </div>
+            <span class="browse-all-card--icon-open material-icons"
+              >open_in_new</span
+            >
+          </a>
+        </div>
+        <div class="hot-container">
+          <h2>Hot</h2>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <!-- ! backend will send 5 for each, 3 divs for testing only -->
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="view-more">
+            <div class="browse-all-card--info-wrapper">
+              <span class="view-more--title">View More</span>
+            </div>
+            <span class="browse-all-card--icon-open material-icons"
+              >open_in_new</span
+            >
+          </a>
+        </div>
+        <div class="recently-added-container">
+          <h2>Recently added</h2>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <!-- ! backend will send 5 for each, 3 divs for testing only -->
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="result-card">
+            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+            <div class="result-info-wrapper">
+              <div class="result-info">
+                <span class="result-title">Title</span>
+                <span class="result-sub-one">Sub One</span>
+                <span class="result-sub-two">Sub Two</span>
+                <span class="result-sub-two">Sub Two</span>
+              </div>
+              <span class="material-icons open-icon">open_in_new</span>
+            </div>
+          </a>
+          <a href="#" class="view-more">
+            <div class="browse-all-card--info-wrapper">
+              <span class="view-more--title">View More</span>
+            </div>
+            <span class="browse-all-card--icon-open material-icons"
+              >open_in_new</span
+            >
+          </a>
+        </div>
+      </div>
+
+      <h2>Browse all</h2>
+      <div class="browse-all-container">
+        <a href="/browse/songs" class="browse-all-card">
+          <span class="browse-all-card--icon material-icons">music_note</span>
+          <div class="browse-all-card--info-wrapper">
+            <span class="browse-all-card--title">Songs</span>
+          </div>
+          <span class="browse-all-card--icon-open material-icons"
+            >open_in_new</span
+          >
+        </a>
+        <a href="/browse/artists" class="browse-all-card">
+          <span class="browse-all-card--icon material-icons">person</span>
+          <div class="browse-all-card--info-wrapper">
+            <span class="browse-all-card--title">Artists</span>
+          </div>
+          <span class="browse-all-card--icon-open material-icons"
+            >open_in_new</span
+          >
+        </a>
+        <a href="/browse/albums" class="browse-all-card">
+          <span class="browse-all-card--icon material-icons">album</span>
+          <div class="browse-all-card--info-wrapper">
+            <span class="browse-all-card--title">Albums</span>
+          </div>
+          <span class="browse-all-card--icon-open material-icons"
+            >open_in_new</span
+          >
+        </a>
+        <a href="/browse/synths" class="browse-all-card">
+          <span class="browse-all-card--icon material-icons">piano</span>
+          <div class="browse-all-card--info-wrapper">
+            <span class="browse-all-card--title">Synths</span>
+          </div>
+          <span class="browse-all-card--icon-open material-icons"
+            >open_in_new</span
+          >
+        </a>
+        <a href="/browse/presets" class="browse-all-card">
+          <span class="browse-all-card--icon material-icons">tune</span>
+          <div class="browse-all-card--info-wrapper">
+            <span class="browse-all-card--title">Presets</span>
+          </div>
+          <span class="browse-all-card--icon-open material-icons"
+            >open_in_new</span
+          >
+        </a>
+      </div>
+    </div>
+  </body>
+</html>
