@@ -120,7 +120,7 @@ a:active {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .synth-image-container {

@@ -32,7 +32,7 @@ router.get("/", async (req, res) => {
     LEFT JOIN artists a ON sa.artist_id = a.id
     LEFT JOIN album_songs als ON s.id = als.song_id
     LEFT JOIN albums al ON als.album_id = al.id
-    WHERE LOWER(s.title) LIKE ?
+    WHERE sa.role = 'Main' AND LOWER(s.title) LIKE ?
     GROUP BY s.id
   `,
     [`%${searchQuery}%`],

@@ -1,6 +1,11 @@
 const openSynthContainers = document.querySelectorAll(".open-synth-container");
 const presetAudioPlayBtns = document.querySelectorAll(".preset-audio-play");
 const presetResultCards = document.querySelectorAll(".result-info-wrapper");
+const coverImg = document.querySelector(".cover-image");
+
+coverImg.addEventListener("click", () => {
+  window.open(coverImg.dataset.songYtLink, "_blank");
+});
 
 openSynthContainers.forEach((element) => {
   element.addEventListener("mouseover", () => {

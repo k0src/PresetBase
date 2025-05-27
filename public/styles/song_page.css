@@ -78,11 +78,6 @@ h1 {
   margin-top: 10px;
 }
 
-.open-video-link {
-  color: #333 !important;
-  font-size: 24px;
-}
-
 h2 {
   color: #333;
   margin-bottom: 10px;
@@ -126,7 +121,7 @@ a:active {
   display: flex;
   flex-wrap: wrap;
   gap: 30px;
-  align-items: flex-start;
+  align-items: center;
 }
 
 .song-image-container {
@@ -142,6 +137,7 @@ a:active {
   object-fit: cover;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease;
+  cursor: pointer;
 }
 
 .cover-image:hover {
@@ -157,12 +153,6 @@ a:active {
   color: #333;
   margin-bottom: 0px;
   margin-top: 0px;
-}
-
-.open-link--container {
-  display: flex;
-  flex-direction: column;
-  align-items: baseline;
 }
 
 .synth-preset-info-container {

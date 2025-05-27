@@ -24,6 +24,7 @@
               src="<%= song.image_url %>"
               class="cover-image"
               alt="<%= song.title %> cover"
+              data-song-yt-link="<%= song.song_url %>"
             />
           </div>
           <div class="item-info">
@@ -48,16 +49,6 @@
             </p>
             <p>Release Year: <strong><%= song.year %></strong></p>
             <p>Genre: <strong><%= song.genre %></strong></p>
-          </div>
-          <div class="open-link--container">
-            <h1>
-              <a
-                href="<%= song.song_url %>"
-                target="_blank"
-                class="material-icons open-video-link"
-                >open_in_new</a
-              >
-            </h1>
           </div>
         </div>
       </div>

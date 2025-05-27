@@ -106,6 +106,7 @@ a:active {
 }
 
 .top-container {
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
   gap: 20px;
@@ -117,7 +118,7 @@ a:active {
 .recently-added-container {
   display: flex;
   flex-direction: column;
-  flex: 1; /* each takes equal width */
+  flex: 1;
 }
 
 .result-card {
@@ -184,8 +185,15 @@ a:active {
   color: #666;
 }
 
-.open-icon {
+.open-icon,
+.genre--icon-open,
+.browse-all-card--icon-open {
   font-size: 20px;
+  color: #666;
+}
+
+.browse-all-card--icon-open-small {
+  font-size: 16px;
   color: #666;
 }
 
@@ -210,7 +218,51 @@ a:active {
   font-size: 18px;
 }
 
+.genre-container {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  width: 100%;
+}
+
+.genre-card {
+  user-select: none;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  justify-content: flex-start;
+  background: #ffffff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 12px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.genre-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.genre-card--info-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex: 1;
+}
+
+.genre-card--title {
+  font-weight: bold;
+  font-size: 18px;
+}
+
 .browse-all-container {
+  margin-top: 10px;
   display: flex;
   flex-direction: row;
   gap: 10px;
@@ -248,13 +300,8 @@ a:active {
 }
 
 .browse-all-card--icon {
+  font-size: 24px;
   padding: 5px;
-}
-
-.browse-all-card--icon-open {
-  font-size: 18px;
-  color: #666;
-  transition: all 0.2s ease;
 }
 
 .browse-all-card--title {
