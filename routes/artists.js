@@ -5,6 +5,23 @@ const db = require("../db/db");
 // GET /artist/:id
 router.get("/:id", (req, res) => {
   const artistId = req.params.id;
+  const now = new Date().toISOString();
+
+  // UPDATE CLICKS + TIMESTAMP
+  const updateClick = `
+        INSERT INTO artist_clicks (artist_id, clicks, recent_click)
+        VALUES (?, 1, ?)
+        ON CONFLICT(artist_id)
+        DO UPDATE SET
+            clicks = clicks + 1,
+            recent_click = excluded.recent_click
+  `;
+
+  db.run(updateClick, [artistId, now], function (err) {
+    if (err) {
+      return res.status(500).send("Database error: " + err.message);
+    }
+  });
 
   const query = `
         SELECT DISTINCT

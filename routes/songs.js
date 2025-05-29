@@ -5,6 +5,23 @@ const db = require("../db/db");
 // GET /song/:id
 router.get("/:id", (req, res) => {
   const songId = req.params.id;
+  const now = new Date().toISOString();
+
+  // UPDATE CLICKS + TIMESTAMP
+  const updateClick = `
+        INSERT INTO song_clicks (song_id, clicks, recent_click)
+        VALUES (?, 1, ?)
+        ON CONFLICT(song_id)
+        DO UPDATE SET
+            clicks = clicks + 1,
+            recent_click = excluded.recent_click
+  `;
+
+  db.run(updateClick, [songId, now], function (err) {
+    if (err) {
+      return res.status(500).send("Database error: " + err.message);
+    }
+  });
 
   const query = `
         SELECT
@@ -36,7 +53,7 @@ router.get("/:id", (req, res) => {
         LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
         WHERE songs.id = ?
-    `;
+  `;
 
   db.all(query, [songId], (err, rows) => {
     if (err) {
@@ -84,6 +101,7 @@ router.get("/:id", (req, res) => {
     song.artists = Array.from(artistMap.entries())
       .map(([name, data]) => ({ name, ...data }))
       .sort((a, b) => (a.role === "Main" ? -1 : b.role === "Main" ? 1 : 0));
+
     song.presets = Array.from(presetMap.entries()).map(([name, data]) => ({
       name,
       usage_type: data.usage_type,

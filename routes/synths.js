@@ -5,6 +5,23 @@ const db = require("../db/db");
 // GET /synth/:id
 router.get("/:id", (req, res) => {
   const synthId = req.params.id;
+  const now = new Date().toISOString();
+
+  // UPDATE CLICKS + TIMESTAMP
+  const updateClick = `
+        INSERT INTO synth_clicks (synth_id, clicks, recent_click)
+        VALUES (?, 1, ?)
+        ON CONFLICT(synth_id)
+        DO UPDATE SET
+            clicks = clicks + 1,
+            recent_click = excluded.recent_click
+  `;
+
+  db.run(updateClick, [synthId, now], function (err) {
+    if (err) {
+      return res.status(500).send("Database error: " + err.message);
+    }
+  });
 
   const query = `
         SELECT

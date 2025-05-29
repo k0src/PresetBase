@@ -153,6 +153,11 @@ a:active {
   margin-right: 15px;
 }
 
+.result-emoji {
+  font-size: 28px;
+  margin-right: 10px;
+}
+
 .result-info-wrapper {
   display: flex;
   justify-content: space-between;
@@ -307,4 +312,15 @@ a:active {
 .browse-all-card--title {
   font-weight: bold;
   font-size: 18px;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.results-count {
+  font-size: 16px;
+  color: #666;
 }

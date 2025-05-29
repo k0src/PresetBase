@@ -13,56 +13,30 @@
   >
     <%- include('partials/navbar') %>
     <div class="content animate">
-      <h1>Browse</h1>
+      <div class="header">
+        <h1>Browse</h1>
+        <span class="results-count"><%= totalResults %> total entries</span>
+      </div>
 
       <div class="top-container">
         <div class="popular-container">
-          <h2>Popular</h2>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+          <h2>Popular songs</h2>
+          <% Object.entries(popular).forEach(([i, song]) => { %>
+          <a href="/song/<%= song.song_id %>" class="result-card">
+            <span class="result-emoji"><%= ["🥇", "🥈", "🥉"][i] %></span>
+            <img src="<%= song.song_image %>" class="result-img" />
             <div class="result-info-wrapper">
               <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
+                <span class="result-title"><%= song.song_title %></span>
+                <span class="result-sub-one"><%= song.artist_name %></span>
+                <span class="result-sub-two"><%= song.album_title %></span>
+                <span class="result-sub-two"><%= song.song_genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
           </a>
-          <!-- ! backend will send 5 for each, 3 divs for testing only -->
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
+          <% }) %>
+
           <a href="#" class="view-more">
             <div class="browse-all-card--info-wrapper">
               <span class="view-more--title">View More</span>
@@ -72,53 +46,25 @@
             >
           </a>
         </div>
+
         <div class="hot-container">
-          <h2>Hot</h2>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+          <h2>Hot songs</h2>
+          <% Object.entries(hot).forEach(([i, song]) => { %>
+          <a href="/song/<%= song.song_id %>" class="result-card">
+            <span class="result-emoji"><%= ["🔥", "📈", "📈"][i] %></span>
+            <img src="<%= song.song_image %>" class="result-img" />
             <div class="result-info-wrapper">
               <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
+                <span class="result-title"><%= song.song_title %></span>
+                <span class="result-sub-one"><%= song.artist_name %></span>
+                <span class="result-sub-two"><%= song.album_title %></span>
+                <span class="result-sub-two"><%= song.song_genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
           </a>
-          <!-- ! backend will send 5 for each, 3 divs for testing only -->
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
+          <% }) %>
+
           <a href="#" class="view-more">
             <div class="browse-all-card--info-wrapper">
               <span class="view-more--title">View More</span>
@@ -128,53 +74,25 @@
             >
           </a>
         </div>
+
         <div class="recently-added-container">
-          <h2>Recently added</h2>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+          <h2>Recently added songs</h2>
+          <% Object.entries(recentlyAdded).forEach(([i, song]) => { %>
+          <a href="/song/<%= song.song_id %>" class="result-card">
+            <span class="result-emoji"><%= ["❗", "❗", "❗"][i] %></span>
+            <img src="<%= song.song_image %>" class="result-img" />
             <div class="result-info-wrapper">
               <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
+                <span class="result-title"><%= song.song_title %></span>
+                <span class="result-sub-one"><%= song.artist_name %></span>
+                <span class="result-sub-two"><%= song.album_title %></span>
+                <span class="result-sub-two"><%= song.song_genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
             </div>
           </a>
-          <!-- ! backend will send 5 for each, 3 divs for testing only -->
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <a href="#" class="result-card">
-            <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title">Title</span>
-                <span class="result-sub-one">Sub One</span>
-                <span class="result-sub-two">Sub Two</span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
+          <% }) %>
+
           <a href="#" class="view-more">
             <div class="browse-all-card--info-wrapper">
               <span class="view-more--title">View More</span>
@@ -186,37 +104,18 @@
         </div>
       </div>
 
-      <!-- ! top genres -->
+      <% console.log(topGenres) %>
       <h2>Top genres</h2>
       <div class="genre-container">
+        <% topGenres.forEach((genre) => { %>
         <a href="/browse/#" class="genre-card">
-          <img src="/assets/home-bg-lazy.jpg" class="result-img" />
+          <img src="<%= genre.song_image %>" class="result-img" />
           <div class="genre-card--info-wrapper">
-            <span class="genre-card--title">Genre</span>
+            <span class="genre-card--title"><%= genre.genre %></span>
             <span class="genre--icon-open material-icons">open_in_new</span>
           </div>
         </a>
-        <a href="/browse/#" class="genre-card">
-          <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-          <div class="genre-card--info-wrapper">
-            <span class="genre-card--title">Genre</span>
-            <span class="genre--icon-open material-icons">open_in_new</span>
-          </div>
-        </a>
-        <a href="/browse/#" class="genre-card">
-          <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-          <div class="genre-card--info-wrapper">
-            <span class="genre-card--title">Genre</span>
-            <span class="genre--icon-open material-icons">open_in_new</span>
-          </div>
-        </a>
-        <a href="/browse/#" class="genre-card">
-          <img src="/assets/home-bg-lazy.jpg" class="result-img" />
-          <div class="genre-card--info-wrapper">
-            <span class="genre-card--title">Genre</span>
-            <span class="genre--icon-open material-icons">open_in_new</span>
-          </div>
-        </a>
+        <% }) %>
       </div>
 
       <h2>Browse all</h2>

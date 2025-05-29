@@ -5,6 +5,23 @@ const db = require("../db/db");
 // GET /album/:id
 router.get("/:id", (req, res) => {
   const albumId = req.params.id;
+  const now = new Date().toISOString();
+
+  // UPDATE CLICKS + TIMESTAMP
+  const updateClick = `
+        INSERT INTO album_clicks (album_id, clicks, recent_click)
+        VALUES (?, 1, ?)
+        ON CONFLICT(album_id)
+        DO UPDATE SET
+            clicks = clicks + 1,
+            recent_click = excluded.recent_click
+  `;
+
+  db.run(updateClick, [albumId, now], function (err) {
+    if (err) {
+      return res.status(500).send("Database error: " + err.message);
+    }
+  });
 
   const query = `
     SELECT 
