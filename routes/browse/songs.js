@@ -4,22 +4,17 @@ const db = require("../../db/db");
 const { dbAll, dbGet } = require("../UTIL.js");
 
 router.get("/", async (req, res) => {
-  const sortKeys = [
-    "songs.title",
-    "songs.genre",
-    "songs.release_year",
-    "song_clicks.recent_click",
-    "song_clicks.clicks",
-    "songs.timestamp",
-    "artists.name",
-    "albums.title",
-  ];
+  const sortKeys = {
+    title: "songs.title",
+    genre: "songs.genre",
+    year: "songs.release_year",
+    artist: "artists.name",
+    album: "albums.title",
+  };
 
-  const sortKey = req.query.sort
-    ? req.query.sort.replace("-", ".")
-    : "songs.title";
+  const sortKey = sortKeys[req.query.sort] || sortKeys["title"];
 
-  if (!sortKeys.includes(sortKey)) {
+  if (!sortKey) {
     return res.status(400).send("Invalid sort key");
   }
 
