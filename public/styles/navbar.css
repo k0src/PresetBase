@@ -83,7 +83,7 @@ html {
   width: 180px;
   padding: 6px 10px;
   border: 2px solid #000;
-  border-radius: 8px;
+  border-radius: 4px;
   font-size: 14px;
 }
 
@@ -104,7 +104,7 @@ html {
   color: #ffffff;
   background-color: #000000;
   border: 2px solid #000000;
-  border-radius: 8px;
+  border-radius: 4px;
   cursor: pointer;
   padding: 2px;
 }

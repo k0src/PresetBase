@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <script src="/assets/browse/songs.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Browse</title>
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/browse/songs.css" />
+  </head>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('../partials/navbar') %>
+    <div class="content animate">
+      <div class="header">
+        <h1>All songs</h1>
+        <span class="results-count"><%= totalResults %> songs</span>
+      </div>
+      <div class="results-filters-main-container">
+        <div class="results-view-mode-btn-container">
+          <button class="material-icons results-view-mode-btn">menu</button>
+          <button
+            class="material-icons results-view-mode-btn results-view-mode-btn--off"
+          >
+            window
+          </button>
+        </div>
+        <div class="result-filter">
+          <input
+            type="text"
+            placeholder="Filter results"
+            class="result-filters--input"
+          />
+        </div>
+        <div class="result-sort-dropdown">
+          <button class="result-sort-btn">
+            <p>Sort</p>
+            <span class="material-icons">sort</span>
+          </button>
+          <div class="result-sort-content">
+            <div id="songs-title" class="result-sort-content--item">
+              <span>Song</span>
+              <span class="material-icons">music_note</span>
+            </div>
+            <div id="artists-name" class="result-sort-content--item">
+              <span>Artist</span>
+              <span class="material-icons">person</span>
+            </div>
+            <div id="albums-title" class="result-sort-content--item">
+              <span>Album</span>
+              <span class="material-icons">album</span>
+            </div>
+            <div id="songs-genre" class="result-sort-content--item">
+              <span>Genre</span>
+              <span class="material-icons">library_music</span>
+            </div>
+            <div id="songs-release_year" class="result-sort-content--item">
+              <span>Year</span>
+              <span class="material-icons">calendar_today</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="result-columns grid-layout">
+        <span class="result-columns--name">#</span>
+        <span class="result-columns--name">Title</span>
+        <span class="result-columns--name">Album</span>
+        <span class="result-columns--name">Genre</span>
+        <span class="result-columns--name">Year</span>
+      </div>
+      <div class="results-list">
+        <% Object.entries(songs).forEach(([i, song]) => { %>
+        <a href="/song/<%= song.song_id %>" class="result-entry grid-layout">
+          <span class="result-entry--number"><%= +i + 1 %></span>
+          <div class="result-entry--title-container">
+            <img src="<%= song.song_image %>" class="result-entry--img" />
+            <div class="result-entry--title">
+              <span class="result-entry--artist-name">
+                <%= song.artist_name %></span
+              >
+              <span class="result-entry--song-title"
+                ><%= song.song_title %></span
+              >
+            </div>
+          </div>
+          <span class="result-entry--album-title"
+            ><%= song.album_title === "[SINGLE]" ? "Single" : song.album_title
+            %></span
+          >
+          <span class="result-entry--genre"><%= song.song_genre %></span>
+          <span class="result-entry--release-year"
+            ><%= song.song_release_year %></span
+          >
+        </a>
+        <% }) %>
+      </div>
+    </div>
+  </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+</html>

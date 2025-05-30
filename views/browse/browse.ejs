@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Browse</title>
     <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/browse.css" />
+    <link rel="stylesheet" href="/styles/browse/browse.css" />
   </head>
   <body
     style="opacity: 0; transition: opacity 0.3s ease"
     onload="document.body.style.opacity='1'"
   >
-    <%- include('partials/navbar') %>
+    <%- include('../partials/navbar') %>
     <div class="content animate">
       <div class="header">
         <h1>Browse</h1>
@@ -29,7 +29,9 @@
               <div class="result-info">
                 <span class="result-title"><%= song.song_title %></span>
                 <span class="result-sub-one"><%= song.artist_name %></span>
+                <% if (song.album_title !== "[SINGLE]") { %>
                 <span class="result-sub-two"><%= song.album_title %></span>
+                <% } %>
                 <span class="result-sub-two"><%= song.song_genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
@@ -57,7 +59,9 @@
               <div class="result-info">
                 <span class="result-title"><%= song.song_title %></span>
                 <span class="result-sub-one"><%= song.artist_name %></span>
+                <% if (song.album_title !== "[SINGLE]") { %>
                 <span class="result-sub-two"><%= song.album_title %></span>
+                <% } %>
                 <span class="result-sub-two"><%= song.song_genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
@@ -85,7 +89,9 @@
               <div class="result-info">
                 <span class="result-title"><%= song.song_title %></span>
                 <span class="result-sub-one"><%= song.artist_name %></span>
+                <% if (song.album_title !== "[SINGLE]") { %>
                 <span class="result-sub-two"><%= song.album_title %></span>
+                <% } %>
                 <span class="result-sub-two"><%= song.song_genre %></span>
               </div>
               <span class="material-icons open-icon">open_in_new</span>
@@ -104,7 +110,6 @@
         </div>
       </div>
 
-      <% console.log(topGenres) %>
       <h2>Top genres</h2>
       <div class="genre-container">
         <% topGenres.forEach((genre) => { %>

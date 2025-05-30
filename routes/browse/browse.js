@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
+const db = require("../../db/db");
+const { dbAll, dbGet } = require("../UTIL.js");
 
 router.get("/", async (req, res) => {
   const queries = {
@@ -22,7 +23,7 @@ router.get("/", async (req, res) => {
             songs.image_url AS song_image,
             artists.name AS artist_name,
             albums.title AS album_title,
-            song_clicks.recent_click AS recent_click_timestamp
+            COALESCE(song_clicks.recent_click, 0) AS recent_click_timestamp
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         LEFT JOIN artists ON song_artists.artist_id = artists.id
@@ -93,43 +94,14 @@ router.get("/", async (req, res) => {
   try {
     const [totalResults, hot, popular, recentlyAdded, topGenres] =
       await Promise.all([
-        new Promise((resolve, reject) => {
-          db.get(queries.totalResults, (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
-          });
-        }),
-
-        new Promise((resolve, reject) => {
-          db.all(queries.hot, (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
-          });
-        }),
-
-        new Promise((resolve, reject) => {
-          db.all(queries.popular, (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
-          });
-        }),
-
-        new Promise((resolve, reject) => {
-          db.all(queries.recentlyAdded, (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
-          });
-        }),
-
-        new Promise((resolve, reject) => {
-          db.all(queries.topGenres, (err, rows) => {
-            if (err) reject(err);
-            else resolve(rows);
-          });
-        }),
+        dbGet(queries.totalResults),
+        dbAll(queries.hot),
+        dbAll(queries.popular),
+        dbAll(queries.recentlyAdded),
+        dbAll(queries.topGenres),
       ]);
 
-    res.render("browse", {
+    res.render("browse/browse", {
       totalResults: totalResults.total_results,
       hot,
       popular,
