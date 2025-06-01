@@ -37,8 +37,8 @@ const browseArtistsRoute = require("./routes/browse/artists");
 app.use("/browse/artists", browseArtistsRoute);
 const browseAlbumsRoute = require("./routes/browse/albums");
 app.use("/browse/albums", browseAlbumsRoute);
-// const browseSynthsRoute = require("./routes/browse/synths");
-// app.use("/browse/synths", browseSynthsRoute);
+const browseSynthsRoute = require("./routes/browse/synths");
+app.use("/browse/synths", browseSynthsRoute);
 // const browsePresetsRoute = require("./routes/browse/presets");
 // app.use("/browse/presets", browsePresetsRoute);
 

@@ -175,3 +175,37 @@
   content: "🌟";
   margin-right: 5px;
 }
+
+/* Synth tags */
+.synth-type--vst {
+  color: #212529;
+  border-color: #ced4da;
+  background-color: #e9ecef;
+}
+
+.synth-type--vst::before {
+  content: "🎹";
+  margin-right: 5px;
+}
+
+.synth-type--hardware {
+  color: #212529;
+  border-color: #ced4da;
+  background-color: #e9ecef;
+}
+
+.synth-type--hardware::before {
+  content: "🎛️";
+  margin-right: 5px;
+}
+
+.synth-type--kontakt-bank {
+  color: #212529;
+  border-color: #ced4da;
+  background-color: #e9ecef;
+}
+
+.synth-type--kontakt-bank::before {
+  content: "🎛️";
+  margin-right: 5px;
+}

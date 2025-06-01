@@ -304,7 +304,7 @@ a:active {
   background-color: #f0f0f0;
 }
 
-.genre-tag {
+.synth-tag {
   cursor: pointer;
   user-select: none;
   font-size: 12px;
@@ -317,7 +317,7 @@ a:active {
 
 .grid-layout--list {
   display: grid;
-  grid-template-columns: 20px 150fr 80fr 60fr 30fr 20px;
+  grid-template-columns: 20px 4fr 3fr 2fr 1fr 20px;
   align-items: center;
   gap: 20px;
 }
@@ -346,8 +346,8 @@ a:active {
   background-color: #eee;
 }
 
-.result-entry--artist-name,
-.result-entry--album-title {
+.result-entry--synth-name,
+.result-entry--manufacturer {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -372,12 +372,12 @@ a:active {
   flex-shrink: 0;
 }
 
-.result-entry--album-title {
+.result-entry--synth-name {
   font-size: 20px;
 }
 
 .result-entry--number,
-.result-entry--artist-name,
+.result-entry--manufacturer,
 .result-entry--release-year {
   font-size: 14px;
   color: #444;
@@ -459,7 +459,7 @@ a:active {
   align-items: flex-start;
 }
 
-.card-entry--artist-container {
+.card-entry--manufacturer-container {
   width: 100%;
   max-width: 100%;
   display: grid;
@@ -468,8 +468,8 @@ a:active {
   overflow: hidden;
 }
 
-.card-entry--artist-name,
-.card-entry--album-title {
+.card-entry--manufacturer,
+.card-entry--synth-name {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -477,7 +477,7 @@ a:active {
   max-width: 100%;
 }
 
-.card-entry--artist-name {
+.card-entry--manufacturer {
   width: fit-content;
   font-size: 16px;
   color: #333;
@@ -486,7 +486,7 @@ a:active {
   max-width: 100%;
 }
 
-.card-entry--album-title {
+.card-entry--synth-name {
   font-size: 24px;
 }
 

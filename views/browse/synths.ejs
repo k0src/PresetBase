@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <script src="/assets/browse/browse_synths.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All synths</title>
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/browse/browse_synths.css" />
+    <link rel="stylesheet" href="/styles/tags.css" />
+  </head>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('../partials/navbar') %>
+    <div class="content animate">
+      <div class="header">
+        <h1>All synths</h1>
+        <span class="results-count"><%= totalResults %> synths</span>
+      </div>
+      <main>
+        <div class="results-filters-main-container">
+          <div class="results-view-mode-btn-container">
+            <button
+              id="list-btn"
+              class="material-icons results-view-btn results-view-btn--active"
+            >
+              menu
+            </button>
+            <button id="grid-btn" class="material-icons results-view-btn">
+              window
+            </button>
+          </div>
+          <div class="result-filter">
+            <input
+              type="text"
+              placeholder="Filter results"
+              class="result-filter--input"
+            />
+            <span class="material-icons result-filter--clear">close</span>
+          </div>
+          <div class="filter-tag-container"></div>
+
+          <div class="result-sort-dropdown">
+            <button class="result-sort-btn">
+              <p>Sort</p>
+              <span class="material-icons">sort</span>
+            </button>
+            <div class="result-sort-content">
+              <div id="name" class="result-sort-content--item">
+                <span>Synth</span>
+                <span class="material-icons">piano</span>
+              </div>
+              <div id="manufacturer" class="result-sort-content--item">
+                <span>Manufacturer</span>
+                <span class="material-icons">domain</span>
+              </div>
+              <div id="type" class="result-sort-content--item">
+                <span>Type</span>
+                <span class="material-icons">category</span>
+              </div>
+              <div id="year" class="result-sort-content--item">
+                <span>Year</span>
+                <span class="material-icons">calendar_today</span>
+              </div>
+              <div id="added" class="result-sort-content--item">
+                <span>Added</span>
+                <span class="material-icons">schedule</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- List view -->
+        <div class="list-view-container">
+          <div class="result-columns grid-layout--list">
+            <span class="result-columns--name">#</span>
+            <span class="result-columns--name">Synth</span>
+            <span class="result-columns--name">Manufacturer</span>
+            <span class="result-columns--name">Synth Type</span>
+            <span class="result-columns--name">Release Year</span>
+          </div>
+          <% Object.entries(synths).forEach(([i, synth]) => { %>
+          <div class="result-entry grid-layout--list">
+            <span class="result-entry--number"><%= +i + 1 %></span>
+            <div class="result-entry--title-container">
+              <img src="<%= synth.synth_image %>" class="result-entry--img" />
+              <span class="result-entry--synth-name"
+                ><%= synth.synth_name %></span
+              >
+            </div>
+            <span class="result-entry--manufacturer"
+              ><%= synth.synth_manufacturer %></span
+            >
+            <span class="synth-tag"><%= synth.synth_type %></span>
+            <span class="result-entry--release-year"
+              ><%= synth.synth_release_year %></span
+            >
+            <a
+              href="/synth/<%= synth.synth_id %>"
+              class="material-icons open-btn"
+              >open_in_new</a
+            >
+          </div>
+          <% }) %>
+        </div>
+
+        <!-- Grid view -->
+      </main>
+      <div class="grid-view-container hide">
+        <div class="grid-layout--card">
+          <% Object.entries(synths).forEach(([i, synth]) => { %>
+          <div class="card-entry">
+            <img src="<%= synth.synth_image %>" class="card-entry--img" />
+            <% if (synth.is_new) { %>
+            <span class="status status--new">New</span>
+            <% } %>
+            <div class="card-entry--info-container">
+              <div class="card-entry--title-container">
+                <span class="card-entry--synth-name"
+                  ><%= synth.synth_name %></span
+                >
+                <div class="card-entry--manufacturer-container">
+                  <span class="card-entry--manufacturer"
+                    ><%= synth.synth_manufacturer %></span
+                  >
+                  <div class="card-entry--year-container">
+                    <span class="material-icons card-entry--year-icon"
+                      >calendar_today</span
+                    >
+                    <span class="card-entry--release-year"
+                      ><%= synth.synth_release_year %></span
+                    >
+                  </div>
+                </div>
+              </div>
+              <div class="card-entry--tag-container">
+                <span class="synth-tag"><%= synth.synth_type %></span>
+              </div>
+              <div class="card-entry--footer">
+                <span class="card-entry--added"
+                  >Added: <%= synth.synth_added_timestamp %></span
+                >
+                <a
+                  href="/synth/<%= synth.synth_id %>"
+                  class="card-entry--more-details"
+                  >More details
+                  <span class="material-icons">open_in_new</span></a
+                >
+              </div>
+            </div>
+          </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+</html>
