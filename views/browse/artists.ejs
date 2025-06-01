@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <script src="/assets/browse/browse_artists.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All artists</title>
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/browse/browse_artists.css" />
+    <link rel="stylesheet" href="/styles/tags.css" />
+  </head>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('../partials/navbar') %>
+    <div class="content animate">
+      <div class="header">
+        <h1>All artists</h1>
+        <span class="results-count"><%= totalResults %> artists</span>
+      </div>
+      <main>
+        <div class="results-filters-main-container">
+          <div class="results-view-mode-btn-container">
+            <button
+              id="list-btn"
+              class="material-icons results-view-btn results-view-btn--active"
+            >
+              menu
+            </button>
+            <button id="grid-btn" class="material-icons results-view-btn">
+              window
+            </button>
+          </div>
+          <div class="result-filter">
+            <input
+              type="text"
+              placeholder="Filter results"
+              class="result-filter--input"
+            />
+            <span class="material-icons result-filter--clear">close</span>
+          </div>
+          <div class="filter-tag-container"></div>
+
+          <div class="result-sort-dropdown">
+            <button class="result-sort-btn">
+              <p>Sort</p>
+              <span class="material-icons">sort</span>
+            </button>
+            <div class="result-sort-content">
+              <div id="name" class="result-sort-content--item">
+                <span>Name</span>
+                <span class="material-icons">person</span>
+              </div>
+              <div id="country" class="result-sort-content--item">
+                <span>Country</span>
+                <span class="material-icons">public</span>
+              </div>
+              <div id="added" class="result-sort-content--item">
+                <span>Added</span>
+                <span class="material-icons">schedule</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- List view -->
+        <div class="list-view-container">
+          <div class="result-columns grid-layout--list">
+            <span class="result-columns--name">#</span>
+            <span class="result-columns--name">Name</span>
+            <span class="result-columns--name">Country</span>
+          </div>
+          <% Object.entries(artists).forEach(([i, artist]) => { %>
+          <div class="result-entry grid-layout--list">
+            <span class="result-entry--number"><%= +i + 1 %></span>
+            <div class="result-entry--title-container">
+              <img src="<%= artist.artist_image %>" class="result-entry--img" />
+              <span class="result-entry--artist-name"
+                ><%= artist.artist_name %></span
+              >
+            </div>
+            <span class="result-entry--artist-country"
+              ><%= artist.artist_country %></span
+            >
+            <a
+              href="/artist/<%= artist.artist_id %>"
+              class="material-icons open-btn"
+              >open_in_new</a
+            >
+          </div>
+          <% }) %>
+        </div>
+
+        <!-- Grid view -->
+        <div class="grid-view-container hide">
+          <div class="grid-layout--card">
+            <% Object.entries(artists).forEach(([i, artist]) => { %>
+            <div class="card-entry">
+              <img src="<%= artist.artist_image %>" class="card-entry--img" />
+              <% if (artist.is_new) { %>
+              <span class="status status--new">New</span>
+              <% } %>
+              <div class="card-entry--info-container">
+                <span class="card-entry--artist-name"
+                  ><%= artist.artist_name %></span
+                >
+                <div class="card-entry--artist-country-container">
+                  <span class="material-icons card-entry--country-icon"
+                    >public</span
+                  >
+                  <span class="card-entry--artist-country"
+                    ><%= artist.artist_country %></span
+                  >
+                </div>
+                <div class="card-entry--footer">
+                  <span class="card-entry--added"
+                    >Added: <%= artist.artist_added_timestamp %></span
+                  >
+                  <a
+                    href="/artist/<%= artist.artist_id %>"
+                    class="card-entry--more-details"
+                    >More details
+                    <span class="material-icons">open_in_new</span></a
+                  >
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+</html>

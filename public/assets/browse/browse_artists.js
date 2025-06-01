@@ -4,13 +4,12 @@ const sortDropdownItems = document.querySelectorAll(
 );
 const sortDropdownContent = document.querySelector(".result-sort-content");
 const filterInput = document.querySelector(".result-filter--input");
-const genreTags = document.querySelectorAll(".genre-tag");
 const filterClearBtn = document.querySelector(".result-filter--clear");
 const viewModeBtns = document.querySelectorAll(".results-view-btn");
 
 /* SORTING */
-const sortSongs = function (key) {
-  window.location.href = `/browse/songs?sort=${encodeURIComponent(key)}`;
+const sortArtists = function (key) {
+  window.location.href = `/browse/artists?sort=${encodeURIComponent(key)}`;
 };
 
 sortDropdownBtn.addEventListener("click", () => {
@@ -19,7 +18,7 @@ sortDropdownBtn.addEventListener("click", () => {
 
 sortDropdownItems.forEach((item) => {
   item.addEventListener("click", () => {
-    sortSongs(item.id);
+    sortArtists(item.id);
   });
 });
 
@@ -28,21 +27,11 @@ const filterList = function (query) {
   const lowerQuery = query.trim().toLowerCase();
 
   document.querySelectorAll(".result-entry").forEach((entry) => {
-    const song = entry
-      .querySelector(".result-entry--song-title")
-      .textContent.toLowerCase();
-    const artist = entry
+    const name = entry
       .querySelector(".result-entry--artist-name")
       .textContent.toLowerCase();
-    const album = entry
-      .querySelector(".result-entry--album-title")
-      .textContent.toLowerCase();
 
-    const matches =
-      !lowerQuery ||
-      song.includes(lowerQuery) ||
-      artist.includes(lowerQuery) ||
-      album.includes(lowerQuery);
+    const matches = !lowerQuery || name.includes(lowerQuery);
 
     entry.classList.toggle("hide", !matches);
   });
@@ -52,21 +41,11 @@ const filterCards = function (query) {
   const lowerQuery = query.trim().toLowerCase();
 
   document.querySelectorAll(".card-entry").forEach((entry) => {
-    const song = entry
-      .querySelector(".card-entry--song-title")
-      .textContent.toLowerCase();
-    const artist = entry
+    const name = entry
       .querySelector(".card-entry--artist-name")
       .textContent.toLowerCase();
-    const album = entry
-      .querySelector(".card-entry--album-title")
-      .textContent.toLowerCase();
 
-    const matches =
-      !lowerQuery ||
-      song.includes(lowerQuery) ||
-      artist.includes(lowerQuery) ||
-      album.includes(lowerQuery);
+    const matches = !lowerQuery || name.includes(lowerQuery);
 
     entry.style.display = matches ? "flex" : "none";
   });
@@ -85,13 +64,6 @@ filterInput.addEventListener("input", () => {
 filterClearBtn.addEventListener("click", () => {
   filterInput.value = "";
   filterResults(filterInput.value);
-});
-
-/* APPLYING DYNAMIC GENRE TAG CLASS */
-genreTags.forEach((tag) => {
-  tag.classList.add(
-    `tag-genre--${tag.textContent.trim().toLowerCase().replaceAll(" ", "-")}`
-  );
 });
 
 /* CHANGE VIEW MODE */

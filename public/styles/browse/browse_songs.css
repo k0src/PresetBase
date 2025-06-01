@@ -53,10 +53,6 @@ html {
   animation: fadeInUp 0.5s ease-in-out forwards;
 }
 
-.hide {
-  display: none;
-}
-
 body {
   background-color: #f8f9fa;
   font-family: "DM Sans", sans-serif;
@@ -296,6 +292,7 @@ a:active {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 10px;
   padding: 8px 12px;
   font-size: 14px;
   color: #333;
@@ -305,11 +302,6 @@ a:active {
 
 .result-sort-content--item:hover {
   background-color: #f0f0f0;
-}
-
-.filter-tag-container {
-  display: flex;
-  gap: 10px;
 }
 
 .genre-tag {
@@ -384,6 +376,7 @@ a:active {
   height: 75px;
   border-radius: 4px;
   object-fit: cover;
+  flex-shrink: 0;
 }
 
 .result-entry--artist-name {
@@ -413,12 +406,27 @@ a:active {
   gap: 20px;
 }
 
+.status {
+  opacity: 0.95;
+  align-items: center;
+  position: absolute;
+  top: 6%;
+  right: 10%;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
+  width: fit-content;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
 .card-entry {
   width: 100%;
   max-width: 100%;
   position: relative;
   color: inherit;
-  background: #fff;
+  background: #f8f9fa;
   padding: 20px;
   border-radius: 8px;
   border-bottom: 3px solid #ced4da;
@@ -450,23 +458,10 @@ a:active {
   width: 100%;
   height: 100%;
   border-radius: 4px;
+  aspect-ratio: 1 / 1;
   object-fit: cover;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.status {
-  display: none;
-  align-items: center;
-  position: absolute;
-  top: 10%;
-  right: 10%;
-  text-transform: uppercase;
-  font-size: 12px;
-  font-weight: 600;
-  width: fit-content;
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: 1px solid;
+  flex-shrink: 0;
 }
 
 .card-entry--title-container {
@@ -544,6 +539,7 @@ a:active {
   flex-wrap: wrap;
   gap: 5px;
   overflow: hidden;
+  margin-bottom: 5px;
 }
 
 .card-entry--genre {
@@ -568,4 +564,8 @@ a:active {
 .card-entry--more-details {
   font-size: 12px;
   text-decoration: underline !important;
+}
+
+.hide {
+  display: none;
 }

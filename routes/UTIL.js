@@ -19,7 +19,7 @@ const dbGet = function (query, params = []) {
   });
 };
 
-// TIMESTAMP FORMATTING
+// TIMESTAMP FUNCTIONS
 const convertTimestamp = function (timestamp) {
   return new Date(timestamp).toLocaleString("default", {
     month: "short",
@@ -28,4 +28,12 @@ const convertTimestamp = function (timestamp) {
   });
 };
 
-module.exports = { dbAll, dbGet, convertTimestamp };
+const moreRecentTimestamp = function (timestamp, daysMS) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diff = now - date;
+
+  return diff < daysMS;
+};
+
+module.exports = { dbAll, dbGet, convertTimestamp, moreRecentTimestamp };

@@ -5,9 +5,9 @@
     <script src="/assets/browse/browse_songs.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Browse</title>
+    <title>All songs</title>
     <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/browse/songs.css" />
+    <link rel="stylesheet" href="/styles/browse/browse_songs.css" />
     <link rel="stylesheet" href="/styles/tags.css" />
   </head>
   <body
@@ -121,7 +121,9 @@
             <% Object.entries(songs).forEach(([i, song]) => { %>
             <div class="card-entry">
               <img src="<%= song.song_image %>" class="card-entry--img" />
+              <% if (song.is_new) { %>
               <span class="status status--new">New</span>
+              <% } %>
               <div class="card-entry--info-container">
                 <div class="card-entry--title-container">
                   <a

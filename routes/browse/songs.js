@@ -1,7 +1,12 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../../db/db");
-const { dbAll, dbGet, convertTimestamp } = require("../UTIL.js");
+const {
+  dbAll,
+  dbGet,
+  convertTimestamp,
+  moreRecentTimestamp,
+} = require("../UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
@@ -34,7 +39,6 @@ router.get("/", async (req, res) => {
             artists.id AS artist_id,
             albums.title AS album_title,
             albums.id AS album_id,
-            COALESCE(song_clicks.recent_click, 0) AS recent_click_timestamp,
             songs.timestamp AS song_added_timestamp
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
@@ -55,9 +59,10 @@ router.get("/", async (req, res) => {
 
     if (songs) {
       songs.forEach((song) => {
-        song.recent_click_timestamp = convertTimestamp(
-          song.recent_click_timestamp
-        );
+        song.is_new = moreRecentTimestamp(
+          song.song_added_timestamp,
+          3 * 24 * 60 * 60 * 1000
+        ); // 3 days
         song.song_added_timestamp = convertTimestamp(song.song_added_timestamp);
       });
     }
