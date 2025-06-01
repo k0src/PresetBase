@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const db = require("../../db/db");
-const { dbAll, dbGet } = require("../UTIL.js");
+const { dbAll, dbGet, convertTimestamp } = require("../UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
@@ -10,9 +10,10 @@ router.get("/", async (req, res) => {
     year: "songs.release_year",
     artist: "artists.name",
     album: "albums.title",
+    added: "songs.timestamp",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys["title"];
+  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
 
   if (!sortKey) {
     return res.status(400).send("Invalid sort key");
@@ -30,9 +31,10 @@ router.get("/", async (req, res) => {
             songs.release_year AS song_release_year,
             songs.image_url AS song_image,
             artists.name AS artist_name,
+            artists.id AS artist_id,
             albums.title AS album_title,
+            albums.id AS album_id,
             COALESCE(song_clicks.recent_click, 0) AS recent_click_timestamp,
-            COALESCE(song_clicks.clicks, 0) AS clicks,
             songs.timestamp AS song_added_timestamp
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
@@ -50,6 +52,15 @@ router.get("/", async (req, res) => {
       dbGet(queries.totalResults),
       dbAll(queries.songs),
     ]);
+
+    if (songs) {
+      songs.forEach((song) => {
+        song.recent_click_timestamp = convertTimestamp(
+          song.recent_click_timestamp
+        );
+        song.song_added_timestamp = convertTimestamp(song.song_added_timestamp);
+      });
+    }
 
     res.render("browse/songs", {
       totalResults: totalResults.total_results,

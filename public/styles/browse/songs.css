@@ -1,10 +1,15 @@
-@import url("https://fonts.googleapis.com/css2?family=DM+Sans&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
 
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+}
+
+*:focus {
+  outline: none;
+  outline: 2px solid #e0e0e0;
 }
 
 html {
@@ -48,15 +53,19 @@ html {
   animation: fadeInUp 0.5s ease-in-out forwards;
 }
 
+.hide {
+  display: none;
+}
+
 body {
-  background-color: #fff;
+  background-color: #f8f9fa;
   font-family: "DM Sans", sans-serif;
 }
 
 .content {
-  margin: 0;
-  padding: 30px;
-  opacity: 0;
+  max-width: 1200px;
+  padding: 0 32px;
+  margin: 0 auto;
 }
 
 @keyframes fadeInUp {
@@ -70,6 +79,12 @@ body {
   }
 }
 
+main {
+  padding-top: 32px;
+  background-color: #fff;
+  border-radius: 4px;
+}
+
 h1 {
   font-family: "Sora", sans-serif;
   font-size: 40px;
@@ -78,7 +93,6 @@ h1 {
   text-overflow: ellipsis;
   max-width: 100%;
   color: #000;
-  margin-bottom: 10px;
 }
 
 p {
@@ -108,6 +122,7 @@ a:active {
 }
 
 .header {
+  padding: 24px 0 16px 0;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -122,67 +137,105 @@ a:active {
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  margin-bottom: 20px;
+  padding: 0 32px 16px 16px;
+  gap: 20px;
 }
 
 .results-view-mode-btn-container {
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
-  gap: 0px;
-  padding: 5px 10px;
+  justify-content: space-between;
+  gap: 5px;
 }
 
 .result-filter {
   display: flex;
-  align-items: center;
-  gap: 5px;
 }
 
-.result-filters--input {
+.result-filter--input {
   font-family: "Dm Sans", sans-serif;
-  width: 200px;
+  width: 160px;
+  height: 35px;
   padding: 6px 10px;
-  border: 2px solid #000;
-  border-radius: 4px;
+  border-bottom: 2px solid #000;
+  border-top: 2px solid #000;
+  border-left: 2px solid #000;
+  border-right: none;
+  border-bottom-left-radius: 4px;
+  border-top-left-radius: 4px;
   font-size: 14px;
 }
 
-.result-filters--input::placeholder {
+.result-filter--input::placeholder {
   color: #646464;
 }
 
-.result-sort-btn,
-.results-view-mode-btn {
-  font-size: 20px;
+.result-filter--clear {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 35px;
+  width: 35px;
+  font-size: 16px;
+  color: #646464;
+  background-color: #fff;
+  border-bottom: 2px solid #000;
+  border-top: 2px solid #000;
+  border-right: 2px solid #000;
+  border-bottom-right-radius: 4px;
+  border-top-right-radius: 4px;
+  transition: color 0.1s ease;
+  cursor: pointer;
+}
+
+.result-filter--clear:hover {
+  color: #aaa;
+}
+
+.result-filter--input:focus {
+  outline: none;
+}
+
+.results-view-btn {
+  margin: 0;
+  font-size: 24px;
+  color: #000;
+  background-color: #eee;
+  border: 2px solid #eee;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 2px;
+}
+
+.results-view-btn:hover,
+.results-view-btn:active {
+  color: #000;
+  background-color: #e0e0e0;
+  border-color: #e0e0e0;
+}
+
+.results-view-btn--active {
+  color: #fff;
+  background-color: #000;
+  border: 2px solid #000;
+}
+
+.results-view-btn--active:hover,
+.results-view-btn--active:active {
+  color: #fff;
+  border-color: #444;
+  background-color: #444;
+}
+
+.result-sort-btn {
+  font-size: 24px;
   color: #fff;
   background-color: #000;
   border: 2px solid #000;
   border-radius: 4px;
   cursor: pointer;
   padding: 2px;
-}
-
-.result-sort-btn:hover,
-.results-view-mode-btn:hover {
-  border-color: #444;
-  background-color: #444;
-}
-
-.results-view-mode-btn--off {
-  color: #000;
-  background-color: #eee;
-  border-color: #eee;
-}
-
-.results-view-mode-btn--off:hover {
-  color: #000;
-  background-color: #e0e0e0;
-  border-color: #e0e0e0;
-}
-
-.result-sort-btn {
   font-family: "Dm Sans", sans-serif;
   display: flex;
   flex-direction: row;
@@ -190,6 +243,11 @@ a:active {
   justify-content: space-between;
   gap: 15px;
   padding: 2.5px 5px;
+}
+
+.result-sort-btn:hover {
+  border-color: #444;
+  background-color: #444;
 }
 
 .result-sort-btn p {
@@ -249,43 +307,68 @@ a:active {
   background-color: #f0f0f0;
 }
 
-.grid-layout {
+.filter-tag-container {
+  display: flex;
+  gap: 10px;
+}
+
+.genre-tag {
+  cursor: pointer;
+  user-select: none;
+  font-size: 12px;
+  width: fit-content;
+  height: fit-content;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid;
+}
+
+.grid-layout--list {
   display: grid;
-  grid-template-columns: 40px 2fr 1fr 1fr 60px;
+  grid-template-columns: 20px 150fr 80fr 60fr 30fr 20px;
   align-items: center;
   gap: 20px;
 }
 
 .result-columns {
-  background-color: #000;
-  padding: 15px;
-  color: #fff;
-  font-weight: bold;
-  border-top-left-radius: 4px;
-  border-top-right-radius: 4px;
+  background-color: #fff;
+  border-bottom: 2px solid #f0f0f0;
+  padding: 15px 24px;
+  color: #444;
 }
 
 .result-entry {
   background-color: #fff;
-  padding: 10px;
+  padding: 15px 24px;
   text-decoration: none;
   color: inherit;
   border-bottom: 2px solid #f0f0f0;
   transition: background-color 0.2s ease;
 }
 
-.result-entry:nth-child(even) {
-  background-color: #fcfcfc;
+.result-entry:nth-child(odd) {
+  background-color: #fff;
 }
 
 .result-entry:hover {
   background-color: #eee;
 }
 
+.result-entry--artist-name,
+.result-entry--song-title,
+.result-entry--album-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
 .result-entry--title-container {
   display: flex;
   align-items: center;
   gap: 20px;
+  min-width: 0;
 }
 
 .result-entry--title {
@@ -293,6 +376,7 @@ a:active {
   flex-direction: column;
   align-items: flex-start;
   gap: 5px;
+  min-width: 0;
 }
 
 .result-entry--img {
@@ -301,10 +385,7 @@ a:active {
   border-radius: 4px;
   object-fit: cover;
 }
-.result-entry--title-text {
-  display: flex;
-  flex-direction: column;
-}
+
 .result-entry--artist-name {
   font-size: 14px;
   color: #333;
@@ -320,168 +401,171 @@ a:active {
   color: #444;
 }
 
-.hide {
-  display: none;
+.open-btn {
+  font-size: 16px;
+  color: #333;
 }
 
-.result-entry--genre {
-  font-size: 14px;
+.grid-layout--card {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  align-items: center;
+  gap: 20px;
+}
+
+.card-entry {
+  width: 100%;
+  max-width: 100%;
+  position: relative;
+  color: inherit;
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  border-bottom: 3px solid #ced4da;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.card-entry:hover {
+  color: inherit;
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card-entry--info-container {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.card-entry--img {
+  width: 100%;
+  height: 100%;
+  border-radius: 4px;
+  object-fit: cover;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.status {
+  display: none;
+  align-items: center;
+  position: absolute;
+  top: 10%;
+  right: 10%;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-weight: 600;
   width: fit-content;
   padding: 5px 10px;
   border-radius: 8px;
   border: 1px solid;
 }
 
-.result-entry--genre--trap {
-  color: #d70159;
-  border-color: #fbe3f0;
-  background-color: #fdf2f8;
+.card-entry--title-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
-.result-entry--genre--trap::before {
-  content: "🥁";
-  margin-right: 5px;
+.card-entry--artist-name,
+.card-entry--song-title,
+.card-entry--album-title {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
-.result-entry--genre--hip-hop {
-  color: #d50000;
-  border-color: #ffdee4;
-  background-color: #fef2f2;
+.card-entry--artist-name {
+  font-size: 16px;
+  color: #333;
 }
 
-.result-entry--genre--hip-hop::before {
-  content: "🎧";
-  margin-right: 5px;
+.card-entry--song-title {
+  font-size: 24px;
 }
 
-.result-entry--genre--rage {
-  color: #7809a5;
-  border-color: #f9e3ff;
-  background-color: #fbf0ff;
+.card-entry--album-container {
+  display: grid;
+  grid-template-columns: 7fr 3fr;
+  align-items: center;
 }
 
-.result-entry--genre--rage::before {
-  content: "📢";
-  margin-right: 5px;
+.card-entry--year-icon,
+.card-entry--album-icon {
+  font-size: 14px;
+  color: #333;
+  margin-right: 0;
 }
 
-.result-entry--genre--pop {
-  color: #944600;
-  border-color: #fcfabd;
-  background-color: #fffae7;
+.card-entry--album-title-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
 }
 
-.result-entry--genre--pop::before {
-  content: "🫰";
-  margin-right: 5px;
+.card-entry--album-title {
+  font-size: 14px;
+  color: #333;
+  min-width: 0;
 }
 
-.result-entry--genre--cloud-rap {
-  color: #006483;
-  border-color: #c7fafd;
-  background-color: #ecfeff;
+.card-entry--year-container {
+  justify-self: end;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
 }
 
-.result-entry--genre--cloud-rap::before {
-  content: "☁️";
-  margin-right: 5px;
+.card-entry--release-year {
+  font-size: 12px;
+  color: #444;
 }
 
-.result-entry--genre--alternative-hip-hop {
-  color: #1658e2;
-  border-color: #d2e6ff;
-  background-color: #f0f9ff;
+.card-entry--tag-container {
+  background-color: #f1f3f5;
+  border: 1px solid #e9ecef;
+  width: 100%;
+  height: 80px;
+  border-radius: 4px;
+  padding: 5px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  overflow: hidden;
 }
 
-.result-entry--genre--alternative-hip-hop::before {
-  content: "🍂";
-  margin-right: 5px;
+.card-entry--genre {
+  font-size: 12px;
+  width: fit-content;
+  height: fit-content;
+  padding: 5px 10px;
+  border-radius: 8px;
+  border: 1px solid;
 }
 
-.result-entry--genre--japanese-hip-hop {
-  color: #00572e;
-  border-color: #d8faea;
-  background-color: #ecfdf5;
+.card-entry--footer {
+  display: flex;
+  justify-content: space-between;
 }
 
-.result-entry--genre--japanese-hip-hop::before {
-  content: "🇯🇵";
-  margin-right: 5px;
+.card-entry--added {
+  font-size: 12px;
+  color: #444;
 }
 
-.result-entry--genre--future-bass {
-  color: #cf5803;
-  border-color: #fdece3;
-  background-color: #fdf5f2;
-}
-
-.result-entry--genre--future-bass::before {
-  content: "🎚️";
-  margin-right: 5px;
-}
-
-.result-entry--genre--underground-trap {
-  color: #153f00;
-  border-color: #eaf8c3;
-  background-color: #f6fee7;
-}
-
-.result-entry--genre--underground-trap::before {
-  content: "🎱";
-  margin-right: 5px;
-}
-
-.result-entry--genre--sigilkore {
-  color: #192b3f;
-  border-color: #edf1f4;
-  background-color: #f8f9fb;
-}
-
-.result-entry--genre--sigilkore::before {
-  content: "🎰";
-  margin-right: 5px;
-}
-
-.result-entry--genre--progressive-house {
-  color: #008653;
-  border-color: #d7f8e7;
-  background-color: #e7fbf2;
-}
-
-.result-entry--genre--progressive-house::before {
-  content: "🎶";
-  margin-right: 5px;
-}
-
-.result-entry--genre--emo-rap {
-  color: #024050;
-  border-color: #ccf7fb;
-  background-color: #e7fcfe;
-}
-
-.result-entry--genre--emo-rap::before {
-  content: "🥀";
-  margin-right: 5px;
-}
-
-.result-entry--genre--house {
-  color: #005f75;
-  border-color: #c7fafd;
-  background-color: #f0f9ff;
-}
-
-.result-entry--genre--house::before {
-  content: "💿";
-  margin-right: 5px;
-}
-
-.result-entry--genre--witch-house {
-  color: #35008f;
-  border-color: #ebe6fc;
-  background-color: #f3f4f6;
-}
-
-.result-entry--genre--witch-house::before {
-  content: "🧙‍♀️";
-  margin-right: 5px;
+.card-entry--more-details {
+  font-size: 12px;
+  text-decoration: underline !important;
 }

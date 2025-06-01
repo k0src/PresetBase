@@ -1,0 +1,168 @@
+/* TAGS */
+
+.tag-genre--trap {
+  color: #d70159;
+  border-color: #fbe3f0;
+  background-color: #fdf2f8;
+}
+
+.tag-genre--trap::before {
+  content: "🥁";
+  margin-right: 5px;
+}
+
+.tag-genre--hip-hop {
+  color: #d50000;
+  border-color: #ffdee4;
+  background-color: #fef2f2;
+}
+
+.tag-genre--hip-hop::before {
+  content: "🎧";
+  margin-right: 5px;
+}
+
+.tag-genre--rage {
+  color: #7809a5;
+  border-color: #f9e3ff;
+  background-color: #fbf0ff;
+}
+
+.tag-genre--rage::before {
+  content: "📢";
+  margin-right: 5px;
+}
+
+.tag-genre--pop {
+  color: #944600;
+  border-color: #fcfabd;
+  background-color: #fffae7;
+}
+
+.tag-genre--pop::before {
+  content: "🫰";
+  margin-right: 5px;
+}
+
+.tag-genre--cloud-rap {
+  color: #006483;
+  border-color: #c7fafd;
+  background-color: #ecfeff;
+}
+
+.tag-genre--cloud-rap::before {
+  content: "☁️";
+  margin-right: 5px;
+}
+
+.tag-genre--alternative-hip-hop {
+  color: #1658e2;
+  border-color: #d2e6ff;
+  background-color: #f0f9ff;
+}
+
+.tag-genre--alternative-hip-hop::before {
+  content: "🍂";
+  margin-right: 5px;
+}
+
+.tag-genre--japanese-hip-hop {
+  color: #00572e;
+  border-color: #d8faea;
+  background-color: #ecfdf5;
+}
+
+.tag-genre--japanese-hip-hop::before {
+  content: "🇯🇵";
+  margin-right: 5px;
+}
+
+.tag-genre--future-bass {
+  color: #cf5803;
+  border-color: #fdece3;
+  background-color: #fdf5f2;
+}
+
+.tag-genre--future-bass::before {
+  content: "🎚️";
+  margin-right: 5px;
+}
+
+.tag-genre--underground-trap {
+  color: #153f00;
+  border-color: #eaf8c3;
+  background-color: #f6fee7;
+}
+
+.tag-genre--underground-trap::before {
+  content: "🎱";
+  margin-right: 5px;
+}
+
+.tag-genre--sigilkore {
+  color: #192b3f;
+  border-color: #edf1f4;
+  background-color: #f8f9fb;
+}
+
+.tag-genre--sigilkore::before {
+  content: "🎰";
+  margin-right: 5px;
+}
+
+.tag-genre--progressive-house {
+  color: #008653;
+  border-color: #d7f8e7;
+  background-color: #e7fbf2;
+}
+
+.tag-genre--progressive-house::before {
+  content: "🎶";
+  margin-right: 5px;
+}
+
+.tag-genre--emo-rap {
+  color: #024050;
+  border-color: #ccf7fb;
+  background-color: #e7fcfe;
+}
+
+.tag-genre--emo-rap::before {
+  content: "🥀";
+  margin-right: 5px;
+}
+
+.tag-genre--house {
+  color: #005f75;
+  border-color: #c7fafd;
+  background-color: #f0f9ff;
+}
+
+.tag-genre--house::before {
+  content: "💿";
+  margin-right: 5px;
+}
+
+.tag-genre--witch-house {
+  color: #35008f;
+  border-color: #ebe6fc;
+  background-color: #f3f4f6;
+}
+
+.tag-genre--witch-house::before {
+  content: "🧙‍♀️";
+  margin-right: 5px;
+}
+
+/* Status */
+
+.status--new {
+  color: #fff;
+  border-color: #f03e3e;
+  background-color: #fa5252;
+}
+
+.status--new::before {
+  content: "🌟";
+  margin-right: 5px;
+}
