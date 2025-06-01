@@ -384,8 +384,8 @@ a:active {
 }
 
 .open-btn {
-  font-size: 16px;
-  color: #333;
+  font-size: 16px !important;
+  color: #333 !important;
 }
 
 .grid-layout--card {

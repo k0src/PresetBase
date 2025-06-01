@@ -39,8 +39,8 @@ const browseAlbumsRoute = require("./routes/browse/albums");
 app.use("/browse/albums", browseAlbumsRoute);
 const browseSynthsRoute = require("./routes/browse/synths");
 app.use("/browse/synths", browseSynthsRoute);
-// const browsePresetsRoute = require("./routes/browse/presets");
-// app.use("/browse/presets", browsePresetsRoute);
+const browsePresetsRoute = require("./routes/browse/presets");
+app.use("/browse/presets", browsePresetsRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);

@@ -304,20 +304,9 @@ a:active {
   background-color: #f0f0f0;
 }
 
-.synth-tag {
-  cursor: pointer;
-  user-select: none;
-  font-size: 12px;
-  width: fit-content;
-  height: fit-content;
-  padding: 5px 10px;
-  border-radius: 8px;
-  border: 1px solid;
-}
-
 .grid-layout--list {
   display: grid;
-  grid-template-columns: 20px 4fr 3fr 2fr 1fr 20px;
+  grid-template-columns: 20px 110fr 70fr 65fr 55fr 20px;
   align-items: center;
   gap: 20px;
 }
@@ -346,8 +335,10 @@ a:active {
   background-color: #eee;
 }
 
-.result-entry--synth-name,
-.result-entry--manufacturer {
+.result-entry--pack-name,
+.result-entry--author,
+.result-entry--preset-name,
+.result-entry--synth-name {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -365,19 +356,21 @@ a:active {
 .result-entry--img {
   width: 75px;
   height: 75px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   aspect-ratio: 1 / 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   border-radius: 4px;
   object-fit: cover;
   flex-shrink: 0;
 }
 
-.result-entry--synth-name {
+.result-entry--preset-name {
   font-size: 20px;
 }
 
 .result-entry--number,
-.result-entry--manufacturer,
+.result-entry--author,
+.result-entry--pack-name,
+.result-entry--synth-name,
 .result-entry--release-year {
   font-size: 14px;
   color: #444;
@@ -399,7 +392,7 @@ a:active {
   opacity: 0.95;
   align-items: center;
   position: absolute;
-  top: 6%;
+  top: 7%;
   right: 10%;
   text-transform: uppercase;
   font-size: 12px;
@@ -459,17 +452,10 @@ a:active {
   align-items: flex-start;
 }
 
-.card-entry--manufacturer-container {
-  width: 100%;
-  max-width: 100%;
-  display: grid;
-  grid-template-columns: 8fr 2fr;
-  align-items: center;
-  overflow: hidden;
-}
-
-.card-entry--manufacturer,
-.card-entry--synth-name {
+.card-entry--synth-name,
+.card-entry--preset-name,
+.card-entry--pack-name,
+.card-entry--author {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -477,49 +463,52 @@ a:active {
   max-width: 100%;
 }
 
-.card-entry--manufacturer {
-  width: fit-content;
+.card-entry--synth-name {
   font-size: 16px;
   color: #333;
-  overflow: hidden;
-  width: 100%;
-  max-width: 100%;
 }
 
-.card-entry--synth-name {
+.card-entry--preset-name {
   font-size: 24px;
 }
 
-.card-entry--year-icon {
+.card-entry--pack-container {
+  display: grid;
+  grid-template-columns: 5fr 5fr;
+  align-items: center;
+}
+
+.card-entry--author-icon,
+.card-entry--pack-icon {
   font-size: 14px;
   color: #333;
   margin-right: 0;
 }
 
-.card-entry--year-container {
+.card-entry--pack-title-container {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  overflow: hidden;
+}
+
+.card-entry--pack-name {
+  font-size: 14px;
+  color: #333;
+  min-width: 0;
+}
+
+.card-entry--author-container {
   justify-self: end;
   display: flex;
   align-items: center;
   gap: 4px;
+  overflow: hidden;
 }
 
-.card-entry--release-year {
+.card-entry--author {
   font-size: 12px;
   color: #444;
-}
-
-.card-entry--tag-container {
-  background-color: #f1f3f5;
-  border: 1px solid #e9ecef;
-  width: 100%;
-  height: 80px;
-  border-radius: 4px;
-  padding: 5px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  overflow: hidden;
-  margin-bottom: 5px;
 }
 
 .card-entry--footer {
