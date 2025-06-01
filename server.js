@@ -42,6 +42,13 @@ app.use("/browse/synths", browseSynthsRoute);
 const browsePresetsRoute = require("./routes/browse/presets");
 app.use("/browse/presets", browsePresetsRoute);
 
+const popularRoute = require("./routes/browse/popular");
+app.use("/browse/popular", popularRoute);
+const hotRoute = require("./routes/browse/hot");
+app.use("/browse/hot", hotRoute);
+const recentlyAddedRoute = require("./routes/browse/recent");
+app.use("/browse/recent", recentlyAddedRoute);
+
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

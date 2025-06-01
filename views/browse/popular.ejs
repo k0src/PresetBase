@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <script src="/assets/browse/browse_songs.js" defer></script>
+    <script src="/assets/browse/browse_charts.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>All songs</title>
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/browse/browse_songs.css" />
+    <link rel="stylesheet" href="/styles/tags.css" />
+  </head>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('../partials/navbar') %>
+    <div class="content animate">
+      <div class="header">
+        <h1>Popular songs</h1>
+      </div>
+      <main>
+        <div class="results-filters-main-container">
+          <div class="results-view-mode-btn-container">
+            <button
+              id="list-btn"
+              class="material-icons results-view-btn results-view-btn--active"
+            >
+              menu
+            </button>
+            <button id="grid-btn" class="material-icons results-view-btn">
+              window
+            </button>
+          </div>
+          <div class="result-filter">
+            <input
+              type="text"
+              placeholder="Filter results"
+              class="result-filter--input"
+            />
+            <span class="material-icons result-filter--clear">close</span>
+          </div>
+          <div class="filter-tag-container"></div>
+        </div>
+
+        <!-- List view -->
+        <div class="list-view-container">
+          <div class="result-columns grid-layout--list">
+            <span class="result-columns--name">#</span>
+            <span class="result-columns--name">Title</span>
+            <span class="result-columns--name">Album</span>
+            <span class="result-columns--name">Genre</span>
+            <span class="result-columns--name">Year</span>
+          </div>
+          <% Object.entries(songs).forEach(([i, song]) => { %>
+          <div class="result-entry grid-layout--list">
+            <span class="result-entry--number"><%= +i + 1 %></span>
+            <div class="result-entry--title-container">
+              <div class="charts-img-container">
+                <img
+                  src="<%= song.song_image %>"
+                  class="result-entry--img result-entry--img--charts"
+                />
+                <span class="charts-tag--list"><%= song.rank %></span>
+              </div>
+              <div class="result-entry--title">
+                <span class="result-entry--artist-name">
+                  <%= song.artist_name %></span
+                >
+                <span class="result-entry--song-title"
+                  ><%= song.song_title %></span
+                >
+              </div>
+            </div>
+            <span class="result-entry--album-title"
+              ><%= song.album_title === "[SINGLE]" ? "Single" : song.album_title
+              %></span
+            >
+            <span class="genre-tag"><%= song.song_genre %></span>
+            <span class="result-entry--release-year"
+              ><%= song.song_release_year %></span
+            >
+            <a href="/song/<%= song.song_id %>" class="material-icons open-btn"
+              >open_in_new</a
+            >
+          </div>
+          <% }) %>
+        </div>
+
+        <!-- Grid view -->
+        <div class="grid-view-container hide">
+          <div class="grid-layout--card">
+            <% Object.entries(songs).forEach(([i, song]) => { %>
+            <div class="card-entry">
+              <div class="charts-img-container">
+                <img src="<%= song.song_image %>" class="card-entry--img" />
+                <span class="charts-tag--grid"><%= song.rank %></span>
+              </div>
+              <% if (song.is_new) { %>
+              <span class="status status--new">New</span>
+              <% } %>
+              <div class="card-entry--info-container">
+                <div class="card-entry--title-container">
+                  <a
+                    href="/artist/<%= song.artist_id %>"
+                    class="card-entry--artist-name"
+                    ><%= song.artist_name %></a
+                  >
+                  <span class="card-entry--song-title"
+                    ><%= song.song_title %></span
+                  >
+                </div>
+                <div class="card-entry--album-container">
+                  <div class="card-entry--album-title-container">
+                    <span class="material-icons card-entry--album-icon"
+                      >album</span
+                    >
+                    <% if (song.album_title === "[SINGLE]") { %>
+                    <span class="card-entry--album-title">Single</span>
+                    <% } else { %>
+                    <a
+                      href="/album/<%= song.album_id %>"
+                      class="card-entry--album-title"
+                      ><%= song.album_title %></a
+                    >
+                    <% } %>
+                  </div>
+                  <div class="card-entry--year-container">
+                    <span class="material-icons card-entry--year-icon"
+                      >calendar_today</span
+                    >
+                    <span class="card-entry--release-year"
+                      ><%= song.song_release_year %></span
+                    >
+                  </div>
+                </div>
+                <div class="card-entry--tag-container">
+                  <span class="genre-tag"><%= song.song_genre %></span>
+                </div>
+                <div class="card-entry--footer">
+                  <span class="card-entry--added"
+                    >Added: <%= song.song_added_timestamp %></span
+                  >
+                  <a
+                    href="/song/<%= song.song_id %>"
+                    class="card-entry--more-details"
+                    >More details
+                    <span class="material-icons">open_in_new</span></a
+                  >
+                </div>
+              </div>
+            </div>
+            <% }) %>
+          </div>
+        </div>
+      </main>
+    </div>
+  </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+</html>

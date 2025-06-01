@@ -209,3 +209,28 @@
   content: "🎛️";
   margin-right: 5px;
 }
+
+/* Charts tags */
+.rank--one {
+  color: #c92a2a;
+  border-color: #ff6b6b;
+  background-color: #fff5f5;
+}
+
+.rank--two {
+  color: #1971c2;
+  border-color: #4dabf7;
+  background-color: #e7f5ff;
+}
+
+.rank--three {
+  color: #087f5b;
+  border-color: #20c997;
+  background-color: #e6fcf5;
+}
+
+.rank--other {
+  color: #495057;
+  border-color: #adb5bd;
+  background-color: #f8f9fa;
+}

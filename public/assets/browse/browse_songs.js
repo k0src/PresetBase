@@ -13,15 +13,19 @@ const sortSongs = function (key) {
   window.location.href = `/browse/songs?sort=${encodeURIComponent(key)}`;
 };
 
-sortDropdownBtn.addEventListener("click", () => {
-  sortDropdownContent.classList.toggle("result-sort-content--show");
-});
-
-sortDropdownItems.forEach((item) => {
-  item.addEventListener("click", () => {
-    sortSongs(item.id);
+if (sortDropdownBtn) {
+  sortDropdownBtn.addEventListener("click", () => {
+    sortDropdownContent.classList.toggle("result-sort-content--show");
   });
-});
+}
+
+if (sortDropdownItems) {
+  sortDropdownItems.forEach((item) => {
+    item.addEventListener("click", () => {
+      sortSongs(item.id);
+    });
+  });
+}
 
 /* FILTERING */
 const filterList = function (query) {
