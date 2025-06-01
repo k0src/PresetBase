@@ -153,6 +153,17 @@
   margin-right: 5px;
 }
 
+.tag-genre--electropop {
+  color: #e67700;
+  border-color: #fff3bf;
+  background-color: #fff9db;
+}
+
+.tag-genre--electropop::before {
+  content: "🧙‍♀️";
+  margin-right: 5px;
+}
+
 /* Status */
 .status--new {
   color: #fff;

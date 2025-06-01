@@ -347,7 +347,6 @@ a:active {
 }
 
 .result-entry--artist-name,
-.result-entry--song-title,
 .result-entry--album-title {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -363,35 +362,22 @@ a:active {
   min-width: 0;
 }
 
-.result-entry--title {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 5px;
-  min-width: 0;
-}
-
 .result-entry--img {
   width: 75px;
   height: 75px;
-  aspect-ratio: 1 / 1;
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  aspect-ratio: 1 / 1;
   border-radius: 4px;
   object-fit: cover;
   flex-shrink: 0;
 }
 
-.result-entry--song-title {
+.result-entry--album-title {
   font-size: 20px;
 }
 
-.result-entry--artist-name {
-  font-size: 14px;
-  color: #333;
-}
-
 .result-entry--number,
-.result-entry--album-title,
+.result-entry--artist-name,
 .result-entry--release-year {
   font-size: 14px;
   color: #444;
@@ -473,8 +459,16 @@ a:active {
   align-items: flex-start;
 }
 
+.card-entry--artist-container {
+  width: 100%;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: 8fr 2fr;
+  align-items: center;
+  overflow: hidden;
+}
+
 .card-entry--artist-name,
-.card-entry--song-title,
 .card-entry--album-title {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -484,38 +478,22 @@ a:active {
 }
 
 .card-entry--artist-name {
+  width: fit-content;
   font-size: 16px;
   color: #333;
-}
-
-.card-entry--song-title {
-  font-size: 24px;
-}
-
-.card-entry--album-container {
-  display: grid;
-  grid-template-columns: 7fr 3fr;
-  align-items: center;
-}
-
-.card-entry--year-icon,
-.card-entry--album-icon {
-  font-size: 14px;
-  color: #333;
-  margin-right: 0;
-}
-
-.card-entry--album-title-container {
-  display: flex;
-  align-items: center;
-  gap: 4px;
   overflow: hidden;
+  width: 100%;
+  max-width: 100%;
 }
 
 .card-entry--album-title {
+  font-size: 24px;
+}
+
+.card-entry--year-icon {
   font-size: 14px;
   color: #333;
-  min-width: 0;
+  margin-right: 0;
 }
 
 .card-entry--year-container {
@@ -523,7 +501,6 @@ a:active {
   display: flex;
   align-items: center;
   gap: 4px;
-  overflow: hidden;
 }
 
 .card-entry--release-year {
