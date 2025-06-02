@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="/assets/scroll_to_top.js" defer></script>
+    <script src="/assets/submit.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Submit</title>
+    <link rel="stylesheet" href="/styles/navbar.css" />
+    <link rel="stylesheet" href="/styles/submit.css" />
+  </head>
+  <body
+    style="opacity: 0; transition: opacity 0.3s ease"
+    onload="document.body.style.opacity='1'"
+  >
+    <%- include('partials/navbar') %>
+    <div class="content animate">
+      <div class="header">
+        <h1>Submit new entry</h1>
+      </div>
+      <div class="window-open alert-window">
+        <span class="material-icons alert-icon">warning</span>
+        <span class="alert-text"
+          >Please read and fill out all required fields
+          <strong>carefully</strong>. Mistakes can lead to your entry being
+          rejected.
+        </span>
+        <div class="alert-close-btn">Ok</div>
+      </div>
+      <main>
+        <form id="entryForm">
+          <!-- Song Info -->
+          <legend>Song Information</legend>
+          <fieldset>
+            <label
+              >Song Title <span class="red">*</span>
+              <input required type="text" name="songTitle" />
+              <small
+                >Enter the full title of the song. Do not include features or
+                producers.</small
+              >
+            </label>
+            <label
+              >Genre <span class="red">*</span>
+              <input required type="text" name="songGenre" />
+              <small>Specify the genre (e.g., Trap, House, Hip Hop).</small>
+            </label>
+            <label
+              >Release Year <span class="red">*</span>
+              <input required type="number" name="songYear" />
+              <small>Enter the year the song was released (e.g., 2018).</small>
+            </label>
+            <label
+              >Song URL <span class="red">*</span>
+              <input required type="url" name="songUrl" />
+              <small
+                >Enter the YouTube link for the song. Choose the official
+                artist's channel, do not use music videos unless no other
+                official videos exist.</small
+              >
+            </label>
+            <label>
+              Song Image <span class="red">*</span>
+              <input required type="url" name="songImg" />
+            </label>
+            <small
+              >Enter the direct URL to the song cover art (1000px x 1000px
+              miniumum). Link to the direct URL (e.g.,
+              https://m.media-amazon.com/images/I/71SLbDG2fgL.jpg). Do
+              <strong>not</strong> use Google Images,
+              <a href="https://covers.musichoarders.xyz/" target="_blank"
+                >use the original cover from distribution platforms.
+                <span class="material-icons">open_in_new</span></a
+              >
+            </small>
+          </fieldset>
+
+          <!-- Artist Info -->
+          <legend>Artist Information</legend>
+          <fieldset id="artistSection">
+            <div class="artist-entry">
+              <label
+                >Artist Name <span class="red">*</span>
+                <input required type="text" name="artistName[]" />
+                <small>Name of the artist.</small>
+              </label>
+              <label
+                >Country <span class="red">*</span>
+                <input required type="text" name="artistCountry[]" />
+                <small>Country of origin.</small>
+              </label>
+              <label
+                >Artist Image <span class="red">*</span>
+                <input required type="url" name="artistImg[]" />
+                <small
+                  >Enter the direct URL to the artist photo (1000px x 1000px
+                  miniumum). If using an image hosting service such as Imgur,
+                  use the direct image link (e.g.,
+                  https://i.imgur.com/LbekjA3.jpeg).</small
+                >
+              </label>
+            </div>
+            <button type="button" class="add-artist-btn">
+              + Add Another Artist
+            </button>
+          </fieldset>
+
+          <!-- Album Info -->
+          <legend>Album Information</legend>
+          <fieldset>
+            <label
+              >Album Title <span class="red">*</span>
+              <input required type="text" name="albumTitle" />
+              <small>Title of the album.</small>
+            </label>
+            <label
+              >Genre <span class="red">*</span>
+              <input required type="text" name="albumGenre" />
+              <small>Album's genre.</small>
+            </label>
+            <label
+              >Release Year <span class="red">*</span>
+              <input required type="number" name="albumYear" />
+              <small>Year the album was released.</small>
+            </label>
+            <label
+              >Album Image <span class="red">*</span>
+              <input required type="url" name="albumImg" />
+              <small
+                >Enter the direct URL to the album cover art (1000px x 1000px
+                miniumum). Link to the direct URL (e.g.,
+                https://m.media-amazon.com/images/I/71SLbDG2fgL.jpg). Do
+                <strong>not</strong> use Google Images,
+                <a href="https://covers.musichoarders.xyz/" target="_blank"
+                  >use the original cover from distribution platforms.
+                  <span class="material-icons">open_in_new</span></a
+                >
+              </small>
+            </label>
+          </fieldset>
+
+          <!-- Synth Info -->
+          <legend>Synth Information</legend>
+          <fieldset>
+            <label
+              >Synth Name <span class="red">*</span>
+              <input required type="text" name="synthName" />
+              <small>Name of the synth used.</small>
+            </label>
+            <label
+              >Manufacturer <span class="red">*</span>
+              <input required type="text" name="synthMaker" />
+              <small>Company or developer (e.g. Spectrasonics).</small>
+            </label>
+            <label
+              >Release Year <span class="red">*</span>
+              <input required type="number" name="synthYear" />
+              <small>Year the synth was released.</small>
+            </label>
+            <label
+              >Type <span class="red">*</span>
+              <select required name="synthType">
+                <option value="vst">VST</option>
+                <option value="hardware">Hardware</option>
+                <option value="kontakt">Kontakt Bank</option>
+                <option value="soundfont">SoundFont</option>
+              </select>
+              <small>Select the format of the synth.</small>
+            </label>
+            <label
+              >Synth Image <span class="red">*</span>
+              <input required type="url" name="synthImg" />
+              <small
+                >Enter the direct URL to the synth photo (1000px x 1000px
+                miniumum). If using an image hosting service such as Imgur, use
+                the direct image link (e.g.,
+                https://i.imgur.com/LbekjA3.jpeg).</small
+              >
+            </label>
+          </fieldset>
+
+          <!-- Preset Info -->
+          <legend>Preset Information</legend>
+          <fieldset id="presetSection">
+            <div class="preset-entry">
+              <label
+                >Preset Name <span class="red">*</span>
+                <input required type="text" name="presetName[]" />
+                <small
+                  >Full name of the exact preset used (e.g., 2 Sparklepad BT, LD
+                  King of Buzz 2).</small
+                >
+              </label>
+              <label
+                >Pack Name <span class="red">*</span>
+                <input required type="text" name="packName[]" />
+                <small
+                  >Name of the preset pack (use 'Factory' for factory
+                  presets).</small
+                >
+              </label>
+              <label
+                >Author <span class="red">*</span>
+                <input required type="text" name="presetAuthor[]" />
+                <small
+                  >Who made the preset or pack (use manufacturer for factory
+                  presets).</small
+                >
+              </label>
+              <label
+                >Usage Type <span class="red">*</span>
+                <input required type="text" name="usageType[]" />
+                <small
+                  >What was the preset used for (e.g., lead, pad,
+                  sequence).</small
+                >
+              </label>
+              <label
+                >Video Link (Optional)
+                <input type="url" name="videoLink[]" />
+                <small>Demo video link (optional).</small>
+              </label>
+            </div>
+            <button type="button" class="add-preset-btn">
+              + Add Another Preset
+            </button>
+          </fieldset>
+
+          <button class="submit-btn" type="submit">Submit Entry</button>
+        </form>
+      </main>
+    </div>
+  </body>
+  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+</html>

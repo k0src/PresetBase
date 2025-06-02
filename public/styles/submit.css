@@ -1,0 +1,258 @@
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+*:focus {
+  outline: none;
+  outline: 2px solid #e0e0e0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+#scrollToTop {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  z-index: 1000;
+  font-size: 24px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+#scrollToTop.show {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.material-icons {
+  user-select: none;
+  font-family: "Material Icons Round";
+  vertical-align: middle;
+}
+
+body {
+  background-color: #f8f9fa;
+  font-family: "DM Sans", sans-serif;
+  padding-bottom: 48px;
+}
+
+.content {
+  max-width: 1200px;
+  padding: 0 32px;
+  margin: 0 auto;
+}
+
+.animate {
+  animation: fadeInUp 0.5s ease-in-out forwards;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) rotateX(20deg);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) rotateX(0deg);
+  }
+}
+
+main {
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  font-family: "Sora", sans-serif;
+  font-size: 40px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  color: #000;
+}
+
+p {
+  line-height: 1.8rem;
+  font-size: 18px;
+}
+
+a:link {
+  text-decoration: none;
+  color: #000;
+}
+
+a:visited {
+  text-decoration: none;
+  color: #000;
+}
+
+a:hover {
+  text-decoration: none;
+  color: #646464;
+  transition: color 0.3s ease;
+}
+
+a:active {
+  text-decoration: none;
+  color: #000;
+}
+
+.header {
+  padding: 24px 16px 16px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                Alert styles                                */
+/* -------------------------------------------------------------------------- */
+
+.alert-window {
+  background-color: #e03131;
+  color: #ffe3e3;
+  border-radius: 8px;
+  padding: 32px;
+  margin-bottom: 24px;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 20px;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
+  transform: translateY(-100%);
+  transition: all 0.3s ease-in-out;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.alert-window.window-open {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.alert-icon {
+  font-size: 32px;
+}
+
+.alert-text {
+  font-size: 18px;
+}
+
+.alert-close-btn {
+  text-transform: uppercase;
+  font-weight: 600;
+  border-radius: 4px;
+  background-color: #fff;
+  color: #c92a2a;
+  padding: 8px 16px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.1s ease;
+}
+
+.alert-close-btn:hover,
+.alert-close-btn:active {
+  background-color: #ffe3e3;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                                 Form styles                                */
+/* -------------------------------------------------------------------------- */
+
+form {
+  margin: auto;
+  padding: 32px;
+}
+
+fieldset {
+  border: none;
+  margin-bottom: 24px;
+  padding: 12px 0;
+  border-top: 2px solid #ddd;
+}
+
+legend {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 12px;
+}
+
+label {
+  display: block;
+  margin-bottom: 12px;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 12px;
+  font-size: 16px;
+}
+
+small {
+  display: block;
+  color: #444;
+  margin-top: 8px;
+}
+
+small a {
+  text-decoration: underline !important;
+}
+
+input[type="file"] {
+  font-family: "DM Sans", sans-serif;
+  width: 100%;
+  border: 2px dashed #ddd;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.add-preset-btn,
+.add-artist-btn {
+  font-family: "DM Sans", sans-serif;
+  margin-top: 12px;
+  padding: 8px 12px;
+}
+
+.submit-btn {
+  font-family: "DM Sans", sans-serif;
+  padding: 8px 12px;
+}
+
+.red {
+  color: #c92a2a;
+}
+
+/* ---------------------------------- Util ---------------------------------- */
+
+.hide {
+  display: none;
+}

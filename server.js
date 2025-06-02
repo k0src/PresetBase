@@ -19,6 +19,9 @@ app.use("/", homeRoutes);
 const searchRoutes = require("./routes/search");
 app.use("/search", searchRoutes);
 
+const submitRoute = require("./routes/submit");
+app.use("/submit", submitRoute);
+
 const songRoutes = require("./routes/song");
 app.use("/song", songRoutes);
 const synthRoutes = require("./routes/synth");
