@@ -10,14 +10,14 @@
       "country": "USA",
       "role": "Main",
       "image_url": "https://i.imgur.com/Jdd5eys.jpeg"
+    },
+    {
+      "name": "Eminem",
+      "country": "USA",
+      "role": "Feature",
+      "image_url": "https://i.imgur.com/iHoh4Kx.jpeg"
     }
   ],
-  "artists1": {
-    "name": "Eminem",
-    "country": "USA",
-    "role": "Feature",
-    "image_url": "https://i.imgur.com/iHoh4Kx.jpeg"
-  },
   "single": "on",
   "singleHidden": "yes",
   "albumTitle": "Single",

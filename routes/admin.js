@@ -35,7 +35,7 @@ router.post("/approve/:id", async (req, res) => {
 
     const { submitted_at: submittedTime, data } = row;
     const submission = JSON.parse(data);
-    const isSingle = req.body.singleHidden === "yes";
+    const isSingle = submission.single === "on";
 
     const {
       songTitle,
