@@ -1,0 +1,41 @@
+{
+  "songTitle": "Drop the World",
+  "songGenre": "Hip Hop",
+  "songYear": "2009",
+  "songUrl": "https://www.youtube.com/watch?v=ErCAOMi5EGM",
+  "songImg": "https://m.media-amazon.com/images/I/712puk1XyXL.jpg",
+  "artists": [
+    {
+      "name": "Lil Wayne",
+      "country": "USA",
+      "role": "Main",
+      "image_url": "https://i.imgur.com/Jdd5eys.jpeg"
+    }
+  ],
+  "artists1": {
+    "name": "Eminem",
+    "country": "USA",
+    "role": "Feature",
+    "image_url": "https://i.imgur.com/iHoh4Kx.jpeg"
+  },
+  "single": "on",
+  "singleHidden": "yes",
+  "albumTitle": "Single",
+  "albumYear": "0000",
+  "albumGenre": "N/A",
+  "albumImg": "/img/single.jpg",
+  "synthName": "Sytrus",
+  "synthMaker": "Image-Line",
+  "synthYear": "2003",
+  "synthType": "VST",
+  "synthImg": "https://i.imgur.com/MK7c7Gw.jpeg",
+  "presets": [
+    {
+      "name": "Cube",
+      "pack_name": "Factory",
+      "author": "gol",
+      "usage_type": "Sequence",
+      "video_link": ""
+    }
+  ]
+}

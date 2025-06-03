@@ -18,7 +18,7 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
     </label>
     <label
       >Artist role <span class="red">*</span>
-      <input required type="text" name="artists[0][role]" />
+      <input required type="text" name="artists${artistIndex}[role]" />
       <small
         >Enter the artist's role on the song. If the artist is the
         main artist, use 'Main'. Specify only one role.</small
@@ -70,6 +70,28 @@ document.querySelector(".add-preset-btn").addEventListener("click", () => {
     newPreset,
     document.querySelector(".add-preset-btn")
   );
+});
+
+/* ----------------------------- Single checkbox ---------------------------- */
+
+const singleCheckBox = document.getElementById("singleCheckBox");
+const artistFields = document.querySelectorAll(".artist-field");
+
+singleCheckBox.addEventListener("change", () => {
+  const isChecked = singleCheckBox.checked;
+
+  const hiddenInput = document.querySelector('input[name="singleHidden"]');
+  hiddenInput.value = isChecked ? "yes" : "no";
+
+  artistFields.forEach((field) => {
+    if (isChecked) {
+      field.removeAttribute("required");
+      field.setAttribute("disabled", "true");
+    } else {
+      field.setAttribute("required", "true");
+      field.removeAttribute("disabled");
+    }
+  });
 });
 
 /* --------------------------- Close alert button --------------------------- */

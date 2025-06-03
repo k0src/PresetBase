@@ -35,6 +35,7 @@ router.post("/approve/:id", async (req, res) => {
 
     const { submitted_at: submittedTime, data } = row;
     const submission = JSON.parse(data);
+    const isSingle = req.body.singleHidden === "yes";
 
     const {
       songTitle,
@@ -55,17 +56,39 @@ router.post("/approve/:id", async (req, res) => {
       presets,
     } = submission;
 
-    const songId = await dbRun(
-      `INSERT INTO songs (title, genre, release_year, song_url, image_url, timestamp)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [songTitle, songGenre, songYear, songUrl, songImg, submittedTime]
+    // SONG
+    let song = await dbGet(
+      `SELECT id FROM songs WHERE title = ? AND song_url = ?`,
+      [songTitle, songUrl]
     );
 
-    const albumId = await dbRun(
-      `INSERT INTO albums (title, genre, release_year, image_url, timestamp) 
-       VALUES (?, ?, ?, ?, ?)`,
-      [albumTitle, albumGenre, albumYear, albumImg, submittedTime]
-    );
+    const songId = song
+      ? song.id
+      : await dbRun(
+          `INSERT INTO songs (title, genre, release_year, song_url, image_url, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?)`,
+          [songTitle, songGenre, songYear, songUrl, songImg, submittedTime]
+        );
+
+    // ALBUM
+    let albumId;
+
+    if (!isSingle) {
+      const album = await dbGet(
+        `SELECT id FROM albums WHERE title = ? AND release_year = ?`,
+        [albumTitle, albumYear]
+      );
+
+      albumId = album
+        ? album.id
+        : await dbRun(
+            `INSERT INTO albums (title, genre, release_year, image_url, timestamp)
+         VALUES (?, ?, ?, ?, ?)`,
+            [albumTitle, albumGenre, albumYear, albumImg, submittedTime]
+          );
+    } else {
+      albumId = 0;
+    }
 
     await dbRun(
       `INSERT INTO album_songs (song_id, album_id)
@@ -73,12 +96,21 @@ router.post("/approve/:id", async (req, res) => {
       [songId, albumId]
     );
 
+    // ARTISTS
     for (const artist of artists) {
-      const artistId = await dbRun(
-        `INSERT INTO artists (name, country, image_url, timestamp)
-         VALUES (?, ?, ?, ?)`,
-        [artist.name, artist.country, artist.image_url, submittedTime]
+      let existingArtist = await dbGet(
+        `SELECT id FROM artists WHERE name = ? AND country = ?`,
+        [artist.name, artist.country]
       );
+
+      const artistId = existingArtist
+        ? existingArtist.id
+        : await dbRun(
+            `INSERT INTO artists (name, country, image_url, timestamp)
+             VALUES (?, ?, ?, ?)`,
+            [artist.name, artist.country, artist.image_url, submittedTime]
+          );
+
       await dbRun(
         `INSERT INTO song_artists (song_id, artist_id, role)
          VALUES (?, ?, ?)`,
@@ -86,22 +118,37 @@ router.post("/approve/:id", async (req, res) => {
       );
     }
 
-    const synthId = await dbRun(
-      `INSERT INTO synths (synth_name, manufacturer, synth_type, release_year, image_url, timestamp)
-       VALUES (?, ?, ?, ?, ?, ?)`,
-      [synthName, synthMaker, synthType, synthYear, synthImg, submittedTime]
+    // SYNTH
+    let synth = await dbGet(
+      `SELECT id FROM synths WHERE synth_name = ? AND manufacturer = ?`,
+      [synthName, synthMaker]
     );
 
+    const synthId = synth
+      ? synth.id
+      : await dbRun(
+          `INSERT INTO synths (synth_name, manufacturer, synth_type, release_year, image_url, timestamp)
+           VALUES (?, ?, ?, ?, ?, ?)`,
+          [synthName, synthMaker, synthType, synthYear, synthImg, submittedTime]
+        );
+
+    // PRESETS
     for (const preset of presets) {
-      const presetId = await dbRun(
-        `INSERT INTO presets (preset_name, pack_name, author, timestamp)
-         VALUES (?, ?, ?, ?)`,
-        [preset.name, preset.pack_name, preset.author, submittedTime]
+      let existingPreset = await dbGet(
+        `SELECT id FROM presets WHERE preset_name = ? AND pack_name = ? AND author = ?`,
+        [preset.name, preset.pack_name, preset.author]
       );
 
+      const presetId = existingPreset
+        ? existingPreset.id
+        : await dbRun(
+            `INSERT INTO presets (preset_name, pack_name, author, timestamp)
+             VALUES (?, ?, ?, ?)`,
+            [preset.name, preset.pack_name, preset.author, submittedTime]
+          );
+
       await dbRun(
-        `INSERT INTO preset_synths (preset_id, synth_id)
-         VALUES (?, ?)`,
+        `INSERT INTO preset_synths (preset_id, synth_id) VALUES (?, ?)`,
         [presetId, synthId]
       );
 
@@ -112,6 +159,7 @@ router.post("/approve/:id", async (req, res) => {
       );
     }
 
+    // Remove submission
     await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [id]);
 
     res.redirect("/admin/approvals");

@@ -119,24 +119,49 @@
           <!-- Album Info -->
           <legend>Album Information</legend>
           <fieldset>
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input type="checkbox" id="singleCheckBox" name="single" />
+                <input type="hidden" name="singleHidden" value="no" />
+                <span class="checkbox-text">
+                  Check this box if the song is a single (doesn't appear on any
+                  albums besides possibly compilation albums).
+                </span>
+              </label>
+            </div>
             <label
               >Album Title <span class="red">*</span>
-              <input required type="text" name="albumTitle" />
+              <input
+                required
+                class="artist-field"
+                type="text"
+                name="albumTitle"
+              />
               <small>Title of the album.</small>
             </label>
             <label
               >Genre <span class="red">*</span>
-              <input required type="text" name="albumGenre" />
+              <input
+                required
+                class="artist-field"
+                type="text"
+                name="albumGenre"
+              />
               <small>Album's genre.</small>
             </label>
             <label
               >Release Year <span class="red">*</span>
-              <input required type="number" name="albumYear" />
+              <input
+                required
+                class="artist-field"
+                type="number"
+                name="albumYear"
+              />
               <small>Year the album was released.</small>
             </label>
             <label
               >Album Image <span class="red">*</span>
-              <input required type="url" name="albumImg" />
+              <input required class="artist-field" type="url" name="albumImg" />
               <small
                 >Enter the direct URL to the album cover art (1000px x 1000px
                 miniumum). Link to the direct URL (e.g.,
@@ -148,6 +173,10 @@
                 >
               </small>
             </label>
+            <input type="hidden" name="albumTitle" value="Single" />
+            <input type="hidden" name="albumYear" value="0000" />
+            <input type="hidden" name="albumGenre" value="N/A" />
+            <input type="hidden" name="albumImg" value="/img/single.jpg" />
           </fieldset>
 
           <!-- Synth Info -->

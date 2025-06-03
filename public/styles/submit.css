@@ -228,16 +228,26 @@ small {
 small a {
   text-decoration: underline !important;
 }
+.checkbox-container {
+  padding: 10px 0 10px 0;
+}
 
-input[type="file"] {
-  font-family: "DM Sans", sans-serif;
-  width: 100%;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
+.checkbox-label {
   display: flex;
-  align-items: center;
-  justify-content: center;
+  align-items: flex-end;
+  gap: 8px;
   cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.checkbox-text {
+  font-size: 16px;
+  user-select: none;
 }
 
 .btn-container {
