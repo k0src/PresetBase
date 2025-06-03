@@ -1,6 +1,7 @@
 const db = require("../db/db");
 
-// DATABASE
+/* -------------------------------- DATABASE -------------------------------- */
+
 const dbAll = function (query, params = []) {
   return new Promise((resolve, reject) => {
     db.all(query, params, (err, rows) => {
@@ -19,7 +20,35 @@ const dbGet = function (query, params = []) {
   });
 };
 
-// TIMESTAMP FUNCTIONS
+const dbRun = function (query, params = []) {
+  return new Promise((resolve, reject) => {
+    db.run(query, params, function (err) {
+      if (err) reject(err);
+      else resolve(this.lastID);
+    });
+  });
+};
+
+const post = function (url) {
+  fetch(url, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "same-origin",
+  })
+    .then((response) => {
+      if (!response.ok) throw new Error(`HTTP error: ${response.status}`);
+      window.location.reload();
+    })
+    .catch((error) => {
+      console.error("POST request failed:", error);
+      alert("Action failed. Please try again.");
+    });
+};
+
+/* --------------------------- TIMESTAMP FUNCTIONS -------------------------- */
+
 const convertTimestamp = function (timestamp) {
   return new Date(timestamp).toLocaleString("default", {
     month: "short",
@@ -36,4 +65,11 @@ const moreRecentTimestamp = function (timestamp, daysMS) {
   return diff < daysMS;
 };
 
-module.exports = { dbAll, dbGet, convertTimestamp, moreRecentTimestamp };
+module.exports = {
+  dbAll,
+  dbGet,
+  dbRun,
+  convertTimestamp,
+  moreRecentTimestamp,
+  post,
+};

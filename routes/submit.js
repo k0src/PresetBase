@@ -3,14 +3,16 @@ const router = express.Router();
 const db = require("../db/db");
 
 router.get("/", (req, res) => {
-  const query = `SELECT id FROM songs`;
+  res.render("submit");
+});
 
-  db.all(query, (err, rows) => {
-    if (err) {
-      return res.status(500).send("Database error: " + err.message);
-    }
+router.post("/", (req, res) => {
+  const rawData = JSON.stringify(req.body);
 
-    res.render("submit", { rows });
+  const query = `INSERT INTO pending_submissions (data) VALUES (?)`;
+  db.run(query, [rawData], function (err) {
+    if (err) return res.status(500).send("Database error: " + err.message);
+    res.redirect("/submit?success=1");
   });
 });
 

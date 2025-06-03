@@ -126,66 +126,12 @@ a:active {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                Alert styles                                */
-/* -------------------------------------------------------------------------- */
-
-.alert-window {
-  background-color: #e03131;
-  color: #ffe3e3;
-  border-radius: 8px;
-  padding: 32px;
-  margin-bottom: 24px;
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  align-items: center;
-  gap: 20px;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.1);
-  transform: translateY(-100%);
-  transition: all 0.3s ease-in-out;
-  opacity: 0;
-  pointer-events: none;
-  visibility: hidden;
-}
-
-.alert-window.window-open {
-  opacity: 1;
-  pointer-events: auto;
-  visibility: visible;
-  transform: translateY(0);
-}
-
-.alert-icon {
-  font-size: 32px;
-}
-
-.alert-text {
-  font-size: 18px;
-}
-
-.alert-close-btn {
-  text-transform: uppercase;
-  font-weight: 600;
-  border-radius: 4px;
-  background-color: #fff;
-  color: #c92a2a;
-  padding: 8px 16px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: all 0.1s ease;
-}
-
-.alert-close-btn:hover,
-.alert-close-btn:active {
-  background-color: #ffe3e3;
-}
-
-/* -------------------------------------------------------------------------- */
 /*                                 Form styles                                */
 /* -------------------------------------------------------------------------- */
 
 form {
   margin: auto;
-  padding: 32px;
+  padding: 32px 32px 0 32px;
 }
 
 fieldset {
@@ -214,43 +160,50 @@ select {
   font-size: 16px;
 }
 
-small {
-  display: block;
-  color: #444;
-  margin-top: 8px;
+.red {
+  color: #c92a2a;
 }
 
-small a {
-  text-decoration: underline !important;
-}
-
-input[type="file"] {
-  font-family: "DM Sans", sans-serif;
-  width: 100%;
-  border: 2px dashed #ddd;
-  border-radius: 4px;
+.submit-btn-container {
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-}
-
-.add-preset-btn,
-.add-artist-btn {
-  font-family: "DM Sans", sans-serif;
-  margin-top: 12px;
-  padding: 8px 12px;
-  border: 1px soild #777;
+  gap: 20px;
+  padding-bottom: 20px;
 }
 
 .submit-btn {
+  cursor: pointer;
   font-family: "DM Sans", sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 18px;
   padding: 8px 12px;
-  border: 1px soild #777;
+  border-radius: 4px;
 }
 
-.red {
-  color: #c92a2a;
+/* --------------------------------- Buttons -------------------------------- */
+
+.approve-btn {
+  background-color: #51cf66;
+  color: #ebfbee;
+  border: 1px solid #2b8a3e;
+}
+
+.approve-btn:hover,
+.approve-btn:active {
+  background-color: #69db7c;
+}
+
+.deny-btn {
+  background-color: #fa5252;
+  color: #fff5f5;
+  border: 1px solid #c92a2a;
+}
+
+.deny-btn:hover,
+.deny-btn:active {
+  background-color: #ff6b6b;
 }
 
 /* ---------------------------------- Util ---------------------------------- */

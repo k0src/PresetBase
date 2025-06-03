@@ -8,19 +8,23 @@ const PORT = process.env.PORT || 3000;
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get("/", (req, res) => {
   res.sendFile(__dirname + "/public/index.html");
 });
 
+/* ------------------------------- Main routes ------------------------------ */
+
 const homeRoutes = require("./routes/home");
 app.use("/", homeRoutes);
-
 const searchRoutes = require("./routes/search");
 app.use("/search", searchRoutes);
-
 const submitRoute = require("./routes/submit");
 app.use("/submit", submitRoute);
+
+/* ------------------------------ Entry routes ------------------------------ */
 
 const songRoutes = require("./routes/song");
 app.use("/song", songRoutes);
@@ -31,7 +35,8 @@ app.use("/artist", artistsRoutes);
 const albumsRoutes = require("./routes/album");
 app.use("/album", albumsRoutes);
 
-/* Browse Routes */
+/* ------------------------------ Browse Routes ----------------------------- */
+
 const browseRoute = require("./routes/browse/browse");
 app.use("/browse", browseRoute);
 const browseSongsRoute = require("./routes/browse/songs");
@@ -51,6 +56,11 @@ const hotRoute = require("./routes/browse/hot");
 app.use("/browse/hot", hotRoute);
 const recentlyAddedRoute = require("./routes/browse/recent");
 app.use("/browse/recent", recentlyAddedRoute);
+
+/* ------------------------------ Admin routes ------------------------------ */
+
+const adminRoute = require("./routes/admin");
+app.use("/admin", adminRoute);
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
