@@ -72,13 +72,6 @@ document.querySelector(".add-preset-btn").addEventListener("click", () => {
   );
 });
 
-/* -------------------------- Clear form on submit -------------------------- */
-
-// const form = document.getElementById("entryForm");
-// form.addEventListener("submit", () => {
-//   form.reset();
-// });
-
 /* --------------------------- Close alert button --------------------------- */
 
 const alertCloseBtn = document.querySelector(".alert-close-btn");

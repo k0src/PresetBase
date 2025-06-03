@@ -162,6 +162,11 @@ a:active {
   font-size: 18px;
 }
 
+.alert-text a {
+  color: inherit;
+  text-decoration: underline;
+}
+
 .alert-close-btn {
   text-transform: uppercase;
   font-weight: 600;
@@ -235,6 +240,13 @@ input[type="file"] {
   cursor: pointer;
 }
 
+.btn-container {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+}
+
 .add-preset-btn,
 .add-artist-btn {
   font-family: "DM Sans", sans-serif;
@@ -243,10 +255,37 @@ input[type="file"] {
   border: 1px soild #777;
 }
 
+.clear-btn,
 .submit-btn {
+  cursor: pointer;
   font-family: "DM Sans", sans-serif;
+  text-transform: uppercase;
+  font-weight: 700;
+  font-size: 16px;
   padding: 8px 12px;
-  border: 1px soild #777;
+  border-radius: 4px;
+}
+
+.submit-btn {
+  background-color: #51cf66;
+  color: #ebfbee;
+  border: 1px solid #2b8a3e;
+}
+
+.submit-btn:hover,
+.submit-btn:active {
+  background-color: #69db7c;
+}
+
+.clear-btn {
+  background-color: #fa5252;
+  color: #fff5f5;
+  border: 1px solid #c92a2a;
+}
+
+.clear-btn:hover,
+.clear-btn:active {
+  background-color: #ff6b6b;
 }
 
 .red {
