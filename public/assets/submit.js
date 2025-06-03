@@ -1,10 +1,10 @@
 /* ---------------------------- Add artist, preset button --------------------------- */
 
-const artistIndex = document.querySelectorAll(".artist-entry").length;
-const presetIndex = document.querySelectorAll(".preset-entry").length;
-
 document.querySelector(".add-artist-btn").addEventListener("click", () => {
   const artistSection = document.getElementById("artistSection");
+
+  const artistIndex = artistSection.querySelectorAll(".artist-entry").length;
+
   const newArtist = document.createElement("div");
   newArtist.classList.add("artist-entry");
   newArtist.innerHTML = `
@@ -42,6 +42,9 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
 
 document.querySelector(".add-preset-btn").addEventListener("click", () => {
   const presetSection = document.getElementById("presetSection");
+
+  const presetIndex = document.querySelectorAll(".preset-entry").length;
+
   const newPreset = document.createElement("div");
   newPreset.classList.add("preset-entry");
   newPreset.innerHTML = `

@@ -1,40 +1,52 @@
 {
-  "songTitle": "Drop the World",
+  "songTitle": "U.O.E.N.O",
   "songGenre": "Hip Hop",
-  "songYear": "2009",
-  "songUrl": "https://www.youtube.com/watch?v=ErCAOMi5EGM",
-  "songImg": "https://m.media-amazon.com/images/I/712puk1XyXL.jpg",
+  "songYear": "2013",
+  "songUrl": "https://www.youtube.com/watch?v=qEkcYsqu6MU",
+  "songImg": "https://m.media-amazon.com/images/I/81cdL+WF2gL.jpg",
   "artists": [
     {
-      "name": "Lil Wayne",
+      "name": "Rocko",
       "country": "USA",
       "role": "Main",
-      "image_url": "https://i.imgur.com/Jdd5eys.jpeg"
+      "image_url": "https://i.imgur.com/3MDR8uU.jpeg"
     },
     {
-      "name": "Eminem",
+      "name": "Rick Ross",
       "country": "USA",
       "role": "Feature",
-      "image_url": "https://i.imgur.com/iHoh4Kx.jpeg"
+      "image_url": "https://i.imgur.com/nUmbDVC.jpeg"
+    },
+    {
+      "name": "Future",
+      "country": "USA",
+      "role": "Feature",
+      "image_url": "https://i.imgur.com/kVq96yJ.jpeg"
     }
   ],
-  "single": "on",
-  "singleHidden": "yes",
-  "albumTitle": "Single",
-  "albumYear": "0000",
-  "albumGenre": "N/A",
-  "albumImg": "/img/single.jpg",
-  "synthName": "Sytrus",
-  "synthMaker": "Image-Line",
-  "synthYear": "2003",
+  "singleHidden": "no",
+  "albumTitle": "Gift of Gab 2",
+  "albumGenre": "Hip Hop",
+  "albumYear": "2013",
+  "albumImg": "https://m.media-amazon.com/images/I/61csd5f2ebS.jpg",
+  "synthName": "Omnisphere",
+  "synthMaker": "Spectrasonics",
+  "synthYear": "2",
   "synthType": "VST",
   "synthImg": "https://i.imgur.com/MK7c7Gw.jpeg",
   "presets": [
     {
-      "name": "Cube",
+      "name": "Solo over Saints",
       "pack_name": "Factory",
-      "author": "gol",
-      "usage_type": "Sequence",
+      "author": "Spectrasonics",
+      "usage_type": "Synth",
+      "video_link": ""
+    },
+    {
+      "name": "The Love Bass",
+      "pack_name": "Factory",
+      "author": "Spectrasonics",
+      "usage_type": "Bass",
       "video_link": ""
     }
   ]
