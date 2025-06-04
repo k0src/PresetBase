@@ -45,12 +45,24 @@
             </label>
             <label
               >Genre <span class="red">*</span>
-              <input required type="text" name="songGenre" />
+              <input
+                pattern="[A-Z][a-z]*"
+                required
+                title="First letter must be capitalized."
+                type="text"
+                name="songGenre"
+              />
               <small>Specify the genre (e.g., Trap, House, Hip Hop).</small>
             </label>
             <label
               >Release Year <span class="red">*</span>
-              <input required type="number" name="songYear" />
+              <input
+                pattern="^(19|20)\d{2}$"
+                required
+                title="Enter a valid year."
+                type="number"
+                name="songYear"
+              />
               <small>Enter the year the song was released (e.g., 2018).</small>
             </label>
             <label
@@ -142,7 +154,9 @@
             <label
               >Genre <span class="red">*</span>
               <input
+                pattern="[A-Z][a-z]*"
                 required
+                title="First letter must be capitalized."
                 class="artist-field"
                 type="text"
                 name="albumGenre"
@@ -152,6 +166,7 @@
             <label
               >Release Year <span class="red">*</span>
               <input
+                pattern="^(19|20)\d{2}$"
                 required
                 class="artist-field"
                 type="number"
@@ -190,7 +205,12 @@
             </label>
             <label
               >Release Year <span class="red">*</span>
-              <input required type="number" name="synthYear" />
+              <input
+                pattern="^(19|20)\d{2}$"
+                required
+                type="number"
+                name="synthYear"
+              />
               <small>Year the synth was released.</small>
             </label>
             <label
@@ -245,7 +265,13 @@
               </label>
               <label
                 >Usage Type <span class="red">*</span>
-                <input required type="text" name="presets[0][usage_type]" />
+                <input
+                  pattern="[A-Z][a-z]*"
+                  required
+                  title="First letter must be capitalized."
+                  type="text"
+                  name="presets[0][usage_type]"
+                />
                 <small
                   >What was the preset used for (e.g., lead, pad,
                   sequence).</small

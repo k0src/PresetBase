@@ -5,7 +5,7 @@
     <script src="/assets/admin/approvals.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All songs</title>
+    <title>Approve Submissions</title>
     <link rel="stylesheet" href="/styles/navbar.css" />
     <link rel="stylesheet" href="/styles/admin/approvals.css" />
   </head>
@@ -20,56 +20,121 @@
       </div>
       <main>
         <% submissions.forEach(entry => { %>
-        <form id="entryForm">
-          <!-- Song Info -->
+          <form id="entryForm" method="POST" action="/submit">
+                    
+          <legend>Submission</legend>
+          <fieldset>
+            <label
+              >Submission ID:
+              <input
+                required
+                type="text"
+                name="submissionID"
+                value="<%= entry.id %>"
+                readonly
+              />
+            </label>
+            <label
+              >Submitted at:
+              <input
+                required
+                type="text"
+                value="<%= entry.submittedAt %>"
+                disabled
+              />
+            </label>
+          </fieldset>
+
+            <!-- Song Info -->
           <legend>Song Information</legend>
           <fieldset>
             <label
               >Song Title <span class="red">*</span>
-              <input type="text" value="<%= entry.data.songTitle %>" disabled />
+              <input
+                required
+                type="text"
+                name="songTitle"
+                value="<%= entry.data.songTitle %>"
+              />
             </label>
             <label
               >Genre <span class="red">*</span>
-              <input type="text" value="<%= entry.data.songGenre %>" disabled />
+              <input
+                required
+                type="text"
+                name="songGenre"
+                value="<%= entry.data.songGenre %>"
+              />
             </label>
             <label
               >Release Year <span class="red">*</span>
               <input
+                required
                 type="number"
+                name="songYear"
                 value="<%= entry.data.songYear %>"
-                disabled
               />
             </label>
             <label
               >Song URL <span class="red">*</span>
-              <input type="url" value="<%= entry.data.songUrl %>" disabled />
+              <input
+                required
+                type="url"
+                name="songUrl"
+                value="<%= entry.data.songUrl %>"
+              />
             </label>
             <label>
               Song Image <span class="red">*</span>
-              <input type="url" value="<%= entry.data.songImg %>" disabled />
+              <input
+                required
+                type="url"
+                name="songImg"
+                value="<%= entry.data.songImg %>"
+              />
             </label>
           </fieldset>
 
           <!-- Artist Info -->
           <legend>Artist Information</legend>
-          <% entry.data.artists.forEach((artist) => { %>
+          <% Object.entries(entry.data.artists).forEach(([i, artist]) => { %>
           <fieldset id="artistSection">
             <div class="artist-entry">
               <label
                 >Artist Name <span class="red">*</span>
-                <input type="text" value="<%= artist.name %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `artists[${i}][name]` %>"
+                  value="<%= artist.name %>"
+                />
               </label>
               <label
                 >Artist Country <span class="red">*</span>
-                <input type="text" value="<%= artist.country %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `artists[${i}][country]` %>"
+                  value="<%= artist.country %>"
+                />
               </label>
               <label
                 >Artist role <span class="red">*</span>
-                <input type="text" value="<%= artist.role %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `artists[${i}][role]` %>"
+                  value="<%= artist.role %>"
+                />
               </label>
               <label
                 >Artist Image <span class="red">*</span>
-                <input type="url" value="<%= artist.image_url %>" disabled />
+                <input
+                  required
+                  type="url"
+                  name="<%= `artists[${i}][image_url]` %>"
+                  value="<%= artist.image_url %>"
+                />
               </label>
             </div>
           </fieldset>
@@ -82,29 +147,33 @@
               >Album Title <span class="red">*</span>
               <input
                 type="text"
+                name="albumTitle"
                 value="<%= entry.data.albumTitle %>"
-                disabled
               />
             </label>
             <label
               >Genre <span class="red">*</span>
               <input
                 type="text"
+                name="albumGenre"
                 value="<%= entry.data.albumGenre %>"
-                disabled
               />
             </label>
             <label
               >Release Year <span class="red">*</span>
               <input
                 type="number"
+                name="albumYear"
                 value="<%= entry.data.albumYear %>"
-                disabled
               />
             </label>
             <label
               >Album Image <span class="red">*</span>
-              <input type="url" value="<%= entry.data.albumImg %>" disabled />
+              <input
+                type="url"
+                name="albumImg"
+                value="<%= entry.data.albumImg %>"
+              />
             </label>
           </fieldset>
 
@@ -113,78 +182,122 @@
           <fieldset>
             <label
               >Synth Name <span class="red">*</span>
-              <input type="text" value="<%= entry.data.synthName %>" disabled />
+              <input
+                required
+                type="text"
+                name="synthName"
+                value="<%= entry.data.synthName %>"
+              />
             </label>
             <label
               >Manufacturer <span class="red">*</span>
               <input
+                required
                 type="text"
+                name="synthMaker"
                 value="<%= entry.data.synthMaker %>"
-                disabled
               />
             </label>
             <label
               >Release Year <span class="red">*</span>
               <input
                 type="number"
+                name="synthYear"
                 value="<%= entry.data.synthYear %>"
-                disabled
               />
             </label>
             <label
               >Type <span class="red">*</span>
-              <input type="url" value="<%= entry.data.synthType %>" disabled />
+              <select required name="synthType">
+                 <option value="VST" <%= entry.data.synthType === 'VST' ? 'selected' : '' %>>VST</option>
+                 <option value="Hardware" <%= entry.data.synthType === 'Hardware' ? 'selected' : '' %>>Hardware</option>
+                 <option value="Kontakt Bank" <%= entry.data.synthType === 'Kontakt Bank' ? 'selected' : '' %>>Kontakt Bank</option>
+                 <option value="SoundFont" <%= entry.data.synthType === 'SoundFont' ? 'selected' : '' %>>SoundFont</option>
+              </select>
             </label>
             <label
               >Synth Image <span class="red">*</span>
-              <input type="url" value="<%= entry.data.synthImg %>" disabled />
+              <input
+                required
+                type="url"
+                name="synthImg"
+                value="<%= entry.data.synthImg %>"
+              />
             </label>
           </fieldset>
 
           <!-- Preset Info -->
           <legend>Preset Information</legend>
-          <% entry.data.presets.forEach((preset) => { %>
+          <% Object.entries(entry.data.presets).forEach(([i, preset]) => { %>
           <fieldset id="presetSection">
             <div class="preset-entry">
               <label
                 >Preset Name <span class="red">*</span>
-                <input type="text" value="<%= preset.name %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `presets[${i}][name]` %>"
+                  value="<%= preset.name %>"
+                />
               </label>
               <label
                 >Pack Name <span class="red">*</span>
-                <input type="text" value="<%= preset.pack_name %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `presets[${i}][pack_name]` %>"
+                  value="<%= preset.pack_name %>"
+                />
               </label>
               <label
                 >Author <span class="red">*</span>
-                <input type="text" value="<%= preset.author %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `presets[${i}][author]` %>"
+                  value="<%= preset.author %>"
+                />
               </label>
               <label
                 >Usage Type <span class="red">*</span>
-                <input type="text" value="<%= preset.usage_type %>" disabled />
+                <input
+                  required
+                  type="text"
+                  name="<%= `presets[${i}][usage_type]` %>"
+                  value="<%= preset.usage_type %>"
+                />
               </label>
               <label
                 >Video Link (Optional)
-                <input type="url" value="<%= preset.video_link %>" disabled />
+                <input
+                  type="url"
+                  name="<%= `presets[${i}][video_link]` %>"
+                  value="<%= preset.video_link %>"
+                />
               </label>
             </div>
           </fieldset>
           <% }) %>
+          <div class="submit-btn-container">
+            <button class="submit-btn resubmit-btn" type="submit">
+              Resubmit Entry
+            </button>
+            <button
+              class="submit-btn approve-btn"
+              type="button"
+              onclick="post('/admin/approve/<%= entry.id %>')"
+            >
+              Approve
+            </button>
+            <button
+              class="submit-btn deny-btn"
+              type="button"
+              onclick="post('/admin/deny/<%= entry.id %>')"
+            >
+              Deny
+            </button>
+          </div>
         </form>
-
-        <div class="submit-btn-container">
-          <button
-            class="submit-btn approve-btn"
-            onclick="post('/admin/approve/<%= entry.id %>')"
-          >
-            Approve
-          </button>
-          <button
-            class="submit-btn deny-btn"
-            onclick="post('/admin/deny/<%= entry.id %>')"
-          >
-            Deny
-          </button>
-        </div>
         <% }) %>
       </main>
     </div>

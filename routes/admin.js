@@ -6,7 +6,7 @@ const { dbRun, dbGet } = require("./UTIL.js");
 /* -------------------------------- Approvals ------------------------------- */
 
 router.get("/approvals", (req, res) => {
-  const query = `SELECT id, data FROM pending_submissions`;
+  const query = `SELECT id, data, submitted_at FROM pending_submissions`;
 
   db.all(query, [], (err, rows) => {
     if (err) return res.status(500).send("DB error: " + err.message);
@@ -14,6 +14,7 @@ router.get("/approvals", (req, res) => {
     const submissions = rows.map((row) => ({
       id: row.id,
       data: JSON.parse(row.data),
+      submittedAt: row.submitted_at,
     }));
 
     res.render("approvals", { submissions });
