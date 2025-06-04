@@ -3,6 +3,7 @@
   <head>
     <script src="/assets/scroll_to_top.js" defer></script>
     <script src="/assets/admin/approvals.js" defer></script>
+    <script src="/assets/admin/img_tooltip.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Approve Submissions</title>
@@ -39,8 +40,9 @@
               <input
                 required
                 type="text"
+                name="submittedTime"
                 value="<%= entry.submittedAt %>"
-                disabled
+                readonly
               />
             </label>
           </fieldset>
@@ -75,24 +77,42 @@
                 value="<%= entry.data.songYear %>"
               />
             </label>
-            <label
-              >Song URL <span class="red">*</span>
-              <input
-                required
-                type="url"
-                name="songUrl"
-                value="<%= entry.data.songUrl %>"
-              />
-            </label>
-            <label>
-              Song Image <span class="red">*</span>
-              <input
-                required
-                type="url"
-                name="songImg"
-                value="<%= entry.data.songImg %>"
-              />
-            </label>
+            <div class="submission-video-container">
+              <label>
+                Song URL <span class="red">*</span>
+                <input
+                  required
+                  type="url"
+                  name="songUrl"
+                  value="<%= entry.data.songUrl %>"
+                />
+              </label>
+              <a 
+                href="<%= entry.data.songUrl %>"
+                target="_blank"
+                class="material-icons video-box">
+                open_in_new
+              </a>
+            </div>
+            <div class="submission-img-container">
+              <label>
+                Song Image <span class="red">*</span>
+                <input
+                  required
+                  type="url"
+                  name="songImg"
+                  value="<%= entry.data.songImg %>"
+                />
+              </label>
+              <div class="material-icons hover-box">
+                visibility
+                <img 
+                  class="submission-img" 
+                  src="<%= entry.data.songImg %>" 
+                  alt="Song image" 
+                />
+              </div>
+            </div>
           </fieldset>
 
           <!-- Artist Info -->
@@ -127,22 +147,45 @@
                   value="<%= artist.role %>"
                 />
               </label>
-              <label
-                >Artist Image <span class="red">*</span>
-                <input
-                  required
-                  type="url"
-                  name="<%= `artists[${i}][image_url]` %>"
-                  value="<%= artist.image_url %>"
-                />
-              </label>
-            </div>
+              <div class="submission-img-container">
+                <label>
+                  Artist Image <span class="red">*</span>
+                  <input
+                    required
+                    type="url"
+                    name="<%= `artists[${i}][image_url]` %>"
+                    value="<%= artist.image_url %>"
+                  />
+                </label>
+                <div class="material-icons hover-box">
+                  visibility
+                  <img 
+                    class="submission-img" 
+                    src="<%= artist.image_url %>" 
+                    alt="Artist image" 
+                  />
+                </div>
+              </div>
           </fieldset>
           <% }) %>
 
           <!-- Album Info -->
           <legend>Album Information</legend>
           <fieldset>
+            <div class="checkbox-container">
+              <label class="checkbox-label">
+                <input 
+                  type="checkbox" 
+                  id="singleCheckBox" 
+                  name="single"
+                  value="on"
+                  <%= entry.data.single === "on" ? "checked" : "" %>
+                />
+                <span class="checkbox-text">
+                  Check this box if the song is a single.
+                </span>
+              </label>
+            </div>
             <label
               >Album Title <span class="red">*</span>
               <input
@@ -175,6 +218,27 @@
                 value="<%= entry.data.albumImg %>"
               />
             </label>
+            <% if (entry.data.single !== "on") { %>
+            <div class="submission-img-container">
+              <label>
+                Album Image <span class="red">*</span>
+                <input
+                  required
+                  type="url"
+                  name="albumImg"
+                  value="<%= entry.data.albumImg %>"
+                />
+              </label>
+              <div class="material-icons hover-box">
+                visibility
+                <img 
+                  class="submission-img" 
+                  src="<%= entry.data.albumImg %>" 
+                  alt="Album image" 
+                />
+              </div>
+            </div>
+            <% } %>
           </fieldset>
 
           <!-- Synth Info -->
@@ -224,6 +288,25 @@
                 value="<%= entry.data.synthImg %>"
               />
             </label>
+            <div class="submission-img-container">
+              <label>
+                Synth Image <span class="red">*</span>
+                <input
+                  required
+                  type="url"
+                  name="synthImg"
+                  value="<%= entry.data.synthImg %>"
+                />
+              </label>
+              <div class="material-icons hover-box">
+                visibility
+                <img 
+                  class="submission-img" 
+                  src="<%= entry.data.synthImg %>" 
+                  alt="Synth image" 
+                />
+              </div>
+            </div>
           </fieldset>
 
           <!-- Preset Info -->
@@ -267,14 +350,22 @@
                   value="<%= preset.usage_type %>"
                 />
               </label>
-              <label
-                >Video Link (Optional)
+              <div class="submission-video-container">
+              <label>
+                Video Link (Optional)
                 <input
                   type="url"
                   name="<%= `presets[${i}][video_link]` %>"
                   value="<%= preset.video_link %>"
                 />
               </label>
+              <a
+                <% if (preset.video_link) { %>href="<%= preset.video_link %>"<% } %>
+                target="_blank"
+                class="material-icons video-box">
+                open_in_new
+              </a>
+            </div>
             </div>
           </fieldset>
           <% }) %>

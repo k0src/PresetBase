@@ -13,20 +13,17 @@ router.post("/", async (req, res) => {
 
   try {
     await dbRun(query, [rawData]);
-  } catch (err) {
-    return res.status(500).send("Database error: " + err.message);
-  }
 
-  // If the request came from the admin approvals page, delete the pending submission
-  if (req.get("referer") && req.get("referer").includes("/admin/approvals")) {
-    try {
+    // If the request came from the admin approvals page, delete the pending submission
+    if (req.get("referer") && req.get("referer").includes("/admin/approvals")) {
       await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [
         JSON.parse(rawData).submissionID,
       ]);
-    } catch (err) {
-      return res.status(500).send("Database error: " + err.message);
+
+      return res.redirect("/admin/approvals?success=1");
     }
-    return res.redirect("/admin/approvals?success=1");
+  } catch (err) {
+    return res.status(500).send("Database error: " + err.message);
   }
 
   res.redirect("/submit?success=1");

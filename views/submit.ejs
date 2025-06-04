@@ -46,9 +46,9 @@
             <label
               >Genre <span class="red">*</span>
               <input
-                pattern="[A-Z][a-z]*"
+                pattern="^[A-Z][a-z]*( [A-Z][a-z]*)*$"
                 required
-                title="First letter must be capitalized."
+                title="First letters must be capitalized."
                 type="text"
                 name="songGenre"
               />
@@ -154,9 +154,9 @@
             <label
               >Genre <span class="red">*</span>
               <input
-                pattern="[A-Z][a-z]*"
+                pattern="^[A-Z][a-z]*( [A-Z][a-z]*)*$"
                 required
-                title="First letter must be capitalized."
+                title="First letters must be capitalized."
                 class="artist-field"
                 type="text"
                 name="albumGenre"
@@ -266,7 +266,7 @@
               <label
                 >Usage Type <span class="red">*</span>
                 <input
-                  pattern="[A-Z][a-z]*"
+                  pattern="^[A-Z][a-z]*( [A-Z][a-z]*)*$"
                   required
                   title="First letter must be capitalized."
                   type="text"

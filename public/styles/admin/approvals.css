@@ -164,6 +164,82 @@ select {
   color: #c92a2a;
 }
 
+.submission-video-container,
+.submission-img-container {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  flex-shrink: 0;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.submission-video-container label,
+.submission-img-container label {
+  margin-bottom: 0;
+}
+
+.video-box,
+.hover-box {
+  margin: 0;
+  justify-self: end;
+  font-size: 24px;
+  padding: 6px;
+  border-radius: 4px;
+  background-color: #e9ecef;
+  color: #343a40;
+  border: 1px solid #ced4da;
+  position: relative;
+}
+
+.submission-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.submission-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 300px;
+  width: 300px;
+  object-fit: cover;
+  pointer-events: none;
+  /* opacity: 0; */
+  transition: opacity 0.2s ease;
+  z-index: 1000;
+}
+
+.checkbox-container {
+  padding: 10px 0 10px 0;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.checkbox-text {
+  font-size: 16px;
+  user-select: none;
+}
+
 .submit-btn-container {
   display: flex;
   align-items: center;

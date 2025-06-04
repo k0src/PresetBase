@@ -1,0 +1,35 @@
+{
+  "submissionID": "38",
+  "submittedTime": "2025-06-04 16:50:22",
+  "songTitle": "SINGLE",
+  "songGenre": "Single",
+  "songYear": "2001",
+  "songUrl": "https://www.youtube.com/watch?v=qEkcYsqu6MU",
+  "songImg": "https://m.media-amazon.com/images/I/71SLbDG2fgL.jpg",
+  "artists": [
+    {
+      "name": "Ko",
+      "country": "USA",
+      "role": "Feature",
+      "image_url": "https://i.imgur.com/3MDR8uU.jpeg"
+    }
+  ],
+  "albumTitle": "Stiff",
+  "albumGenre": "Loll",
+  "albumYear": "2001",
+  "albumImg": "https://m.media-amazon.com/images/I/81icyvwOQXL.jpg",
+  "synthName": "1",
+  "synthMaker": "13",
+  "synthYear": "2009",
+  "synthType": "Kontakt Bank",
+  "synthImg": "https://i.imgur.com/Gc1gXXP.jpeg",
+  "presets": [
+    {
+      "name": "Solo over Saints",
+      "pack_name": "Factory",
+      "author": "Spectrasonics",
+      "usage_type": "Lead",
+      "video_link": ""
+    }
+  ]
+}
