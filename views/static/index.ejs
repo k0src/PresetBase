@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PresetBase &mdash; Browse Presets</title>
+    <link rel="stylesheet" href="styles/static/index.css" />
+    <link rel="stylesheet" href="styles/partials/navbar.css" />
+    <script src="/assets/navbar.js" defer></script>
+    <script src="/assets/index.js" defer></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://kit.fontawesome.com/cd2982a5b3.js"
+      crossorigin="anonymous"
+      defer
+    ></script>
+  </head>
+  <body>
+    <%- include('../partials/navbar') %>
+    <main class="container">
+      <div class="splash-container">
+        <img class="splash-logo" src="images/logo.webp" alt="PresetBase Logo" />
+        <p class="splash-text">
+          Browse synth presets used across<br />thousands of songs, artists, and
+          albums.
+        </p>
+        <div class="search-box--container">
+          <div class="search-box--input-container">
+            <i class="fa-solid fa-magnifying-glass search-box--icon"></i>
+            <input
+              class="search-box--input"
+              type="text"
+              placeholder="Search songs, artists, synths, presets..."
+            />
+          </div>
+          <button class="search-box--button">Search</button>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

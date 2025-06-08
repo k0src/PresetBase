@@ -118,7 +118,7 @@ router.get("/:id", (req, res) => {
 
     artist.fav_synth = favSynth;
 
-    res.render("artist", { artist });
+    res.render("artist", { artist, PATH_URL: "browse" });
   });
 });
 

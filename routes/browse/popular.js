@@ -42,7 +42,7 @@ router.get("/", async (req, res) => {
       }
     }
 
-    res.render("browse/popular", { songs });
+    res.render("browse/popular", { songs, PATH_URL: "browse" });
   } catch (err) {
     return res.status(500).send("Database error: " + err.message);
   }

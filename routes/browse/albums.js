@@ -68,6 +68,7 @@ router.get("/", async (req, res) => {
     res.render("browse/albums", {
       totalResults: totalResults.total_results,
       albums,
+      PATH_URL: "browse",
     });
   } catch (err) {
     return res.status(500).send("Database error: " + err.message);

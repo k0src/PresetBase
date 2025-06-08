@@ -19,7 +19,7 @@ router.get("/", async (req, res) => {
 
   const checkAndRender = () => {
     if (queriesCompleted.length === 5) {
-      res.render("search", { query: searchQuery, results });
+      res.render("search", { query: searchQuery, results, PATH_URL: "browse" });
     }
   };
 

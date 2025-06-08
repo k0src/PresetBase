@@ -11,14 +11,11 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+/* ------------------------------- Main routes ------------------------------ */
 app.get("/", (req, res) => {
-  res.sendFile(__dirname + "/public/index.html");
+  res.render("static/index", { PATH_URL: "home" });
 });
 
-/* ------------------------------- Main routes ------------------------------ */
-
-const homeRoutes = require("./routes/home");
-app.use("/", homeRoutes);
 const searchRoutes = require("./routes/search");
 app.use("/search", searchRoutes);
 const submitRoute = require("./routes/submit");

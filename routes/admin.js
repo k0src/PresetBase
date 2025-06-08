@@ -17,7 +17,7 @@ router.get("/approvals", (req, res) => {
       submittedAt: row.submitted_at,
     }));
 
-    res.render("approvals", { submissions });
+    res.render("approvals", { submissions, PATH_URL: "admin" });
   });
 });
 

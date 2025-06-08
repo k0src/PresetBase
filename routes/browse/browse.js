@@ -107,6 +107,7 @@ router.get("/", async (req, res) => {
       popular,
       recentlyAdded,
       topGenres,
+      PATH_URL: "browse",
     });
   } catch (err) {
     return res.status(500).send("Database error: " + err.message);

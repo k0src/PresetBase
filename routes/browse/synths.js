@@ -61,6 +61,7 @@ router.get("/", async (req, res) => {
     res.render("browse/synths", {
       totalResults: totalResults.total_results,
       synths,
+      PATH_URL: "browse",
     });
   } catch (err) {
     return res.status(500).send("Database error: " + err.message);

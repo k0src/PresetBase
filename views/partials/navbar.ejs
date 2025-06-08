@@ -1,32 +1,38 @@
-<div class="navbar-container">
-  <nav class="navbar">
-    <div class="navbar-left">
-      <a href="/"
-        ><img src="/assets/logo.png" alt="presetbase logo" class="logo"
-      /></a>
-    </div>
-    <div class="navbar-right">
-      <a href="/browse" class="nav-link"
-        ><span class="material-icons">dataset</span>browse</a
-      >
-      <a href="#" class="nav-link"
-        ><span class="material-icons">leaderboard</span>stats</a
-      >
-      <a href="/submit" class="nav-link"
-        ><span class="material-icons">publish</span>submit</a
-      >
-      <a
-        href="https://github.com/k0src/presetbase"
-        target="_blank"
-        class="nav-link"
-        ><span class="material-icons">folder</span>github</a
-      >
-      <div class="nav-search-bar">
-        <input type="text" placeholder="search..." class="nav-search-input" />
-        <button class="nav-search-button">search</button>
+<nav class="navbar">
+  <div class="navbar-left">
+    <a href="/"
+    ><img
+    src="/images/logo-app.webp"
+    alt="PresetBase Nav Logo"
+    class="navbar-logo"
+    /></a>
+    <a href="/browse" class="navbar-link 
+    <%= PATH_URL === "browse" ? "navbar-link--active" : "" %>">Browse</a>
+    <a href="#" class="navbar-link
+    <%= PATH_URL === "stats" ? "navbar-link--active" : "" %>">Stats</a>
+    <a href="#" class="navbar-link
+    <%= PATH_URL === "about" ? "navbar-link--active" : "" %>">About</a>
+    <a href="/submit" class="navbar-link
+    <%= PATH_URL === "submit" ? "navbar-link--active" : "" %>">Submit</a>
+  </div>
+  <div class="navbar-right">
+    <div class="navbar-search--container">
+      <i class="fa-solid fa-magnifying-glass navbar-search--icon"></i>
+      <input
+      class="navbar-search--input"
+      type="text"
+      placeholder="Search database..."
+      />
+      <div class="navbar-search--shortcut">
+        <span class="navbar-search--shortcut--text">ctrl</span>
+        <span class="navbar-search--shortcut--text">K</span>
       </div>
     </div>
-    <script src="/assets/navbar.js"></script>
-  </nav>
-  <div class="navbar-divider"></div>
-</div>
+    <a href="https://github.com/k0src/presetbase" target="_blank">
+      <i class="fa-brands fa-github navbar--icon"></i>
+    </a>
+    <a href="#">
+      <i class="fa-solid fa-circle-user navbar--icon"></i>
+    </a>
+  </div>
+</nav>

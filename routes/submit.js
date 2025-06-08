@@ -4,7 +4,7 @@ const db = require("../db/db");
 const { dbRun } = require("./UTIL.js");
 
 router.get("/", (req, res) => {
-  res.render("submit");
+  res.render("submit", { PATH_URL: "submit" });
 });
 
 router.post("/", async (req, res) => {

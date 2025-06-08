@@ -70,6 +70,7 @@ router.get("/", async (req, res) => {
     res.render("browse/songs", {
       totalResults: totalResults.total_results,
       songs,
+      PATH_URL: "browse",
     });
   } catch (err) {
     return res.status(500).send("Database error: " + err.message);

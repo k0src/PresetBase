@@ -92,7 +92,7 @@ router.get("/:id", (req, res) => {
       }
     });
 
-    res.render("album", { album });
+    res.render("album", { album, PATH_URL: "browse" });
   });
 });
 

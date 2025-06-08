@@ -112,7 +112,7 @@ router.get("/:id", (req, res) => {
       song_presets_id: data.song_presets_id,
     }));
 
-    res.render("song", { song });
+    res.render("song", { song, PATH_URL: "browse" });
   });
 });
 

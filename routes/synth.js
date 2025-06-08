@@ -113,7 +113,7 @@ router.get("/:id", (req, res) => {
       }
     });
 
-    res.render("synth", { synth });
+    res.render("synth", { synth, PATH_URL: "browse" });
   });
 });
 

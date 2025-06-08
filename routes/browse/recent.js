@@ -41,7 +41,7 @@ router.get("/", async (req, res) => {
       }
     }
 
-    res.render("browse/recent", { songs });
+    res.render("browse/recent", { songs, PATH_URL: "browse" });
   } catch (err) {
     return res.status(500).send("Database error: " + err.message);
   }
