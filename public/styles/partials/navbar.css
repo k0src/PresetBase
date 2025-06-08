@@ -19,7 +19,7 @@ html {
   overflow-x: hidden;
   background-color: #171b1f;
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
-  padding: 1.2rem;
+  padding: 1.2rem 2.4rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
