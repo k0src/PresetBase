@@ -6,14 +6,16 @@
     alt="PresetBase Nav Logo"
     class="navbar-logo"
     /></a>
-    <a href="/browse" class="navbar-link 
-    <%= PATH_URL === "browse" ? "navbar-link--active" : "" %>">Browse</a>
-    <a href="#" class="navbar-link
-    <%= PATH_URL === "stats" ? "navbar-link--active" : "" %>">Stats</a>
-    <a href="#" class="navbar-link
-    <%= PATH_URL === "about" ? "navbar-link--active" : "" %>">About</a>
-    <a href="/submit" class="navbar-link
-    <%= PATH_URL === "submit" ? "navbar-link--active" : "" %>">Submit</a>
+    <div class="navbar-link--container">
+      <a href="/browse" class="navbar-link 
+      <%= PATH_URL === "browse" ? "navbar-link--active" : "" %>">Browse</a>
+      <a href="#" class="navbar-link
+      <%= PATH_URL === "stats" ? "navbar-link--active" : "" %>">Stats</a>
+      <a href="#" class="navbar-link
+      <%= PATH_URL === "about" ? "navbar-link--active" : "" %>">About</a>
+      <a href="/submit" class="navbar-link
+      <%= PATH_URL === "submit" ? "navbar-link--active" : "" %>">Submit</a>
+    </div>
   </div>
   <div class="navbar-right">
     <div class="navbar-search--container">
@@ -35,4 +37,16 @@
       <i class="fa-solid fa-circle-user navbar--icon"></i>
     </a>
   </div>
+  <!-- ----------------------------- Mobile nav ------------------------------ -->
+   <button class="button-mobile-nav">
+    <i class="fa-solid fa-bars navbar--icon"></i>
+    <i class="fa-solid fa-xmark navbar--icon hidden"></i>
+   </button>
 </nav>
+
+<div class="mobile-nav">
+  <a href="/browse" class="mobile-nav-link">Browse</a>
+  <a href="#" class="mobile-nav-link">Stats</a>
+  <a href="#" class="mobile-nav-link">About</a>
+  <a href="/submit" class="mobile-nav-link">Submit</a>
+</div>
