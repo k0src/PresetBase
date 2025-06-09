@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Search results for "<%= searchQuery %>"</title>
+    <script src="/js/main/search-results.js" defer></script>
+    <link rel="stylesheet" href="styles/main/search-results.css" />
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ----------------------------- No results ------------------------------ -->
+        <% if (!totalResults) { %>
+        <div class="no-results--container">
+          <i class="fa-solid fa-ban no-results--icon"></i>
+          <span class="no-results--text"
+            >No results for "<%= searchQuery %>"</span
+          >
+        </div>
+        <% } else { %>
+        <!-- ------------------------------ Main page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="search-results--header">
+            <h1 class="heading-primary">
+              <%= totalResults %> <%= totalResults === 1 ? "result" : "results"
+              %> for "<%= searchQuery %>"
+            </h1>
+            <div class="search-results--filter-container">
+              <select name="filter" class="search-results--filter-select">
+                <option value="all" selected>All</option>
+                <option value="songs">Songs</option>
+                <option value="artists">Artists</option>
+                <option value="albums">Albums</option>
+                <option value="synths">Synths</option>
+                <option value="presets">Presets</option>
+              </select>
+              <i class="fa-solid fa-filter filter-icon"></i>
+            </div>
+          </section>
+          <!-- ------------------------------- Results ------------------------------- -->
+          <section class="search-results--container">
+            <!-- Songs -->
+            <% if (songs.length) { %>
+            <div class="search-results--section --section-songs">
+              <h2 class="heading-secondary">Songs</h2>
+              <div class="result-columns grid-layout--songs">
+                <span>#</span>
+                <span>Title</span>
+                <span>Album</span>
+                <span>Genre</span>
+                <span>Year</span>
+              </div>
+              <% Object.entries(songs).forEach(([i, song]) => { %>
+              <a
+                href="/song/<%= song.song_id %>"
+                class="grid-layout--songs result-entry"
+              >
+                <span class="result-entry--number"><%= +i + 1 %></span>
+                <div class="result-entry--title-container">
+                  <img src="<%= song.song_image %>" class="result-entry--img" />
+                  <div class="result-entry--title">
+                    <span class="result-entry--secondary">
+                      <%= song.artist_name %></span
+                    >
+                    <span class="result-entry--primary"
+                      ><%= song.song_title %></span
+                    >
+                  </div>
+                </div>
+                <span class="result-entry--tertiary"
+                  ><%= song.album_title === "[SINGLE]" ? "Single" :
+                  song.album_title %></span
+                >
+                <span class="--tag"><%= song.song_genre %></span>
+                <span class="result-entry--quaternary"
+                  ><%= song.song_release_year %></span
+                >
+              </a>
+              <% }) %>
+            </div>
+            <% } %>
+            <!-- Artists -->
+            <% if (artists.length) { %>
+            <div class="search-results--section --section-artists">
+              <h2 class="heading-secondary">Artists</h2>
+              <div class="result-columns grid-layout--artists">
+                <span>#</span>
+                <span>Name</span>
+                <span>Country</span>
+              </div>
+              <% Object.entries(artists).forEach(([i, artist]) => { %>
+              <a
+                href="/artist/<%= artist.artist_id %>"
+                class="result-entry grid-layout--artists"
+              >
+                <span class="result-entry--number"><%= +i + 1 %></span>
+                <div class="result-entry--title-container">
+                  <img
+                    src="<%= artist.artist_image %>"
+                    class="result-entry--img"
+                  />
+                  <span class="result-entry--primary"
+                    ><%= artist.artist_name %></span
+                  >
+                </div>
+                <span class="result-entry--secondary"
+                  ><%= artist.artist_country %></span
+                >
+              </a>
+              <% }) %>
+            </div>
+            <% } %>
+            <!-- Albums -->
+            <% if (albums.length) { %>
+            <div class="search-results--section --section-albums">
+              <h2 class="heading-secondary">Albums</h2>
+              <div class="result-columns grid-layout--albums">
+                <span>#</span>
+                <span>Title</span>
+                <span>Artist</span>
+                <span>Genre</span>
+                <span>Year</span>
+              </div>
+              <% Object.entries(albums).forEach(([i, album]) => { %>
+              <a
+                href="/album/<%= album.album_id %>"
+                class="result-entry grid-layout--albums"
+              >
+                <span class="result-entry--number"><%= +i + 1 %></span>
+                <div class="result-entry--title-container">
+                  <img
+                    src="<%= album.album_image %>"
+                    class="result-entry--img"
+                  />
+                  <span class="result-entry--primary">
+                    <%= album.album_title %></span
+                  >
+                </div>
+                <span class="result-entry--secondary"
+                  ><%= album.artist_name %></span
+                >
+                <span class="--tag"><%= album.album_genre %></span>
+                <span class="result-entry--tertiary"
+                  ><%= album.album_release_year %></span
+                >
+              </a>
+              <% }) %>
+            </div>
+            <% } %>
+            <!-- Synths -->
+            <% if (synths.length) { %>
+            <div class="search-results--section --section-synths">
+              <h2 class="heading-secondary">Synths</h2>
+              <div class="result-columns grid-layout--synths">
+                <span>#</span>
+                <span>Synth</span>
+                <span>Manufacturer</span>
+                <span>Synth Type</span>
+                <span>Year</span>
+              </div>
+
+              <% Object.entries(synths).forEach(([i, synth]) => { %>
+              <a
+                href="/synth/<%= synth.synth_id %>"
+                class="result-entry grid-layout--synths"
+              >
+                <span class="result-entry--number"><%= +i + 1 %></span>
+                <div class="result-entry--title-container">
+                  <img
+                    src="<%= synth.synth_image %>"
+                    class="result-entry--img"
+                  />
+                  <span class="result-entry--primary"
+                    ><%= synth.synth_name %></span
+                  >
+                </div>
+                <span class="result-entry--secondary"
+                  ><%= synth.synth_manufacturer %></span
+                >
+                <span class="--tag"><%= synth.synth_type %></span>
+                <span class="result-entry--tertiary"
+                  ><%= synth.synth_release_year %></span
+                >
+              </a>
+              <% }) %>
+            </div>
+            <% } %>
+            <!-- Presets -->
+            <% if (presets.length) { %>
+            <div class="search-results--section --section-presets">
+              <h2 class="heading-secondary">Presets</h2>
+              <div class="result-columns grid-layout--presets">
+                <span>#</span>
+                <span>Name</span>
+                <span>Synth</span>
+                <span>Pack</span>
+                <span>Author</span>
+              </div>
+              <% Object.entries(presets).forEach(([i, preset]) => { %>
+              <a
+                href="/synth/<%= preset.synth_id %>"
+                class="result-entry grid-layout--presets"
+              >
+                <span class="result-entry--number"><%= +i + 1 %></span>
+                <div class="result-entry--title-container">
+                  <img
+                    src="<%= preset.synth_image %>"
+                    class="result-entry--img"
+                  />
+                  <span class="result-entry--primary">
+                    <%= preset.preset_name %></span
+                  >
+                </div>
+                <span class="result-entry--secondary"
+                  ><%= preset.synth_name %></span
+                >
+                <span class="result-entry--tertiary"
+                  ><%= preset.preset_pack_name %></span
+                >
+                <span class="result-entry--quaternary"
+                  ><%= preset.preset_author %></span
+                >
+              </a>
+              <% }) %>
+            </div>
+            <% } %>
+          </section>
+        </main>
+        <% } %>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>

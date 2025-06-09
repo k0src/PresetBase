@@ -1,0 +1,406 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Geist", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #e3e5e4;
+  overflow-x: hidden;
+
+  background-color: #171b1f;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 120rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 4rem;
+
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
+  border-bottom: 0.2rem solid #2d343a;
+  background-color: #202429;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+
+/* ------------------------------- No results ------------------------------- */
+
+.no-results--container {
+  min-height: 50vh;
+  color: #899096;
+  display: flex;
+  gap: 1.2rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.no-results--text {
+  font-size: 2.4rem;
+}
+
+.no-results--icon {
+  font-size: 3.2rem;
+}
+
+/* ------------------------------- Main styles ------------------------------ */
+
+.search-results--header {
+  padding: 3.2rem 0 2.4rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.heading-primary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.search-results--filter-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
+.filter-icon {
+  color: #899096;
+  font-size: 1.6rem;
+}
+
+.search-results--filter-select {
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #899096;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  padding: 0.4rem 1.6rem;
+  flex: 1;
+}
+
+.search-results--section {
+  padding-bottom: 2.4rem;
+}
+
+.heading-secondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}
+
+.grid-layout--songs {
+  display: grid;
+  grid-template-columns: 1.6rem 400fr 300fr 200fr 75fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--artists {
+  display: grid;
+  grid-template-columns: 1.6rem 1fr 1fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--albums {
+  display: grid;
+  grid-template-columns: 1.6rem 400fr 300fr 200fr 75fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--synths {
+  display: grid;
+  grid-template-columns: 1.6rem 400fr 300fr 200fr 75fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--presets {
+  display: grid;
+  grid-template-columns: 1.6rem 400fr 300fr 300fr 200fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.result-columns {
+  color: #899096;
+  font-size: 1.3rem;
+  border-top: 0.1rem solid #2d343a;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.4rem;
+}
+
+.result-entry {
+  padding: 1.2rem;
+  border-bottom: 0.1rem solid #2d343a;
+  transition: background-color 0.2s ease;
+}
+
+.result-entry:hover,
+.result-entry:nth-child(odd):hover {
+  background-color: #2d343a;
+}
+
+.result-entry:nth-child(odd) {
+  background-color: #1e2227;
+}
+
+.result-entry--title-container {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  min-width: 0;
+}
+
+.result-entry--img {
+  width: 7.2rem;
+  height: 7.2rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+}
+
+.result-entry--title {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.result-entry--number,
+.result-entry--primary,
+.result-entry--secondary,
+.result-entry--tertiary,
+.result-entry--quaternary {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.4rem;
+}
+
+.result-entry--primary {
+  font-size: 1.6rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.--tag {
+  user-select: none;
+  font-size: 1.2rem;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 60em) {
+  .result-entry--number,
+  .result-entry--secondary,
+  .result-entry--tertiary,
+  .result-entry--quaternary {
+    font-size: 1.2rem;
+  }
+
+  .result-entry--primary {
+    font-size: 1.4rem;
+  }
+
+  .heading-primary {
+    font-size: 2.4rem;
+  }
+
+  .heading-secondary {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .result-entry--title {
+    gap: 0.6rem;
+  }
+
+  .grid-layout--songs {
+    gap: 1rem;
+  }
+
+  .grid-layout--artists {
+    gap: 1rem;
+  }
+
+  .grid-layout--albums {
+    gap: 1rem;
+  }
+
+  .grid-layout--synths {
+    gap: 1rem;
+  }
+
+  .grid-layout--presets {
+    gap: 1rem;
+  }
+
+  .result-columns {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .result-entry {
+    padding: 1rem;
+  }
+
+  .result-entry--title-container {
+    gap: 1.4rem;
+  }
+
+  .result-entry--img {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+}
+
+@media (max-width: 30em) {
+  .result-entry--title {
+    gap: 0.4rem;
+  }
+
+  .result-entry--number {
+    font-size: 1.2rem;
+  }
+
+  .result-entry--primary {
+    font-size: 1.4rem;
+  }
+
+  .heading-primary {
+    font-size: 2rem;
+  }
+
+  .heading-secondary {
+    font-size: 1.4rem;
+  }
+
+  .no-results--text {
+    font-size: 1.8rem;
+  }
+
+  .no-results--icon {
+    font-size: 2.4rem;
+  }
+
+  .grid-layout--songs {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .grid-layout--artists {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .grid-layout--albums {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .grid-layout--synths {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .grid-layout--presets {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .grid-layout--songs .result-entry--secondary,
+  .grid-layout--songs .result-entry--tertiary,
+  .grid-layout--songs .result-entry--quaternary,
+  .grid-layout--songs .--tag,
+  .grid-layout--artists .result-entry--secondary,
+  .grid-layout--artists .result-entry--tertiary,
+  .grid-layout--artists .result-entry--quaternary,
+  .grid-layout--artists .--tag,
+  .grid-layout--albums .result-entry--secondary,
+  .grid-layout--albums .result-entry--tertiary,
+  .grid-layout--albums .result-entry--quaternary,
+  .grid-layout--albums .--tag,
+  .grid-layout--synths .result-entry--secondary,
+  .grid-layout--synths .result-entry--tertiary,
+  .grid-layout--synths .result-entry--quaternary,
+  .grid-layout--synths .--tag,
+  .grid-layout--presets .result-entry--secondary,
+  .grid-layout--presets .result-entry--tertiary,
+  .grid-layout--presets .result-entry--quaternary,
+  .grid-layout--presets .--tag {
+    display: none;
+  }
+
+  .result-columns {
+    display: none;
+  }
+
+  .result-entry {
+    padding: 1rem;
+  }
+
+  .result-entry--title-container {
+    gap: 1rem;
+  }
+
+  .result-entry--img {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+
+  .--tag {
+    font-size: 0.8rem;
+  }
+
+  .search-results--header {
+    padding: 2.4rem 0 1.8rem 0;
+  }
+
+  .search-results--filter-select {
+    font-size: 1.2rem;
+    padding: 0.2rem 1.2rem;
+  }
+}

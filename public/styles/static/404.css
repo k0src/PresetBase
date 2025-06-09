@@ -1,0 +1,94 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Geist", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #e3e5e4;
+  overflow-x: hidden;
+
+  background-color: #171b1f;
+}
+
+.container {
+  max-width: 120rem;
+  padding: 0 4rem;
+  margin: 0 auto;
+}
+
+/* ------------------------------- Main styles ------------------------------ */
+
+.fourohfour--container {
+  min-height: 90vh;
+  padding-bottom: 25vh;
+  color: #899096;
+  display: flex;
+  gap: 3.2rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.heading-xlarge {
+  font-family: "Sora", sans-serif;
+  font-size: 12.8rem;
+}
+
+.fourohfour--text {
+  text-align: center;
+  font-size: 2.4rem;
+  line-height: 1.2;
+}
+
+.fourohfour--home-button:link,
+.fourohfour--home-button:visited {
+  text-decoration: none;
+  background-color: #5a7f71;
+  border: none;
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.6rem;
+  color: #e3e5e4;
+  padding: 1.6rem 2.4rem;
+  border-radius: 0.8rem;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+}
+
+.fourohfour--home-button:hover {
+  background-color: #73988a;
+}
+.fourohfour--home-button:active {
+  transform: scale(0.95);
+  transition: transform 0.1s ease;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+
+@media (max-width: 48em) {
+  .fourohfour--text {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 30em) {
+  .heading-xlarge {
+    font-size: 9.6rem;
+  }
+
+  .fourohfour--text {
+    font-size: 1.6rem;
+  }
+}
