@@ -60,7 +60,7 @@ a:active {
 /* ------------------------------- No results ------------------------------- */
 
 .no-results--container {
-  min-height: 50vh;
+  min-height: 60vh;
   color: #899096;
   display: flex;
   gap: 1.2rem;

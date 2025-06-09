@@ -6,16 +6,21 @@
     <%- include('../partials/html-head') %>
   </head>
   <body>
-    <%- include('../partials/navbar') %>
-    <main class="container">
-      <div class="fourohfour--container">
-        <h1 class="heading-xlarge">404</h1>
-        <span class="fourohfour--text"
-          >We couldn't find the page you're looking for.<br />It may have been
-          moved or doesn't exist anymore.</span
-        >
-        <a href="/" class="fourohfour--home-button">Go home</a>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <main class="container">
+          <div class="fourohfour--container">
+            <h1 class="heading-xlarge">404</h1>
+            <span class="fourohfour--text"
+              >We couldn't find the page you're looking for.<br />It may have
+              been moved or doesn't exist anymore.</span
+            >
+            <a href="/" class="fourohfour--home-button">Go home</a>
+          </div>
+        </main>
       </div>
-    </main>
+      <%- include('../partials/footer') %>
+    </div>
   </body>
 </html>

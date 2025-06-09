@@ -20,11 +20,11 @@ a:active {
 
 #scrollToTop {
   position: fixed;
-  bottom: 2rem;
-  right: 2rem;
+  bottom: 2.4rem;
+  right: 2.4rem;
   z-index: 1000;
   font-size: 2.4rem;
-  background: rgba(0, 0, 0, 0.35);
+  background: rgba(0, 0, 0, 0.5);
   color: #e3e5e4;
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
   border-radius: 0.8rem;
@@ -35,7 +35,11 @@ a:active {
   padding: 1.4rem 1.6rem;
   opacity: 0;
   pointer-events: none;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.3s ease, background-color 0.3s ease;
+}
+
+#scrollToTop:hover {
+  background: rgba(0, 0, 0, 0.25);
 }
 
 #scrollToTop.show {
