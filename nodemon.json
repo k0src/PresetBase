@@ -1,4 +1,0 @@
-{
-  "watch": ["server.js", "routes/", "views/"],
-  "ext": "js,json"
-}
