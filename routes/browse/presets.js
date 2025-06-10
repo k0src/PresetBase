@@ -62,7 +62,7 @@ router.get("/", async (req, res) => {
       });
     }
 
-    res.render("browse/presets", {
+    res.render("main/browse/presets", {
       totalResults: totalResults.total_results,
       presets,
       PATH_URL: "browse",

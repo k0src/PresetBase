@@ -101,7 +101,7 @@ router.get("/", async (req, res) => {
         dbAll(queries.topGenres),
       ]);
 
-    res.render("browse/browse", {
+    res.render("main/browse", {
       totalResults: totalResults.total_results,
       hot,
       popular,

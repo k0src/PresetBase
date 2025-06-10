@@ -54,7 +54,7 @@ router.get("/", async (req, res) => {
       });
     }
 
-    res.render("browse/artists", {
+    res.render("main/browse/artists", {
       totalResults: totalResults.total_results,
       artists,
       PATH_URL: "browse",

@@ -58,7 +58,7 @@ router.get("/", async (req, res) => {
       });
     }
 
-    res.render("browse/synths", {
+    res.render("main/browse/synths", {
       totalResults: totalResults.total_results,
       synths,
       PATH_URL: "browse",

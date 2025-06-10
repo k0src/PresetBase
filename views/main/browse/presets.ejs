@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PresetBase &mdash; Hot songs</title>
-    <script src="/js/browse/browse-results--songs.js" defer></script>
+    <title>PresetBase &mdash; All presets</title>
+    <script src="/js/browse/browse-results--presets.js" defer></script>
     <link rel="stylesheet" href="/styles/main/search-results.css" />
     <link rel="stylesheet" href="/styles/browse/browse-results.css" />
-    <%- include('../partials/html-head') %>
+    <%- include('../../partials/html-head') %>
   </head>
   <body>
     <div class="page-wrapper">
-      <%- include('../partials/navbar') %>
+      <%- include('../../partials/navbar') %>
       <div class="content-wrapper">
         <!-- ----------------------------- No results ------------------------------ -->
         <% if (!totalResults) { %>
         <div class="no-results--container">
           <i class="fa-solid fa-ban no-results--icon"></i>
-          <span class="no-results--text">No songs found</span>
+          <span class="no-results--text">No presets found</span>
         </div>
         <% } else { %>
         <!-- ------------------------------ Main page ------------------------------ -->
@@ -23,7 +23,8 @@
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="browse-results--header">
             <div class="browse-results-header--top">
-              <h1 class="heading-primary">Hot songs</h1>
+              <h1 class="heading-primary">All presets</h1>
+              <span class="results-count"><%= totalResults %> presets</span>
             </div>
             <div class="browse-results-header--bottom">
               <div class="browse-results-result-filter--container">
@@ -52,12 +53,10 @@
               <div class="browse-results---select-container">
                 <select name="sort" class="browse-results--sort-select">
                   <option value="" selected disabled hidden>Sort</option>
-                  <option value="none">Hot</option>
-                  <option value="title">Title</option>
-                  <option value="artist">Artist</option>
-                  <option value="album">Album</option>
-                  <option value="genre">Genre</option>
-                  <option value="year">Year</option>
+                  <option value="name">Name</option>
+                  <option value="synth">Synth</option>
+                  <option value="pack">Pack</option>
+                  <option value="author">Author</option>
                   <option value="added">Date Added</option>
                 </select>
                 <i class="fa-solid fa-sort sort-icon"></i>
@@ -65,40 +64,39 @@
             </div>
           </section>
           <!-- ------------------------------ List View ------------------------------ -->
-          <%- include('../partials/skeleton-list') %>
+          <%- include('../../partials/skeleton-list') %>
           <section class="search-results-list--container">
             <div class="search-results--section">
-              <div class="result-columns grid-layout--songs">
+              <div class="result-columns grid-layout--presets">
                 <span>#</span>
-                <span>Title</span>
-                <span>Album</span>
-                <span>Genre</span>
-                <span>Year</span>
+                <span>Name</span>
+                <span>Synth</span>
+                <span>Pack</span>
+                <span>Author</span>
               </div>
-              <% Object.entries(songs).forEach(([i, song]) => { %>
+              <% Object.entries(presets).forEach(([i, preset]) => { %>
               <a
-                href="/song/<%= song.song_id %>"
-                class="grid-layout--songs result-entry"
+                href="/synth/<%= preset.synth_id %>"
+                class="grid-layout--presets result-entry"
               >
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
-                  <img src="<%= song.song_image %>" class="result-entry--img" />
-                  <div class="result-entry--title">
-                    <span class="result-entry--secondary">
-                      <%= song.artist_name %></span
-                    >
-                    <span class="result-entry--primary"
-                      ><%= song.song_title %></span
-                    >
-                  </div>
+                  <img
+                    src="<%= preset.synth_image %>"
+                    class="result-entry--img"
+                  />
+                  <span class="result-entry--primary"
+                    ><%= preset.preset_name %></span
+                  >
                 </div>
-                <span class="result-entry--tertiary"
-                  ><%= song.album_title === "[SINGLE]" ? "Single" :
-                  song.album_title %></span
+                <span class="result-entry--secondary"
+                  ><%= preset.synth_name %></span
                 >
-                <span class="--tag"><%= song.song_genre %></span>
-                <span class="result-entry--quaternary"
-                  ><%= song.song_release_year %></span
+                <span class="result-entry--tertiary"
+                  ><%= preset.preset_pack_name %></span
+                >
+                <span class="result-entry--tertiary"
+                  ><%= preset.preset_author %></span
                 >
               </a>
               <% }) %>
@@ -108,49 +106,40 @@
           <!-- ------------------------------ Grid View ------------------------------ -->
           <section class="search-results-grid--container hide">
             <div class="grid-layout--card">
-              <% Object.entries(songs).forEach(([i, song]) => { %>
+              <% Object.entries(presets).forEach(([i, preset]) => { %>
               <div class="card-entry">
-                <img src="<%= song.song_image %>" class="card-entry--img" />
+                <img src="<%= preset.synth_image %>" class="card-entry--img" />
                 <div class="card-entry--info-container">
                   <div class="card-entry--title-container">
                     <a
-                      href="/artist/<%= song.artist_id %>"
+                      href="/synth/<%= preset.synth_id %>"
                       class="card-entry--secondary"
-                      ><%= song.artist_name %></a
+                      ><%= preset.synth_name %></a
                     >
                     <span class="card-entry--primary"
-                      ><%= song.song_title %></span
+                      ><%= preset.preset_name %></span
                     >
                   </div>
-                  <div class="card-entry--album-container">
-                    <div class="card-entry--album-title-container">
-                      <i class="fa-solid fa-record-vinyl card-entry--icon"></i>
-                      <% if (song.album_title === "[SINGLE]") { %>
-                      <span class="card-entry--tertiary">Single</span>
-                      <% } else { %>
-                      <a
-                        href="/album/<%= song.album_id %>"
-                        class="card-entry--tertiary"
-                        ><%= song.album_title %></a
-                      >
-                      <% } %>
-                    </div>
-                    <div class="card-entry--year-container">
-                      <i class="fa-solid fa-calendar card-entry--icon"></i>
-                      <span class="card-entry--quaternary"
-                        ><%= song.song_release_year %></span
+                  <div class="card-entry--preset-info-container">
+                    <div class="card-entry--pack-container">
+                      <i class="fa-solid fa-folder card-entry--icon"></i>
+                      <span class="card-entry--tertiary"
+                        ><%= preset.preset_pack_name %></span
                       >
                     </div>
-                  </div>
-                  <div class="card-entry--tag-container">
-                    <span class="--tag--small"><%= song.song_genre %></span>
+                    <div class="card-entry--author-container">
+                      <i class="fa-solid fa-user card-entry--icon"></i>
+                      <span class="card-entry--tertiary"
+                        ><%= preset.preset_author %></span
+                      >
+                    </div>
                   </div>
                   <div class="card-entry--footer">
                     <span class="card-entry--added"
-                      >Added: <%= song.song_added_timestamp %></span
+                      >Added: <%= preset.preset_added_timestamp %></span
                     >
                     <a
-                      href="/song/<%= song.song_id %>"
+                      href="/synth/<%= preset.synth_id %>"
                       class="card-entry--more-details"
                     >
                       <span>More details</span
@@ -167,8 +156,8 @@
           <% } %>
         </main>
       </div>
-      <%- include('../partials/footer') %>
+      <%- include('../../partials/footer') %>
     </div>
   </body>
-  <%- include('../partials/scroll-to-top') %>
+  <%- include('../../partials/scroll-to-top') %>
 </html>

@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PresetBase &mdash; All songs</title>
+    <title>PresetBase &mdash; Hot songs</title>
     <script src="/js/browse/browse-results--songs.js" defer></script>
     <link rel="stylesheet" href="/styles/main/search-results.css" />
     <link rel="stylesheet" href="/styles/browse/browse-results.css" />
-    <%- include('../partials/html-head') %>
+    <%- include('../../partials/html-head') %>
   </head>
   <body>
     <div class="page-wrapper">
-      <%- include('../partials/navbar') %>
+      <%- include('../../partials/navbar') %>
       <div class="content-wrapper">
         <!-- ----------------------------- No results ------------------------------ -->
         <% if (!totalResults) { %>
@@ -23,8 +23,7 @@
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="browse-results--header">
             <div class="browse-results-header--top">
-              <h1 class="heading-primary">All songs</h1>
-              <span class="results-count"><%= totalResults %> songs</span>
+              <h1 class="heading-primary">Hot songs</h1>
             </div>
             <div class="browse-results-header--bottom">
               <div class="browse-results-result-filter--container">
@@ -53,6 +52,7 @@
               <div class="browse-results---select-container">
                 <select name="sort" class="browse-results--sort-select">
                   <option value="" selected disabled hidden>Sort</option>
+                  <option value="none">Hot</option>
                   <option value="title">Title</option>
                   <option value="artist">Artist</option>
                   <option value="album">Album</option>
@@ -65,7 +65,7 @@
             </div>
           </section>
           <!-- ------------------------------ List View ------------------------------ -->
-          <%- include('../partials/skeleton-list') %>
+          <%- include('../../partials/skeleton-list') %>
           <section class="search-results-list--container">
             <div class="search-results--section">
               <div class="result-columns grid-layout--songs">
@@ -167,8 +167,8 @@
           <% } %>
         </main>
       </div>
-      <%- include('../partials/footer') %>
+      <%- include('../../partials/footer') %>
     </div>
   </body>
-  <%- include('../partials/scroll-to-top') %>
+  <%- include('../../partials/scroll-to-top') %>
 </html>

@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PresetBase &mdash; All artists</title>
-    <script src="/js/browse/browse-results--artists.js" defer></script>
+    <title>PresetBase &mdash; All synths</title>
+    <script src="/js/browse/browse-results--synths.js" defer></script>
     <link rel="stylesheet" href="/styles/main/search-results.css" />
     <link rel="stylesheet" href="/styles/browse/browse-results.css" />
-    <%- include('../partials/html-head') %>
+    <%- include('../../partials/html-head') %>
   </head>
   <body>
     <div class="page-wrapper">
-      <%- include('../partials/navbar') %>
+      <%- include('../../partials/navbar') %>
       <div class="content-wrapper">
         <!-- ----------------------------- No results ------------------------------ -->
         <% if (!totalResults) { %>
         <div class="no-results--container">
           <i class="fa-solid fa-ban no-results--icon"></i>
-          <span class="no-results--text">No artists found</span>
+          <span class="no-results--text">No synths found</span>
         </div>
         <% } else { %>
         <!-- ------------------------------ Main page ------------------------------ -->
@@ -23,8 +23,8 @@
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="browse-results--header">
             <div class="browse-results-header--top">
-              <h1 class="heading-primary">All artists</h1>
-              <span class="results-count"><%= totalResults %> artists</span>
+              <h1 class="heading-primary">All synths</h1>
+              <span class="results-count"><%= totalResults %> synths</span>
             </div>
             <div class="browse-results-header--bottom">
               <div class="browse-results-result-filter--container">
@@ -54,7 +54,9 @@
                 <select name="sort" class="browse-results--sort-select">
                   <option value="" selected disabled hidden>Sort</option>
                   <option value="name">Name</option>
-                  <option value="country">Country</option>
+                  <option value="manufacturer">Manufacturer</option>
+                  <option value="type">Type</option>
+                  <option value="year">Year</option>
                   <option value="added">Date Added</option>
                 </select>
                 <i class="fa-solid fa-sort sort-icon"></i>
@@ -62,31 +64,37 @@
             </div>
           </section>
           <!-- ------------------------------ List View ------------------------------ -->
-          <%- include('../partials/skeleton-list') %>
+          <%- include('../../partials/skeleton-list') %>
           <section class="search-results-list--container">
             <div class="search-results--section">
-              <div class="result-columns grid-layout--artists">
+              <div class="result-columns grid-layout--synths">
                 <span>#</span>
-                <span>Name</span>
-                <span>Country</span>
+                <span>Synth</span>
+                <span>Manufacturer</span>
+                <span>Type</span>
+                <span>Year</span>
               </div>
-              <% Object.entries(artists).forEach(([i, artist]) => { %>
+              <% Object.entries(synths).forEach(([i, synth]) => { %>
               <a
-                href="/artist/<%= artist.artist_id %>"
-                class="grid-layout--artists result-entry"
+                href="/synth/<%= synth.synth_id %>"
+                class="grid-layout--synths result-entry"
               >
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
                   <img
-                    src="<%= artist.artist_image %>"
+                    src="<%= synth.synth_image %>"
                     class="result-entry--img"
                   />
                   <span class="result-entry--primary"
-                    ><%= artist.artist_name %></span
+                    ><%= synth.synth_name %></span
                   >
                 </div>
                 <span class="result-entry--secondary"
-                  ><%= artist.artist_country %></span
+                  ><%= synth.synth_manufacturer %></span
+                >
+                <span class="--tag"><%= synth.synth_type %></span>
+                <span class="result-entry--quaternary"
+                  ><%= synth.synth_release_year %></span
                 >
               </a>
               <% }) %>
@@ -96,25 +104,35 @@
           <!-- ------------------------------ Grid View ------------------------------ -->
           <section class="search-results-grid--container hide">
             <div class="grid-layout--card">
-              <% Object.entries(artists).forEach(([i, artist]) => { %>
+              <% Object.entries(synths).forEach(([i, synth]) => { %>
               <div class="card-entry">
-                <img src="<%= artist.artist_image %>" class="card-entry--img" />
+                <img src="<%= synth.synth_image %>" class="card-entry--img" />
                 <div class="card-entry--info-container">
-                  <span class="card-entry--primary"
-                    ><%= artist.artist_name %></span
-                  >
-                  <div class="card-entry--artist-country-container">
-                    <i class="fa-solid fa-globe card-entry--icon"></i>
-                    <span class="card-entry--tertiary"
-                      ><%= artist.artist_country %></span
+                  <div class="card-entry--title-container">
+                    <span class="card-entry--secondary"
+                      ><%= synth.synth_manufacturer %></span
                     >
+                    <span class="card-entry--primary"
+                      ><%= synth.synth_name %></span
+                    >
+                  </div>
+                  <div class="card-entry--synth-bottom-container">
+                    <div class="card-entry--year-container">
+                      <i class="fa-solid fa-calendar card-entry--icon"></i>
+                      <span class="card-entry--quaternary"
+                        ><%= synth.synth_release_year %></span
+                      >
+                    </div>
+                    <div class="card-entry--tag-container">
+                      <span class="--tag--small"><%= synth.synth_type %></span>
+                    </div>
                   </div>
                   <div class="card-entry--footer">
                     <span class="card-entry--added"
-                      >Added: <%= artist.artist_added_timestamp %></span
+                      >Added: <%= synth.synth_added_timestamp %></span
                     >
                     <a
-                      href="/artist/<%= artist.artist_id %>"
+                      href="/synth/<%= synth.synth_id %>"
                       class="card-entry--more-details"
                     >
                       <span>More details</span
@@ -131,8 +149,8 @@
           <% } %>
         </main>
       </div>
-      <%- include('../partials/footer') %>
+      <%- include('../../partials/footer') %>
     </div>
   </body>
-  <%- include('../partials/scroll-to-top') %>
+  <%- include('../../partials/scroll-to-top') %>
 </html>

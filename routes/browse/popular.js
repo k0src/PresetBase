@@ -62,7 +62,7 @@ router.get("/", async (req, res) => {
       }
     }
 
-    res.render("browse/popular", {
+    res.render("main/browse/popular", {
       songs,
       totalResults: 10,
       PATH_URL: "browse",

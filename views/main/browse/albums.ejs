@@ -1,21 +1,21 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PresetBase &mdash; All presets</title>
-    <script src="/js/browse/browse-results--presets.js" defer></script>
+    <title>PresetBase &mdash; All albums</title>
+    <script src="/js/browse/browse-results--albums.js" defer></script>
     <link rel="stylesheet" href="/styles/main/search-results.css" />
     <link rel="stylesheet" href="/styles/browse/browse-results.css" />
-    <%- include('../partials/html-head') %>
+    <%- include('../../partials/html-head') %>
   </head>
   <body>
     <div class="page-wrapper">
-      <%- include('../partials/navbar') %>
+      <%- include('../../partials/navbar') %>
       <div class="content-wrapper">
         <!-- ----------------------------- No results ------------------------------ -->
         <% if (!totalResults) { %>
         <div class="no-results--container">
           <i class="fa-solid fa-ban no-results--icon"></i>
-          <span class="no-results--text">No presets found</span>
+          <span class="no-results--text">No albums found</span>
         </div>
         <% } else { %>
         <!-- ------------------------------ Main page ------------------------------ -->
@@ -23,8 +23,8 @@
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="browse-results--header">
             <div class="browse-results-header--top">
-              <h1 class="heading-primary">All presets</h1>
-              <span class="results-count"><%= totalResults %> presets</span>
+              <h1 class="heading-primary">All albums</h1>
+              <span class="results-count"><%= totalResults %> albums</span>
             </div>
             <div class="browse-results-header--bottom">
               <div class="browse-results-result-filter--container">
@@ -53,10 +53,10 @@
               <div class="browse-results---select-container">
                 <select name="sort" class="browse-results--sort-select">
                   <option value="" selected disabled hidden>Sort</option>
-                  <option value="name">Name</option>
-                  <option value="synth">Synth</option>
-                  <option value="pack">Pack</option>
-                  <option value="author">Author</option>
+                  <option value="title">Title</option>
+                  <option value="artist">Artist</option>
+                  <option value="genre">Genre</option>
+                  <option value="year">Year</option>
                   <option value="added">Date Added</option>
                 </select>
                 <i class="fa-solid fa-sort sort-icon"></i>
@@ -64,39 +64,37 @@
             </div>
           </section>
           <!-- ------------------------------ List View ------------------------------ -->
-          <%- include('../partials/skeleton-list') %>
+          <%- include('../../partials/skeleton-list') %>
           <section class="search-results-list--container">
             <div class="search-results--section">
-              <div class="result-columns grid-layout--presets">
+              <div class="result-columns grid-layout--albums">
                 <span>#</span>
-                <span>Name</span>
-                <span>Synth</span>
-                <span>Pack</span>
-                <span>Author</span>
+                <span>Title</span>
+                <span>Artist</span>
+                <span>Genre</span>
+                <span>Year</span>
               </div>
-              <% Object.entries(presets).forEach(([i, preset]) => { %>
+              <% Object.entries(albums).forEach(([i, album]) => { %>
               <a
-                href="/synth/<%= preset.synth_id %>"
-                class="grid-layout--presets result-entry"
+                href="/album/<%= album.album_id %>"
+                class="grid-layout--albums result-entry"
               >
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
                   <img
-                    src="<%= preset.synth_image %>"
+                    src="<%= album.album_image %>"
                     class="result-entry--img"
                   />
-                  <span class="result-entry--primary"
-                    ><%= preset.preset_name %></span
+                  <span class="result-entry--primary">
+                    <%= album.album_title %></span
                   >
                 </div>
                 <span class="result-entry--secondary"
-                  ><%= preset.synth_name %></span
+                  ><%= album.artist_name %></span
                 >
-                <span class="result-entry--tertiary"
-                  ><%= preset.preset_pack_name %></span
-                >
-                <span class="result-entry--tertiary"
-                  ><%= preset.preset_author %></span
+                <span class="--tag"><%= album.album_genre %></span>
+                <span class="result-entry--quaternary"
+                  ><%= album.album_release_year %></span
                 >
               </a>
               <% }) %>
@@ -106,40 +104,37 @@
           <!-- ------------------------------ Grid View ------------------------------ -->
           <section class="search-results-grid--container hide">
             <div class="grid-layout--card">
-              <% Object.entries(presets).forEach(([i, preset]) => { %>
+              <% Object.entries(albums).forEach(([i, album]) => { %>
               <div class="card-entry">
-                <img src="<%= preset.synth_image %>" class="card-entry--img" />
+                <img src="<%= album.album_image %>" class="card-entry--img" />
                 <div class="card-entry--info-container">
                   <div class="card-entry--title-container">
                     <a
-                      href="/synth/<%= preset.synth_id %>"
+                      href="/artist/<%= album.artist_id %>"
                       class="card-entry--secondary"
-                      ><%= preset.synth_name %></a
+                      ><%= album.artist_name %></a
                     >
                     <span class="card-entry--primary"
-                      ><%= preset.preset_name %></span
+                      ><%= album.album_title %></span
                     >
                   </div>
-                  <div class="card-entry--preset-info-container">
-                    <div class="card-entry--pack-container">
-                      <i class="fa-solid fa-folder card-entry--icon"></i>
-                      <span class="card-entry--tertiary"
-                        ><%= preset.preset_pack_name %></span
+                  <div class="card-entry--album-bottom-container">
+                    <div class="card-entry--year-container">
+                      <i class="fa-solid fa-calendar card-entry--icon"></i>
+                      <span class="card-entry--quaternary"
+                        ><%= album.album_release_year %></span
                       >
                     </div>
-                    <div class="card-entry--author-container">
-                      <i class="fa-solid fa-user card-entry--icon"></i>
-                      <span class="card-entry--tertiary"
-                        ><%= preset.preset_author %></span
-                      >
+                    <div class="card-entry--tag-container">
+                      <span class="--tag--small"><%= album.album_genre %></span>
                     </div>
                   </div>
                   <div class="card-entry--footer">
                     <span class="card-entry--added"
-                      >Added: <%= preset.preset_added_timestamp %></span
+                      >Added: <%= album.album_added_timestamp %></span
                     >
                     <a
-                      href="/synth/<%= preset.synth_id %>"
+                      href="/album/<%= album.album_id %>"
                       class="card-entry--more-details"
                     >
                       <span>More details</span
@@ -156,8 +151,8 @@
           <% } %>
         </main>
       </div>
-      <%- include('../partials/footer') %>
+      <%- include('../../partials/footer') %>
     </div>
   </body>
-  <%- include('../partials/scroll-to-top') %>
+  <%- include('../../partials/scroll-to-top') %>
 </html>
