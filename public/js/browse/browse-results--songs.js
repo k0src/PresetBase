@@ -11,9 +11,14 @@ window.addEventListener("load", () => {
 const sortSelect = document.querySelector(".browse-results--sort-select");
 
 sortSelect.addEventListener("change", () => {
-  localStorage.setItem("songSortSelected", sortSelect.value);
+  const pageUrl = window.location.pathname;
 
-  window.location.href = `/browse/songs?sort=${encodeURIComponent(
+  localStorage.setItem(
+    `${pageUrl.split("/").filter(Boolean).pop()}SortSelected`,
+    sortSelect.value
+  );
+
+  window.location.href = `${pageUrl}?sort=${encodeURIComponent(
     sortSelect.value
   )}`;
 });
@@ -44,7 +49,10 @@ viewModeToggle.addEventListener("click", () => {
 
 /* ------------------------- Setting values on load ------------------------- */
 const setSortSelectValue = function () {
-  const sortValue = localStorage.getItem("songSortSelected");
+  const sortValue = localStorage.getItem(
+    `${window.location.pathname.split("/").filter(Boolean).pop()}SortSelected`
+  );
+
   if (sortValue) {
     sortSelect.value = sortValue;
   }
