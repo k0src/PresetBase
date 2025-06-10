@@ -121,7 +121,6 @@ filterInput.addEventListener("input", () => {
   filterResults(filterInput.value);
 });
 
-/* CLEAR FILTER INPUT */
 filterClearBtn.addEventListener("click", () => {
   filterInput.value = "";
   filterResults(filterInput.value);

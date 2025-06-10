@@ -1,4 +1,4 @@
-/* -------------------------------- List View ------------------------------- */
+/* --------------------------------- Header --------------------------------- */
 .search-results-list--container {
   display: none;
 }
@@ -292,4 +292,60 @@
   border-radius: 0.8rem;
   border: 0.1rem solid;
 }
+
 /* --------------------------------- Queries -------------------------------- */
+@media (max-width: 64em) {
+  .grid-layout--card {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.2rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .browse-results--header {
+    gap: 1.4rem;
+  }
+
+  .results-count {
+    font-size: 1.2rem;
+  }
+
+  .browse-results--sort-select {
+    padding: 0.4rem 1rem;
+  }
+
+  .grid-layout--card {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .browse-results-result-filter--container {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .browse-results-result-filter {
+    width: 70%;
+    max-width: 70%;
+  }
+
+  .result-filter--clear {
+    display: none !important;
+  }
+
+  .browse-results-header--bottom {
+    gap: 0;
+  }
+
+  .browse-results--sort-select {
+    display: none;
+  }
+
+  .grid-layout--card {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 1rem;
+  }
+}

@@ -127,35 +127,35 @@ a:active {
 
 .grid-layout--songs {
   display: grid;
-  grid-template-columns: 1.6rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .grid-layout--artists {
   display: grid;
-  grid-template-columns: 1.6rem 1fr 1fr;
+  grid-template-columns: 2rem 1fr 1fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .grid-layout--albums {
   display: grid;
-  grid-template-columns: 1.6rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .grid-layout--synths {
   display: grid;
-  grid-template-columns: 1.6rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .grid-layout--presets {
   display: grid;
-  grid-template-columns: 1.6rem 400fr 300fr 300fr 200fr;
+  grid-template-columns: 2rem 400fr 300fr 300fr 200fr;
   align-items: center;
   gap: 1.4rem;
 }
@@ -302,7 +302,7 @@ a:active {
   }
 }
 
-@media (max-width: 30em) {
+@media (max-width: 35em) {
   .result-entry--title {
     gap: 0.4rem;
   }
