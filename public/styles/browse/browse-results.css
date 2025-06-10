@@ -231,7 +231,7 @@
   min-width: 0;
 }
 
-/* ----------------------------- Album Section ------------------------------ */
+/* ------------------------------ Browse Songs ------------------------------ */
 .card-entry--album-container {
   display: grid;
   grid-template-columns: 7fr 3fr;
@@ -250,6 +250,16 @@
 
 .card-entry--year-container {
   justify-self: end;
+}
+
+/* ----------------------------- Browse Artists ----------------------------- */
+.card-entry--artist-country-container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  overflow: hidden;
+  min-width: 0;
 }
 
 /* ------------------------------ Icons ------------------------------------- */
