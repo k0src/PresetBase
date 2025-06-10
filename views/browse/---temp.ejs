@@ -2,12 +2,12 @@
 <html>
   <head>
     <script src="/assets/scroll_to_top.js" defer></script>
-    <script src="/assets/browse/browse_artists.js" defer></script>
+    <script src="/assets/browse/browse_albums.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>All artists</title>
+    <title>All songs</title>
     <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/browse/browse_artists.css" />
+    <link rel="stylesheet" href="/styles/browse/browse_albums.css" />
     <link rel="stylesheet" href="/styles/tags.css" />
   </head>
   <body
@@ -17,8 +17,8 @@
     <%- include('../partials/navbar') %>
     <div class="content animate">
       <div class="header">
-        <h1>All artists</h1>
-        <span class="results-count"><%= totalResults %> artists</span>
+        <h1>All albums</h1>
+        <span class="results-count"><%= totalResults %> albums</span>
       </div>
       <main>
         <div class="results-filters-main-container">
@@ -49,13 +49,21 @@
               <span class="material-icons">sort</span>
             </button>
             <div class="result-sort-content">
-              <div id="name" class="result-sort-content--item">
-                <span>Name</span>
+              <div id="title" class="result-sort-content--item">
+                <span>Album</span>
+                <span class="material-icons">album</span>
+              </div>
+              <div id="artist" class="result-sort-content--item">
+                <span>Artist</span>
                 <span class="material-icons">person</span>
               </div>
-              <div id="country" class="result-sort-content--item">
-                <span>Country</span>
-                <span class="material-icons">public</span>
+              <div id="genre" class="result-sort-content--item">
+                <span>Genre</span>
+                <span class="material-icons">library_music</span>
+              </div>
+              <div id="year" class="result-sort-content--item">
+                <span>Year</span>
+                <span class="material-icons">calendar_today</span>
               </div>
               <div id="added" class="result-sort-content--item">
                 <span>Added</span>
@@ -69,23 +77,29 @@
         <div class="list-view-container">
           <div class="result-columns grid-layout--list">
             <span class="result-columns--name">#</span>
-            <span class="result-columns--name">Name</span>
-            <span class="result-columns--name">Country</span>
+            <span class="result-columns--name">Title</span>
+            <span class="result-columns--name">Artist</span>
+            <span class="result-columns--name">Genre</span>
+            <span class="result-columns--name">Year</span>
           </div>
-          <% Object.entries(artists).forEach(([i, artist]) => { %>
+          <% Object.entries(albums).forEach(([i, album]) => { %>
           <div class="result-entry grid-layout--list">
             <span class="result-entry--number"><%= +i + 1 %></span>
             <div class="result-entry--title-container">
-              <img src="<%= artist.artist_image %>" class="result-entry--img" />
-              <span class="result-entry--artist-name"
-                ><%= artist.artist_name %></span
+              <img src="<%= album.album_image %>" class="result-entry--img" />
+              <span class="result-entry--album-title">
+                <%= album.album_title %></span
               >
             </div>
-            <span class="result-entry--artist-country"
-              ><%= artist.artist_country %></span
+            <span class="result-entry--artist-name"
+              ><%= album.artist_name %></span
+            >
+            <span class="genre-tag"><%= album.album_genre %></span>
+            <span class="result-entry--release-year"
+              ><%= album.album_release_year %></span
             >
             <a
-              href="/artist/<%= artist.artist_id %>"
+              href="/album/<%= album.album_id %>"
               class="material-icons open-btn"
               >open_in_new</a
             >
@@ -96,30 +110,42 @@
         <!-- Grid view -->
         <div class="grid-view-container hide">
           <div class="grid-layout--card">
-            <% Object.entries(artists).forEach(([i, artist]) => { %>
+            <% Object.entries(albums).forEach(([i, album]) => { %>
             <div class="card-entry">
-              <img src="<%= artist.artist_image %>" class="card-entry--img" />
-              <% if (artist.is_new) { %>
+              <img src="<%= album.album_image %>" class="card-entry--img" />
+              <% if (album.is_new) { %>
               <span class="status status--new">New</span>
               <% } %>
               <div class="card-entry--info-container">
-                <span class="card-entry--artist-name"
-                  ><%= artist.artist_name %></span
-                >
-                <div class="card-entry--artist-country-container">
-                  <span class="material-icons card-entry--country-icon"
-                    >public</span
+                <div class="card-entry--title-container">
+                  <span class="card-entry--album-title"
+                    ><%= album.album_title %></span
                   >
-                  <span class="card-entry--artist-country"
-                    ><%= artist.artist_country %></span
-                  >
+                  <div class="card-entry--artist-container">
+                    <a
+                      href="/artist/<%= album.artist_id %>"
+                      class="card-entry--artist-name"
+                      ><%= album.artist_name %></a
+                    >
+                    <div class="card-entry--year-container">
+                      <span class="material-icons card-entry--year-icon"
+                        >calendar_today</span
+                      >
+                      <span class="card-entry--release-year"
+                        ><%= album.album_release_year %></span
+                      >
+                    </div>
+                  </div>
+                </div>
+                <div class="card-entry--tag-container">
+                  <span class="genre-tag"><%= album.album_genre %></span>
                 </div>
                 <div class="card-entry--footer">
                   <span class="card-entry--added"
-                    >Added: <%= artist.artist_added_timestamp %></span
+                    >Added: <%= album.album_added_timestamp %></span
                   >
                   <a
-                    href="/artist/<%= artist.artist_id %>"
+                    href="/album/<%= album.album_id %>"
                     class="card-entry--more-details"
                     >More details
                     <span class="material-icons">open_in_new</span></a

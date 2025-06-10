@@ -262,6 +262,17 @@
   min-width: 0;
 }
 
+/* ------------------------------ Browse Albums ----------------------------- */
+.card-entry--album-bottom-container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  overflow: hidden;
+  min-width: 0;
+  justify-content: space-between;
+}
+
 /* ------------------------------ Icons ------------------------------------- */
 .card-entry--icon {
   font-size: 1.2rem;
