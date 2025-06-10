@@ -262,8 +262,9 @@
   min-width: 0;
 }
 
-/* ------------------------------ Browse Albums ----------------------------- */
-.card-entry--album-bottom-container {
+/* -------------------------- Browse Albums, Synths ------------------------- */
+.card-entry--album-bottom-container,
+.card-entry--synth-bottom-container {
   display: flex;
   align-items: center;
   gap: 0.4rem;
@@ -271,6 +272,24 @@
   overflow: hidden;
   min-width: 0;
   justify-content: space-between;
+}
+
+/* ----------------------------- Browse Presets ----------------------------- */
+.card-entry--preset-info-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.6rem;
+}
+
+.card-entry--pack-container,
+.card-entry--author-container {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0;
+  overflow: hidden;
+  min-width: 0;
 }
 
 /* ------------------------------ Icons ------------------------------------- */

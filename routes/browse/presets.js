@@ -10,8 +10,10 @@ const {
 
 router.get("/", async (req, res) => {
   const sortKeys = {
-    preset: "presets.preset_name",
+    name: "presets.preset_name",
     synth: "synths.synth_name",
+    pack: "presets.pack_name",
+    author: "presets.author",
     added: "presets.timestamp",
   };
 

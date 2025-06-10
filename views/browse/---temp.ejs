@@ -2,12 +2,12 @@
 <html>
   <head>
     <script src="/assets/scroll_to_top.js" defer></script>
-    <script src="/assets/browse/browse_albums.js" defer></script>
+    <script src="/assets/browse/browse_presets.js" defer></script>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>All songs</title>
     <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/browse/browse_albums.css" />
+    <link rel="stylesheet" href="/styles/browse/browse_presets.css" />
     <link rel="stylesheet" href="/styles/tags.css" />
   </head>
   <body
@@ -17,8 +17,8 @@
     <%- include('../partials/navbar') %>
     <div class="content animate">
       <div class="header">
-        <h1>All albums</h1>
-        <span class="results-count"><%= totalResults %> albums</span>
+        <h1>All presets</h1>
+        <span class="results-count"><%= totalResults %> presets</span>
       </div>
       <main>
         <div class="results-filters-main-container">
@@ -49,21 +49,13 @@
               <span class="material-icons">sort</span>
             </button>
             <div class="result-sort-content">
-              <div id="title" class="result-sort-content--item">
-                <span>Album</span>
-                <span class="material-icons">album</span>
+              <div id="preset" class="result-sort-content--item">
+                <span>Preset</span>
+                <span class="material-icons">tune</span>
               </div>
-              <div id="artist" class="result-sort-content--item">
-                <span>Artist</span>
-                <span class="material-icons">person</span>
-              </div>
-              <div id="genre" class="result-sort-content--item">
-                <span>Genre</span>
-                <span class="material-icons">library_music</span>
-              </div>
-              <div id="year" class="result-sort-content--item">
-                <span>Year</span>
-                <span class="material-icons">calendar_today</span>
+              <div id="synth" class="result-sort-content--item">
+                <span>Synth</span>
+                <span class="material-icons">piano</span>
               </div>
               <div id="added" class="result-sort-content--item">
                 <span>Added</span>
@@ -77,29 +69,31 @@
         <div class="list-view-container">
           <div class="result-columns grid-layout--list">
             <span class="result-columns--name">#</span>
-            <span class="result-columns--name">Title</span>
-            <span class="result-columns--name">Artist</span>
-            <span class="result-columns--name">Genre</span>
-            <span class="result-columns--name">Year</span>
+            <span class="result-columns--name">Name</span>
+            <span class="result-columns--name">Synth</span>
+            <span class="result-columns--name">Pack</span>
+            <span class="result-columns--name">Author</span>
           </div>
-          <% Object.entries(albums).forEach(([i, album]) => { %>
+          <% Object.entries(presets).forEach(([i, preset]) => { %>
           <div class="result-entry grid-layout--list">
             <span class="result-entry--number"><%= +i + 1 %></span>
             <div class="result-entry--title-container">
-              <img src="<%= album.album_image %>" class="result-entry--img" />
-              <span class="result-entry--album-title">
-                <%= album.album_title %></span
+              <img src="<%= preset.synth_image %>" class="result-entry--img" />
+              <span class="result-entry--preset-name">
+                <%= preset.preset_name %></span
               >
             </div>
-            <span class="result-entry--artist-name"
-              ><%= album.artist_name %></span
+            <span class="result-entry--synth-name"
+              ><%= preset.synth_name %></span
             >
-            <span class="genre-tag"><%= album.album_genre %></span>
-            <span class="result-entry--release-year"
-              ><%= album.album_release_year %></span
+            <span class="result-entry--pack-name"
+              ><%= preset.preset_pack_name %></span
+            >
+            <span class="result-entry--author"
+              ><%= preset.preset_author %></span
             >
             <a
-              href="/album/<%= album.album_id %>"
+              href="/synth/<%= preset.synth_id %>"
               class="material-icons open-btn"
               >open_in_new</a
             >
@@ -110,42 +104,47 @@
         <!-- Grid view -->
         <div class="grid-view-container hide">
           <div class="grid-layout--card">
-            <% Object.entries(albums).forEach(([i, album]) => { %>
+            <% Object.entries(presets).forEach(([i, preset]) => { %>
             <div class="card-entry">
-              <img src="<%= album.album_image %>" class="card-entry--img" />
-              <% if (album.is_new) { %>
+              <img src="<%= preset.synth_image %>" class="card-entry--img" />
+              <% if (preset.is_new) { %>
               <span class="status status--new">New</span>
               <% } %>
               <div class="card-entry--info-container">
                 <div class="card-entry--title-container">
-                  <span class="card-entry--album-title"
-                    ><%= album.album_title %></span
+                  <a
+                    href="/synth/<%= preset.synth_id %>"
+                    class="card-entry--synth-name"
+                    ><%= preset.synth_name %></a
                   >
-                  <div class="card-entry--artist-container">
-                    <a
-                      href="/artist/<%= album.artist_id %>"
-                      class="card-entry--artist-name"
-                      ><%= album.artist_name %></a
-                    >
-                    <div class="card-entry--year-container">
-                      <span class="material-icons card-entry--year-icon"
-                        >calendar_today</span
-                      >
-                      <span class="card-entry--release-year"
-                        ><%= album.album_release_year %></span
-                      >
-                    </div>
-                  </div>
+                  <span class="card-entry--preset-name"
+                    ><%= preset.preset_name %></span
+                  >
                 </div>
-                <div class="card-entry--tag-container">
-                  <span class="genre-tag"><%= album.album_genre %></span>
+                <div class="card-entry--pack-container">
+                  <div class="card-entry--pack-title-container">
+                    <span class="material-icons card-entry--pack-icon"
+                      >archive</span
+                    >
+                    <span class="card-entry--pack-name"
+                      ><%= preset.preset_pack_name %></span
+                    >
+                  </div>
+                  <div class="card-entry--author-container">
+                    <span class="material-icons card-entry--author-icon"
+                      >person</span
+                    >
+                    <span class="card-entry--author"
+                      ><%= preset.preset_author %></span
+                    >
+                  </div>
                 </div>
                 <div class="card-entry--footer">
                   <span class="card-entry--added"
-                    >Added: <%= album.album_added_timestamp %></span
+                    >Added: <%= preset.preset_added_timestamp %></span
                   >
                   <a
-                    href="/album/<%= album.album_id %>"
+                    href="/synth/<%= preset.synth_id %>"
                     class="card-entry--more-details"
                     >More details
                     <span class="material-icons">open_in_new</span></a
