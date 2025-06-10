@@ -1,4 +1,4 @@
-const tags = document.querySelectorAll(".--tag");
+const tags = document.querySelectorAll(".--tag, .--tag--small");
 
 if (tags.length !== 0) {
   tags.forEach((tag) => {
