@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
+const db = require("../../db/db");
 
 // GET /synth/:id
 router.get("/:id", (req, res) => {
@@ -113,7 +113,7 @@ router.get("/:id", (req, res) => {
       }
     });
 
-    res.render("synth", { synth, PATH_URL: "browse" });
+    res.render("entries/synth", { synth, PATH_URL: "browse" });
   });
 });
 

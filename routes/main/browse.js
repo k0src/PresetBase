@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../../db/db");
 const { dbAll, dbGet } = require("../UTIL.js");
 
 router.get("/", async (req, res) => {
@@ -21,6 +20,7 @@ router.get("/", async (req, res) => {
             songs.title AS song_title,
             songs.genre AS song_genre,
             songs.image_url AS song_image,
+            songs.release_year AS song_release_year,
             artists.name AS artist_name,
             albums.title AS album_title,
             COALESCE(song_clicks.recent_click, 0) AS recent_click_timestamp
@@ -33,7 +33,7 @@ router.get("/", async (req, res) => {
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
         ORDER BY recent_click DESC
-        LIMIT 3
+        LIMIT 9
     `,
 
     popular: `
@@ -54,7 +54,7 @@ router.get("/", async (req, res) => {
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
         ORDER BY clicks DESC
-        LIMIT 3
+        LIMIT 6
     `,
 
     recentlyAdded: `
@@ -75,7 +75,7 @@ router.get("/", async (req, res) => {
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
         ORDER BY song_added_timestamp DESC
-        LIMIT 3
+        LIMIT 6
     `,
 
     topGenres: `
@@ -87,7 +87,7 @@ router.get("/", async (req, res) => {
         LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
         GROUP BY genre
         ORDER BY total_clicks DESC
-        LIMIT 5;
+        LIMIT 4;
     `,
   };
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
+const db = require("../../db/db");
 
 // GET /artist/:id
 router.get("/:id", (req, res) => {
@@ -118,7 +118,7 @@ router.get("/:id", (req, res) => {
 
     artist.fav_synth = favSynth;
 
-    res.render("artist", { artist, PATH_URL: "browse" });
+    res.render("entries/artist", { artist, PATH_URL: "browse" });
   });
 });
 

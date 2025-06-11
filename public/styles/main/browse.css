@@ -1,0 +1,274 @@
+@import url("https://fonts.googleapis.com/css2?family=Geist:wght@100..900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Sora:wght@100..800&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 62.5%;
+  overflow-x: hidden;
+}
+
+body {
+  font-family: "Geist", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #e3e5e4;
+  overflow-x: hidden;
+
+  background-color: #171b1f;
+}
+
+a:link,
+a:visited,
+a:hover,
+a:active {
+  text-decoration: none;
+  color: inherit;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.content-wrapper {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 120rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 4rem;
+
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
+  border-bottom: 0.2rem solid #2d343a;
+  background-color: #202429;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+
+/* ------------------------------- Main styles ------------------------------ */
+
+.browse--header {
+  padding: 3.2rem 0 2.4rem 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.heading-primary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.heading-secondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}
+
+.browse-view-all-link {
+  color: #899096 !important;
+  font-size: 1.6rem;
+}
+
+/* -------------------------------- Hot songs ------------------------------- */
+.top-categories-header,
+.hot-songs-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+/* --------------------------- Hot songs carousel -------------------------- */
+.hot-songs-carousel {
+  overflow: hidden;
+  position: relative;
+}
+
+.hot-songs-carousel::before,
+.hot-songs-carousel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0rem;
+  pointer-events: none;
+  z-index: 1;
+  transition: width 0.3s ease-in-out;
+}
+
+.hot-songs-carousel.carousel-moving::before,
+.hot-songs-carousel.carousel-moving::after {
+  width: 2.4rem;
+}
+
+.hot-songs-carousel::before {
+  left: 0;
+  background: linear-gradient(to right, #202429 0%, transparent 100%);
+}
+
+.hot-songs-carousel::after {
+  right: 0;
+  background: linear-gradient(to left, #202429 0%, transparent 100%);
+}
+
+.hot-songs-carousel--track {
+  display: flex;
+  gap: 1.6rem;
+  transition: transform 0.5s ease-in-out;
+}
+
+.hot-song--carousel-item {
+  cursor: pointer;
+  width: 36rem;
+  flex-shrink: 0;
+  background: #171b1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  border-radius: 0.8rem;
+  padding: 2rem;
+  border: 0.2rem solid #2d343a;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hot-song--carousel-item:hover {
+  box-shadow: 0 0.6rem 1rem rgba(0, 0, 0, 0.1);
+  transform: translateY(-0.2rem);
+}
+
+.hot-song--img {
+  width: 12.8rem;
+  height: 12.8rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.8rem;
+}
+
+.hot-song--card-right {
+  padding: 0.6rem 0;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.hot-song--artist,
+.hot-song--title,
+.hot-song--album {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.hot-song--artist {
+  font-size: 1.4rem;
+  color: #899096 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.hot-song--title {
+  font-size: 2.8rem;
+  font-weight: 600;
+}
+
+.hot-song--album {
+  font-size: 1.8rem;
+}
+
+.hot-song--year {
+  font-size: 1.2rem;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  border: 0.1rem #2d343a solid;
+  background-color: #202429;
+}
+
+/* ------------------------------ Carousel Nav ------------------------------ */
+.hot-songs-carousel--nav {
+  display: flex;
+  justify-content: center;
+  padding: 1.6rem;
+}
+
+.carousel--nav-dot {
+  width: 1.4rem;
+  height: 1.4rem;
+  margin: 0 0.8rem;
+  border-radius: 50%;
+  border: 2px solid #2d343a;
+  background-color: #202429;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.nav-dot--active {
+  background-color: #2d343a;
+}
+
+/* ----------------------------- Top categories ----------------------------- */
+.top-categories-header {
+  padding-top: 1.6rem;
+}
+
+.browse-top-category-container {
+  display: flex;
+  gap: 1.6rem;
+}
+
+.top-category-card {
+  cursor: pointer;
+  width: 36rem;
+  flex-shrink: 0;
+  background: #171b1f;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  border-radius: 0.8rem;
+  padding: 3.2rem;
+  border: 0.2rem solid #2d343a;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.top-category-card:hover {
+  box-shadow: 0 0.6rem 1rem rgba(0, 0, 0, 0.1);
+  transform: translateY(-0.2rem);
+}
+
+.top-category-icon {
+  font-size: 3.2rem;
+  color: #899096 !important;
+}
+
+.top-category-text {
+  font-size: 1.8rem;
+  color: #899096 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+}

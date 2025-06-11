@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
-const { dbAll, dbGet } = require("./UTIL.js");
+const { dbAll, dbGet } = require("../UTIL.js");
 
 router.get("/", async (req, res) => {
   const searchQuery = req.query.query.toLowerCase().trim();

@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
-const { dbRun } = require("./UTIL.js");
+const { dbRun } = require("../UTIL.js");
 
 router.get("/", (req, res) => {
   res.render("submit", { PATH_URL: "submit" });

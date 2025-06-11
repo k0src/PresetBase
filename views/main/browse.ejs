@@ -1,182 +1,95 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Browse</title>
-    <script src="/assets/navbar.js" defer></script>
-    <script
-      src="https://kit.fontawesome.com/cd2982a5b3.js"
-      crossorigin="anonymous"
-      defer
-    ></script>
-    <link rel="stylesheet" href="/styles/partials/navbar.css" />
-    <link rel="stylesheet" href="/styles/browse/browse.css" />
+    <title>PresetBase &mdash; Browse"</title>
+    <script src="/js/main/browse.js" defer></script>
+    <link rel="stylesheet" href="/styles/main/browse.css" />
+    <%- include('../partials/html-head') %>
   </head>
-  <body
-    style="opacity: 0; transition: opacity 0.3s ease"
-    onload="document.body.style.opacity='1'"
-  >
-    <%- include('../partials/navbar') %>
-    <div class="content animate">
-      <div class="header">
-        <h1>Browse</h1>
-        <span class="results-count"><%= totalResults %> total entries</span>
-      </div>
-
-      <div class="top-container">
-        <div class="popular-container">
-          <h2>Popular songs</h2>
-          <% Object.entries(popular).forEach(([i, song]) => { %>
-          <a href="/song/<%= song.song_id %>" class="result-card">
-            <span class="result-emoji"><%= ["🥇", "🥈", "🥉"][i] %></span>
-            <img src="<%= song.song_image %>" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title"><%= song.song_title %></span>
-                <span class="result-sub-one"><%= song.artist_name %></span>
-                <% if (song.album_title !== "[SINGLE]") { %>
-                <span class="result-sub-two"><%= song.album_title %></span>
-                <% } %>
-                <span class="result-sub-two"><%= song.song_genre %></span>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="browse--header">
+            <h1 class="heading-primary">Browse</h1>
+          </section>
+          <!-- --------------------------- Browse Section ---------------------------- -->
+          <section class="browse-main--container">
+            <div class="hot-songs-container">
+              <div class="hot-songs-header">
+                <h2 class="heading-secondary">Hot songs</h2>
+                <a href="/browse/hot" class="browse-view-all-link">View all</a>
               </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <% }) %>
-
-          <a href="/browse/popular" class="view-more">
-            <div class="browse-all-card--info-wrapper">
-              <span class="view-more--title">View More</span>
-            </div>
-            <span class="browse-all-card--icon-open-small material-icons"
-              >open_in_new</span
-            >
-          </a>
-        </div>
-
-        <div class="hot-container">
-          <h2>Hot songs</h2>
-          <% Object.entries(hot).forEach(([i, song]) => { %>
-          <a href="/song/<%= song.song_id %>" class="result-card">
-            <span class="result-emoji"><%= ["🔥", "📈", "📈"][i] %></span>
-            <img src="<%= song.song_image %>" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title"><%= song.song_title %></span>
-                <span class="result-sub-one"><%= song.artist_name %></span>
-                <% if (song.album_title !== "[SINGLE]") { %>
-                <span class="result-sub-two"><%= song.album_title %></span>
-                <% } %>
-                <span class="result-sub-two"><%= song.song_genre %></span>
+              <!-- Carousel -->
+              <div class="hot-songs-carousel">
+                <div class="hot-songs-carousel--track">
+                  <% Object.entries(hot).forEach(([i, song]) => { %>
+                  <a
+                    href="/song/<%= song.song_id %>"
+                    class="hot-song--carousel-item"
+                  >
+                    <img
+                      src="<%= song.song_image %>"
+                      alt="Hot Song Image"
+                      class="hot-song--img"
+                    />
+                    <div class="hot-song--card-right">
+                      <span class="hot-song--artist"
+                        ><%= song.artist_name %></span
+                      >
+                      <span class="hot-song--title"
+                        ><%= song.song_title %></span
+                      >
+                      <span class="hot-song--album"
+                        ><%= song.album_title === "[SINGLE]" ? "Single" :
+                        song.album_title %></span
+                      >
+                      <span class="hot-song--year"
+                        ><%= song.song_release_year %></span
+                      >
+                    </div>
+                  </a>
+                  <% }) %>
+                </div>
+                <div class="hot-songs-carousel--nav">
+                  <button class="carousel--nav-dot nav-dot--active"></button>
+                  <button class="carousel--nav-dot"></button>
+                  <button class="carousel--nav-dot"></button>
+                </div>
               </div>
-              <span class="material-icons open-icon">open_in_new</span>
             </div>
-          </a>
-          <% }) %>
 
-          <a href="/browse/hot" class="view-more">
-            <div class="browse-all-card--info-wrapper">
-              <span class="view-more--title">View More</span>
+            <!-- Top Catergories Cards -->
+            <div class="top-categories-header">
+              <h2 class="heading-secondary">Top categories</h2>
+              <a href="#browseAllCategories" class="browse-view-all-link"
+                >View more</a
+              >
             </div>
-            <span class="browse-all-card--icon-open-small material-icons"
-              >open_in_new</span
-            >
-          </a>
-        </div>
+            <div class="browse-top-category-container">
+              <a href="/browse/songs" class="top-category-card">
+                <i class="fa-solid fa-music top-category-icon"></i>
+                <span class="top-category-text">Songs</span>
+              </a>
+              <a href="/browse/artists" class="top-category-card">
+                <i class="fa-solid fa-user top-category-icon"></i>
+                <span class="top-category-text">Artists</span>
+              </a>
+              <a href="/browse/synths" class="top-category-card">
+                <i class="fa-solid fa-keyboard top-category-icon"></i>
+                <span class="top-category-text">Synths</span>
+              </a>
+            </div>
 
-        <div class="recently-added-container">
-          <h2>Recently added songs</h2>
-          <% Object.entries(recentlyAdded).forEach(([i, song]) => { %>
-          <a href="/song/<%= song.song_id %>" class="result-card">
-            <span class="result-emoji"><%= ["❗", "❗", "❗"][i] %></span>
-            <img src="<%= song.song_image %>" class="result-img" />
-            <div class="result-info-wrapper">
-              <div class="result-info">
-                <span class="result-title"><%= song.song_title %></span>
-                <span class="result-sub-one"><%= song.artist_name %></span>
-                <% if (song.album_title !== "[SINGLE]") { %>
-                <span class="result-sub-two"><%= song.album_title %></span>
-                <% } %>
-                <span class="result-sub-two"><%= song.song_genre %></span>
-              </div>
-              <span class="material-icons open-icon">open_in_new</span>
-            </div>
-          </a>
-          <% }) %>
-
-          <a href="/browse/recent" class="view-more">
-            <div class="browse-all-card--info-wrapper">
-              <span class="view-more--title">View More</span>
-            </div>
-            <span class="browse-all-card--icon-open-small material-icons"
-              >open_in_new</span
-            >
-          </a>
-        </div>
+            <!--  -->
+          </section>
+        </main>
       </div>
-
-      <h2>Top genres</h2>
-      <div class="genre-container">
-        <% topGenres.forEach((genre) => { %>
-        <a href="/browse/#" class="genre-card">
-          <img src="<%= genre.song_image %>" class="result-img" />
-          <div class="genre-card--info-wrapper">
-            <span class="genre-card--title"><%= genre.genre %></span>
-            <span class="genre--icon-open material-icons">open_in_new</span>
-          </div>
-        </a>
-        <% }) %>
-      </div>
-
-      <h2>Browse all</h2>
-      <div class="browse-all-container">
-        <a href="/browse/songs" class="browse-all-card">
-          <span class="browse-all-card--icon material-icons">music_note</span>
-          <div class="browse-all-card--info-wrapper">
-            <span class="browse-all-card--title">Songs</span>
-          </div>
-          <span class="browse-all-card--icon-open material-icons"
-            >open_in_new</span
-          >
-        </a>
-        <a href="/browse/artists" class="browse-all-card">
-          <span class="browse-all-card--icon material-icons">person</span>
-          <div class="browse-all-card--info-wrapper">
-            <span class="browse-all-card--title">Artists</span>
-          </div>
-          <span class="browse-all-card--icon-open material-icons"
-            >open_in_new</span
-          >
-        </a>
-        <a href="/browse/albums" class="browse-all-card">
-          <span class="browse-all-card--icon material-icons">album</span>
-          <div class="browse-all-card--info-wrapper">
-            <span class="browse-all-card--title">Albums</span>
-          </div>
-          <span class="browse-all-card--icon-open material-icons"
-            >open_in_new</span
-          >
-        </a>
-        <a href="/browse/synths" class="browse-all-card">
-          <span class="browse-all-card--icon material-icons">piano</span>
-          <div class="browse-all-card--info-wrapper">
-            <span class="browse-all-card--title">Synths</span>
-          </div>
-          <span class="browse-all-card--icon-open material-icons"
-            >open_in_new</span
-          >
-        </a>
-        <a href="/browse/presets" class="browse-all-card">
-          <span class="browse-all-card--icon material-icons">tune</span>
-          <div class="browse-all-card--info-wrapper">
-            <span class="browse-all-card--title">Presets</span>
-          </div>
-          <span class="browse-all-card--icon-open material-icons"
-            >open_in_new</span
-          >
-        </a>
-      </div>
+      <%- include('../partials/footer') %>
     </div>
   </body>
+  <%- include('../partials/scroll-to-top') %>
 </html>

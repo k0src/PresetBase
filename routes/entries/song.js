@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
+const db = require("../../db/db");
 
 // GET /song/:id
 router.get("/:id", (req, res) => {
@@ -112,7 +112,7 @@ router.get("/:id", (req, res) => {
       song_presets_id: data.song_presets_id,
     }));
 
-    res.render("song", { song, PATH_URL: "browse" });
+    res.render("entries/song", { song, PATH_URL: "browse" });
   });
 });
 

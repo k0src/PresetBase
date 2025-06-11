@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
-const { dbRun, dbGet } = require("./UTIL.js");
+const db = require("../../db/db.js");
+const { dbRun, dbGet } = require("../UTIL");
 
 /* -------------------------------- Approvals ------------------------------- */
 

@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../db/db");
+const db = require("../../db/db");
 
 // GET /album/:id
 router.get("/:id", (req, res) => {
@@ -92,7 +92,7 @@ router.get("/:id", (req, res) => {
       }
     });
 
-    res.render("album", { album, PATH_URL: "browse" });
+    res.render("entries/album", { album, PATH_URL: "browse" });
   });
 });
 

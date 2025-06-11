@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const db = require("./db/db");
 const path = require("path");
 
 const PORT = process.env.PORT || 3000;
@@ -16,47 +15,47 @@ app.get("/", (req, res) => {
   res.render("static/index", { PATH_URL: "home" });
 });
 
-const searchRoutes = require("./routes/search");
+const searchRoutes = require("./routes/main/search");
 app.use("/search", searchRoutes);
-const submitRoute = require("./routes/submit");
+const submitRoute = require("./routes/main/submit");
 app.use("/submit", submitRoute);
 
 /* ------------------------------ Entry routes ------------------------------ */
 
-const songRoutes = require("./routes/song");
+const songRoutes = require("./routes/entries/song");
 app.use("/song", songRoutes);
-const synthRoutes = require("./routes/synth");
+const synthRoutes = require("./routes/entries/synth");
 app.use("/synth", synthRoutes);
-const artistsRoutes = require("./routes/artist");
+const artistsRoutes = require("./routes/entries/artist");
 app.use("/artist", artistsRoutes);
-const albumsRoutes = require("./routes/album");
+const albumsRoutes = require("./routes/entries/album");
 app.use("/album", albumsRoutes);
 
 /* ------------------------------ Browse Routes ----------------------------- */
 
-const browseRoute = require("./routes/browse/browse");
+const browseRoute = require("./routes/main/browse");
 app.use("/browse", browseRoute);
-const browseSongsRoute = require("./routes/browse/songs");
+const browseSongsRoute = require("./routes/main/browse/songs");
 app.use("/browse/songs", browseSongsRoute);
-const browseArtistsRoute = require("./routes/browse/artists");
+const browseArtistsRoute = require("./routes/main/browse/artists");
 app.use("/browse/artists", browseArtistsRoute);
-const browseAlbumsRoute = require("./routes/browse/albums");
+const browseAlbumsRoute = require("./routes/main/browse/albums");
 app.use("/browse/albums", browseAlbumsRoute);
-const browseSynthsRoute = require("./routes/browse/synths");
+const browseSynthsRoute = require("./routes/main/browse/synths");
 app.use("/browse/synths", browseSynthsRoute);
-const browsePresetsRoute = require("./routes/browse/presets");
+const browsePresetsRoute = require("./routes/main/browse/presets");
 app.use("/browse/presets", browsePresetsRoute);
 
-const popularRoute = require("./routes/browse/popular");
+const popularRoute = require("./routes/main/browse/popular");
 app.use("/browse/popular", popularRoute);
-const hotRoute = require("./routes/browse/hot");
+const hotRoute = require("./routes/main/browse/hot");
 app.use("/browse/hot", hotRoute);
-const recentlyAddedRoute = require("./routes/browse/recent");
+const recentlyAddedRoute = require("./routes/main/browse/recent");
 app.use("/browse/recent", recentlyAddedRoute);
 
 /* ------------------------------ Admin routes ------------------------------ */
 
-const adminRoute = require("./routes/admin");
+const adminRoute = require("./routes/admin/admin");
 app.use("/admin", adminRoute);
 
 /* ----------------------------------- 404 ---------------------------------- */

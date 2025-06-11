@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../../db/db");
-const { dbAll, convertTimestamp } = require("../UTIL.js");
+const { dbAll, convertTimestamp } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
