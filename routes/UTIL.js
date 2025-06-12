@@ -65,11 +65,20 @@ const moreRecentTimestamp = function (timestamp, daysMS) {
   return diff < daysMS;
 };
 
+const addedDaysAgo = function (timestamp) {
+  const now = new Date();
+  const past = new Date(timestamp);
+  const diffTime = Math.abs(now - past);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  return diffDays;
+}
+
 module.exports = {
   dbAll,
   dbGet,
   dbRun,
   convertTimestamp,
   moreRecentTimestamp,
+  addedDaysAgo,
   post,
 };

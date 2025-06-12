@@ -53,6 +53,8 @@ app.use("/browse/hot", hotRoute);
 const recentlyAddedRoute = require("./routes/main/browse/recent");
 app.use("/browse/recent", recentlyAddedRoute);
 
+/* ------------------------------ Stats Routes ------------------------------ */
+
 /* ------------------------------ Admin routes ------------------------------ */
 
 const adminRoute = require("./routes/admin/admin");
