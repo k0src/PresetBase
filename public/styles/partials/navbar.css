@@ -144,13 +144,13 @@ html {
   color: #e3e5e4;
 }
 
+/* ------------------------------- Mobile Nav ------------------------------- */
 .button-mobile-nav {
   border: none;
   background: none;
   display: none;
 }
 
-/* Base mobile nav styling */
 .mobile-nav {
   position: fixed;
   top: 0;
@@ -180,13 +180,28 @@ html {
   transform: translateX(0);
 }
 
-/* Mobile nav links */
 .mobile-nav-link:link,
 .mobile-nav-link:visited {
   color: #e3e5e4;
   font-size: 2.4rem;
   text-decoration: none;
   font-weight: 500;
+}
+
+.mobile-nav-search-input {
+  font-family: "Geist", sans-serif;
+  font-size: 1.8rem;
+  color: #e3e5e4;
+  background-color: transparent;
+  border: 0.2rem solid #e3e5e4;
+  border-radius: 0.8rem;
+  padding: 1.2rem 1.2rem;
+  width: 24rem;
+  max-width: 100%;
+}
+
+.mobile-nav-search-input:focus {
+  outline: none;
 }
 
 /* --------------------------------- Queries -------------------------------- */
@@ -202,7 +217,6 @@ html {
   }
 }
 
-/* ------------------------------- Mobile nav ------------------------------- */
 @media (max-width: 48em) {
   .navbar-link--container,
   .navbar-right {
@@ -212,5 +226,17 @@ html {
   .button-mobile-nav {
     display: block;
     z-index: 999;
+  }
+}
+
+@media (max-width: 24em) {
+  .mobile-nav-search-input {
+    width: 16rem;
+  }
+}
+
+@media (max-width: 15em) {
+  .mobile-nav-search-input {
+    width: 12rem;
   }
 }

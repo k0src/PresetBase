@@ -89,13 +89,13 @@ body {
 
 /* --------------------------------- Queries -------------------------------- */
 
-@media (max-width: 60em) {
+@media (max-width: 59em) {
   .splash-text {
     font-size: 3rem;
   }
 }
 
-@media (max-width: 35em) {
+@media (max-width: 40em) {
   .splash-text {
     font-size: 2rem;
   }
