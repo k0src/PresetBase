@@ -39,7 +39,7 @@ viewModeToggle.addEventListener("click", () => {
   const currentMode = viewModeToggle.getAttribute("data-mode");
   const mode = currentMode === "list" ? "grid" : "list";
   setToggleViewMode(mode);
-  localStorage.setItem("userViewMode", mode);
+  localStorage.setItem("userArtistsViewMode", mode);
 });
 
 /* ------------------------- Setting values on load ------------------------- */
@@ -51,7 +51,7 @@ const setSortSelectValue = function () {
 };
 
 const setUserView = function () {
-  const userView = localStorage.getItem("userViewMode") || "list";
+  const userView = localStorage.getItem("userArtistsViewMode") || "list";
   setToggleViewMode(userView);
 };
 

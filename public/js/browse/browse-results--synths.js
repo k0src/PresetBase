@@ -1,3 +1,6 @@
+const currentPath = window.location.pathname.split("/")[2];
+console.log(currentPath);
+
 /* ----------------------------- Skeleton Loader ---------------------------- */
 window.addEventListener("load", () => {
   document.getElementById("skeleton-loader").style.display = "none";
@@ -39,7 +42,7 @@ viewModeToggle.addEventListener("click", () => {
   const currentMode = viewModeToggle.getAttribute("data-mode");
   const mode = currentMode === "list" ? "grid" : "list";
   setToggleViewMode(mode);
-  localStorage.setItem("userViewMode", mode);
+  localStorage.setItem("userSynthsViewMode", mode);
 });
 
 /* ------------------------- Setting values on load ------------------------- */
@@ -51,7 +54,7 @@ const setSortSelectValue = function () {
 };
 
 const setUserView = function () {
-  const userView = localStorage.getItem("userViewMode") || "list";
+  const userView = localStorage.getItem("userSynthsViewMode") || "list";
   setToggleViewMode(userView);
 };
 
