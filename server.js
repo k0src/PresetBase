@@ -10,9 +10,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/* ------------------------------- Main routes ------------------------------ */
+/* ------------------------------- Static routes ------------------------------ */
 app.get("/", (req, res) => {
   res.render("static/index", { PATH_URL: "home" });
+});
+
+app.get("/privacy-policy", (req, res) => {
+  res.render("static/privacy-policy", { PATH_URL: "privacy-policy" });
 });
 
 const searchRoutes = require("./routes/main/search");
@@ -45,6 +49,9 @@ const browseSynthsRoute = require("./routes/main/browse/synths");
 app.use("/browse/synths", browseSynthsRoute);
 const browsePresetsRoute = require("./routes/main/browse/presets");
 app.use("/browse/presets", browsePresetsRoute);
+
+const browseGenresRoutes = require("./routes/main/browse/genres");
+app.use("/browse/genres", browseGenresRoutes);
 
 const popularRoute = require("./routes/main/browse/popular");
 app.use("/browse/popular", popularRoute);

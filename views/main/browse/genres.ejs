@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PresetBase &mdash; All genres</title>
+    <script src="/js/browse/browse-results--genres.js" defer></script>
+    <link rel="stylesheet" href="/styles/main/search-results.css" />
+    <link rel="stylesheet" href="/styles/browse/browse-results.css" />
+    <%- include('../../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ----------------------------- No results ------------------------------ -->
+        <% if (!totalResults) { %>
+        <div class="no-results--container">
+          <i class="fa-solid fa-ban no-results--icon"></i>
+          <span class="no-results--text">No songs found</span>
+        </div>
+        <% } else { %>
+        <!-- ------------------------------ Main page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="browse-results--header">
+            <div class="browse-results-header--top">
+              <h1 class="heading-primary">All genres</h1>
+              <span class="results-count"><%= totalResults %> genres</span>
+            </div>
+            <div class="browse-results-header--bottom">
+              <div class="browse-results-result-filter--container">
+                <div
+                  id="view-toggle"
+                  class="browse-results--view-mode-container"
+                  data-mode="list"
+                >
+                  <div class="toggle-slider"></div>
+                  <div class="toggle-option" data-view="list">
+                    <i class="fa-solid fa-list-ul toggle-icon"></i>
+                  </div>
+                  <div class="toggle-option" data-view="grid">
+                    <i class="fa-solid fa-square toggle-icon"></i>
+                  </div>
+                </div>
+                <div class="browse-results-result-filter">
+                  <input
+                    type="text"
+                    placeholder="Filter results"
+                    class="browse-results-filter--input"
+                  />
+                  <i class="fa-solid fa-xmark result-filter--clear"></i>
+                </div>
+              </div>
+              <div class="browse-results---select-container">
+                <select name="sort" class="browse-results--sort-select">
+                  <option value="" selected disabled hidden>Sort</option>
+                  <option value="genre">Genre</option>
+                  <option value="songs"># Songs</option>
+                </select>
+                <i class="fa-solid fa-sort sort-icon"></i>
+              </div>
+            </div>
+          </section>
+          <!-- ------------------------------ List View ------------------------------ -->
+          <%- include('../../partials/skeleton-list') %>
+          <section class="search-results-list--container">
+            <div class="search-results--section">
+              <div class="result-columns grid-layout--genres">
+                <span>#</span>
+                <span>Genre</span>
+                <span># Songs</span>
+              </div>
+              <% Object.entries(genres).forEach(([i, genre]) => { %>
+              <div class="grid-layout--genres result-entry">
+                <span class="result-entry--number"><%= +i + 1 %></span>
+                <div class="result-entry--title-container">
+                  <div class="result-genre-img--container">
+                    <img
+                      src="<%= genre.song_image %>"
+                      class="result-genre-entry--img result-entry--img"
+                    />
+                    <i class="fa-solid fa-music result-genres--icon"></i>
+                  </div>
+                  <div class="result-entry--title">
+                    <span class="result-entry--primary"
+                      ><%= genre.genre %></span
+                    >
+                  </div>
+                </div>
+                <span class="result-entry--tertiary"
+                  ><%= genre.num_songs %></span
+                >
+              </div>
+              <% }) %>
+            </div>
+          </section>
+
+          <!-- ------------------------------ Grid View ------------------------------ -->
+          <section class="search-results-grid--container hide">
+            <div class="grid-layout--card">
+              <% Object.entries(genres).forEach(([i, genre]) => { %>
+              <div class="card-entry">
+                <div class="card-entry-genre-img--container">
+                  <img
+                    src="<%= genre.song_image %>"
+                    class="card-genre--img card-entry--img"
+                  />
+                  <i class="fa-solid fa-music card-genres--icon"></i>
+                </div>
+                <div class="genre-card-entry--info-container">
+                  <span class="card-entry--primary"><%= genre.genre %></span>
+                  <div class="card-entry--num-songs">
+                    <%= genre.num_songs %> songs
+                  </div>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </section>
+          <% } %>
+        </main>
+      </div>
+      <%- include('../../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../../partials/scroll-to-top') %>
+</html>

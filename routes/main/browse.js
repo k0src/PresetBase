@@ -55,7 +55,7 @@ router.get("/", async (req, res) => {
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
         ORDER BY clicks DESC
-        LIMIT 6
+        LIMIT 8
     `,
 
     recentlyAdded: `
@@ -128,7 +128,7 @@ router.get("/", async (req, res) => {
       LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
       GROUP BY genre
       ORDER BY total_clicks DESC
-      LIMIT 4;
+      LIMIT 6;
     `,
 
     topSynths: `

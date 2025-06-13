@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PresetBase &mdash; Browse"</title>
+    <title>PresetBase &mdash; Browse</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
     <script src="/js/main/browse.js" defer></script>
     <link rel="stylesheet" href="/styles/main/browse.css" />
@@ -189,7 +189,7 @@
                   </div>
                   <% }) %>
                 </div>
-                <!-- Top synths -->
+                <!-- Popular synths -->
                 <div class="top-synths-header">
                   <h2 class="heading-secondary">Popular synths</h2>
                   <a href="/browse/synths" class="browse-view-all-link"
@@ -225,6 +225,14 @@
                     </div>
                   </a>
                   <% }) %>
+                </div>
+                <!-- Chart -->
+                <div id="browseAllCategories" class="chart-header">
+                  <h2 class="heading-secondary">Top synths</h2>
+                  <a href="/stats" class="stats-cta-btn">View more stats</a>
+                </div>
+                <div class="browse-chart-container">
+                  <canvas id="synthPresetChart"></canvas>
                 </div>
               </div>
               <!-- Right -->
@@ -339,16 +347,6 @@
                     <i class="fa-solid fa-masks-theater browse-all-icon"></i>
                     <span class="browse-all-text">Genres</span>
                   </a>
-                </div>
-                <!-- Chart -->
-                <div id="browseAllCategories" class="chart-header">
-                  <h2 class="heading-secondary">Top synths</h2>
-                  <a href="/stats" class="browse-view-all-link"
-                    >View more stats</a
-                  >
-                </div>
-                <div class="browse-chart-container">
-                  <canvas id="synthPresetChart"></canvas>
                 </div>
               </div>
             </div>
