@@ -1,5 +1,4 @@
-const currentPath = window.location.pathname.split("/")[2];
-console.log(currentPath);
+const currentPage = window.location.pathname.split("/")[2];
 
 /* ----------------------------- Skeleton Loader ---------------------------- */
 window.addEventListener("load", () => {
@@ -14,14 +13,9 @@ window.addEventListener("load", () => {
 const sortSelect = document.querySelector(".browse-results--sort-select");
 
 sortSelect.addEventListener("change", () => {
-  const pageUrl = window.location.pathname;
+  localStorage.setItem("synthSortSelected", sortSelect.value);
 
-  localStorage.setItem(
-    `${pageUrl.split("/").filter(Boolean).pop()}SortSelected`,
-    sortSelect.value
-  );
-
-  window.location.href = `${pageUrl}?sort=${encodeURIComponent(
+  window.location.href = `/browse/${currentPage}?sort=${encodeURIComponent(
     sortSelect.value
   )}`;
 });
@@ -47,22 +41,19 @@ viewModeToggle.addEventListener("click", () => {
   const currentMode = viewModeToggle.getAttribute("data-mode");
   const mode = currentMode === "list" ? "grid" : "list";
   setToggleViewMode(mode);
-  localStorage.setItem("userSongsViewMode", mode);
+  localStorage.setItem(`user${currentPage}ViewMode`, mode);
 });
 
 /* ------------------------- Setting values on load ------------------------- */
 const setSortSelectValue = function () {
-  const sortValue = localStorage.getItem(
-    `${window.location.pathname.split("/").filter(Boolean).pop()}SortSelected`
-  );
-
+  const sortValue = localStorage.getItem("synthSortSelected");
   if (sortValue) {
     sortSelect.value = sortValue;
   }
 };
 
 const setUserView = function () {
-  const userView = localStorage.getItem("userSongsViewMode") || "list";
+  const userView = localStorage.getItem(`user${currentPage}ViewMode`) || "list";
   setToggleViewMode(userView);
 };
 
@@ -72,60 +63,39 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 /* ---------------------------- Filtering results --------------------------- */
+const pageFieldConfig = {
+  albums: ["primary", "secondary"],
+  artists: ["primary"],
+  genres: ["primary"],
+  presets: ["primary", "secondary", "tertiary"],
+  songs: ["primary", "secondary", "tertiary"],
+  synths: ["primary", "secondary"],
+};
+
 const filterInput = document.querySelector(".browse-results-filter--input");
 const filterClearBtn = document.querySelector(".result-filter--clear");
 
-const filterList = function (query) {
+const filterEntries = function (query, entrySelector, prefix) {
   const lowerQuery = query.trim().toLowerCase();
+  const fields = pageFieldConfig[currentPage];
 
-  document.querySelectorAll(".result-entry").forEach((entry) => {
-    const song = entry
-      .querySelector(".result-entry--primary")
-      .textContent.toLowerCase();
-    const artist = entry
-      .querySelector(".result-entry--secondary")
-      .textContent.toLowerCase();
-    const album = entry
-      .querySelector(".result-entry--tertiary")
-      .textContent.toLowerCase();
+  document.querySelectorAll(entrySelector).forEach((entry) => {
+    const matchFound = fields.some((field) => {
+      const el = entry.querySelector(`.${prefix}--${field}`);
+      return el && el.textContent.toLowerCase().includes(lowerQuery);
+    });
 
-    const matches =
-      !lowerQuery ||
-      song.includes(lowerQuery) ||
-      artist.includes(lowerQuery) ||
-      album.includes(lowerQuery);
-
-    entry.classList.toggle("hide", !matches);
-  });
-};
-
-const filterCards = function (query) {
-  const lowerQuery = query.trim().toLowerCase();
-
-  document.querySelectorAll(".card-entry").forEach((entry) => {
-    const song = entry
-      .querySelector(".card-entry--primary")
-      .textContent.toLowerCase();
-    const artist = entry
-      .querySelector(".card-entry--secondary")
-      .textContent.toLowerCase();
-    const album = entry
-      .querySelector(".card-entry--tertiary")
-      .textContent.toLowerCase();
-
-    const matches =
-      !lowerQuery ||
-      song.includes(lowerQuery) ||
-      artist.includes(lowerQuery) ||
-      album.includes(lowerQuery);
-
-    entry.style.display = matches ? "flex" : "none";
+    if (entrySelector === ".card-entry") {
+      entry.style.display = !lowerQuery || matchFound ? "flex" : "none";
+    } else {
+      entry.classList.toggle("hide", lowerQuery && !matchFound);
+    }
   });
 };
 
 const filterResults = function (query) {
-  filterList(query);
-  filterCards(query);
+  filterEntries(query, ".result-entry", "result-entry");
+  filterEntries(query, ".card-entry", "card-entry");
 };
 
 filterInput.addEventListener("input", () => {
