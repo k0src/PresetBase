@@ -4,11 +4,11 @@ body {
 
 /* ------------------------------- Main styles ------------------------------ */
 
-.fourohfour--container {
+.error--container {
   min-height: 60vh;
   color: #899096;
   display: flex;
-  gap: 3.2rem;
+  gap: 2.4rem;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -19,14 +19,14 @@ body {
   font-size: 12.8rem;
 }
 
-.fourohfour--text {
+.error--text {
   text-align: center;
   font-size: 2.4rem;
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
-.fourohfour--home-button:link,
-.fourohfour--home-button:visited {
+.error--home-button:link,
+.error--home-button:visited {
   text-decoration: none;
   background-color: #5a7f71;
   border: none;
@@ -39,10 +39,10 @@ body {
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
 }
 
-.fourohfour--home-button:hover {
+.error--home-button:hover {
   background-color: #73988a;
 }
-.fourohfour--home-button:active {
+.error--home-button:active {
   transform: scale(0.95);
   transition: transform 0.1s ease;
 }
@@ -50,7 +50,7 @@ body {
 /* --------------------------------- Queries -------------------------------- */
 
 @media (max-width: 48em) {
-  .fourohfour--text {
+  .error--text {
     font-size: 2rem;
   }
 }
@@ -60,7 +60,7 @@ body {
     font-size: 9.6rem;
   }
 
-  .fourohfour--text {
+  .error--text {
     font-size: 1.6rem;
   }
 }

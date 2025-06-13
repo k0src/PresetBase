@@ -11,10 +11,9 @@
       <div class="content-wrapper">
         <main class="container">
           <div class="error--container">
-            <h1 class="heading-xlarge">404</h1>
+            <h1 class="heading-xlarge">500</h1>
             <span class="error--text"
-              >We couldn't find the page you're looking for.<br />It may have
-              been moved, or doesn't exist anymore.</span
+              >We encountered a database error:<br /><%= err.message %></span
             >
             <a href="/" class="error--home-button">Go home</a>
           </div>
