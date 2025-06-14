@@ -230,7 +230,7 @@ body {
 .browse-top-category-container {
   max-width: 100%;
   display: flex;
-  gap: 1.6rem;
+  gap: 1.4rem;
   justify-content: space-between;
 }
 
@@ -383,6 +383,7 @@ body {
 .latest-entry--title:visited {
   font-size: 3.2rem;
   font-weight: 600;
+  line-height: 1.1;
 }
 
 .latest-entry--album {
@@ -658,6 +659,7 @@ body {
 }
 
 .top-genres--title-container {
+  width: 100%;
   min-width: 0;
   width: 14rem;
   display: flex;
@@ -805,22 +807,392 @@ body {
 }
 
 /* --------------------------------- Queries -------------------------------- */
+@media (max-width: 68em) {
+  .top-genres--img {
+    width: 13rem;
+    height: 13rem;
+  }
+
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 9rem;
+    height: 9rem;
+  }
+}
+
 @media (max-width: 64em) {
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 2.8rem;
+  }
+
+  .recently-added--title,
+  .popular--title,
+  .top-synths--name {
+    font-size: 1.8rem;
+  }
+
+  .top-synths--entry,
+  .popular--entry,
+  .recently-added--entry {
+    gap: 1.2rem;
+  }
+
+  .top-genres--entry {
+    gap: 1.2rem;
+  }
+
+  .top-genres--img {
+    width: 12rem;
+    height: 12rem;
+  }
+
+  .top-genres--title {
+    font-size: 1.8rem;
+  }
 }
 
 @media (max-width: 60em) {
+  .recently-added--artist,
+  .top-synths--manufacturer,
+  .popular--artist {
+    font-size: 1.1rem;
+  }
+
+  .recently-added--album,
+  .popular--album,
+  .top-synths--presets {
+    font-size: 1.2rem;
+  }
+
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 8.4rem;
+    height: 8.4rem;
+  }
+
+  .top-genres--entry {
+    gap: 1.2rem;
+  }
+
+  .top-genres--img {
+    width: 11rem;
+    height: 11rem;
+  }
+
+  .top-genres--title {
+    font-size: 1.8rem;
+  }
+
+  .top-genres--icon {
+    font-size: 5.6rem;
+  }
 }
 
-@media (max-width: 48em) {
+@media (max-width: 57em) {
+  .top-synths-container,
+  .popular-songs-container,
+  .recently-added-songs-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .top-synths-container > :nth-child(5),
+  .popular-songs-container > :nth-child(5),
+  .recently-added-songs-container > :nth-child(5),
+  .top-synths-container > :nth-child(6),
+  .popular-songs-container > :nth-child(6),
+  .recently-added-songs-container > :nth-child(6),
+  .popular-songs-container > :nth-child(7),
+  .popular-songs-container > :nth-child(8) {
+    display: none;
+  }
+
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 9.6rem;
+    height: 9.6rem;
+  }
+
+  .top-synths--manufacturer,
+  .popular--artist,
+  .recently-added--artist {
+    font-size: 1.2rem;
+  }
+
+  .top-synths--name,
+  .popular--title,
+  .recently-added--title {
+    font-size: 2rem;
+  }
+
+  .top-synths--presets,
+  .popular--album,
+  .recently-added--album {
+    font-size: 1.4rem;
+  }
+
+  .top-synths--year,
+  .popular--year,
+  .recently-added--year {
+    font-size: 1.1rem;
+  }
+
+  .browse-all-text {
+    font-size: 1.6rem;
+  }
+
+  .browse-all-icon {
+    font-size: 3rem;
+  }
+
+  .latest-entry--img {
+    width: 16rem;
+    height: 16rem;
+  }
+
+  .latest-entry--top-right {
+    padding: 1.8rem 0 1.6rem;
+  }
+
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 2.4rem;
+  }
+
+  .latest-entry--artist {
+    font-size: 1.6rem;
+  }
+
+  .top-genres--img {
+    width: 15rem;
+    height: 15rem;
+  }
+
+  .top-genres--title {
+    font-size: 2rem;
+  }
+
+  .top-genres-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+    padding: 2.4rem 2rem;
+    column-gap: 1.2rem;
+    row-gap: 2rem;
+  }
+}
+
+@media (max-width: 52em) {
   .browse-top-category-container {
-    gap: 1.2rem;
+    gap: 0;
+    justify-content: space-between;
+  }
+
+  .latest-entry--year-text {
+    display: none;
+  }
+
+  .top-genres--img {
+    width: 14rem;
+    height: 14rem;
+  }
+}
+
+@media (max-width: 49em) {
+  .top-genres--img {
+    width: 13rem;
+    height: 13rem;
+  }
+}
+
+/* ------------------------------- One column ------------------------------- */
+@media (max-width: 48em) {
+  .top-synths-container,
+  .popular-songs-container,
+  .recently-added-songs-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .top-genres--icon {
+    font-size: 6.4rem;
+  }
+
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 9.6rem;
+    height: 9.6rem;
+  }
+
+  .top-synths--manufacturer,
+  .popular--artist,
+  .recently-added--artist {
+    font-size: 1.2rem;
+  }
+
+  .top-synths--name,
+  .popular--title,
+  .recently-added--title {
+    font-size: 2rem;
+  }
+
+  .top-synths--presets,
+  .popular--album,
+  .recently-added--album {
+    font-size: 1.4rem;
+  }
+
+  .top-synths--year,
+  .popular--year,
+  .recently-added--year {
+    font-size: 1.1rem;
+  }
+
+  .browse-all-icon {
+    font-size: 3.6rem;
+  }
+
+  .browse-all-text {
+    font-size: 2rem;
+  }
+
+  .browse-more-columns {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .latest-entry--img {
+    width: 20rem;
+    height: 20rem;
+  }
+
+  .latest-entry--top-right {
+    padding: 1.6rem 0 1.6rem;
+  }
+
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 3.6rem;
+  }
+
+  .latest-entry--artist {
+    font-size: 1.8rem;
+  }
+  .latest-entry--year-text {
+    display: block;
+  }
+
+  .browse-top-category-container {
+    gap: 0;
+  }
+
+  .top-category-card {
+    width: 31%;
+    padding: 2.4rem;
+  }
+
+  .top-genres--img {
+    width: 18rem;
+    height: 18rem;
+  }
+
+  .top-genres--title {
+    font-size: 2rem;
+  }
+
+  .top-genres-container {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 43em) {
+  .top-genres--img {
+    width: 16rem;
+    height: 16rem;
   }
 }
 
 @media (max-width: 40em) {
+  .top-genres--img {
+    width: 15rem;
+    height: 15rem;
+  }
+
+  .top-genres--title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 38em) {
+  .browse-all-card {
+    gap: 1.4rem;
+    padding: 2.4rem;
+  }
+
+  .browse-all-icon {
+    font-size: 3.2rem;
+  }
+
+  .browse-all-text {
+    font-size: 1.8rem;
+  }
+
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 2.4rem;
+  }
+
+  .latest-entry--img {
+    width: 18rem;
+    height: 18rem;
+  }
+
+  .top-genres--img {
+    width: 14rem;
+    height: 14rem;
+  }
 }
 
 @media (max-width: 35em) {
+  .stats-cta-btn {
+    padding: 1rem 2rem;
+    font-size: 1.4rem;
+  }
+
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .top-synths--name,
+  .popular--title,
+  .recently-added--title {
+    font-size: 1.8rem;
+  }
+
+  .top-genres--img {
+    width: 18rem;
+    height: 18rem;
+  }
+
+  .top-genres--title {
+    font-size: 2rem;
+  }
+
+  .top-genres-container > :nth-child(5),
+  .top-genres-container > :nth-child(6) {
+    display: none;
+  }
+
+  .top-genres-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
   .top-category-card {
     gap: 1.2rem;
   }
@@ -834,46 +1206,370 @@ body {
   }
 }
 
+@media (max-width: 32em) {
+  .top-synths-container,
+  .popular-songs-container,
+  .recently-added-songs-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 9.6rem;
+    height: 9.6rem;
+  }
+
+  .top-synths--name,
+  .popular--title,
+  .recently-added--title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 31.5em) {
+  .latest-entry--artist {
+    font-size: 1.6rem;
+  }
+
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 2.2rem;
+  }
+
+  .latest-entry--album {
+    font-size: 1.8rem;
+  }
+
+  .latest-entry--supporting-artist {
+    font-size: 1.4rem;
+  }
+
+  .latest-entry--year-text {
+    font-size: 1.4rem;
+  }
+
+  .latest-entry--synth {
+    font-size: 1.4rem;
+  }
+
+  .top-genres--img {
+    width: 16rem;
+    height: 16rem;
+  }
+
+  .top-genres--icon {
+    font-size: 5.6rem;
+  }
+
+  .top-genres--title {
+    font-size: 2rem;
+  }
+}
+
 @media (max-width: 30em) {
+  .browse-view-all-link {
+    display: none;
+  }
+
   .browse--header {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 1.2rem;
+    gap: 1.4rem;
+  }
+
+  .latest-entry--year-text {
+    display: none;
+  }
+
+  .latest-entry--top {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .latest-entry--artist {
+    font-size: 1.8rem;
+  }
+
+  .latest-entry--top-right {
+    padding: 0rem 0 1.6rem;
+    gap: 0.6rem;
+  }
+
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 3.2rem;
+  }
+
+  .latest-entry--album {
+    font-size: 2rem;
+  }
+
+  .latest-entry--img-container {
+    align-self: center;
+    position: relative;
+  }
+
+  .latest-entry--img {
+    width: 32rem;
+    height: 32rem;
+  }
+}
+
+@media (max-width: 29em) {
+  .browse-all-container {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, minmax(0, 1fr));
+  }
+
+  .browse-all-icon {
+    font-size: 3.2rem;
+  }
+
+  .browse-all-text {
+    font-size: 2rem;
+  }
+
+  .top-genres--img {
+    width: 14rem;
+    height: 14rem;
+  }
+
+  .top-genres--title {
+    font-size: 1.8rem;
+  }
+}
+
+@media (max-width: 28em) {
+  .top-synths--img,
+  .popular--img,
+  .recently-added--img {
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .top-synths--name,
+  .popular--title,
+  .recently-added--title {
+    font-size: 1.8rem;
+  }
+
+  .browse-all-icon {
+    font-size: 3rem;
+  }
+
+  .browse-all-text {
+    font-size: 1.8rem;
+  }
+
+  .latest-entry--img {
+    width: 30rem;
+    height: 30rem;
+  }
+
+  .browse-all-card {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 26em) {
+  .latest-entry--img {
+    width: 28rem;
+    height: 28rem;
+  }
+
+  .top-genres--img {
+    width: 12rem;
+    height: 12rem;
+  }
+
+  .latest-entry--title:link,
+  .latest-entry--title:visited {
+    font-size: 2.4rem;
   }
 }
 
 @media (max-width: 25em) {
-  .chart-header,
-  .browse-all-header,
-  .top-synths-header,
-  .popular-header,
-  .latest-entry--header,
-  .recently-added-header,
-  .top-genres-header,
-  .top-categories-header,
-  .hot-songs-header {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
+  .browse-total-results {
+    display: none;
+  }
+
+  .top-synths--name,
+  .popular--title,
+  .recently-added--title {
+    font-size: 1.6rem;
+  }
+
+  .latest-entry--img {
+    width: 26rem;
+    height: 26rem;
+  }
+
+  .latest-entry--artist {
+    font-size: 1.6rem;
+  }
+
+  .latest-entry--album {
+    font-size: 1.8rem;
+  }
+
+  .latest-entry--supporting-artist {
+    display: none;
+  }
+
+  .latest-entry--year-container {
+    display: none;
+  }
+
+  .latest-entry-container {
+    padding-bottom: 0;
+  }
+
+  .latest-entry--hr,
+  .latest-entry--bottom {
+    display: none;
+  }
+
+  .top-genres-container {
+    padding: 2rem 1.8rem;
   }
 
   .heading-secondary {
     font-size: 1.8rem;
-    padding-bottom: 0;
+  }
+}
+
+@media (max-width: 23.5em) {
+  .top-genres--icon {
+    font-size: 4.8rem;
   }
 
-  .top-category-card {
+  .latest-entry--img {
+    width: 22rem;
+    height: 22rem;
+  }
+
+  .top-genres--img {
+    width: 10rem;
+    height: 10rem;
+  }
+
+  .top-genres--title {
+    font-size: 1.8rem;
+  }
+
+  .top-genres--entry {
     gap: 1rem;
-    padding: 2.4rem;
   }
 
-  .top-category-icon {
-    font-size: 2rem;
+  .top-genres--title-container {
+    gap: 0.5rem;
+  }
+}
+
+@media (max-width: 21.5em) {
+  .browse-all-icon {
+    font-size: 2.8rem;
   }
 
-  .top-category-text {
-    font-size: 1.2rem;
+  .browse-all-text {
+    font-size: 1.6rem;
+  }
+
+  .top-genres--title-container {
+    display: none;
+  }
+}
+
+@media (max-width: 21em) {
+  .top-synths--year,
+  .popular--year,
+  .recently-added--year {
+    display: none;
+  }
+
+  .top-synths--card-right,
+  .popular--card-right,
+  .recently-added--card-right {
+    padding: 1.2rem 0;
+  }
+
+  .latest-entry--img {
+    width: 20rem;
+    height: 20rem;
+  }
+
+  .top-genres--title {
+    font-size: 1.6rem;
+  }
+
+  .latest-entry--artist {
+    font-size: 1.4rem;
+  }
+
+  .latest-entry--album {
+    font-size: 1.4rem;
+  }
+
+  .top-genres--img {
+    width: 9rem;
+    height: 9rem;
+  }
+}
+
+@media (max-width: 19.8em) {
+  .top-genres-container {
+    padding: 1.4rem 1.2rem;
+  }
+
+  .top-genres--img {
+    width: 9rem;
+    height: 9rem;
+  }
+
+  .browse-all-icon {
+    font-size: 2.4rem;
+  }
+
+  .browse-all-text {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 19em) {
+  .latest-entry--img {
+    width: 16rem;
+    height: 16rem;
+  }
+
+  .top-genres-container {
+    padding: 1.8rem 1.6rem;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-rows: repeat(1, minmax(0, 1fr));
+  }
+
+  .top-genres--img {
+    width: 14rem;
+    height: 14rem;
+  }
+}
+
+@media (max-width: 16em) {
+  .latest-entry--img {
+    width: 14rem;
+    height: 14rem;
+  }
+
+  .top-genres--img {
+    width: 12rem;
+    height: 12rem;
+  }
+}
+
+@media (max-width: 80em) {
+  .hot-songs-carousel,
+  .hot-songs-container {
+    display: none;
   }
 }
