@@ -13,7 +13,7 @@ window.addEventListener("load", () => {
 const sortSelect = document.querySelector(".browse-results--sort-select");
 
 sortSelect.addEventListener("change", () => {
-  localStorage.setItem("synthSortSelected", sortSelect.value);
+  sessionStorage.setItem(`${currentPage}SortSelected`, sortSelect.value);
 
   window.location.href = `/browse/${currentPage}?sort=${encodeURIComponent(
     sortSelect.value
@@ -41,19 +41,26 @@ viewModeToggle.addEventListener("click", () => {
   const currentMode = viewModeToggle.getAttribute("data-mode");
   const mode = currentMode === "list" ? "grid" : "list";
   setToggleViewMode(mode);
-  localStorage.setItem(`user${currentPage}ViewMode`, mode);
+  sessionStorage.setItem(`user${currentPage}ViewMode`, mode);
 });
 
 /* ------------------------- Setting values on load ------------------------- */
 const setSortSelectValue = function () {
-  const sortValue = localStorage.getItem("synthSortSelected");
-  if (sortValue) {
-    sortSelect.value = sortValue;
+  const urlParams = new URLSearchParams(window.location.search);
+  const sortParam = urlParams.get("sort");
+
+  if (sortParam) {
+    sortSelect.value = sortParam;
+    sessionStorage.setItem(`${currentPage}SortSelected`, sortParam);
+  } else {
+    sessionStorage.removeItem(`${currentPage}SortSelected`);
+    sortSelect.value = "";
   }
 };
 
 const setUserView = function () {
-  const userView = localStorage.getItem(`user${currentPage}ViewMode`) || "list";
+  const userView =
+    sessionStorage.getItem(`user${currentPage}ViewMode`) || "list";
   setToggleViewMode(userView);
 };
 

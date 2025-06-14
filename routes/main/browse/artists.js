@@ -3,8 +3,9 @@ const router = express.Router();
 const {
   dbAll,
   dbGet,
-  convertTimestamp,
-  moreRecentTimestamp,
+  convertTimestamps,
+  markNew,
+  markHot,
 } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
@@ -30,28 +31,32 @@ router.get("/", async (req, res) => {
             artists.id AS artist_id,
             artists.country AS artist_country,
             artists.image_url AS artist_image,
-            artists.timestamp AS artist_added_timestamp
+            artists.timestamp AS artist_added_timestamp,
+            COALESCE(artist_clicks.recent_click, 0) AS artist_recent_click
         FROM artists
+        LEFT JOIN artist_clicks ON artist_clicks.artist_id = artists.id
         ORDER BY ${sortKey}`,
+
+    hotArtists: `
+      SELECT
+          artists.id AS artist_id,
+          COALESCE(artist_clicks.recent_click, 0) AS recent_click
+      FROM artists
+      LEFT JOIN artist_clicks ON artist_clicks.artist_id = artists.id
+      ORDER BY artist_clicks.recent_click DESC
+      LIMIT 10`,
   };
 
   try {
-    const [totalResults, artists] = await Promise.all([
+    const [totalResults, artists, hotArtists] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.artists),
+      dbAll(queries.hotArtists),
     ]);
 
-    if (artists) {
-      artists.forEach((artist) => {
-        artist.is_new = moreRecentTimestamp(
-          artist.artist_added_timestamp,
-          3 * 24 * 60 * 60 * 1000
-        ); // 3 days
-        artist.artist_added_timestamp = convertTimestamp(
-          artist.artist_added_timestamp
-        );
-      });
-    }
+    markNew(artists, "artist");
+    markHot(artists, hotArtists, "artist");
+    convertTimestamps(artists, "artist");
 
     res.render("main/browse/artists", {
       totalResults: totalResults.total_results,

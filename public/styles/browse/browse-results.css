@@ -170,6 +170,10 @@
 }
 
 /* ---------------------------- Card Image ---------------------------------- */
+.card-entry--img-container {
+  position: relative;
+}
+
 .card-entry--img {
   width: 100%;
   height: 100%;
@@ -178,6 +182,21 @@
   object-fit: cover;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
+}
+
+.status-icon--large {
+  width: 3.2rem;
+  height: 3.2rem;
+  stroke: #fff;
+  stroke-width: 0.2rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(-0.8rem, 0.8rem);
+  text-align: center;
+  border-radius: 0.8rem;
+  padding: 0.4rem;
+  color: #fff;
 }
 
 /* ------------------------ Info Containers & Titles ------------------------ */

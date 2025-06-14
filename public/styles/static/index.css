@@ -82,6 +82,7 @@ body {
 .search-box--button:hover {
   background-color: #73988a;
 }
+
 .search-box--button:active {
   transform: scale(0.95);
   transition: transform 0.1s ease;
@@ -95,9 +96,9 @@ body {
   }
 }
 
-@media (max-width: 40em) {
+@media (max-width: 35em) {
   .splash-text {
-    font-size: 2rem;
+    font-size: 1.6rem;
   }
 }
 

@@ -1,7 +1,8 @@
 const db = require("../db/db");
 
-/* -------------------------------- DATABASE -------------------------------- */
+const NEW_DAYS_MS = 15 * 24 * 60 * 60 * 1000; // 3 days
 
+/* -------------------------------- DATABASE -------------------------------- */
 const dbAll = function (query, params = []) {
   return new Promise((resolve, reject) => {
     db.all(query, params, (err, rows) => {
@@ -29,6 +30,7 @@ const dbRun = function (query, params = []) {
   });
 };
 
+/* ---------------------------------- POST ---------------------------------- */
 const post = function (url) {
   fetch(url, {
     method: "POST",
@@ -48,6 +50,13 @@ const post = function (url) {
 };
 
 /* --------------------------- TIMESTAMP FUNCTIONS -------------------------- */
+const moreRecentTimestamp = function (timestamp, daysMS) {
+  const date = new Date(timestamp);
+  const now = new Date();
+  const diff = now - date;
+
+  return diff < daysMS;
+};
 
 const convertTimestamp = function (timestamp) {
   return new Date(timestamp).toLocaleString("default", {
@@ -57,12 +66,30 @@ const convertTimestamp = function (timestamp) {
   });
 };
 
-const moreRecentTimestamp = function (timestamp, daysMS) {
-  const date = new Date(timestamp);
-  const now = new Date();
-  const diff = now - date;
+const convertTimestamps = function (entries, entryType) {
+  entries.forEach((entry) => {
+    entry[`${entryType}_added_timestamp`] = convertTimestamp(
+      entry[`${entryType}_added_timestamp`]
+    );
+  });
+};
 
-  return diff < daysMS;
+const markNew = function (entries, entryType) {
+  entries.forEach((entry) => {
+    entry.is_new = moreRecentTimestamp(
+      entry[`${entryType}_added_timestamp`],
+      NEW_DAYS_MS
+    );
+    console.log(entry);
+  });
+};
+
+const markHot = function (entries, hotEntries, entryType) {
+  entries.forEach((entry) => {
+    entry.is_hot = hotEntries.some((hotEntry) => {
+      return hotEntry[`${entryType}_id`] === entry[`${entryType}_id`];
+    });
+  });
 };
 
 const addedDaysAgo = function (timestamp) {
@@ -71,14 +98,15 @@ const addedDaysAgo = function (timestamp) {
   const diffTime = Math.abs(now - past);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
   return diffDays;
-}
+};
 
 module.exports = {
   dbAll,
   dbGet,
   dbRun,
-  convertTimestamp,
-  moreRecentTimestamp,
+  convertTimestamps,
+  markNew,
+  markHot,
   addedDaysAgo,
   post,
 };

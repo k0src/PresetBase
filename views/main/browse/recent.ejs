@@ -82,7 +82,24 @@
               >
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
-                  <img src="<%= song.song_image %>" class="result-entry--img" />
+                  <div class="result-entry--img-container">
+                    <img
+                      src="<%= song.song_image %>"
+                      class="result-entry--img"
+                    />
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="lucide lucide-circle-alert-icon lucide-circle-alert status-icon--small"
+                    >
+                      <circle cx="12" cy="12" r="10" />
+                      <line x1="12" x2="12" y1="8" y2="12" />
+                      <line x1="12" x2="12.01" y1="16" y2="16" />
+                    </svg>
+                  </div>
                   <div class="result-entry--title">
                     <span class="result-entry--secondary">
                       <%= song.artist_name %></span
@@ -110,7 +127,21 @@
             <div class="grid-layout--card">
               <% Object.entries(songs).forEach(([i, song]) => { %>
               <div class="card-entry">
-                <img src="<%= song.song_image %>" class="card-entry--img" />
+                <div class="card-entry--img-container">
+                  <img src="<%= song.song_image %>" class="card-entry--img" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    class="lucide lucide-circle-alert-icon lucide-circle-alert glass-gradient status-icon--large"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <line x1="12" x2="12" y1="8" y2="12" />
+                    <line x1="12" x2="12.01" y1="16" y2="16" />
+                  </svg>
+                </div>
                 <div class="card-entry--info-container">
                   <div class="card-entry--title-container">
                     <a

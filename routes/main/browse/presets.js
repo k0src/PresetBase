@@ -1,11 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const {
-  dbAll,
-  dbGet,
-  convertTimestamp,
-  moreRecentTimestamp,
-} = require("../../UTIL.js");
+const { dbAll, dbGet, convertTimestamps, markNew } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
@@ -32,10 +27,10 @@ router.get("/", async (req, res) => {
             presets.preset_name AS preset_name,
             presets.pack_name AS preset_pack_name,
             presets.author AS preset_author,
-            presets.timestamp AS preset_added_timestamp,
             synths.id AS synth_id,
             synths.synth_name AS synth_name,
-            synths.image_url AS synth_image
+            synths.image_url AS synth_image,
+            presets.timestamp AS preset_added_timestamp
         FROM presets
         LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
@@ -49,17 +44,8 @@ router.get("/", async (req, res) => {
       dbAll(queries.presets),
     ]);
 
-    if (presets) {
-      presets.forEach((preset) => {
-        preset.is_new = moreRecentTimestamp(
-          preset.preset_added_timestamp,
-          3 * 24 * 60 * 60 * 1000
-        ); // 3 days
-        preset.preset_added_timestamp = convertTimestamp(
-          preset.preset_added_timestamp
-        );
-      });
-    }
+    markNew(presets, "preset");
+    convertTimestamps(presets, "preset");
 
     res.render("main/browse/presets", {
       totalResults: totalResults.total_results,

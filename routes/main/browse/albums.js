@@ -3,8 +3,9 @@ const router = express.Router();
 const {
   dbAll,
   dbGet,
-  convertTimestamp,
-  moreRecentTimestamp,
+  convertTimestamps,
+  markNew,
+  markHot,
 } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
@@ -33,36 +34,39 @@ router.get("/", async (req, res) => {
             albums.genre AS album_genre,
             albums.release_year AS album_release_year,
             albums.image_url AS album_image,
-            albums.timestamp AS album_added_timestamp,
             artists.name AS artist_name,
-            artists.id AS artist_id
+            artists.id AS artist_id,
+            albums.timestamp AS album_added_timestamp
         FROM albums
         LEFT JOIN album_songs ON albums.id = album_songs.album_id
         LEFT JOIN songs ON album_songs.song_id = songs.id
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         LEFT JOIN artists ON song_artists.artist_id = artists.id
+        LEFT JOIN album_clicks ON album_clicks.album_id = albums.id
         WHERE song_artists.role = 'Main' AND albums.title NOT LIKE '[SINGLE]'
         GROUP BY albums.id
         ORDER BY ${sortKey}`,
+
+    hotAlbums: `
+      SELECT
+          albums.id AS album_id,
+          COALESCE(album_clicks.recent_click, 0) AS recent_click
+      FROM albums
+      LEFT JOIN album_clicks ON album_clicks.album_id = albums.id
+      ORDER BY album_clicks.recent_click DESC
+      LIMIT 10`,
   };
 
   try {
-    const [totalResults, albums] = await Promise.all([
+    const [totalResults, albums, hotAlbums] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.albums),
+      dbAll(queries.hotAlbums),
     ]);
 
-    if (albums) {
-      albums.forEach((album) => {
-        album.is_new = moreRecentTimestamp(
-          album.album_added_timestamp,
-          3 * 24 * 60 * 60 * 1000
-        ); // 3 days
-        album.album_added_timestamp = convertTimestamp(
-          album.album_added_timestamp
-        );
-      });
-    }
+    markNew(albums, "album");
+    markHot(albums, hotAlbums, "album");
+    convertTimestamps(albums, "album");
 
     res.render("main/browse/albums", {
       totalResults: totalResults.total_results,

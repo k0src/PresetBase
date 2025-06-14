@@ -3,8 +3,9 @@ const router = express.Router();
 const {
   dbAll,
   dbGet,
-  convertTimestamp,
-  moreRecentTimestamp,
+  convertTimestamps,
+  markNew,
+  markHot,
 } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
@@ -34,28 +35,32 @@ router.get("/", async (req, res) => {
             synths.release_year AS synth_release_year,
             synths.image_url AS synth_image,
             synths.synth_type AS synth_type,
-            synths.timestamp AS synth_added_timestamp
+            synths.timestamp AS synth_added_timestamp,
+            COALESCE(synth_clicks.recent_click, 0) AS synth_recent_click
         FROM synths
+        LEFT JOIN synth_clicks ON synth_clicks.synth_id = synths.id
         ORDER BY ${sortKey}`,
+
+    hotSynths: `
+      SELECT
+          synths.id AS synth_id,
+          COALESCE(synth_clicks.recent_click, 0) AS recent_click
+      FROM synths
+      LEFT JOIN synth_clicks ON synth_clicks.synth_id = synths.id
+      ORDER BY synth_clicks.recent_click DESC
+      LIMIT 10`,
   };
 
   try {
-    const [totalResults, synths] = await Promise.all([
+    const [totalResults, synths, hotSynths] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.synths),
+      dbAll(queries.hotSynths),
     ]);
 
-    if (synths) {
-      synths.forEach((synth) => {
-        synth.is_new = moreRecentTimestamp(
-          synth.synth_added_timestamp,
-          3 * 24 * 60 * 60 * 1000
-        ); // 3 days
-        synth.synth_added_timestamp = convertTimestamp(
-          synth.synth_added_timestamp
-        );
-      });
-    }
+    markNew(synths, "synth");
+    markHot(synths, hotSynths, "synth");
+    convertTimestamps(synths, "synth");
 
     res.render("main/browse/synths", {
       totalResults: totalResults.total_results,

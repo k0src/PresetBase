@@ -31,6 +31,28 @@ body {
   font-size: 3.2rem;
 }
 
+/* ---------------------------------- Icon --------------------------------- */
+.status-icon--small {
+  background: #0093a7;
+  box-shadow: 0 0 0.8rem rgba(0, 0, 0, 0.25);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  box-shadow: inset 0 0 8px rgba(255, 255, 255, 0.2),
+    0 0 12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  width: 2.4rem;
+  height: 2.4rem;
+  stroke: #fff;
+  stroke-width: 0.3rem;
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate(-0.6rem, 0.6rem);
+  text-align: center;
+  border-radius: 0.8rem;
+  padding: 0.4rem;
+  color: #fff;
+}
+
 /* ------------------------------- Main styles ------------------------------ */
 
 .search-results--header {
@@ -149,6 +171,10 @@ body {
   align-items: center;
   gap: 1.6rem;
   min-width: 0;
+}
+
+.result-entry--img-container {
+  position: relative;
 }
 
 .result-entry--img {

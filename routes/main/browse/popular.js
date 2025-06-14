@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { dbAll, convertTimestamp } = require("../../UTIL.js");
+const { dbAll, convertTimestamps } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
@@ -51,15 +51,7 @@ router.get("/", async (req, res) => {
   try {
     const songs = await dbAll(query);
 
-    if (songs) {
-      songs.forEach((song) => {
-        song.song_added_timestamp = convertTimestamp(song.song_added_timestamp);
-      });
-
-      for (let i = 0; i < songs.length; i++) {
-        songs[i].rank = i + 1;
-      }
-    }
+    convertTimestamps(songs, "song");
 
     res.render("main/browse/popular", {
       songs,

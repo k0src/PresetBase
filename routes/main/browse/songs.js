@@ -3,8 +3,9 @@ const router = express.Router();
 const {
   dbAll,
   dbGet,
-  convertTimestamp,
-  moreRecentTimestamp,
+  convertTimestamps,
+  markNew,
+  markHot,
 } = require("../../UTIL.js");
 
 router.get("/", async (req, res) => {
@@ -38,7 +39,8 @@ router.get("/", async (req, res) => {
             artists.id AS artist_id,
             albums.title AS album_title,
             albums.id AS album_id,
-            songs.timestamp AS song_added_timestamp
+            songs.timestamp AS song_added_timestamp,
+            COALESCE(song_clicks.recent_click, 0) AS song_recent_click
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         LEFT JOIN artists ON song_artists.artist_id = artists.id
@@ -48,23 +50,27 @@ router.get("/", async (req, res) => {
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
         ORDER BY ${sortKey}`,
+
+    hotSongs: `
+      SELECT
+          songs.id AS song_id,
+          COALESCE(song_clicks.recent_click, 0) AS recent_click
+      FROM songs
+      LEFT JOIN song_clicks ON song_clicks.song_id = songs.id
+      ORDER BY song_clicks.recent_click DESC
+      LIMIT 10`,
   };
 
   try {
-    const [totalResults, songs] = await Promise.all([
+    const [totalResults, songs, hotSongs] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.songs),
+      dbAll(queries.hotSongs),
     ]);
 
-    if (songs) {
-      songs.forEach((song) => {
-        song.is_new = moreRecentTimestamp(
-          song.song_added_timestamp,
-          3 * 24 * 60 * 60 * 1000
-        ); // 3 days
-        song.song_added_timestamp = convertTimestamp(song.song_added_timestamp);
-      });
-    }
+    markNew(songs, "song");
+    markHot(songs, hotSongs, "song");
+    convertTimestamps(songs, "song");
 
     res.render("main/browse/songs", {
       totalResults: totalResults.total_results,
