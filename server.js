@@ -11,9 +11,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 /* ------------------------------- Static routes ------------------------------ */
-app.get("/", (req, res) => {
-  res.render("static/index", { PATH_URL: "home" });
-});
+const indexRoutes = require("./routes/static/index");
+app.use("/", indexRoutes);
 
 app.get("/privacy-policy", (req, res) => {
   res.render("static/privacy-policy", { PATH_URL: "privacy-policy" });

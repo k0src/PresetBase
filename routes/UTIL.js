@@ -1,6 +1,6 @@
 const db = require("../db/db");
 
-const NEW_DAYS_MS = 15 * 24 * 60 * 60 * 1000; // 3 days
+const NEW_DAYS_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 
 /* -------------------------------- DATABASE -------------------------------- */
 const dbAll = function (query, params = []) {
@@ -80,7 +80,6 @@ const markNew = function (entries, entryType) {
       entry[`${entryType}_added_timestamp`],
       NEW_DAYS_MS
     );
-    console.log(entry);
   });
 };
 

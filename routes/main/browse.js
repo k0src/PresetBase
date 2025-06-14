@@ -202,7 +202,6 @@ router.get("/chart-data", async (req, res) => {
 
   try {
     const chartData = await dbAll(query);
-
     const labels = chartData.map((row) => row.synth_name).slice(0, 20);
     const values = chartData.map((row) => row.num_presets).slice(0, 20);
 
