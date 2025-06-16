@@ -207,7 +207,7 @@ router.get("/chart-data", async (req, res) => {
 
     res.json({ labels, values });
   } catch (err) {
-    res.status(500).json({ error: "Database error: " + err.message });
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 

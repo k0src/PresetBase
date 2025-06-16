@@ -116,7 +116,7 @@ router.get("/", async (req, res) => {
       PATH_URL: "search",
     });
   } catch (err) {
-    return res.status(500).send("Database error: " + err.message);
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 

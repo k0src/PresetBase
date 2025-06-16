@@ -14,6 +14,9 @@ app.use(express.json());
 const indexRoutes = require("./routes/static/index");
 app.use("/", indexRoutes);
 
+const aboutRoutes = require("./routes/static/about");
+app.use("/about-us", aboutRoutes);
+
 app.get("/privacy-policy", (req, res) => {
   res.render("static/privacy-policy", { PATH_URL: "privacy-policy" });
 });
