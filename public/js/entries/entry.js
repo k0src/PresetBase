@@ -3,6 +3,7 @@ const currentPage = window.location.pathname.split("/")[1];
 /* ---------------------------- Filtering results --------------------------- */
 const pageFieldConfig = {
   song: ["primary", "secondary"],
+  artist: ["primary", "tertiary"],
 };
 
 const filterInput = document.querySelector(".entry-filter--input");
@@ -28,66 +29,70 @@ filterInput.addEventListener("input", () => {
 
 filterClearBtn.addEventListener("click", () => {
   filterInput.value = "";
-  filterResults(filterInput.value);
+  filterEntries(filterInput.value);
 });
 
 /* ------------------------------ Playing Audio ----------------------------- */
-const btnContainers = document.querySelectorAll(".preset-entry-btn-container");
+if (currentPage === "song") {
+  const btnContainers = document.querySelectorAll(
+    ".preset-entry-btn-container"
+  );
 
-btnContainers.forEach((container) => {
-  const playBtn = container.querySelector(".preset-entry--play-btn");
-  const stopBtn = container.querySelector(".preset-entry--play-btn-active");
+  btnContainers.forEach((container) => {
+    const playBtn = container.querySelector(".preset-entry--play-btn");
+    const stopBtn = container.querySelector(".preset-entry--play-btn-active");
 
-  playBtn.addEventListener("click", () => {
-    document.querySelectorAll(".preset--audio").forEach((otherAudio) => {
-      if (!otherAudio.paused) {
-        otherAudio.pause();
-        otherAudio.currentTime = 0;
+    playBtn.addEventListener("click", () => {
+      document.querySelectorAll(".preset--audio").forEach((otherAudio) => {
+        if (!otherAudio.paused) {
+          otherAudio.pause();
+          otherAudio.currentTime = 0;
 
-        const otherContainer = otherAudio
-          .closest(".preset-list-entry")
-          .querySelector(".preset-entry-btn-container");
-        otherContainer
-          .querySelector(".preset-entry--play-btn")
-          .classList.remove("hide");
-        otherContainer
-          .querySelector(".preset-entry--play-btn-active")
-          .classList.add("hide");
+          const otherContainer = otherAudio
+            .closest(".preset-list-entry")
+            .querySelector(".preset-entry-btn-container");
+          otherContainer
+            .querySelector(".preset-entry--play-btn")
+            .classList.remove("hide");
+          otherContainer
+            .querySelector(".preset-entry--play-btn-active")
+            .classList.add("hide");
+        }
+      });
+
+      const audio = container
+        .closest(".preset-list-entry")
+        .querySelector(".preset--audio");
+
+      if (audio.paused) {
+        audio.play();
+
+        playBtn.classList.add("hide");
+        stopBtn.classList.remove("hide");
+      } else {
+        audio.pause();
+        audio.currentTime = 0;
+
+        playBtn.classList.remove("hide");
+        stopBtn.classList.add("hide");
       }
+
+      audio.addEventListener("ended", () => {
+        playBtn.classList.remove("hide");
+        stopBtn.classList.add("hide");
+      });
     });
 
-    const audio = container
-      .closest(".preset-list-entry")
-      .querySelector(".preset--audio");
+    stopBtn.addEventListener("click", () => {
+      const audio = container
+        .closest(".preset-list-entry")
+        .querySelector(".preset--audio");
 
-    if (audio.paused) {
-      audio.play();
-
-      playBtn.classList.add("hide");
-      stopBtn.classList.remove("hide");
-    } else {
       audio.pause();
       audio.currentTime = 0;
 
       playBtn.classList.remove("hide");
       stopBtn.classList.add("hide");
-    }
-
-    audio.addEventListener("ended", () => {
-      playBtn.classList.remove("hide");
-      stopBtn.classList.add("hide");
     });
   });
-
-  stopBtn.addEventListener("click", () => {
-    const audio = container
-      .closest(".preset-list-entry")
-      .querySelector(".preset--audio");
-
-    audio.pause();
-    audio.currentTime = 0;
-
-    playBtn.classList.remove("hide");
-    stopBtn.classList.add("hide");
-  });
-});
+}

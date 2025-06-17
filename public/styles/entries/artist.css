@@ -179,8 +179,8 @@ body {
   color: #e3e5e4 !important;
 }
 
-/* ------------------------------- More songs ------------------------------- */
-.more-songs--container {
+/* --------------------------------- Albums --------------------------------- */
+.albums--container {
   display: flex;
   flex-direction: column;
   background-color: #2d343a;
@@ -191,27 +191,27 @@ body {
   min-width: 0;
 }
 
-.more-songs--header {
+.albums--header {
   display: flex;
   padding: 1.4rem;
   overflow: hidden;
   min-width: 0;
 }
 
-.more-songs--header-title {
+.albums--header-title {
   color: #899096;
   font-size: 1.8rem;
   font-weight: 500;
   line-height: 1.1;
 }
 
-.more-songs--entry-container {
+.albums--entry-container {
   display: flex;
   flex-direction: column;
   background-color: #171b1f;
 }
 
-.more-songs--img {
+.albums--img {
   width: 5.6rem;
   height: 5.6rem;
   border-radius: 0.4rem;
@@ -220,7 +220,7 @@ body {
   flex-shrink: 0;
 }
 
-.more-songs--entry {
+.albums--entry {
   display: flex;
   align-items: center;
   gap: 1.4rem;
@@ -228,12 +228,12 @@ body {
   padding: 1.4rem;
 }
 
-.more-songs--entry:last-child {
+.albums--entry:last-child {
   border-radius: 0.8rem;
   border-bottom: none;
 }
 
-.more-songs--song-title {
+.albums--album-title {
   color: #899096;
   font-size: 1.4rem;
   font-weight: 500;
@@ -241,7 +241,7 @@ body {
   transition: color 0.2s ease;
 }
 
-.more-songs--entry:hover .more-songs--song-title {
+.albums--entry:hover .albums--album-title {
   color: #e3e5e4;
 }
 
@@ -249,7 +249,6 @@ body {
 .entry--right {
   display: flex;
   flex-direction: column;
-  /* gap: 1.8rem; */
   min-width: 0;
 }
 
@@ -322,14 +321,14 @@ body {
   transition: color 0.2s ease;
 }
 
-/* ------------------------------ Presets Grid ------------------------------ */
+/* ------------------------------ Songs Grid ------------------------------ */
 .list-section {
   padding-top: 2rem;
 }
 
-.grid-layout--presets {
+.grid-layout--songs {
   display: grid;
-  grid-template-columns: 2rem 4fr 2.5fr 2fr 1.5fr;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
@@ -345,7 +344,8 @@ body {
 .list-entry--number,
 .list-entry--primary,
 .list-entry--secondary,
-.list-entry--tertiary {
+.list-entry--tertiary,
+.list-entry--quaternary {
   text-overflow: ellipsis;
   white-space: nowrap;
   overflow: hidden;
@@ -360,8 +360,17 @@ body {
   transition: background-color 0.2s ease;
 }
 
+.list-entry:hover,
+.list-entry:nth-child(odd):hover {
+  background-color: #2d343a;
+}
+
 .list-entry:nth-child(odd) {
-  background-color: #1e2227 !important;
+  background-color: #1e2227;
+}
+
+.list-entry:nth-child(odd) {
+  background-color: #1e2227;
 }
 
 .list-entry--title-container {
@@ -397,32 +406,22 @@ body {
   color: #e3e5e4 !important;
 }
 
+.list-entry--quaternary {
+  font-size: 1.4rem;
+}
+
 .preview-header-text-preview {
   justify-self: center;
 }
 
-.preset-entry-btn-container {
-  justify-self: center;
-}
-
-.preset-entry--play-btn-active,
-.preset-entry--play-btn {
-  cursor: pointer;
-  color: #899096;
-  font-size: 2.4rem;
-  transition: color 0.2s ease;
-}
-
-.preset-entry--play-btn-active {
-  color: #e3e5e4;
-}
-
-.preset-entry--play-btn:hover {
-  color: #e3e5e4;
-}
-
-.preset-entry--play-btn-active:hover {
-  color: #899096;
+.--tag {
+  user-select: none;
+  font-size: 1.2rem;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid;
 }
 
 /* --------------------------------- Queries -------------------------------- */
@@ -476,13 +475,13 @@ body {
     font-size: 1.4rem;
   }
 
-  .preview-header-text-usage-type,
-  .list-entry--tertiary {
+  .header-label-genre,
+  .--tag {
     display: none;
   }
 
-  .grid-layout--presets {
-    grid-template-columns: 2rem 4.5fr 1.5fr 1.5fr;
+  .grid-layout--songs {
+    grid-template-columns: 2rem 400fr 300fr 75fr;
   }
 }
 
@@ -515,7 +514,7 @@ body {
     height: 7.2rem;
   }
 
-  .more-songs--header-title {
+  .albums--header-title {
     font-size: 1.8rem;
   }
 
@@ -545,7 +544,7 @@ body {
   }
 
   .entry--more-info-container,
-  .more-songs--container,
+  .albums--container,
   .entry-open-in-new {
     order: 3;
     width: 100%;
@@ -575,7 +574,7 @@ body {
     height: 6.4rem;
   }
 
-  .more-songs--header-title {
+  .albums--header-title {
     font-size: 1.6rem;
   }
 
@@ -587,13 +586,13 @@ body {
     font-size: 1.4rem;
   }
 
-  .preview-header-text-synth,
-  .list-entry--secondary {
+  .header-label-year,
+  .list-entry--quaternary {
     display: none;
   }
 
-  .grid-layout--presets {
-    grid-template-columns: 2rem 4.5fr 1.5fr;
+  .grid-layout--songs {
+    grid-template-columns: 2rem 400fr 300fr;
   }
 }
 

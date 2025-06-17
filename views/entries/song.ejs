@@ -138,7 +138,7 @@
                 </div>
                 <!-- Preset list -->
                 <div class="list-section">
-                  <div class="list-entry-columns grid-layout--list">
+                  <div class="list-entry-columns grid-layout--presets">
                     <span>#</span>
                     <span>Preset</span>
                     <span class="preview-header-text-synth">Synth</span>
@@ -148,7 +148,7 @@
                     <span class="preview-header-text-preview">Preview</span>
                   </div>
                   <% Object.entries(song.presets).forEach(([i, preset]) => { %>
-                  <div class="grid-layout--list preset-list-entry">
+                  <div class="grid-layout--presets list-entry">
                     <span class="list-entry--number"><%= +i + 1 %></span>
                     <div class="list-entry--title-container">
                       <img
