@@ -16,8 +16,8 @@ body {
 }
 
 /* ----------------------------- Text modifiers ----------------------------- */
-.albums--album-title,
-.albums--header-title,
+.more-albums--album-title,
+.more-albums--header-title,
 .entry--tertiary,
 .entry--primary,
 .entry--secondary {
@@ -180,7 +180,7 @@ body {
 }
 
 /* --------------------------------- Albums --------------------------------- */
-.albums--container {
+.more-albums--container {
   display: flex;
   flex-direction: column;
   background-color: #2d343a;
@@ -191,27 +191,27 @@ body {
   min-width: 0;
 }
 
-.albums--header {
+.more-albums--header {
   display: flex;
   padding: 1.4rem;
   overflow: hidden;
   min-width: 0;
 }
 
-.albums--header-title {
+.more-albums--header-title {
   color: #899096;
   font-size: 1.8rem;
   font-weight: 500;
   line-height: 1.1;
 }
 
-.albums--entry-container {
+.more-albums--entry-container {
   display: flex;
   flex-direction: column;
   background-color: #171b1f;
 }
 
-.albums--img {
+.more-albums--img {
   width: 5.6rem;
   height: 5.6rem;
   border-radius: 0.4rem;
@@ -220,7 +220,7 @@ body {
   flex-shrink: 0;
 }
 
-.albums--entry {
+.more-albums--entry {
   display: flex;
   align-items: center;
   gap: 1.4rem;
@@ -228,12 +228,12 @@ body {
   padding: 1.4rem;
 }
 
-.albums--entry:last-child {
+.more-albums--entry:last-child {
   border-radius: 0.8rem;
   border-bottom: none;
 }
 
-.albums--album-title {
+.more-albums--album-title {
   color: #899096;
   font-size: 1.4rem;
   font-weight: 500;
@@ -241,7 +241,7 @@ body {
   transition: color 0.2s ease;
 }
 
-.albums--entry:hover .albums--album-title {
+.more-albums--entry:hover .more-albums--album-title {
   color: #e3e5e4;
 }
 
@@ -328,7 +328,7 @@ body {
 
 .grid-layout--songs {
   display: grid;
-  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2rem 400fr 300fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
@@ -463,7 +463,7 @@ body {
     height: 6.4rem;
   }
 
-  .albums--header-title {
+  .more-albums--header-title {
     font-size: 1.6rem;
   }
 
@@ -481,7 +481,7 @@ body {
   }
 
   .grid-layout--songs {
-    grid-template-columns: 2rem 400fr 300fr 75fr;
+    grid-template-columns: 2rem 400fr 75fr;
   }
 }
 
@@ -514,7 +514,7 @@ body {
     height: 7.2rem;
   }
 
-  .albums--header-title {
+  .more-albums--header-title {
     font-size: 1.8rem;
   }
 
@@ -544,7 +544,7 @@ body {
   }
 
   .entry--more-info-container,
-  .albums--container,
+  .more-albums--container,
   .entry-open-in-new {
     order: 3;
     width: 100%;
@@ -574,7 +574,7 @@ body {
     height: 6.4rem;
   }
 
-  .albums--header-title {
+  .more-albums--header-title {
     font-size: 1.6rem;
   }
 
@@ -586,13 +586,13 @@ body {
     font-size: 1.4rem;
   }
 
-  .header-label-year,
-  .list-entry--quaternary {
+  .header-label-genre,
+  .--tag {
     display: none;
   }
 
   .grid-layout--songs {
-    grid-template-columns: 2rem 400fr 300fr;
+    grid-template-columns: 2rem 400frz 75fr;
   }
 }
 

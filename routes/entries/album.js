@@ -1,99 +1,101 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../../db/db");
+const { dbGet, dbRun, dbAll } = require("../UTIL.js");
 
-// GET /album/:id
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   const albumId = req.params.id;
   const now = new Date().toISOString();
 
-  // UPDATE CLICKS + TIMESTAMP
-  const updateClick = `
-        INSERT INTO album_clicks (album_id, clicks, recent_click)
-        VALUES (?, 1, ?)
-        ON CONFLICT(album_id)
-        DO UPDATE SET
-            clicks = clicks + 1,
-            recent_click = excluded.recent_click
-  `;
+  const queries = {
+    updateClick: `
+      INSERT INTO album_clicks (album_id, clicks, recent_click)
+      VALUES (?, 1, ?)
+      ON CONFLICT(album_id)
+      DO UPDATE SET
+        clicks = clicks + 1,
+        recent_click = excluded.recent_click
+    `,
 
-  db.run(updateClick, [albumId, now], function (err) {
-    if (err) {
-      return res.status(500).send("Database error: " + err.message);
-    }
-  });
+    album: `
+      SELECT
+        albums.id AS album_id,
+        albums.title AS album_title,
+        albums.genre AS album_genre,
+        albums.release_year AS album_year,
+        albums.image_url,
 
-  const query = `
-    SELECT 
-      albums.title AS album_title,
-      albums.release_year,
-      albums.genre,
-      albums.image_url,
-      songs.id AS song_id,
-      songs.title AS song_title,
-      artists.id AS artist_id,
-      artists.name AS artist_name,
-      song_artists.role,
-      songs.image_url AS song_img,
-      (
-        SELECT JSON_GROUP_ARRAY(
-          JSON_OBJECT(
-            'artist_id', sa2.artist_id,
-            'artist_name', a2.name,
-            'role', sa2.role
+        (
+          SELECT json_object(
+            'id', artists.id,
+            'name', artists.name
           )
-        )
-        FROM song_artists sa2
-        JOIN artists a2 ON sa2.artist_id = a2.id
-        WHERE sa2.song_id = songs.id
-      ) AS all_artists
-    FROM albums
-    INNER JOIN album_songs ON albums.id = album_songs.album_id
-    INNER JOIN songs ON album_songs.song_id = songs.id
-    LEFT JOIN song_artists ON songs.id = song_artists.song_id
-    LEFT JOIN artists ON song_artists.artist_id = artists.id
-    WHERE albums.id = ?
-    ORDER BY songs.id
-  `;
+          FROM album_songs
+          JOIN song_artists ON album_songs.song_id = song_artists.song_id
+          JOIN artists ON song_artists.artist_id = artists.id
+          WHERE album_songs.album_id = albums.id
+            AND song_artists.role = 'Main'
+          LIMIT 1
+        ) AS artist,
 
-  db.all(query, [albumId], (err, rows) => {
-    if (err) return res.status(500).send("Database error: " + err.message);
-    if (rows.length === 0) return res.status(404).send("Album not found.");
+        json_group_array(
+          DISTINCT json_object(
+            'id', songs.id,
+            'title', songs.title,
+            'song_url', songs.song_url,
+            'image_url', songs.image_url,
+            'song_genre', songs.genre,
+            'song_year', songs.release_year
+          )
+        ) AS songs
 
-    const album = {
-      title: rows[0].album_title,
-      artist_name: rows[0].artist_name,
-      artist_id: rows[0].artist_id,
-      year: rows[0].release_year,
-      genre: rows[0].genre,
-      image_url: rows[0].image_url,
-      songs: [],
-    };
+      FROM albums
+      JOIN album_songs ON albums.id = album_songs.album_id
+      JOIN songs ON songs.id = album_songs.song_id
+      WHERE albums.id = ?
+      GROUP BY albums.id
+    `,
 
-    const seenSongIds = new Set();
+    moreAlbums: `
+      SELECT
+        albums.id AS album_id,
+        albums.title AS album_title,
+        albums.image_url,
+        COALESCE(album_clicks.clicks, 0) AS clicks
+      FROM albums
+      LEFT JOIN album_songs ON albums.id = album_songs.album_id
+      LEFT JOIN song_artists ON album_songs.song_id = song_artists.song_id
+      LEFT JOIN album_clicks ON albums.id = album_clicks.album_id
+      WHERE song_artists.artist_id = ?
+        AND song_artists.role = 'Main'
+        AND albums.title IS NOT '[SINGLE]'
+        AND albums.id != ?
+      GROUP BY albums.id
+      ORDER BY clicks DESC
+      LIMIT 5
+    `,
+  };
 
-    rows.forEach((row) => {
-      if (row.song_id && !seenSongIds.has(row.song_id)) {
-        seenSongIds.add(row.song_id);
+  try {
+    await dbRun(queries.updateClick, [albumId, now]);
 
-        let allArtists = [];
+    const [album, moreAlbums] = await Promise.all([
+      dbGet(queries.album, [albumId]),
+      dbAll(queries.moreAlbums, [albumId, albumId]),
+    ]);
 
-        if (row.all_artists) {
-          allArtists = JSON.parse(row.all_artists);
-        }
+    if (album) {
+      album.songs = JSON.parse(album.songs);
+      album.artist = JSON.parse(album.artist);
+    }
 
-        album.songs.push({
-          id: row.song_id,
-          title: row.song_title,
-          album: row.album_title,
-          image: row.song_img,
-          all_artists: allArtists,
-        });
-      }
+    res.render("entries/album", {
+      album: album,
+      moreAlbums: moreAlbums || [],
+      PATH_URL: "browse",
     });
-
-    res.render("entries/album", { album, PATH_URL: "browse" });
-  });
+  } catch (err) {
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+  }
 });
 
 module.exports = router;
