@@ -1,0 +1,317 @@
+body {
+  background-color: #171b1f;
+}
+
+.container {
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
+  border-bottom: 0.2rem solid #2d343a;
+  background-color: #202429;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+
+.submit--header {
+  padding: 3.2rem 0 2rem 0;
+}
+
+.heading-primary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.heading-secondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}
+
+.red {
+  color: #c25c5c !important;
+}
+
+/* ---------------------------------- Alert --------------------------------- */
+.alert-message {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.8rem;
+  justify-content: space-between;
+  background-color: #e1aeae;
+  border: 0.2rem solid #c25c5c;
+  color: #c25c5c;
+  padding: 1.8rem;
+  border-radius: 0.8rem;
+}
+
+.alert-icon {
+  font-size: 2.4rem;
+}
+
+.alert-text {
+  font-size: 1.6rem;
+}
+
+.alert-text > a {
+  text-decoration: underline !important;
+}
+
+.alert-close-btn {
+  font-size: 1.6rem;
+  cursor: pointer;
+  padding: 1.2rem 1.6rem;
+  background-color: #c25c5c;
+  color: #e3e5e4;
+  border-radius: 0.8rem;
+}
+
+/* ---------------------------------- Form ---------------------------------- */
+.submit-main-container {
+  padding: 2.4rem 0;
+}
+
+form {
+  margin: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+fieldset {
+  padding: 1.8rem;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
+  background-color: #171b1f;
+  margin-bottom: 2.4rem;
+}
+
+legend {
+  color: #899096;
+  font-size: 1.8rem;
+  padding-bottom: 1.8rem;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+label {
+  display: block;
+  margin-bottom: 1.8rem;
+  font-size: 1.6rem;
+}
+
+label:last-child {
+  margin-bottom: 0;
+}
+
+.form-input,
+select {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  margin-bottom: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.form-input[type="number"]::-webkit-inner-spin-button,
+.form-input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.form-input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.custom-file-input {
+  margin-top: 1.2rem;
+  margin-bottom: 1.2rem;
+  display: flex;
+  align-items: center;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  padding: 1rem 1.2rem;
+  position: relative;
+  max-width: 100%;
+  gap: 0.8rem;
+}
+
+.custom-file-input .file-name {
+  font-size: 1.3rem;
+  color: #e3e5e4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.custom-file-input .browse-button {
+  background-color: #2d343a;
+  border: none;
+  color: #e3e5e4;
+  padding: 0.6rem 1rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-input .browse-button:hover {
+  background-color: #42484e;
+}
+
+.custom-file-input input[type="file"] {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+small {
+  font-size: 1.3rem;
+  display: block;
+  color: #899096;
+}
+
+small a {
+  text-decoration: underline !important;
+}
+
+.checkbox-container {
+  margin-bottom: 1.8rem;
+}
+
+.checkbox-label {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.2rem;
+  cursor: pointer;
+}
+
+.custom-input {
+  display: none;
+}
+
+.custom-checkbox {
+  min-width: 1.8rem;
+  min-height: 1.8rem;
+  background-color: #171b1f;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.2rem;
+  position: relative;
+}
+
+.custom-input:checked + .custom-checkbox {
+  background-color: #5a7f71;
+  border-color: #5a7f71;
+}
+
+.checkbox-text {
+  font-size: 1.3rem;
+  user-select: none;
+  color: #899096;
+}
+
+.custom-input:checked + .custom-checkbox::after {
+  content: "";
+  position: absolute;
+  left: 0.4rem;
+  top: 0;
+  width: 0.5rem;
+  height: 1rem;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+.add-preset-btn,
+.add-artist-btn {
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  margin-top: 1.8rem;
+  padding: 0.8rem 1.2rem;
+  color: #e3e5e4;
+  background-color: #5a7f71;
+  border: none;
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+}
+
+.add-artist-btn:hover,
+.add-preset-btn:hover {
+  background-color: #73988a;
+}
+
+.artist-entry--new,
+.preset-entry--new {
+  margin-top: 1.8rem;
+}
+
+.btn-container {
+  display: flex;
+  gap: 1.8rem;
+  margin: 0 auto;
+}
+
+.submit-btn,
+.clear-btn {
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.6rem;
+  padding: 1rem 1.4rem;
+  color: #e3e5e4;
+  border: none;
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+}
+
+.submit-btn {
+  background-color: #5a7f71;
+}
+
+.clear-btn {
+  background-color: #c25c5c;
+}
+
+.submit-btn:hover {
+  background-color: #73988a;
+}
+
+.clear-btn:hover {
+  background-color: #c86c6c;
+}
+
+/* ----------------------------- Disabled style ----------------------------- */
+.form-input:disabled,
+select:disabled {
+  background-color: #121417;
+  border-color: #3a3f44;
+  color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Custom file input label container (if disabled) */
+.custom-file-input.disabled {
+  background-color: #121417;
+  border-color: #3a3f44;
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.custom-file-input.disabled .browse-button {
+  background-color: #2a2d32;
+  cursor: not-allowed;
+}
