@@ -51,7 +51,7 @@ if (currentPage === "song") {
           otherAudio.currentTime = 0;
 
           const otherContainer = otherAudio
-            .closest(".preset-list-entry")
+            .closest(".list-entry")
             .querySelector(".preset-entry-btn-container");
           otherContainer
             .querySelector(".preset-entry--play-btn")
@@ -63,7 +63,7 @@ if (currentPage === "song") {
       });
 
       const audio = container
-        .closest(".preset-list-entry")
+        .closest(".list-entry")
         .querySelector(".preset--audio");
 
       if (audio.paused) {
