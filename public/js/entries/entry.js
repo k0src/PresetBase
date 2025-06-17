@@ -5,6 +5,7 @@ const pageFieldConfig = {
   song: ["primary", "secondary"],
   artist: ["primary", "tertiary"],
   album: ["primary"],
+  synth: ["primary", "tertiary"],
 };
 
 const filterInput = document.querySelector(".entry-filter--input");

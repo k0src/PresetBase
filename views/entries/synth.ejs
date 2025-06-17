@@ -1,97 +1,132 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="/assets/art_bg.js" defer></script>
-    <script src="/assets/scroll_to_top.js" defer></script>
-    <script src="/assets/resize_text.js" defer></script>
-    <script src="/assets/render_song_artists.js" defer></script>
-    <script src="/assets/synth_page.js" defer></script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title><%= synth.name %> - Details</title>
-    <link rel="stylesheet" href="/styles/synth_page.css" />
-    <link rel="stylesheet" href="/styles/navbar.css" />
+    <title><%= synth.synth_name %> &mdash; Details</title>
+    <script src="/js/entries/entry.js" defer></script>
+    <link rel="stylesheet" href="/styles/entries/synth.css" />
+    <%- include('../partials/html-head') %>
   </head>
-  <body
-    style="opacity: 0; transition: opacity 0.3s ease"
-    onload="document.body.style.opacity='1'"
-  >
-    <%- include('partials/navbar') %>
-    <div class="content animate">
-      <div class="meta--section">
-        <div class="synth-details-container">
-          <div class="synth-image-container">
-            <img
-              src="<%= synth.image_url %>"
-              class="cover-image"
-              alt="<%= synth.name %>"
-            />
-          </div>
-          <div class="item-info">
-            <h1 id="heading" data-maxsize="70"><%= synth.name %></h1>
-            <h2><%= synth.manufacturer %></h2>
-            <p>Synth Type: <strong><%= synth.type %></strong></p>
-            <p>Release Year: <strong><%= synth.year %></strong></p>
-          </div>
-        </div>
-      </div>
-
-      <h2>Songs featuring <%= synth.name %> presets</h2>
-      <div class="song-list-container">
-        <% Object.entries(synth.songs).forEach(([id, song]) => { %> <% if
-        (song.presets.length > 0) { %>
-        <div class="result-card">
-          <div
-            class="open-song-container"
-            data-song-id="<%- encodeURIComponent(JSON.stringify(song.id)) %>"
-          >
-            <img src="<%= song.image_url %>" class="result-img" />
-            <span class="open-song-overlay-icon material-icons"
-              >open_in_new</span
-            >
-          </div>
-          <div class="result-info-wrapper">
-            <div class="result-info">
-              <span class="result-title"><%= song.title %></span>
-              <% if (song.album !== "[SINGLE]") { %>
-              <span class="result-album"><%= song.album %></span>
-              <% } %> <% if (song.role !== "Main") { %>
-              <span
-                class="result-all-artists"
-                data-all-artists="<%- encodeURIComponent(JSON.stringify(song)) %>"
-              ></span>
-              <span class="result-role"><%= song.role %></span>
-              <% } %>
-            </div>
-            <span class="material-icons expand-icon">keyboard_arrow_down</span>
-          </div>
-        </div>
-
-        <div class="song-presets--container">
-          <% song.presets.forEach((preset) => { %>
-          <div class="song-preset-element-container">
-            <div class="preset-result-card">
-              <span class="result-preset-icon material-icons">graphic_eq</span>
-              <div class="result-info-wrapper">
-                <div class="result-info">
-                  <span class="result-preset-name"><%= preset.name %></span>
-                  <span class="result-usage-type"
-                    ><%= preset.usage_type %></span
-                  >
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <section class="entry-main--container">
+            <div class="entry--columns">
+              <!-- Left -->
+              <div class="entry--left">
+                <!-- Title -->
+                <div class="entry--title-container">
+                  <div class="entry--img-container">
+                    <img
+                      src="<%= synth.image_url %>"
+                      alt="<%= synth.synth_name %>"
+                      class="entry--img"
+                    />
+                  </div>
+                  <div class="entry--title-bottom">
+                    <span class="entry--secondary"
+                      ><%= synth.manufacturer %></span
+                    >
+                    <span class="entry--primary"><%= synth.synth_name %></span>
+                  </div>
+                </div>
+                <!-- More info -->
+                <div class="entry--more-info-container">
+                  <div class="entry--more-info-section">
+                    <div class="icon-wrapper">
+                      <i class="fa-solid fa-gear entry--more-info-icon"></i>
+                    </div>
+                    <span class="entry--tertiary">
+                      <%= synth.synth_type %>
+                    </span>
+                  </div>
+                  <div class="entry--more-info-section">
+                    <div class="icon-wrapper">
+                      <i class="fa-solid fa-calendar entry--more-info-icon"></i>
+                    </div>
+                    <span class="entry--tertiary">
+                      <%= synth.synth_year %>
+                    </span>
+                  </div>
+                </div>
+                <% if (moreSynths.length) { %>
+                <div class="more-synths--container">
+                  <div class="more-synths--header">
+                    <span class="more-synths--header-title"
+                      >More synths by <%= synth.manufacturer %></span
+                    >
+                  </div>
+                  <div class="more-synths--entry-container">
+                    <% moreSynths.forEach((s) => { %>
+                    <a
+                      class="more-synths--entry"
+                      href="/synth/<%= s.synth_id %>"
+                    >
+                      <img
+                        src="<%= s.image_url %>"
+                        alt="<%= s.synth_name %>"
+                        class="more-synths--img"
+                      />
+                      <span class="more-synths--synth-name"
+                        ><%= s.synth_name %></span
+                      >
+                    </a>
+                    <% }) %>
+                  </div>
+                </div>
+                <% } %>
+              </div>
+              <!-- Right -->
+              <div class="entry--right">
+                <h2 class="heading-secondary">Presets</h2>
+                <div class="entry-filter--container">
+                  <div class="entry-filter">
+                    <input
+                      type="text"
+                      placeholder="Filter presets"
+                      class="entry-filter--input"
+                    />
+                    <i class="fa-solid fa-xmark entry-filter--clear"></i>
+                  </div>
+                </div>
+                <!-- Preset list -->
+                <div class="list-section">
+                  <div class="list-entry-columns grid-layout--presets-synth">
+                    <span>#</span>
+                    <span>Name</span>
+                    <span class="header-label-pack">Pack</span>
+                    <span class="header-label-author">Author</span>
+                  </div>
+                  <% Object.entries(synth.presets).forEach(([i, preset]) => { %>
+                  <div class="grid-layout--presets-synth list-entry">
+                    <span class="list-entry--number"><%= +i + 1 %></span>
+                    <div class="list-entry--title-container">
+                      <img
+                        src="<%= synth.image_url %>"
+                        class="list-entry--img"
+                      />
+                      <span class="list-entry--primary"
+                        ><%= preset.name %></span
+                      >
+                    </div>
+                    <span class="list-entry--tertiary list-entry--pack-name"
+                      ><%= preset.pack_name %></span
+                    >
+                    <span class="list-entry--tertiary list-entry--author"
+                      ><%= preset.preset_author %></span
+                    >
+                  </div>
+                  <% }) %>
                 </div>
               </div>
-              <span class="preset-audio-play material-icons">play_circle</span>
-              <audio
-                class="preset--audio"
-                src="/assets/audio/<%= preset.song_presets_id %>.mp3"
-              ></audio>
             </div>
-          </div>
-          <% }) %>
-        </div>
-        <% } %> <% }) %>
+          </section>
+        </main>
       </div>
+      <%- include('../partials/footer') %>
     </div>
   </body>
-  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+  <%- include('../partials/scroll-to-top') %>
 </html>
