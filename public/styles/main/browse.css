@@ -65,8 +65,10 @@ body {
 
 /* --------------------------- Hot songs -------------------------- */
 .hot-songs-carousel {
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: visible;
   position: relative;
+  padding: 0.2rem 0;
 }
 
 .hot-songs-carousel::before,
@@ -117,8 +119,8 @@ body {
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .hot-song--carousel-item:hover {
+  z-index: 99;
   box-shadow: 0 0.6rem 1rem rgba(0, 0, 0, 0.1);
   transform: translateY(-0.2rem);
 }

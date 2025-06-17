@@ -87,7 +87,7 @@ if (currentPage === "song") {
 
     stopBtn.addEventListener("click", () => {
       const audio = container
-        .closest(".preset-list-entry")
+        .closest(".list-entry")
         .querySelector(".preset--audio");
 
       audio.pause();
