@@ -4,6 +4,7 @@ const currentPage = window.location.pathname.split("/")[1];
 const pageFieldConfig = {
   song: ["primary", "secondary"],
   artist: ["primary", "tertiary"],
+  album: ["primary"],
 };
 
 const filterInput = document.querySelector(".entry-filter--input");
