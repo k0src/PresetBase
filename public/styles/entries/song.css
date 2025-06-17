@@ -296,6 +296,32 @@ body {
   color: #e3e5e4;
 }
 
+.entry-open-in-new {
+  cursor: pointer;
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+}
+
+.entry-open-in-new:hover .entry-open-in-new-text,
+.entry-open-in-new:hover .entry-open-in-new-icon {
+  color: #e3e5e4;
+}
+
+.entry-open-in-new-text {
+  color: #899096;
+  font-size: 1.4rem;
+  font-weight: 500;
+  line-height: 1.1;
+  transition: color 0.2s ease;
+}
+
+.entry-open-in-new-icon {
+  color: #899096;
+  font-size: 1.2rem;
+  transition: color 0.2s ease;
+}
+
 /* ------------------------------ Presets Grid ------------------------------ */
 .list-section {
   padding-top: 2rem;
@@ -371,7 +397,7 @@ body {
   color: #e3e5e4 !important;
 }
 
-.preview-header-text {
+.preview-header-text-preview {
   justify-self: center;
 }
 
@@ -400,3 +426,180 @@ body {
 }
 
 /* --------------------------------- Queries -------------------------------- */
+@media (max-width: 68em) {
+  .entry--columns {
+    grid-template-columns: 30rem 1fr;
+  }
+
+  .entry--img {
+    width: 28rem;
+    height: 28rem;
+  }
+}
+
+@media (max-width: 52em) {
+  .entry--columns {
+    grid-template-columns: 28rem 1fr;
+  }
+
+  .entry--img {
+    width: 26rem;
+    height: 26rem;
+  }
+
+  .list-entry--primary {
+    font-size: 1.6rem;
+  }
+
+  .list-entry--secondary {
+    font-size: 1.2rem;
+  }
+
+  .list-entry--tertiary {
+    font-size: 1.2rem;
+  }
+
+  .list-entry--img {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+
+  .more-songs--header-title {
+    font-size: 1.6rem;
+  }
+
+  .entry--primary {
+    font-size: 2.2rem;
+  }
+
+  .entry--secondary {
+    font-size: 1.4rem;
+  }
+
+  .preview-header-text-usage-type,
+  .list-entry--tertiary {
+    display: none;
+  }
+
+  .grid-layout--list {
+    grid-template-columns: 2rem 4.5fr 1.5fr 1.5fr;
+  }
+}
+
+@media (max-width: 45em) {
+  .entry--img {
+    width: 32rem;
+    height: 32rem;
+  }
+
+  .entry--columns {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .list-entry--primary {
+    font-size: 1.8rem;
+  }
+
+  .list-entry--secondary {
+    font-size: 1.4rem;
+  }
+
+  .list-entry--tertiary {
+    font-size: 1.4rem;
+  }
+
+  .list-entry--img {
+    width: 7.2rem;
+    height: 7.2rem;
+  }
+
+  .more-songs--header-title {
+    font-size: 1.8rem;
+  }
+
+  .list-section {
+    width: 100%;
+  }
+
+  .entry--primary {
+    font-size: 2.4rem;
+  }
+
+  .entry--secondary {
+    font-size: 1.6rem;
+  }
+
+  .entry--left {
+    display: contents;
+  }
+
+  .entry--title-container {
+    order: 1;
+  }
+
+  .entry--right {
+    order: 2;
+    width: 100%;
+  }
+
+  .entry--more-info-container,
+  .more-songs--container,
+  .entry-open-in-new {
+    order: 3;
+    width: 100%;
+  }
+}
+
+@media (max-width: 30em) {
+  .entry--img {
+    width: 28rem;
+    height: 28rem;
+  }
+
+  .list-entry--primary {
+    font-size: 1.6rem;
+  }
+
+  .list-entry--secondary {
+    font-size: 1.2rem;
+  }
+
+  .list-entry--tertiary {
+    font-size: 1.2rem;
+  }
+
+  .list-entry--img {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+
+  .more-songs--header-title {
+    font-size: 1.6rem;
+  }
+
+  .entry--primary {
+    font-size: 2.2rem;
+  }
+
+  .entry--secondary {
+    font-size: 1.4rem;
+  }
+
+  .preview-header-text-synth,
+  .list-entry--secondary {
+    display: none;
+  }
+
+  .grid-layout--list {
+    grid-template-columns: 2rem 4.5fr 1.5fr;
+  }
+}
+
+@media (max-width: 24em) {
+  .entry--img {
+    width: 24rem;
+    height: 24rem;
+  }
+}

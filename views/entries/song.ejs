@@ -110,6 +110,18 @@
                   </div>
                 </div>
                 <% } %>
+                <a
+                  class="entry-open-in-new"
+                  href="<%= song.song_url %>"
+                  target="_blank"
+                >
+                  <span class="entry-open-in-new-text"
+                    >Open song in new tab</span
+                  >
+                  <i
+                    class="fa-solid fa-arrow-up-right-from-square entry-open-in-new-icon"
+                  ></i>
+                </a>
               </div>
               <!-- Right -->
               <div class="entry--right">
@@ -129,9 +141,11 @@
                   <div class="list-entry-columns grid-layout--list">
                     <span>#</span>
                     <span>Preset</span>
-                    <span>Synth</span>
-                    <span>Usage Type</span>
-                    <span class="preview-header-text">Preview</span>
+                    <span class="preview-header-text-synth">Synth</span>
+                    <span class="preview-header-text-usage-type"
+                      >Usage Type</span
+                    >
+                    <span class="preview-header-text-preview">Preview</span>
                   </div>
                   <% Object.entries(song.presets).forEach(([i, preset]) => { %>
                   <div class="grid-layout--list preset-list-entry">

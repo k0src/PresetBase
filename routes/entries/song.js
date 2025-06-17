@@ -94,8 +94,6 @@ router.get("/:id", async (req, res) => {
       song.presets = JSON.parse(song.presets);
     }
 
-    console.log(moreSongs);
-
     res.render("entries/song", {
       song: song,
       moreSongs: moreSongs || [],
