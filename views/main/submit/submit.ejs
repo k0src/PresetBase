@@ -4,11 +4,11 @@
     <title>PresetBase &mdash; Submit</title>
     <script src="/js/main/submit.js" defer></script>
     <link rel="stylesheet" href="/styles/main/submit.css" />
-    <%- include('../partials/html-head') %>
+    <%- include('../../partials/html-head') %>
   </head>
   <body>
     <div class="page-wrapper">
-      <%- include('../partials/navbar') %>
+      <%- include('../../partials/navbar') %>
       <div class="content-wrapper">
         <!-- ------------------------------ Main Page ------------------------------ -->
         <main class="container">
@@ -23,7 +23,7 @@
               >Please read and fill out all required fields
               <strong>carefully</strong>. Mistakes may lead to your entry being
               rejected.
-              <a href="" target="_blank"
+              <a href="/submit/example" target="_blank"
                 >Click here to view an example of a approved submission.</a
               >
             </span>
@@ -41,21 +41,24 @@
                     name="songTitle"
                   />
                   <small
-                    >Enter the full title of the song. Do not include features
-                    or producers.</small
+                    >Provide the full title of the song. Do not include featured
+                    artists or producers.</small
                   >
                 </label>
                 <label
                   >Genre <span class="red">*</span>
                   <input
                     class="form-input"
-                    pattern="^[A-Z][a-z]*( [A-Z][a-z]*)*$"
+                    pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
                     required
                     title="First letters must be capitalized."
                     type="text"
                     name="songGenre"
                   />
-                  <small>Specify the genre (e.g., Trap, House, Hip Hop).</small>
+                  <small
+                    >Specify the music genre (e.g., Trap, House, Hip
+                    Hop).</small
+                  >
                 </label>
                 <label
                   >Release Year <span class="red">*</span>
@@ -80,32 +83,29 @@
                     name="songUrl"
                   />
                   <small
-                    >Enter the YouTube link for the song. Choose the official
-                    artist's channel, do not use music videos unless no other
-                    official videos exist.</small
+                    >Paste the YouTube URL of the song. Use the official
+                    artist's channel. Avoid music videos unless no official
+                    audio uploads exist.</small
                   >
                 </label>
                 <label>
-                  Song Image <span class="red">*</span>
-
+                  Song Image
                   <div class="custom-file-input">
                     <button type="button" class="browse-button">
                       Browse...
                     </button>
                     <span class="file-name">No file selected.</span>
                     <input
-                      required
                       type="file"
                       name="songImg"
                       class="imageInput"
                       accept="image/*"
                     />
                   </div>
-
-                  <small>
-                    Upload the song cover image. Leave blank to use album cover.
-                    (1000px x 1000px minimum).
-                  </small>
+                  <small
+                    >Upload the son's cover image. Leave blank to default to the
+                    album cover. Minimum dimensions: 1000 x 1000 pixels.</small
+                  >
                 </label>
               </fieldset>
 
@@ -120,7 +120,7 @@
                       type="text"
                       name="artists[0][name]"
                     />
-                    <small>Name of the artist.</small>
+                    <small>Enter the name of the artist.</small>
                   </label>
                   <label
                     >Artist Country <span class="red">*</span>
@@ -130,10 +130,10 @@
                       type="text"
                       name="artists[0][country]"
                     />
-                    <small>Country of origin.</small>
+                    <small>Specify the artist's country of origin.</small>
                   </label>
                   <label
-                    >Artist role <span class="red">*</span>
+                    >Artist Role <span class="red">*</span>
                     <input
                       class="form-input"
                       required
@@ -141,13 +141,12 @@
                       name="artists[0][role]"
                     />
                     <small
-                      >Enter the artist's role on the song. If the artist is the
-                      main artist, use 'Main'. Specify only one role.</small
+                      >State the artist's role on the track. Use 'Main' for
+                      primary artist. Enter only one role.</small
                     >
                   </label>
                   <label>
                     Artist Image <span class="red">*</span>
-
                     <div class="custom-file-input">
                       <button type="button" class="browse-button">
                         Browse...
@@ -156,16 +155,16 @@
                       <input
                         required
                         type="file"
-                        name="artists[0][artistImg]"
+                        name="artists[0][img]"
                         class="imageInput"
                         accept="image/*"
                       />
                     </div>
-
-                    <small>
-                      Upload the song cover image. Leave blank to use album
-                      cover. (1000px x 1000px minimum).
-                    </small>
+                    <small
+                      >Upload the artist's image. Leave blank to default to the
+                      album cover. Minimum dimensions: 1000 x 1000
+                      pixels.</small
+                    >
                   </label>
                 </div>
                 <button type="button" class="add-artist-btn">
@@ -198,189 +197,223 @@
                     type="text"
                     name="albumTitle"
                   />
-                  <small>Title of the album.</small>
+                  <small>Provide the album's title.</small>
                 </label>
                 <label
                   >Genre <span class="red">*</span>
                   <input
                     class="form-input album-field"
-                    pattern="^[A-Z][a-z]*( [A-Z][a-z]*)*$"
+                    pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
                     required
                     title="First letters must be capitalized."
                     type="text"
                     name="albumGenre"
                   />
-                  <small>Album's genre.</small>
+                  <small>Indicate the album's genre.</small>
                 </label>
                 <label
                   >Release Year <span class="red">*</span>
                   <input
                     class="form-input album-field"
                     pattern="^(19|20)\d{2}$"
+                    title="Enter a valid year."
                     required
                     type="number"
                     name="albumYear"
                   />
-                  <small>Year the album was released.</small>
+                  <small>Enter the year the album was released.</small>
                 </label>
                 <label>
                   Album Image <span class="red">*</span>
-
                   <div class="custom-file-input">
                     <button type="button" class="browse-button">
                       Browse...
                     </button>
                     <span class="file-name">No file selected.</span>
                     <input
-                      required
                       type="file"
                       name="albumImg"
                       class="imageInput album-field"
                       accept="image/*"
                     />
                   </div>
-
-                  <small>
-                    Upload the album cover image. (1000px x 1000px minimum).
-                  </small>
-                </label>
-              </fieldset>
-
-              <legend>Synth Information</legend>
-              <fieldset>
-                <label
-                  >Synth Name <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    required
-                    type="text"
-                    name="synthName"
-                  />
-                  <small>Name of the synth used.</small>
-                </label>
-                <label
-                  >Manufacturer <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    required
-                    type="text"
-                    name="synthManufacturer"
-                  />
-                  <small>Company or developer (e.g. Spectrasonics).</small>
-                </label>
-                <label
-                  >Release Year <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    pattern="^(19|20)\d{2}$"
-                    required
-                    type="number"
-                    name="synthYear"
-                  />
-                  <small>Year the synth was released.</small>
-                </label>
-                <label
-                  >Type <span class="red">*</span>
-                  <select required name="synthType">
-                    <option value="VST">VST</option>
-                    <option value="Hardware">Hardware</option>
-                    <option value="Kontakt Bank">Kontakt Bank</option>
-                    <option value="SoundFont">SoundFont</option>
-                  </select>
-                  <small>Select the format of the synth.</small>
-                </label>
-                <label>
-                  Synth Image <span class="red">*</span>
-
-                  <div class="custom-file-input">
-                    <button type="button" class="browse-button">
-                      Browse...
-                    </button>
-                    <span class="file-name">No file selected.</span>
-                    <input
-                      required
-                      type="file"
-                      name="synthImg"
-                      class="imageInput"
-                      accept="image/*"
-                    />
-                  </div>
-
-                  <small>
-                    Upload the synth image. (1000px x 1000px minimum).
-                  </small>
+                  <small
+                    >Upload the album's cover image. Minimum dimensions: 1000 x
+                    1000 pixels.</small
+                  >
                 </label>
               </fieldset>
 
               <legend>Preset Information</legend>
-              <fieldset id="presetSection">
-                <div class="preset-entry">
+              <fieldset id="synthPresetSection">
+                <div class="synth-entry" data-synth-index="0">
                   <label
-                    >Preset Name <span class="red">*</span>
+                    >Synth Name <span class="red">*</span>
                     <input
                       class="form-input"
                       required
                       type="text"
-                      name="presets[0][name]"
+                      name="synths[0][name]"
                     />
-                    <small
-                      >Full name of the exact preset used (e.g., 2 Sparklepad
-                      BT, LD King of Buzz 2).</small
-                    >
+                    <small>Name the synth used in the track.</small>
                   </label>
                   <label
-                    >Pack Name <span class="red">*</span>
+                    >Manufacturer <span class="red">*</span>
                     <input
                       class="form-input"
                       required
                       type="text"
-                      name="presets[0][pack_name]"
+                      name="synths[0][manufacturer]"
                     />
                     <small
-                      >Name of the preset pack (use 'Factory' for factory
-                      presets).</small
+                      >Provide the manufacturer or developer (e.g.,
+                      Spectrasonics).</small
                     >
                   </label>
                   <label
-                    >Author <span class="red">*</span>
+                    >Release Year <span class="red">*</span>
                     <input
                       class="form-input"
+                      pattern="^(19|20)\d{2}$"
                       required
-                      type="text"
-                      name="presets[0][author]"
+                      type="number"
+                      name="synths[0][year]"
                     />
-                    <small
-                      >Who made the preset or pack (use manufacturer for factory
-                      presets).</small
-                    >
+                    <small>Enter the synth's release year.</small>
                   </label>
                   <label
-                    >Usage Type <span class="red">*</span>
-                    <input
-                      class="form-input"
-                      pattern="^[A-Z][a-z]*( [A-Z][a-z]*)*$"
-                      required
-                      title="First letter must be capitalized."
-                      type="text"
-                      name="presets[0][usage_type]"
-                    />
+                    >Type <span class="red">*</span>
+                    <select required name="synths[0][type]">
+                      <option value="VST">VST</option>
+                      <option value="Hardware">Hardware</option>
+                      <option value="Kontakt Bank">Kontakt Bank</option>
+                      <option value="SoundFont">SoundFont</option>
+                    </select>
+                    <small>Select the synth format.</small>
+                  </label>
+                  <label>
+                    Synth Image <span class="red">*</span>
+                    <div class="custom-file-input">
+                      <button type="button" class="browse-button">
+                        Browse...
+                      </button>
+                      <span class="file-name">No file selected.</span>
+                      <input
+                        required
+                        type="file"
+                        name="synths[0][img]"
+                        class="imageInput"
+                        accept="image/*"
+                      />
+                    </div>
                     <small
-                      >What was the preset used for (e.g., lead, pad,
-                      sequence).</small
+                      >Upload an image of the synth. Minimum dimensions: 1000 x
+                      1000 pixels.</small
                     >
                   </label>
-                  <label
-                    >Video Link (Optional)
-                    <input
-                      class="form-input"
-                      type="url"
-                      name="presets[0][video_link]"
-                    />
-                    <small>Demo video link (optional).</small>
-                  </label>
+
+                  <div class="preset-section">
+                    <div class="preset-entry">
+                      <label
+                        >Preset Name <span class="red">*</span>
+                        <input
+                          class="form-input"
+                          required
+                          type="text"
+                          name="synths[0][presets][0][name]"
+                        />
+                        <small
+                          >Enter the full name of the exact preset used (e.g., 2
+                          Sparklepad BT, LD King of Buzz 2).</small
+                        >
+                      </label>
+                      <label
+                        >Pack Name
+                        <input
+                          class="form-input"
+                          type="text"
+                          name="synths[0][presets][0][packName]"
+                        />
+                        <small
+                          >Provide the name of the preset pack. Leave blank for
+                          built-in presets.</small
+                        >
+                      </label>
+                      <label
+                        >Author
+                        <input
+                          class="form-input"
+                          type="text"
+                          name="synths[0][presets][0][author]"
+                        />
+                        <small
+                          >Identify who created the preset or preset pack. Leave
+                          blank for manufacturer, for factory presets.</small
+                        >
+                      </label>
+                      <label
+                        >Usage Type <span class="red">*</span>
+                        <input
+                          class="form-input"
+                          pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
+                          required
+                          title="First letter must be capitalized."
+                          type="text"
+                          name="synths[0][presets][0][usageType]"
+                        />
+                        <small
+                          >Describe how the preset was used (e.g., Lead, Pad,
+                          Sequence).</small
+                        >
+                      </label>
+                      <label
+                        >Preset Audio (Optional)
+                        <div class="custom-file-input">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name">No file selected.</span>
+                          <input
+                            type="file"
+                            name="synths[0][presets][0][presetAudio]"
+                            class="audioInput"
+                            accept="audio/*"
+                          />
+                        </div>
+                        <small>
+                          Upload a short audio clip (approximately 4 bars)
+                          demonstrating how the preset is used in the song. The
+                          clip should feature the melody played
+                          <strong>without any external effects</strong
+                          >.<br /><br />
+
+                          &bull; If external effects are essential, include 4
+                          bars of the <strong>wet</strong> version (with
+                          effects), followed by 4 bars of the
+                          <strong>dry</strong> version (without effects).<br />
+                          &bull; If the same preset is used for multiple
+                          melodies in the song, include all relevant sections in
+                          the same clip, one after another.<br />
+                          &bull; If you're unsure how to do this or find these
+                          instructions unclear, you may leave this field blank.
+                        </small>
+                      </label>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    class="add-preset-btn"
+                    data-synth-index="0"
+                  >
+                    + Add Another Preset
+                  </button>
                 </div>
-                <button type="button" class="add-preset-btn">
-                  + Add Another Preset
+
+                <hr class="hr--btns" />
+
+                <button type="button" class="add-synth-btn">
+                  + Add Another Synth
                 </button>
               </fieldset>
 
@@ -392,8 +425,8 @@
           </section>
         </main>
       </div>
-      <%- include('../partials/footer') %>
+      <%- include('../../partials/footer') %>
     </div>
   </body>
-  <%- include('../partials/scroll-to-top') %>
+  <%- include('../../partials/scroll-to-top') %>
 </html>

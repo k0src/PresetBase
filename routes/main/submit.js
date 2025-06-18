@@ -2,8 +2,14 @@ const express = require("express");
 const router = express.Router();
 const { dbRun } = require("../UTIL.js");
 
+/* Main submit page */
 router.get("/", (req, res) => {
-  res.render("main/submit", { PATH_URL: "submit" });
+  res.render("main/submit/submit", { PATH_URL: "submit" });
+});
+
+/* Example submission */
+router.get("/example", (req, res) => {
+  res.render("main/submit/submit-example", { PATH_URL: "submit" });
 });
 
 router.post("/", async (req, res) => {
@@ -12,17 +18,8 @@ router.post("/", async (req, res) => {
 
   try {
     await dbRun(query, [rawData]);
-
-    // If the request came from the admin approvals page, delete the pending submission
-    if (req.get("referer") && req.get("referer").includes("/admin/approvals")) {
-      await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [
-        JSON.parse(rawData).submissionID,
-      ]);
-
-      return res.redirect("/admin/approvals?success=1");
-    }
   } catch (err) {
-    return res.status(500).send("Database error: " + err.message);
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }
 
   res.redirect("/submit?success=1");
