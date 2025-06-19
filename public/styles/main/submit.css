@@ -38,11 +38,21 @@ body {
   align-items: center;
   gap: 1.8rem;
   justify-content: space-between;
-  background-color: #e1aeae;
-  border: 0.2rem solid #c25c5c;
-  color: #c25c5c;
+  border: 0.2rem solid;
   padding: 1.8rem;
   border-radius: 0.8rem;
+}
+
+.info-message {
+  color: #c25c5c;
+  border-color: #c25c5c;
+  background-color: #e1aeae;
+}
+
+.info-message {
+  color: #5e8faf;
+  border-color: #5e8faf;
+  background-color: #dfe9ef;
 }
 
 .alert-icon {
@@ -56,15 +66,6 @@ body {
 
 .alert-text > a {
   text-decoration: underline !important;
-}
-
-.alert-close-btn {
-  font-size: 1.6rem;
-  cursor: pointer;
-  padding: 1.2rem 1.6rem;
-  background-color: #c25c5c;
-  color: #e3e5e4;
-  border-radius: 0.8rem;
 }
 
 /* ---------------------------------- Form ---------------------------------- */
@@ -110,6 +111,7 @@ legend {
 }
 
 label {
+  position: relative;
   display: block;
   margin-bottom: 1.8rem;
   font-size: 1.6rem;
@@ -326,6 +328,59 @@ hr {
 
 .clear-btn:hover {
   background-color: #c86c6c;
+}
+
+/* ------------------------------- Suggestions ------------------------------ */
+.input-container {
+  position: relative;
+  display: block;
+}
+
+.autocomplete-dropdown {
+  position: absolute;
+  transform-origin: top;
+  list-style: none;
+  background-color: #202429;
+  border: 1px solid #2d343a;
+  border-radius: 0.8rem;
+  max-height: 30rem;
+  overflow-y: auto;
+  opacity: 0;
+  transform: scaleY(0);
+  transition: all 0.3s ease;
+  z-index: 1000;
+  padding: 0.2rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+}
+
+.autocomplete-dropdown.show {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.autocomplete-dropdown li {
+  padding: 1.2rem;
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #899096;
+  cursor: pointer;
+  border-radius: 0.4rem;
+  transition: background-color 0.1s ease;
+  user-select: none;
+}
+
+.autocomplete-dropdown li:hover {
+  background-color: #2d343a;
+}
+
+.autocomplete-dropdown li.selected {
+  background-color: #2d343a;
 }
 
 /* ---------------------------- Additional fields --------------------------- */

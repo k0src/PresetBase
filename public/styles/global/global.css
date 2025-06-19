@@ -48,6 +48,11 @@ a:active {
   padding: 2rem 4rem;
 }
 
+/* ---------------------------------- Util ---------------------------------- */
+.hidden {
+  display: none;
+}
+
 /* ----------------------------- Glass gradient ----------------------------- */
 .glass-gradient {
   background: linear-gradient(90deg, #2c2c2c, #0093a7, #c43436, #272727);

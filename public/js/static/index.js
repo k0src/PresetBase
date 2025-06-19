@@ -39,6 +39,16 @@ document.addEventListener("DOMContentLoaded", () => {
     ...data.presets.map((p) => ({ label: p.preset_name })),
   ];
 
+  let selectedIndex = -1;
+  handleKeyboardNavigation(
+    input,
+    dropdown,
+    () => selectedIndex,
+    (val) => {
+      selectedIndex = val;
+    }
+  );
+
   const fuse = new Fuse(dataset, {
     keys: ["label"],
     includeScore: true,
@@ -59,9 +69,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const results = fuse
         .search(query)
-        .slice(0, 8)
+        .slice(0, 7)
         .map((r) => r.item);
       renderDropdown(results);
+      selectedIndex = -1;
     }, 150);
   });
 
@@ -72,12 +83,15 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    items.forEach((item) => {
+    items.forEach((item, index) => {
+      const listItem = item.label;
       const li = document.createElement("li");
-      li.textContent = `${item.label}`;
+      li.textContent = listItem;
+      li.setAttribute("data-index", index);
+
       li.addEventListener("click", () => {
         hideDropdown();
-        searchForQuery(item.label);
+        searchForQuery(listItem);
       });
       dropdown.appendChild(li);
     });
@@ -96,4 +110,62 @@ document.addEventListener("DOMContentLoaded", () => {
       hideDropdown();
     }
   });
+
+  function handleKeyboardNavigation(
+    input,
+    dropdown,
+    getSelectedIndex,
+    setSelectedIndex
+  ) {
+    input.addEventListener("keydown", (e) => {
+      const items = dropdown.querySelectorAll("li");
+
+      if (items.length === 0) return;
+
+      let currentIndex = getSelectedIndex();
+
+      switch (e.key) {
+        case "ArrowDown":
+          e.preventDefault();
+          currentIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+          updateSelection(items, currentIndex);
+          setSelectedIndex(currentIndex);
+          break;
+
+        case "ArrowUp":
+          e.preventDefault();
+          currentIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+          updateSelection(items, currentIndex);
+          setSelectedIndex(currentIndex);
+          break;
+
+        case "Enter":
+          e.preventDefault();
+          if (currentIndex >= 0 && items[currentIndex]) {
+            input.value = items[currentIndex].textContent;
+            hideDropdown(dropdown);
+            setSelectedIndex(-1);
+          }
+          break;
+
+        case "Escape":
+          hideDropdown(dropdown);
+          setSelectedIndex(-1);
+          break;
+      }
+    });
+  }
+
+  function updateSelection(items, newIndex) {
+    items.forEach((item) => item.classList.remove("selected"));
+
+    if (newIndex >= 0 && items[newIndex]) {
+      items[newIndex].classList.add("selected");
+
+      items[newIndex].scrollIntoView({
+        block: "nearest",
+        behavior: "smooth",
+      });
+    }
+  }
 });

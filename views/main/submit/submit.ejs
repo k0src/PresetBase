@@ -2,8 +2,24 @@
 <html>
   <head>
     <title>PresetBase &mdash; Submit</title>
-    <script src="/js/main/submit.js" defer></script>
     <link rel="stylesheet" href="/styles/main/submit.css" />
+    <script>
+      window.__SEARCH_DATA__ = {
+        songTitles: <%- JSON.stringify(songTitles) %>,
+        albumTitles: <%- JSON.stringify(albumTitles) %>,
+        genres: <%- JSON.stringify(genres) %>,
+        artistNames: <%- JSON.stringify(artistNames) %>,
+        artistCountrys: <%- JSON.stringify(artistCountrys) %>,
+        artistRoles: <%- JSON.stringify(artistRoles) %>,
+        synthNames: <%- JSON.stringify(synthNames) %>,
+        synthManufacturers: <%- JSON.stringify(synthManufacturers) %>,
+        presetNames: <%- JSON.stringify(presetNames) %>,
+        presetPacks: <%- JSON.stringify(presetPacks) %>,
+        presetAuthors: <%- JSON.stringify(presetAuthors) %>,
+        presetUsageTypes: <%- JSON.stringify(presetUsageTypes) %>
+      };
+    </script>
+    <script type="module" src="/js/main/submit.js" defer></script>
     <%- include('../../partials/html-head') %>
   </head>
   <body>
@@ -17,7 +33,7 @@
             <h1 class="heading-primary">Submit</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->
-          <div class="alert-message">
+          <div class="alert-message info-message">
             <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
             <span class="alert-text"
               >Please read and fill out all required fields
@@ -39,7 +55,10 @@
                     required
                     type="text"
                     name="songTitle"
+                    autocomplete="off"
+                    data-key="songTitle"
                   />
+                  <ul class="autocomplete-dropdown hidden"></ul>
                   <small
                     >Provide the full title of the song. Do not include featured
                     artists or producers.</small
@@ -54,7 +73,10 @@
                     title="First letters must be capitalized."
                     type="text"
                     name="songGenre"
+                    autocomplete="off"
+                    data-key="genre"
                   />
+                  <ul class="autocomplete-dropdown hidden"></ul>
                   <small
                     >Specify the music genre (e.g., Trap, House, Hip
                     Hop).</small
@@ -119,7 +141,10 @@
                       required
                       type="text"
                       name="artists[0][name]"
+                      autocomplete="off"
+                      data-key="artistName"
                     />
+                    <ul class="autocomplete-dropdown hidden"></ul>
                     <small>Enter the name of the artist.</small>
                   </label>
                   <label
@@ -129,7 +154,10 @@
                       required
                       type="text"
                       name="artists[0][country]"
+                      autocomplete="off"
+                      data-key="artistCountry"
                     />
+                    <ul class="autocomplete-dropdown hidden"></ul>
                     <small>Specify the artist's country of origin.</small>
                   </label>
                   <label
@@ -139,7 +167,10 @@
                       required
                       type="text"
                       name="artists[0][role]"
+                      autocomplete="off"
+                      data-key="artistRole"
                     />
+                    <ul class="autocomplete-dropdown hidden"></ul>
                     <small
                       >State the artist's role on the track. Use 'Main' for
                       primary artist. Enter only one role.</small
@@ -196,7 +227,10 @@
                     required
                     type="text"
                     name="albumTitle"
+                    autocomplete="off"
+                    data-key="albumTitle"
                   />
+                  <ul class="autocomplete-dropdown hidden"></ul>
                   <small>Provide the album's title.</small>
                 </label>
                 <label
@@ -208,7 +242,10 @@
                     title="First letters must be capitalized."
                     type="text"
                     name="albumGenre"
+                    autocomplete="off"
+                    data-key="genre"
                   />
+                  <ul class="autocomplete-dropdown hidden"></ul>
                   <small>Indicate the album's genre.</small>
                 </label>
                 <label
@@ -254,7 +291,10 @@
                       required
                       type="text"
                       name="synths[0][name]"
+                      autocomplete="off"
+                      data-key="synthName"
                     />
+                    <ul class="autocomplete-dropdown hidden"></ul>
                     <small>Name the synth used in the track.</small>
                   </label>
                   <label
@@ -264,7 +304,10 @@
                       required
                       type="text"
                       name="synths[0][manufacturer]"
+                      autocomplete="off"
+                      data-key="synthManufacturer"
                     />
+                    <ul class="autocomplete-dropdown hidden"></ul>
                     <small
                       >Provide the manufacturer or developer (e.g.,
                       Spectrasonics).</small
@@ -321,7 +364,10 @@
                           required
                           type="text"
                           name="synths[0][presets][0][name]"
+                          autocomplete="off"
+                          data-key="presetName"
                         />
+                        <ul class="autocomplete-dropdown hidden"></ul>
                         <small
                           >Enter the full name of the exact preset used (e.g., 2
                           Sparklepad BT, LD King of Buzz 2).</small
@@ -333,7 +379,10 @@
                           class="form-input"
                           type="text"
                           name="synths[0][presets][0][packName]"
+                          autocomplete="off"
+                          data-key="presetPack"
                         />
+                        <ul class="autocomplete-dropdown hidden"></ul>
                         <small
                           >Provide the name of the preset pack. Leave blank for
                           built-in presets.</small
@@ -345,7 +394,10 @@
                           class="form-input"
                           type="text"
                           name="synths[0][presets][0][author]"
+                          autocomplete="off"
+                          data-key="presetAuthor"
                         />
+                        <ul class="autocomplete-dropdown hidden"></ul>
                         <small
                           >Identify who created the preset or preset pack. Leave
                           blank for manufacturer, for factory presets.</small
@@ -360,7 +412,10 @@
                           title="First letter must be capitalized."
                           type="text"
                           name="synths[0][presets][0][usageType]"
+                          autocomplete="off"
+                          data-key="presetUsageType"
                         />
+                        <ul class="autocomplete-dropdown hidden"></ul>
                         <small
                           >Describe how the preset was used (e.g., Lead, Pad,
                           Sequence).</small

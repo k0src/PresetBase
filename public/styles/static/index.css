@@ -123,16 +123,18 @@ body {
   padding: 1.2rem;
   font-family: "Geist", sans-serif;
   font-size: 1.4rem;
-  color: #e3e5e4;
+  color: #899096;
   cursor: pointer;
+  border-radius: 0.4rem;
+  transition: background-color 0.1s ease;
 }
 
 .autocomplete-dropdown li:hover {
   background-color: #2d343a;
 }
 
-.hidden {
-  display: none;
+.autocomplete-dropdown li.selected {
+  background-color: #2d343a;
 }
 
 /* --------------------------------- Queries -------------------------------- */
