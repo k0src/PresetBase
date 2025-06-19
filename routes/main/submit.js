@@ -123,6 +123,7 @@ router.get("/", async (req, res) => {
       presetPacks: presetPacks || [],
       presetAuthors: presetAuthors || [],
       presetUsageTypes: presetUsageTypes || [],
+      success: req.query.success === "1",
       PATH_URL: "submit",
     });
   } catch (err) {

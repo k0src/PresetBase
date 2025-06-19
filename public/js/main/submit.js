@@ -1,5 +1,12 @@
 import Fuse from "https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs";
 
+/* ---------------------------- Reload selection ---------------------------- */
+const handleInputSelections = function () {
+  handleImgInputs();
+  handleAudioInputs();
+  handleAutofillInputs();
+};
+
 /* ----------------------------- Single checkbox ---------------------------- */
 const singleCheckBox = document.getElementById("singleCheckBox");
 const albumSingleInput = document.querySelector('input[name="single"]');
@@ -51,8 +58,11 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
         class="form-input"
         required
         type="text"
-        name="artists[${artistIndex}][name]"
-    />
+        name="artists[${artistIndex}][name]"                      
+        autocomplete="off"
+        data-key="artistName"
+      />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small>Enter the name of the artist.</small>
     </label>
     <label
@@ -61,8 +71,11 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
         class="form-input"
         required
         type="text"
-        name="artists[${artistIndex}][country]"
-    />
+        name="artists[${artistIndex}][country]"                      
+        autocomplete="off"
+        data-key="artistCountry"
+      />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small>Specify the artist's country of origin.</small>
     </label>
     <label
@@ -71,8 +84,11 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
         class="form-input"
         required
         type="text"
-        name="artists[${artistIndex}][role]"
-    />
+        name="artists[${artistIndex}][role]"                      
+        autocomplete="off"
+        data-key="artistRole"
+      />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small
         >State the artist's role on the track. Use 'Main' for
         primary artist. Enter only one role.</small
@@ -108,7 +124,7 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
     document.querySelector(".add-artist-btn")
   );
 
-  handleImgInputs();
+  handleInputSelections();
 });
 
 /* -------------------------------- Add synth ------------------------------- */
@@ -138,8 +154,11 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
         class="form-input"
         required
         type="text"
-        name="synths[${synthIndex}][name]"
-    />
+        name="synths[${synthIndex}][name]"                      
+        autocomplete="off"
+        data-key="synthName"
+      />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small>Name the synth used in the track.</small>
     </label>
     <label
@@ -148,8 +167,11 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
         class="form-input"
         required
         type="text"
-        name="synths[${synthIndex}][manufacturer]"
+        name="synths[${synthIndex}][manufacturer]"                      
+        autocomplete="off"
+        data-key="synthManufacturer"
     />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small
         >Provide the manufacturer or developer (e.g.,
         Spectrasonics).</small
@@ -205,8 +227,11 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
             class="form-input"
             required
             type="text"
-            name="synths[${synthIndex}][presets][0][name]"
+            name="synths[${synthIndex}][presets][0][name]"                          
+            autocomplete="off"
+            data-key="presetName"
         />
+        <ul class="autocomplete-dropdown hidden"></ul>
         <small
             >Enter the full name of the exact preset used (e.g., 2
             Sparklepad BT, LD King of Buzz 2).</small
@@ -218,7 +243,10 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
             class="form-input"
             type="text"
             name="synths[${synthIndex}][presets][0][packName]"
+            autocomplete="off"
+            data-key="presetPack"
         />
+        <ul class="autocomplete-dropdown hidden"></ul>
         <small
             >Provide the name of the preset pack. Leave blank for
             built-in presets.</small
@@ -230,7 +258,10 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
             class="form-input"
             type="text"
             name="synths[${synthIndex}][presets][0][author]"
+            autocomplete="off"
+            data-key="presetAuthor"
         />
+        <ul class="autocomplete-dropdown hidden"></ul>
         <small
             >Identify who created the preset or preset pack. Leave
             blank for manufacturer, for factory presets.</small
@@ -245,7 +276,10 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
             title="First letter must be capitalized."
             type="text"
             name="synths[${synthIndex}][presets][0][usageType]"
+            autocomplete="off"
+            data-key="presetUsageType"
         />
+        <ul class="autocomplete-dropdown hidden"></ul>
         <small
             >Describe how the preset was used (e.g., Lead, Pad,
             Sequence).</small
@@ -302,8 +336,7 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
     document.querySelector(".add-synth-btn")
   );
 
-  handleImgInputs();
-  handleAudioInputs();
+  handleInputSelections();
 });
 
 /* ------------------------------- Add preset ------------------------------- */
@@ -343,7 +376,10 @@ const addPreset = function (currSynthIndex) {
         required
         type="text"
         name="synths[${currSynthIndex}][presets][${presetIndex}][name]"
+        autocomplete="off"
+        data-key="presetName"
     />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small
         >Enter the full name of the exact preset used (e.g., 2
         Sparklepad BT, LD King of Buzz 2).</small
@@ -355,7 +391,10 @@ const addPreset = function (currSynthIndex) {
         class="form-input"
         type="text"
         name="synths[${currSynthIndex}][presets][${presetIndex}][packName]"
+        autocomplete="off"
+        data-key="presetPack"
     />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small
         >Provide the name of the preset pack. Leave blank for
         built-in presets.</small
@@ -367,7 +406,10 @@ const addPreset = function (currSynthIndex) {
         class="form-input"
         type="text"
         name="synths[${currSynthIndex}][presets][${presetIndex}][author]"
+        autocomplete="off"
+        data-key="presetAuthor"
     />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small
         >Identify who created the preset or preset pack. Leave
         blank for manufacturer, for factory presets.</small
@@ -382,7 +424,10 @@ const addPreset = function (currSynthIndex) {
         title="First letter must be capitalized."
         type="text"
         name="synths[${currSynthIndex}][presets][${presetIndex}][usageType]"
+        autocomplete="off"
+        data-key="presetUsageType"
     />
+    <ul class="autocomplete-dropdown hidden"></ul>
     <small
         >Describe how the preset was used (e.g., Lead, Pad,
         Sequence).</small
@@ -423,7 +468,8 @@ const addPreset = function (currSynthIndex) {
   `;
 
   presetSection.appendChild(newPreset);
-  handleAudioInputs();
+
+  handleInputSelections();
 };
 
 /* --------------------------- Delete new entries --------------------------- */
@@ -510,50 +556,8 @@ const handleAudioInputs = function () {
   });
 };
 
-/* ----------------------------- Form validation ---------------------------- */
-document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("entryForm");
-  const songImg = document.querySelector('input[name="songImg"]');
-  const albumImg = document.querySelector('input[name="albumImg"]');
-
-  form.addEventListener("submit", (e) => {
-    const songImgUploaded = songImg.files.length > 0;
-    const albumImgUploaded = albumImg.files.length > 0;
-
-    const failSubmit = (msg) => {
-      e.preventDefault();
-      alert(msg);
-    };
-
-    if (!singleCheckBox.checked) {
-      if (!albumImgUploaded && !songImgUploaded) {
-        return failSubmit("You must upload at least the album image.");
-      }
-      if (songImgUploaded && !albumImgUploaded) {
-        return failSubmit(
-          "You must upload the album image if you upload the song image."
-        );
-      }
-    }
-
-    const roleInputs = form.querySelectorAll(
-      'input[name^="artists"][name$="[role]"]'
-    );
-    const hasMainRole = Array.from(roleInputs).some(
-      (input) => input.value.trim() === "Main"
-    );
-
-    if (!hasMainRole) {
-      return failSubmit("At least one artist must have the role 'Main'.");
-    }
-  });
-
-  handleImgInputs();
-  handleAudioInputs();
-});
-
 /* ----------------------------- Autofill fields ---------------------------- */
-document.addEventListener("DOMContentLoaded", () => {
+const handleAutofillInputs = function () {
   const inputs = document.querySelectorAll("input");
 
   const data = window.__SEARCH_DATA__;
@@ -724,4 +728,48 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   }
+};
+
+/* ----------------------------- Form validation ---------------------------- */
+const validateForm = function () {
+  const form = document.getElementById("entryForm");
+  const songImg = document.querySelector('input[name="songImg"]');
+  const albumImg = document.querySelector('input[name="albumImg"]');
+
+  form.addEventListener("submit", (e) => {
+    const songImgUploaded = songImg.files.length > 0;
+    const albumImgUploaded = albumImg.files.length > 0;
+
+    const failSubmit = (msg) => {
+      e.preventDefault();
+      alert(msg);
+    };
+
+    if (!singleCheckBox.checked) {
+      if (!albumImgUploaded && !songImgUploaded) {
+        return failSubmit("You must upload at least the album image.");
+      }
+      if (songImgUploaded && !albumImgUploaded) {
+        return failSubmit(
+          "You must upload the album image if you upload the song image."
+        );
+      }
+    }
+
+    const roleInputs = form.querySelectorAll(
+      'input[name^="artists"][name$="[role]"]'
+    );
+    const hasMainRole = Array.from(roleInputs).some(
+      (input) => input.value.trim() === "Main"
+    );
+
+    if (!hasMainRole) {
+      return failSubmit("At least one artist must have the role 'Main'.");
+    }
+  });
+};
+
+document.addEventListener("DOMContentLoaded", () => {
+  handleInputSelections();
+  validateForm();
 });

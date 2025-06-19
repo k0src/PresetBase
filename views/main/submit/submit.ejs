@@ -33,17 +33,30 @@
             <h1 class="heading-primary">Submit</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->
+          <% if (success) { %>
+          <div class="alert-message success-message">
+            <i class="fa-solid fa-circle-check alert-icon"></i>
+            <span class="alert-text"
+              ><strong>Your submission has been successfully received!</strong>
+              All submissions are manually reviewed and approved. You can
+              monitor the status of your submission by visiting the
+              <a href="#" target="_blank">"My Submissions"</a> section within
+              your account page.
+            </span>
+          </div>
+          <% } else { %>
           <div class="alert-message info-message">
             <i class="fa-solid fa-triangle-exclamation alert-icon"></i>
             <span class="alert-text"
-              >Please read and fill out all required fields
-              <strong>carefully</strong>. Mistakes may lead to your entry being
-              rejected.
+              ><strong
+                >Please read and fill out all required fields carefully</strong
+              >. Mistakes may lead to your entry being rejected.
               <a href="/submit/example" target="_blank"
                 >Click here to view an example of a approved submission.</a
               >
             </span>
           </div>
+          <% } %>
           <section class="submit-main-container">
             <form id="entryForm" method="POST" action="/submit">
               <legend>Song Information</legend>
