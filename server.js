@@ -21,13 +21,15 @@ app.get("/privacy-policy", (req, res) => {
   res.render("static/privacy-policy", { PATH_URL: "privacy-policy" });
 });
 
+/* ------------------------------- Main routes ------------------------------ */
+const statsRoutes = require("./routes/main/stats");
+app.use("/stats", statsRoutes);
 const searchRoutes = require("./routes/main/search");
 app.use("/search", searchRoutes);
 const submitRoute = require("./routes/main/submit");
 app.use("/submit", submitRoute);
 
 /* ------------------------------ Entry routes ------------------------------ */
-
 const songRoutes = require("./routes/entries/song");
 app.use("/song", songRoutes);
 const synthRoutes = require("./routes/entries/synth");
@@ -38,7 +40,6 @@ const albumsRoutes = require("./routes/entries/album");
 app.use("/album", albumsRoutes);
 
 /* ------------------------------ Browse Routes ----------------------------- */
-
 const browseRoute = require("./routes/main/browse");
 app.use("/browse", browseRoute);
 const browseSongsRoute = require("./routes/main/browse/songs");
@@ -62,15 +63,11 @@ app.use("/browse/hot", hotRoute);
 const recentlyAddedRoute = require("./routes/main/browse/recent");
 app.use("/browse/recent", recentlyAddedRoute);
 
-/* ------------------------------ Stats Routes ------------------------------ */
-
 /* ------------------------------ Admin routes ------------------------------ */
-
 const adminRoute = require("./routes/admin/admin");
 app.use("/admin", adminRoute);
 
 /* ----------------------------------- 404 ---------------------------------- */
-
 app.use((req, res) => {
   res.status(404).render("static/404", { PATH_URL: "404" });
 });

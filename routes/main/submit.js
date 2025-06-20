@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
-const { dbRun, dbAll } = require("../UTIL.js");
+const multer = require("../../middleware/multer.js");
+const { dbRun, dbAll, attachFilesToBody } = require("../../util/UTIL.js");
 
 /* Example submission */
 router.get("/example", async (req, res) => {
@@ -67,12 +68,14 @@ router.get("/", async (req, res) => {
       SELECT DISTINCT
         presets.pack_name AS preset_pack_name
       FROM presets
+      WHERE presets.pack_name != 'unknown' AND presets.pack_name != 'Unknown'
       GROUP BY presets.id`,
 
     presetAuthors: `
       SELECT DISTINCT
         presets.author AS preset_author
       FROM presets
+      WHERE presets.author != 'unknown' AND presets.author != 'Unknown'
       GROUP BY presets.id`,
 
     presetUsageTypes: `
@@ -131,12 +134,15 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", async (req, res) => {
-  const rawData = JSON.stringify(req.body);
+router.post("/", multer, async (req, res) => {
+  console.log(req.files);
+  const rawData = attachFilesToBody(req.body, req.files);
+  const pendingData = JSON.stringify(rawData);
+
   const query = `INSERT INTO pending_submissions (data) VALUES (?)`;
 
   try {
-    await dbRun(query, [rawData]);
+    await dbRun(query, [pendingData]);
   } catch (err) {
     return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }

@@ -99,6 +99,54 @@ const addedDaysAgo = function (timestamp) {
   return diffDays;
 };
 
+/* ---------------------------------- Files --------------------------------- */
+const attachFilesToBody = function (body, files) {
+  const updated = structuredClone(body);
+
+  for (const file of files) {
+    const field = file.fieldname;
+
+    if (!field.includes("[") && !field.includes("]")) {
+      console.log(field);
+      updated[field] = file.filename;
+      console.log(updated[field]);
+      continue;
+    }
+
+    const pathRegex = /^([a-zA-Z0-9_]+)((?:\[[a-zA-Z0-9_]+\])+)$/;
+    const match = field.match(pathRegex);
+    if (!match) continue;
+
+    const root = match[1];
+    const pathString = match[2];
+
+    const keys = [
+      root,
+      ...Array.from(pathString.matchAll(/\[([a-zA-Z0-9_]+)\]/g))
+        .map((m) => m[1])
+        .map((k) => (/^\d+$/.test(k) ? parseInt(k, 10) : k)),
+    ];
+
+    let target = updated;
+    try {
+      for (let i = 0; i < keys.length - 1; i++) {
+        const key = keys[i];
+        if (target[key] === undefined || target[key] === null) {
+          target[key] = typeof keys[i + 1] === "number" ? [] : {};
+        }
+        target = target[key];
+      }
+
+      const lastKey = keys[keys.length - 1];
+      target[lastKey] = file.filename;
+    } catch (err) {
+      console.error(`Could not set file for field ${field}:`, err);
+      continue;
+    }
+  }
+
+  return updated;
+};
 module.exports = {
   dbAll,
   dbGet,
@@ -108,4 +156,5 @@ module.exports = {
   markHot,
   addedDaysAgo,
   post,
+  attachFilesToBody,
 };

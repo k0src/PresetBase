@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { dbAll, dbGet, addedDaysAgo } = require("../UTIL.js");
+const { dbAll, dbGet, addedDaysAgo } = require("../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
   const queries = {

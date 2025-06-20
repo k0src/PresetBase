@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { dbGet, dbRun, dbAll } = require("../UTIL.js");
+const { dbGet, dbRun, dbAll } = require("../../util/UTIL.js");
 
 router.get("/:id", async (req, res) => {
   const songId = req.params.id;

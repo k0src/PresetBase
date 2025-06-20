@@ -105,7 +105,7 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
         <input
         required
         type="file"
-        name="artists[${artistIndex}][artistImg]"
+        name="artists[${artistIndex}][img]"
         class="imageInput"
         accept="image/*"
         />
@@ -294,13 +294,13 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
             <span class="file-name">No file selected.</span>
             <input
             type="file"
-            name="synths[${synthIndex}][presets][0][presetAudio]"
+            name="synths[${synthIndex}][presets][0][audio]"
             class="audioInput"
             accept="audio/*"
             />
         </div>
         <small>
-            Upload a short audio clip (approximately 4 bars)
+            Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
             demonstrating how the preset is used in the song. The
             clip should feature the melody played
             <strong>without any external effects</strong
@@ -442,13 +442,13 @@ const addPreset = function (currSynthIndex) {
         <span class="file-name">No file selected.</span>
         <input
         type="file"
-        name="synths[${currSynthIndex}][presets][${presetIndex}][presetAudio]"
+        name="synths[${currSynthIndex}][presets][${presetIndex}][audio]"
         class="audioInput"
         accept="audio/*"
         />
     </div>
     <small>
-        Upload a short audio clip (approximately 4 bars)
+        Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
         demonstrating how the preset is used in the song. The
         clip should feature the melody played
         <strong>without any external effects</strong

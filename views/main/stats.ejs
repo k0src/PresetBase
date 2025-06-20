@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PresetBase &mdash; Stats</title>
+    <script src="/js/main/stats.js" defer></script>
+    <link rel="stylesheet" href="/styles/main/stats.css" />
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="stats--header">
+            <h1 class="heading-primary">Stats</h1>
+          </section>
+          <!-- --------------------------- Stats Section ---------------------------- -->
+          <section class="stats-main--container"></section>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>

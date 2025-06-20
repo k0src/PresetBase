@@ -58,7 +58,12 @@
           </div>
           <% } %>
           <section class="submit-main-container">
-            <form id="entryForm" method="POST" action="/submit">
+            <form
+              id="entryForm"
+              method="POST"
+              action="/submit"
+              enctype="multipart/form-data"
+            >
               <legend>Song Information</legend>
               <fieldset>
                 <label
@@ -443,15 +448,16 @@
                           <span class="file-name">No file selected.</span>
                           <input
                             type="file"
-                            name="synths[0][presets][0][presetAudio]"
+                            name="synths[0][presets][0][audio]"
                             class="audioInput"
-                            accept="audio/*"
+                            accept="audio/mpeg"
                           />
                         </div>
                         <small>
-                          Upload a short audio clip (approximately 4 bars)
-                          demonstrating how the preset is used in the song. The
-                          clip should feature the melody played
+                          Upload a short <kbd>.mp3</kbd> audio clip
+                          (approximately 4 bars) demonstrating how the preset is
+                          used in the song. The clip should feature the melody
+                          played
                           <strong>without any external effects</strong
                           >.<br /><br />
 

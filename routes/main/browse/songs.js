@@ -6,7 +6,7 @@ const {
   convertTimestamps,
   markNew,
   markHot,
-} = require("../../UTIL.js");
+} = require("../../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
