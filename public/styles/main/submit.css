@@ -198,6 +198,10 @@ select {
   margin-bottom: 1.2rem;
 }
 
+.input-margin-top {
+  margin-top: 1.2rem;
+}
+
 .custom-file-input {
   display: flex;
   align-items: center;
@@ -378,6 +382,35 @@ hr {
 }
 
 .clear-btn:hover {
+  background-color: #c86c6c;
+}
+
+.submit-btn--example,
+.clear-btn--example {
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.6rem;
+  padding: 1.2rem 1.4rem;
+  color: #e3e5e4;
+  border: none;
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+}
+
+.submit-btn--example {
+  background-color: #5a7f71;
+}
+
+.clear-btn--example {
+  background-color: #c25c5c;
+}
+
+.submit-btn--example:hover {
+  background-color: #73988a;
+}
+
+.clear-btn--example:hover {
   background-color: #c86c6c;
 }
 
