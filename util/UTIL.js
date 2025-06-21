@@ -107,9 +107,7 @@ const attachFilesToBody = function (body, files) {
     const field = file.fieldname;
 
     if (!field.includes("[") && !field.includes("]")) {
-      console.log(field);
       updated[field] = file.filename;
-      console.log(updated[field]);
       continue;
     }
 

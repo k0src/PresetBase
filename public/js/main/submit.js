@@ -96,8 +96,14 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
     </label>
     <label>
     Artist Image <span class="red">*</span>
-
-    <div class="custom-file-input">
+  <div class="img-upload-container">
+    <img
+      src="/assets/images/image-upload-placeholder.webp"
+      alt="Uploaded Image"
+      class="img-upload-display"
+    />
+    <div class="file-input-wrapper">
+    <div class="custom-file-input input-margin-bottom">
         <button type="button" class="browse-button">
         Browse...
         </button>
@@ -110,12 +116,13 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
         accept="image/*"
         />
     </div>
-
     <small
         >Upload the artist's image. Leave blank to default to the
         album cover. Minimum dimensions: 1000 x 1000
         pixels.</small
     >
+    </div>
+    </div>
     </label>
     `;
 
@@ -200,7 +207,14 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
     </label>
     <label>
     Synth Image <span class="red">*</span>
-    <div class="custom-file-input">
+    <div class="img-upload-container">
+    <img
+      src="/assets/images/image-upload-placeholder.webp"
+      alt="Uploaded Image"
+      class="img-upload-display"
+    />
+    <div class="file-input-wrapper">
+    <div class="custom-file-input input-margin-bottom">
         <button type="button" class="browse-button">
         Browse...
         </button>
@@ -217,6 +231,8 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
         >Upload an image of the synth. Minimum dimensions: 1000 x
         1000 pixels.</small
     >
+    </div>
+    </div>
     </label>
 
     <div class="preset-section">
@@ -287,6 +303,16 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
         </label>
         <label
         >Preset Audio (Optional)
+        <div class="audio-upload-container input-margin-bottom">
+          <div class="audio-upload-btn-container">
+            <i
+              class="fa-solid fa-circle-play audio-upload--play-btn"
+            ></i>
+            <i
+              class="fa-solid fa-circle-stop audio-upload--play-btn-active hidden"
+            ></i>
+        </div>
+        <audio class="uploaded-audio" src=""></audio>
         <div class="custom-file-input">
             <button type="button" class="browse-button">
             Browse...
@@ -298,6 +324,7 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
             class="audioInput"
             accept="audio/*"
             />
+        </div>
         </div>
         <small>
             Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
@@ -435,6 +462,16 @@ const addPreset = function (currSynthIndex) {
     </label>
     <label
     >Preset Audio (Optional)
+    <div class="audio-upload-container input-margin-bottom">
+    <div class="audio-upload-btn-container">
+      <i
+        class="fa-solid fa-circle-play audio-upload--play-btn"
+      ></i>
+      <i
+        class="fa-solid fa-circle-stop audio-upload--play-btn-active hidden"
+      ></i>
+    </div>
+    <audio class="uploaded-audio" src=""></audio>
     <div class="custom-file-input">
         <button type="button" class="browse-button">
         Browse...
@@ -446,6 +483,7 @@ const addPreset = function (currSynthIndex) {
         class="audioInput"
         accept="audio/*"
         />
+    </div>
     </div>
     <small>
         Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
@@ -490,67 +528,140 @@ const handleImgInputs = function () {
 
   imgInputs.forEach((imgInput) => {
     imgInput.addEventListener("change", function () {
-      const fileNameDisplay = imgInput
-        .closest(".custom-file-input")
-        .querySelector(".file-name");
-
       const file = this.files[0];
       if (!file) return;
 
-      fileNameDisplay.textContent = file.name;
-
+      // Validate image
       const img = new Image();
       img.src = URL.createObjectURL(file);
+
+      img.onerror = function () {
+        alert("Invalid image file.");
+      };
 
       img.onload = function () {
         if (img.width < 1000 || img.height < 1000) {
           alert("Image must be at least 1000x1000 pixels.");
-          imgInput.value = "";
-          fileNameDisplay.textContent = "No file selected.";
-        }
-        URL.revokeObjectURL(img.src);
-      };
+        } else {
+          // Change filename
+          const fileNameDisplay = imgInput
+            .closest(".custom-file-input")
+            .querySelector(".file-name");
 
-      img.onerror = function () {
-        alert("Invalid image file.");
-        imgInput.value = "";
-        fileNameDisplay.textContent = "No file selected.";
+          fileNameDisplay.textContent = file.name;
+
+          // Display image
+          const imgDisplay = imgInput
+            .closest(".img-upload-container")
+            .querySelector(".img-upload-display");
+
+          imgDisplay.src = img.src;
+        }
+
+        URL.revokeObjectURL(img.src);
       };
     });
   });
 };
 
 /* --------------------------- Preset audio inputs -------------------------- */
+const handleAudioPlayback = function (playBtns) {
+  const playBtn = playBtns.querySelector(".audio-upload--play-btn");
+  const stopBtn = playBtns.querySelector(".audio-upload--play-btn-active");
+
+  playBtn.addEventListener("click", () => {
+    document.querySelectorAll(".uploaded-audio").forEach((otherAudio) => {
+      if (!otherAudio.paused) {
+        otherAudio.pause();
+        otherAudio.currentTime = 0;
+
+        const otherContainer = otherAudio
+          .closest(".audio-upload-container")
+          .querySelector(".audio-upload-btn-container");
+        otherContainer
+          .querySelector(".audio-upload--play-btn")
+          .classList.remove("hidden");
+        otherContainer
+          .querySelector(".audio-upload--play-btn-active")
+          .classList.add("hidden");
+      }
+    });
+
+    const audio = playBtns
+      .closest(".audio-upload-container")
+      .querySelector(".uploaded-audio");
+
+    if (audio.paused) {
+      audio.play();
+
+      playBtn.classList.add("hidden");
+      stopBtn.classList.remove("hidden");
+    } else {
+      audio.pause();
+      audio.currentTime = 0;
+
+      playBtn.classList.remove("hidden");
+      stopBtn.classList.add("hidden");
+    }
+
+    audio.addEventListener("ended", () => {
+      playBtn.classList.remove("hidden");
+      stopBtn.classList.add("hidden");
+    });
+  });
+
+  stopBtn.addEventListener("click", () => {
+    const audio = playBtns
+      .closest(".audio-upload-container")
+      .querySelector(".uploaded-audio");
+
+    audio.pause();
+    audio.currentTime = 0;
+
+    playBtn.classList.remove("hidden");
+    stopBtn.classList.add("hidden");
+  });
+};
+
 const handleAudioInputs = function () {
   const audioInputs = document.querySelectorAll(".audioInput");
 
   audioInputs.forEach((audioInput) => {
     audioInput.addEventListener("change", function () {
-      const fileNameDisplay = audioInput
-        .closest(".custom-file-input")
-        .querySelector(".file-name");
-
       const file = this.files[0];
       if (!file) return;
 
-      fileNameDisplay.textContent = file.name;
-
+      // Validate Audio
       const audio = new Audio();
       audio.src = URL.createObjectURL(file);
+
+      audio.onerror = function () {
+        alert("Invalid audio file.");
+      };
 
       audio.onloadedmetadata = function () {
         if (audio.duration > 120) {
           alert("Audio file must be 2 minutes or less.");
-          audioInput.value = "";
-          fileNameDisplay.textContent = "No file selected.";
-          URL.revokeObjectURL(audio.src);
-        }
-      };
+        } else {
+          // Change filename
+          const fileNameDisplay = audioInput
+            .closest(".custom-file-input")
+            .querySelector(".file-name");
 
-      audio.onerror = function () {
-        alert("Invalid audio file.");
-        audioInput.value = "";
-        fileNameDisplay.textContent = "No file selected.";
+          fileNameDisplay.textContent = file.name;
+
+          // Set audio, handle playback
+          const audioDisplay = audioInput
+            .closest(".audio-upload-container")
+            .querySelector(".uploaded-audio");
+
+          audioDisplay.src = audio.src;
+
+          const playBtns = audioInput
+            .closest(".audio-upload-container")
+            .querySelector(".audio-upload-btn-container");
+          handleAudioPlayback(playBtns);
+        }
       };
     });
   });

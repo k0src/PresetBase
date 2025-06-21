@@ -135,7 +135,6 @@ router.get("/", async (req, res) => {
 });
 
 router.post("/", multer, async (req, res) => {
-  console.log(req.files);
   const rawData = attachFilesToBody(req.body, req.files);
   const pendingData = JSON.stringify(rawData);
 

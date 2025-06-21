@@ -1,397 +1,427 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="/assets/scroll_to_top.js" defer></script>
-    <script src="/assets/admin/approvals.js" defer></script>
-    <script src="/assets/admin/img_tooltip.js" defer></script>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Approve Submissions</title>
-    <link rel="stylesheet" href="/styles/navbar.css" />
-    <link rel="stylesheet" href="/styles/admin/approvals.css" />
+    <title>PresetBase &mdash; Submit</title>
+    <link rel="stylesheet" href="/styles/main/submit.css" />
+    <script type="module" src="/js/admin/approvals.js" defer></script>
+    <%- include('../partials/html-head') %>
   </head>
-  <body
-    style="opacity: 0; transition: opacity 0.3s ease"
-    onload="document.body.style.opacity='1'"
-  >
-    <%- include('./partials/navbar') %>
-    <div class="content animate">
-      <div class="header">
-        <h1>User submitted entries</h1>
-      </div>
-      <main>
-        <% submissions.forEach(entry => { %>
-          <form id="entryForm" method="POST" action="/submit">
-                    
-          <legend>Submission</legend>
-          <fieldset>
-            <label
-              >Submission ID:
-              <input
-                required
-                type="text"
-                name="submissionID"
-                value="<%= entry.id %>"
-                readonly
-              />
-            </label>
-            <label
-              >Submitted at:
-              <input
-                required
-                type="text"
-                name="submittedTime"
-                value="<%= entry.submittedAt %>"
-                readonly
-              />
-            </label>
-          </fieldset>
-
-            <!-- Song Info -->
-          <legend>Song Information</legend>
-          <fieldset>
-            <label
-              >Song Title <span class="red">*</span>
-              <input
-                required
-                type="text"
-                name="songTitle"
-                value="<%= entry.data.songTitle %>"
-              />
-            </label>
-            <label
-              >Genre <span class="red">*</span>
-              <input
-                required
-                type="text"
-                name="songGenre"
-                value="<%= entry.data.songGenre %>"
-              />
-            </label>
-            <label
-              >Release Year <span class="red">*</span>
-              <input
-                required
-                type="number"
-                name="songYear"
-                value="<%= entry.data.songYear %>"
-              />
-            </label>
-            <div class="submission-video-container">
-              <label>
-                Song URL <span class="red">*</span>
-                <input
-                  required
-                  type="url"
-                  name="songUrl"
-                  value="<%= entry.data.songUrl %>"
-                />
-              </label>
-              <a 
-                href="<%= entry.data.songUrl %>"
-                target="_blank"
-                class="material-icons video-box">
-                open_in_new
-              </a>
-            </div>
-            <div class="submission-img-container">
-              <label>
-                Song Image <span class="red">*</span>
-                <input
-                  required
-                  type="url"
-                  name="songImg"
-                  value="<%= entry.data.songImg %>"
-                />
-              </label>
-              <div class="material-icons hover-box">
-                visibility
-                <img 
-                  class="submission-img" 
-                  src="<%= entry.data.songImg %>" 
-                  alt="Song image" 
-                />
-              </div>
-            </div>
-          </fieldset>
-
-          <!-- Artist Info -->
-          <legend>Artist Information</legend>
-          <% Object.entries(entry.data.artists).forEach(([i, artist]) => { %>
-          <fieldset id="artistSection">
-            <div class="artist-entry">
-              <label
-                >Artist Name <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `artists[${i}][name]` %>"
-                  value="<%= artist.name %>"
-                />
-              </label>
-              <label
-                >Artist Country <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `artists[${i}][country]` %>"
-                  value="<%= artist.country %>"
-                />
-              </label>
-              <label
-                >Artist role <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `artists[${i}][role]` %>"
-                  value="<%= artist.role %>"
-                />
-              </label>
-              <div class="submission-img-container">
-                <label>
-                  Artist Image <span class="red">*</span>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="submit--header">
+            <h1 class="heading-primary">User submitted entries</h1>
+          </section>
+          <!-- --------------------------- Submit Section ---------------------------- -->
+          <section class="submit-main-container">
+            <% submissions.forEach(entry => { %>
+            <form
+              id="entryForm"
+              method="POST"
+              action="/submit"
+              enctype="multipart/form-data"
+            >
+              <legend>Song Information</legend>
+              <fieldset>
+                <label
+                  >Song Title <span class="red">*</span>
                   <input
+                    class="form-input"
+                    required
+                    type="text"
+                    name="songTitle"
+                    value="<%= entry.data.songTitle %>"
+                  />
+                  <small
+                    >Provide the full title of the song. Do not include featured
+                    artists or producers.</small
+                  >
+                </label>
+                <label
+                  >Genre <span class="red">*</span>
+                  <input
+                    class="form-input"
+                    required
+                    type="text"
+                    name="songGenre"
+                    value="<%= entry.data.songGenre %>"
+                  />
+                  <small
+                    >Specify the music genre (e.g., Trap, House, Hip
+                    Hop).</small
+                  >
+                </label>
+                <label
+                  >Release Year <span class="red">*</span>
+                  <input
+                    class="form-input"
+                    required
+                    type="number"
+                    name="songYear"
+                    value="<%= entry.data.songYear %>"
+                  />
+                  <small
+                    >Enter the year the song was released (e.g., 2018).</small
+                  >
+                </label>
+                <label
+                  >Song URL <span class="red">*</span>
+                  <input
+                    class="form-input"
                     required
                     type="url"
-                    name="<%= `artists[${i}][image_url]` %>"
-                    value="<%= artist.image_url %>"
+                    name="songUrl"
+                    value="<%= entry.data.songUrl %>"
                   />
+                  <small
+                    >Paste the YouTube URL of the song. Use the official
+                    artist's channel. Avoid music videos unless no official
+                    audio uploads exist.</small
+                  >
                 </label>
-                <div class="material-icons hover-box">
-                  visibility
-                  <img 
-                    class="submission-img" 
-                    src="<%= artist.image_url %>" 
-                    alt="Artist image" 
-                  />
+                <label>
+                  Song Image
+                  <!--  display img -->
+                  <div class="custom-file-input">
+                    <button type="button" class="browse-button">
+                      Browse...
+                    </button>
+                    <span class="file-name">No file selected.</span>
+                    <input
+                      type="file"
+                      name="songImg"
+                      class="imageInput"
+                      accept="image/*"
+                    />
+                  </div>
+                  <small
+                    >Upload the son's cover image. Leave blank to default to the
+                    album cover. Minimum dimensions: 1000 x 1000 pixels.</small
+                  >
+                </label>
+              </fieldset>
+
+              <% Object.entries(entry.data.artists).forEach(([i, artist]) => {
+              %>
+              <legend>Artist Information</legend>
+              <fieldset id="artistSection">
+                <div class="artist-entry">
+                  <label
+                    >Artist Name <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="text"
+                      name="<%= `artists[${i}][name]` %>"
+                      value="<%= artist.name %>"
+                    />
+                    <small>Enter the name of the artist.</small>
+                  </label>
+                  <label
+                    >Artist Country <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="text"
+                      name="<%= `artists[${i}][country]` %>"
+                      value="<%= artist.country %>"
+                    />
+                    <small>Specify the artist's country of origin.</small>
+                  </label>
+                  <label
+                    >Artist Role <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="text"
+                      name="<%= `artists[${i}][role]` %>"
+                      value="<%= artist.role %>"
+                    />
+                    <small
+                      >State the artist's role on the track. Use 'Main' for
+                      primary artist. Enter only one role.</small
+                    >
+                  </label>
+                  <label>
+                    Artist Image <span class="red">*</span>
+                    <div class="custom-file-input">
+                      <button type="button" class="browse-button">
+                        Browse...
+                      </button>
+                      <span class="file-name">No file selected.</span>
+                      <input
+                        required
+                        type="file"
+                        name="artists[0][img]"
+                        class="imageInput"
+                        accept="image/*"
+                      />
+                    </div>
+                    <small
+                      >Upload the artist's image. Leave blank to default to the
+                      album cover. Minimum dimensions: 1000 x 1000
+                      pixels.</small
+                    >
+                  </label>
                 </div>
-              </div>
-          </fieldset>
-          <% }) %>
+              </fieldset>
+              <% }) %>
 
-          <!-- Album Info -->
-          <legend>Album Information</legend>
-          <fieldset>
-            <div class="checkbox-container">
-              <label class="checkbox-label">
-                <input 
-                  type="checkbox" 
-                  id="singleCheckBox" 
-                  name="single"
-                  value="on"
-                  <%= entry.data.single === "on" ? "checked" : "" %>
-                />
-                <span class="checkbox-text">
-                  Check this box if the song is a single.
-                </span>
-              </label>
-            </div>
-            <label
-              >Album Title <span class="red">*</span>
-              <input
-                type="text"
-                name="albumTitle"
-                value="<%= entry.data.albumTitle %>"
-              />
-            </label>
-            <label
-              >Genre <span class="red">*</span>
-              <input
-                type="text"
-                name="albumGenre"
-                value="<%= entry.data.albumGenre %>"
-              />
-            </label>
-            <label
-              >Release Year <span class="red">*</span>
-              <input
-                type="number"
-                name="albumYear"
-                value="<%= entry.data.albumYear %>"
-              />
-            </label>
-            <label
-              >Album Image <span class="red">*</span>
-              <input
-                type="url"
-                name="albumImg"
-                value="<%= entry.data.albumImg %>"
-              />
-            </label>
-            <% if (entry.data.single !== "on") { %>
-            <div class="submission-img-container">
-              <label>
-                Album Image <span class="red">*</span>
-                <input
-                  required
-                  type="url"
-                  name="albumImg"
-                  value="<%= entry.data.albumImg %>"
-                />
-              </label>
-              <div class="material-icons hover-box">
-                visibility
-                <img 
-                  class="submission-img" 
-                  src="<%= entry.data.albumImg %>" 
-                  alt="Album image" 
-                />
-              </div>
-            </div>
-            <% } %>
-          </fieldset>
+              <% const isSingle = entry.data.single === "yes" %>
+              <legend>Album Information</legend>
+              <fieldset>
+                <div class="checkbox-container">
+                  <label class="checkbox-label">
+                    <input type="hidden" name="single" value="<%= entry.data.single %>" />
+                    <input
+                      type="checkbox"
+                      id="singleCheckBox"
+                      class="custom-input"
+                      <% if (isSingle) { %>checked<% } %>
+                    />
+                    <span class="custom-checkbox"></span>
+                    <span class="checkbox-text">
+                      Check this box if the song is a single (doesn't appear on
+                      any albums besides possibly compilation albums).
+                    </span>
+                  </label>
+                </div>
+                <label
+                  >Album Title <span class="red">*</span>
+                  <input
+                    class="form-input album-field"
+                    required
+                    type="text"
+                    name="albumTitle"
+                    value="<%= entry.data.albumTitle %>"
+                    <% if (isSingle) { %>disabled<% } %>
+                  />
+                  <small>Provide the album's title.</small>
+                </label>
+                <label
+                  >Genre <span class="red">*</span>
+                  <input
+                    class="form-input album-field"
+                    required
+                    type="text"
+                    name="albumGenre"
+                    value="<%= entry.data.albumGenre %>"
+                    <% if (isSingle) { %>disabled<% } %>
+                  />
+                  <small>Indicate the album's genre.</small>
+                </label>
+                <label
+                  >Release Year <span class="red">*</span>
+                  <input
+                    class="form-input album-field"
+                    required
+                    type="number"
+                    name="albumYear"
+                    value="<%= entry.data.albumYear %>"
+                    <% if (isSingle) { %>disabled<% } %>
+                  />
+                  <small>Enter the year the album was released.</small>
+                </label>
+                <label>
+                  Album Image <span class="red">*</span>
+                  <div class="custom-file-input">
+                    <button type="button" class="browse-button">
+                      Browse...
+                    </button>
+                    <span class="file-name">No file selected.</span>
+                    <input
+                      type="file"
+                      name="albumImg"
+                      class="imageInput album-field"
+                      accept="image/*"
+                    />
+                  </div>
+                  <small
+                    >Upload the album's cover image. Minimum dimensions: 1000 x
+                    1000 pixels.</small
+                  >
+                </label>
+              </fieldset>
 
-          <!-- Synth Info -->
-          <legend>Synth Information</legend>
-          <fieldset>
-            <label
-              >Synth Name <span class="red">*</span>
-              <input
-                required
-                type="text"
-                name="synthName"
-                value="<%= entry.data.synthName %>"
-              />
-            </label>
-            <label
-              >Manufacturer <span class="red">*</span>
-              <input
-                required
-                type="text"
-                name="synthMaker"
-                value="<%= entry.data.synthMaker %>"
-              />
-            </label>
-            <label
-              >Release Year <span class="red">*</span>
-              <input
-                type="number"
-                name="synthYear"
-                value="<%= entry.data.synthYear %>"
-              />
-            </label>
-            <label
-              >Type <span class="red">*</span>
-              <select required name="synthType">
-                 <option value="VST" <%= entry.data.synthType === 'VST' ? 'selected' : '' %>>VST</option>
-                 <option value="Hardware" <%= entry.data.synthType === 'Hardware' ? 'selected' : '' %>>Hardware</option>
-                 <option value="Kontakt Bank" <%= entry.data.synthType === 'Kontakt Bank' ? 'selected' : '' %>>Kontakt Bank</option>
-                 <option value="SoundFont" <%= entry.data.synthType === 'SoundFont' ? 'selected' : '' %>>SoundFont</option>
-              </select>
-            </label>
-            <label
-              >Synth Image <span class="red">*</span>
-              <input
-                required
-                type="url"
-                name="synthImg"
-                value="<%= entry.data.synthImg %>"
-              />
-            </label>
-            <div class="submission-img-container">
-              <label>
-                Synth Image <span class="red">*</span>
-                <input
-                  required
-                  type="url"
-                  name="synthImg"
-                  value="<%= entry.data.synthImg %>"
-                />
-              </label>
-              <div class="material-icons hover-box">
-                visibility
-                <img 
-                  class="submission-img" 
-                  src="<%= entry.data.synthImg %>" 
-                  alt="Synth image" 
-                />
-              </div>
-            </div>
-          </fieldset>
+              <legend>Preset Information</legend>
+              <% Object.entries(entry.data.synths).forEach(([i, synth]) => { %>
+              <fieldset id="synthPresetSection">
+                <div class="synth-entry" data-synth-index="0">
+                  <label
+                    >Synth Name <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="text"
+                      name="<%= `synths[${i}][name]` %>"
+                      value="<%= synth.name %>"
+                    />
+                    <small>Name the synth used in the track.</small>
+                  </label>
+                  <label
+                    >Manufacturer <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="text"
+                      name="<%= `synths[${i}][manufacturer]` %>"
+                      value="<%= synth.manufacturer %>"
+                    />
+                    <small
+                      >Provide the manufacturer or developer (e.g.,
+                      Spectrasonics).</small
+                    >
+                  </label>
+                  <label
+                    >Release Year <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="number"
+                      name="<%= `synths[${i}][year]` %>"
+                      value="<%= synth.year %>"
+                    />
+                    <small>Enter the synth's release year.</small>
+                  </label>
+                  <label
+                    >Type <span class="red">*</span>
+                    <select required name="<%= `synths[${i}][type]` %>">
+                        <option value="VST" <%= synth.type === 'VST' ? 'selected' : '' %>>VST</option>
+                        <option value="Hardware" <%= synth.type === 'Hardware' ? 'selected' : '' %>>Hardware</option>
+                        <option value="Kontakt Bank" <%= synth.type === 'Kontakt Bank' ? 'selected' : '' %>>Kontakt Bank</option>
+                        <option value="SoundFont" <%= synth.type === 'SoundFont' ? 'selected' : '' %>>SoundFont</option>
+                    </select>
+                    <small>Select the synth format.</small>
+                  </label>
+                  <label>
+                    Synth Image <span class="red">*</span>
+                    <div class="custom-file-input">
+                      <button type="button" class="browse-button">
+                        Browse...
+                      </button>
+                      <span class="file-name">No file selected.</span>
+                      <input
+                        required
+                        type="file"
+                        name="synths[0][img]"
+                        class="imageInput"
+                        accept="image/*"
+                      />
+                    </div>
+                    <small
+                      >Upload an image of the synth. Minimum dimensions: 1000 x
+                      1000 pixels.</small
+                    >
+                  </label>
 
-          <!-- Preset Info -->
-          <legend>Preset Information</legend>
-          <% Object.entries(entry.data.presets).forEach(([i, preset]) => { %>
-          <fieldset id="presetSection">
-            <div class="preset-entry">
-              <label
-                >Preset Name <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `presets[${i}][name]` %>"
-                  value="<%= preset.name %>"
-                />
-              </label>
-              <label
-                >Pack Name <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `presets[${i}][pack_name]` %>"
-                  value="<%= preset.pack_name %>"
-                />
-              </label>
-              <label
-                >Author <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `presets[${i}][author]` %>"
-                  value="<%= preset.author %>"
-                />
-              </label>
-              <label
-                >Usage Type <span class="red">*</span>
-                <input
-                  required
-                  type="text"
-                  name="<%= `presets[${i}][usage_type]` %>"
-                  value="<%= preset.usage_type %>"
-                />
-              </label>
-              <div class="submission-video-container">
-              <label>
-                Video Link (Optional)
-                <input
-                  type="url"
-                  name="<%= `presets[${i}][video_link]` %>"
-                  value="<%= preset.video_link %>"
-                />
-              </label>
-              <a
-                <% if (preset.video_link) { %>href="<%= preset.video_link %>"<% } %>
-                target="_blank"
-                class="material-icons video-box">
-                open_in_new
-              </a>
-            </div>
-            </div>
-          </fieldset>
-          <% }) %>
-          <div class="submit-btn-container">
-            <button class="submit-btn resubmit-btn" type="submit">
-              Resubmit Entry
-            </button>
-            <button
-              class="submit-btn approve-btn"
-              type="button"
-              onclick="post('/admin/approve/<%= entry.id %>')"
-            >
-              Approve
-            </button>
-            <button
-              class="submit-btn deny-btn"
-              type="button"
-              onclick="post('/admin/deny/<%= entry.id %>')"
-            >
-              Deny
-            </button>
-          </div>
-        </form>
-        <% }) %>
-      </main>
+                  <% Object.entries(synth.presets).forEach(([j, preset]) => { %>
+                    <div class="preset-section">
+                      <div class="preset-entry">
+                        <% if (j !== "0") { %><hr class="hr--sep" /><% } %>
+                        <label>
+                          Preset Name <span class="red">*</span>
+                          <input
+                            class="form-input"
+                            required
+                            type="text"
+                            name="<%= `synths[${i}][presets][${j}][name]` %>"
+                            value="<%= preset.name || '' %>"
+                          />
+                          <small>
+                            Enter the full name of the exact preset used (e.g., 2 Sparklepad BT, LD King of Buzz 2).
+                          </small>
+                        </label>
+                        <label>
+                          Pack Name
+                          <input
+                            class="form-input"
+                            type="text"
+                            name="<%= `synths[${i}][presets][${j}][packName]` %>"
+                            value="<%= preset.packName || '' %>"
+                          />
+                          <small>
+                            Provide the name of the preset pack. Leave blank for built-in presets.
+                          </small>
+                        </label>
+                        <label>
+                          Author
+                          <input
+                            class="form-input"
+                            type="text"
+                            name="<%= `synths[${i}][presets][${j}][author]` %>"
+                            value="<%= preset.author || '' %>"
+                          />
+                          <small>
+                            Identify who created the preset or preset pack. Leave blank for manufacturer, for factory presets.
+                          </small>
+                        </label>
+                        <label>
+                          Usage Type <span class="red">*</span>
+                          <input
+                            class="form-input"
+                            required
+                            type="text"
+                            name="<%= `synths[${i}][presets][${j}][usageType]` %>"
+                            value="<%= preset.usageType || '' %>"
+                          />
+                          <small>
+                            Describe how the preset was used (e.g., Lead, Pad, Sequence).
+                          </small>
+                        </label>
+                    
+                      <label
+                        >Preset Audio (Optional)
+                        <div class="custom-file-input">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name">No file selected.</span>
+                          <input
+                            type="file"
+                            name="synths[0][presets][0][audio]"
+                            class="audioInput"
+                            accept="audio/mpeg"
+                          />
+                        </div>
+                        <small>
+                          Upload a short <kbd>.mp3</kbd> audio clip
+                          (approximately 4 bars) demonstrating how the preset is
+                          used in the song. The clip should feature the melody
+                          played
+                          <strong>without any external effects</strong
+                          >.<br /><br />
+
+                          &bull; If external effects are essential, include 4
+                          bars of the <strong>wet</strong> version (with
+                          effects), followed by 4 bars of the
+                          <strong>dry</strong> version (without effects).<br />
+                          &bull; If the same preset is used for multiple
+                          melodies in the song, include all relevant sections in
+                          the same clip, one after another.<br />
+                          &bull; If you're unsure how to do this or find these
+                          instructions unclear, you may leave this field blank.
+                        </small>
+                      </label>
+                    </div>
+                  </div>
+                  <% }) %>
+                </div>
+                <hr class="hr--btns" />
+              </fieldset>
+              <% }) %>
+              <div class="btn-container">
+              </div>
+            </form>
+            <% }) %>
+          </section>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
     </div>
   </body>
-  <a href="#" id="scrollToTop" class="material-icons">arrow_upward</a>
+  <%- include('../partials/scroll-to-top') %>
 </html>

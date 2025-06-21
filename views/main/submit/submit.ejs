@@ -130,22 +130,32 @@
                 </label>
                 <label>
                   Song Image
-                  <div class="custom-file-input">
-                    <button type="button" class="browse-button">
-                      Browse...
-                    </button>
-                    <span class="file-name">No file selected.</span>
-                    <input
-                      type="file"
-                      name="songImg"
-                      class="imageInput"
-                      accept="image/*"
+                  <div class="img-upload-container">
+                    <img
+                      src="/assets/images/image-upload-placeholder.webp"
+                      alt="Uploaded Image"
+                      class="img-upload-display"
                     />
+                    <div class="file-input-wrapper">
+                      <div class="custom-file-input input-margin-bottom">
+                        <button type="button" class="browse-button">
+                          Browse...
+                        </button>
+                        <span class="file-name">No file selected.</span>
+                        <input
+                          type="file"
+                          name="songImg"
+                          class="imageInput"
+                          accept="image/*"
+                        />
+                      </div>
+                      <small
+                        >Upload the son's cover image. Leave blank to default to
+                        the album cover. Minimum dimensions: 1000 x 1000
+                        pixels.</small
+                      >
+                    </div>
                   </div>
-                  <small
-                    >Upload the son's cover image. Leave blank to default to the
-                    album cover. Minimum dimensions: 1000 x 1000 pixels.</small
-                  >
                 </label>
               </fieldset>
 
@@ -196,24 +206,33 @@
                   </label>
                   <label>
                     Artist Image <span class="red">*</span>
-                    <div class="custom-file-input">
-                      <button type="button" class="browse-button">
-                        Browse...
-                      </button>
-                      <span class="file-name">No file selected.</span>
-                      <input
-                        required
-                        type="file"
-                        name="artists[0][img]"
-                        class="imageInput"
-                        accept="image/*"
+                    <div class="img-upload-container">
+                      <img
+                        src="/assets/images/image-upload-placeholder.webp"
+                        alt="Uploaded Image"
+                        class="img-upload-display"
                       />
+                      <div class="file-input-wrapper">
+                        <div class="custom-file-input input-margin-bottom">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name">No file selected.</span>
+                          <input
+                            required
+                            type="file"
+                            name="artists[0][img]"
+                            class="imageInput"
+                            accept="image/*"
+                          />
+                        </div>
+                        <small
+                          >Upload the artist's image. Leave blank to default to
+                          the album cover. Minimum dimensions: 1000 x 1000
+                          pixels.</small
+                        >
+                      </div>
                     </div>
-                    <small
-                      >Upload the artist's image. Leave blank to default to the
-                      album cover. Minimum dimensions: 1000 x 1000
-                      pixels.</small
-                    >
                   </label>
                 </div>
                 <button type="button" class="add-artist-btn">
@@ -280,22 +299,31 @@
                 </label>
                 <label>
                   Album Image <span class="red">*</span>
-                  <div class="custom-file-input">
-                    <button type="button" class="browse-button">
-                      Browse...
-                    </button>
-                    <span class="file-name">No file selected.</span>
-                    <input
-                      type="file"
-                      name="albumImg"
-                      class="imageInput album-field"
-                      accept="image/*"
+                  <div class="img-upload-container">
+                    <img
+                      src="/assets/images/image-upload-placeholder.webp"
+                      alt="Uploaded Image"
+                      class="img-upload-display"
                     />
+                    <div class="file-input-wrapper">
+                      <div class="custom-file-input input-margin-bottom">
+                        <button type="button" class="browse-button">
+                          Browse...
+                        </button>
+                        <span class="file-name">No file selected.</span>
+                        <input
+                          type="file"
+                          name="albumImg"
+                          class="imageInput album-field"
+                          accept="image/*"
+                        />
+                      </div>
+                      <small
+                        >Upload the album's cover image. Minimum dimensions:
+                        1000 x 1000 pixels.</small
+                      >
+                    </div>
                   </div>
-                  <small
-                    >Upload the album's cover image. Minimum dimensions: 1000 x
-                    1000 pixels.</small
-                  >
                 </label>
               </fieldset>
 
@@ -354,23 +382,32 @@
                   </label>
                   <label>
                     Synth Image <span class="red">*</span>
-                    <div class="custom-file-input">
-                      <button type="button" class="browse-button">
-                        Browse...
-                      </button>
-                      <span class="file-name">No file selected.</span>
-                      <input
-                        required
-                        type="file"
-                        name="synths[0][img]"
-                        class="imageInput"
-                        accept="image/*"
+                    <div class="img-upload-container">
+                      <img
+                        src="/assets/images/image-upload-placeholder.webp"
+                        alt="Uploaded Image"
+                        class="img-upload-display"
                       />
+                      <div class="file-input-wrapper">
+                        <div class="custom-file-input input-margin-bottom">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name">No file selected.</span>
+                          <input
+                            required
+                            type="file"
+                            name="synths[0][img]"
+                            class="imageInput"
+                            accept="image/*"
+                          />
+                        </div>
+                        <small
+                          >Upload an image of the synth. Minimum dimensions:
+                          1000 x 1000 pixels.</small
+                        >
+                      </div>
                     </div>
-                    <small
-                      >Upload an image of the synth. Minimum dimensions: 1000 x
-                      1000 pixels.</small
-                    >
                   </label>
 
                   <div class="preset-section">
@@ -441,17 +478,28 @@
                       </label>
                       <label
                         >Preset Audio (Optional)
-                        <div class="custom-file-input">
-                          <button type="button" class="browse-button">
-                            Browse...
-                          </button>
-                          <span class="file-name">No file selected.</span>
-                          <input
-                            type="file"
-                            name="synths[0][presets][0][audio]"
-                            class="audioInput"
-                            accept="audio/mpeg"
-                          />
+                        <div class="audio-upload-container input-margin-bottom">
+                          <div class="audio-upload-btn-container">
+                            <i
+                              class="fa-solid fa-circle-play audio-upload--play-btn"
+                            ></i>
+                            <i
+                              class="fa-solid fa-circle-stop audio-upload--play-btn-active hidden"
+                            ></i>
+                          </div>
+                          <audio class="uploaded-audio" src=""></audio>
+                          <div class="custom-file-input">
+                            <button type="button" class="browse-button">
+                              Browse...
+                            </button>
+                            <span class="file-name">No file selected.</span>
+                            <input
+                              type="file"
+                              name="synths[0][presets][0][audio]"
+                              class="audioInput"
+                              accept="audio/mpeg"
+                            />
+                          </div>
                         </div>
                         <small>
                           Upload a short <kbd>.mp3</kbd> audio clip

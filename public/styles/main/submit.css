@@ -121,6 +121,7 @@ label {
   display: block;
   margin-bottom: 1.8rem;
   font-size: 1.6rem;
+  line-height: 1.1;
 }
 
 label:last-child {
@@ -151,9 +152,53 @@ select {
   -moz-appearance: textfield;
 }
 
-.custom-file-input {
+.audio-upload-container,
+.img-upload-container {
   margin-top: 1.2rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.img-upload-display {
+  width: 9.6rem;
+  height: 9.6rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.file-input-wrapper {
+  width: 100%;
+}
+
+.audio-upload--play-btn-active,
+.audio-upload--play-btn {
+  cursor: pointer;
+  color: #899096;
+  font-size: 3.2rem;
+  transition: color 0.2s ease;
+}
+
+.audio-upload--play-btn-active {
+  color: #e3e5e4;
+}
+
+.audio-upload--play-btn:hover {
+  color: #e3e5e4;
+}
+
+.audio-upload--play-btn-active:hover {
+  color: #899096;
+}
+
+.input-margin-bottom {
   margin-bottom: 1.2rem;
+}
+
+.custom-file-input {
   display: flex;
   align-items: center;
   background-color: #171b1f;
