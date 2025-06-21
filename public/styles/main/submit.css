@@ -1,3 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Victor+Mono:ital,wght@0,100..700;1,100..700&display=swap");
+
 body {
   background-color: #171b1f;
 }
@@ -534,4 +536,50 @@ select:disabled {
 .custom-file-input.disabled .browse-button {
   background-color: #2a2d32;
   cursor: not-allowed;
+}
+
+/* -------------------------------- Appovals -------------------------------- */
+.submission-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 3.2rem;
+  border: 0.2rem solid;
+  padding: 1.8rem;
+  border-radius: 0.8rem;
+  color: #5a7f71;
+  border-color: #5a7f71;
+  background-color: #dee5e3;
+  margin-bottom: 2.4rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.submission-header--section {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.submission-header--icon {
+  font-size: 1.8rem;
+}
+
+.submission-header--text {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.submission-header--divider {
+  display: inline-block;
+  width: 0.2rem;
+  height: 1.8rem;
+  background-color: #ced9d4;
+  vertical-align: middle;
+  content: "";
+  border-radius: 0.4rem;
 }

@@ -18,7 +18,23 @@
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->
           <section class="submit-main-container">
-            <% submissions.forEach(entry => { %>
+            <% submissions.forEach((entry, i) => { %>
+            <div class="submission-header">
+              <div class="submission-header--section">
+                <i class="fa-solid fa-user-pen submission-header--icon"></i>
+                <span class="submission-header--text">User entry: <kbd><%= i + 1 %></kbd></span>
+              </div>
+              <span class="submission-header--divider" aria-hidden="true"></span>
+              <div class="submission-header--section">
+                <i class="fa-solid fa-fingerprint submission-header--icon"></i>
+                <span class="submission-header--text">Submission ID: <kbd><%= entry.id %></kbd></span>
+              </div>
+              <span class="submission-header--divider" aria-hidden="true"></span>
+              <div class="submission-header--section">
+                <i class="fa-solid fa-calendar submission-header--icon""></i>
+                <span class="submission-header--text">Submitted: <kbd><%= entry.submittedAt %></kbd></span>
+              </div>
+            </div>
             <form
               id="entryForm"
               method="POST"
@@ -85,23 +101,31 @@
                 </label>
                 <label>
                   Song Image
-                  <!--  display img -->
-                  <div class="custom-file-input">
-                    <button type="button" class="browse-button">
-                      Browse...
-                    </button>
-                    <span class="file-name">No file selected.</span>
-                    <input
-                      type="file"
-                      name="songImg"
-                      class="imageInput"
-                      accept="image/*"
+                  <div class="img-upload-container">
+                    <img
+                      src="/uploads/images/pending/<%= entry.data.songImg %>"
+                      alt="Uploaded Image"
+                      class="img-upload-display"
                     />
+                    <div class="file-input-wrapper">
+                      <div class="custom-file-input input-margin-bottom">
+                        <button type="button" class="browse-button">
+                          Browse...
+                        </button>
+                        <span class="file-name"><%= entry.data.songImg %></span>
+                        <input
+                          type="file"
+                          name="songImg"
+                          class="imageInput"
+                          accept="image/*"
+                        />
+                      </div>
+                      <small
+                        >Upload the son's cover image. Leave blank to default to the
+                        album cover. Minimum dimensions: 1000 x 1000 pixels.</small
+                      >
+                    </div>
                   </div>
-                  <small
-                    >Upload the son's cover image. Leave blank to default to the
-                    album cover. Minimum dimensions: 1000 x 1000 pixels.</small
-                  >
                 </label>
               </fieldset>
 
@@ -148,24 +172,33 @@
                   </label>
                   <label>
                     Artist Image <span class="red">*</span>
-                    <div class="custom-file-input">
-                      <button type="button" class="browse-button">
-                        Browse...
-                      </button>
-                      <span class="file-name">No file selected.</span>
-                      <input
-                        required
-                        type="file"
-                        name="artists[0][img]"
-                        class="imageInput"
-                        accept="image/*"
+                    <div class="img-upload-container">
+                      <img
+                        src="/uploads/images/pending/<%= artist.img %>"
+                        alt="Uploaded Image"
+                        class="img-upload-display"
                       />
+                      <div class="file-input-wrapper">
+                        <div class="custom-file-input input-margin-bottom">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name"><%= artist.img %></span>
+                          <input
+                            required
+                            type="file"
+                            name="<%= `artists[${i}][img]` %>"
+                            class="imageInput"
+                            accept="image/*"
+                          />
+                        </div>
+                        <small
+                          >Upload the artist's image. Leave blank to default to
+                          the album cover. Minimum dimensions: 1000 x 1000
+                          pixels.</small
+                        >
+                      </div>
                     </div>
-                    <small
-                      >Upload the artist's image. Leave blank to default to the
-                      album cover. Minimum dimensions: 1000 x 1000
-                      pixels.</small
-                    >
                   </label>
                 </div>
               </fieldset>
@@ -173,14 +206,13 @@
 
               <% const isSingle = entry.data.single === "yes" %>
               <legend>Album Information</legend>
-              <fieldset>
+              <fieldset class="album-field-set">
                 <div class="checkbox-container">
                   <label class="checkbox-label">
                     <input type="hidden" name="single" value="<%= entry.data.single %>" />
                     <input
                       type="checkbox"
-                      id="singleCheckBox"
-                      class="custom-input"
+                      class="custom-input single-checkbox"
                       <% if (isSingle) { %>checked<% } %>
                     />
                     <span class="custom-checkbox"></span>
@@ -228,22 +260,34 @@
                 </label>
                 <label>
                   Album Image <span class="red">*</span>
-                  <div class="custom-file-input">
-                    <button type="button" class="browse-button">
-                      Browse...
-                    </button>
-                    <span class="file-name">No file selected.</span>
-                    <input
-                      type="file"
-                      name="albumImg"
-                      class="imageInput album-field"
-                      accept="image/*"
+                  <div class="img-upload-container">
+                    <img
+                      src="<%= entry.data.albumImg ? 
+                          `/uploads/images/pending/${entry.data.albumImg}` : 
+                          '/assets/images/image-upload-placeholder.webp' %>"
+                      alt="Uploaded Image"
+                      class="img-upload-display"
                     />
+                    <div class="file-input-wrapper">
+                      <div class="custom-file-input input-margin-bottom <% if (isSingle) { %>disabled<% } %>">
+                        <button type="button" class="browse-button">
+                          Browse...
+                        </button>
+                        <span class="file-name"><%= entry.data.albumImg || 'No file selected.' %></span>
+                        <input
+                          type="file"
+                          name="albumImg"
+                          class="imageInput album-field"
+                          accept="image/*"
+                          <% if (isSingle) { %>disabled<% } %>
+                        />
+                      </div>
+                      <small
+                        >Upload the album's cover image. Minimum dimensions:
+                        1000 x 1000 pixels.</small
+                      >
+                    </div>
                   </div>
-                  <small
-                    >Upload the album's cover image. Minimum dimensions: 1000 x
-                    1000 pixels.</small
-                  >
                 </label>
               </fieldset>
 
@@ -299,23 +343,32 @@
                   </label>
                   <label>
                     Synth Image <span class="red">*</span>
-                    <div class="custom-file-input">
-                      <button type="button" class="browse-button">
-                        Browse...
-                      </button>
-                      <span class="file-name">No file selected.</span>
-                      <input
-                        required
-                        type="file"
-                        name="synths[0][img]"
-                        class="imageInput"
-                        accept="image/*"
+                    <div class="img-upload-container">
+                      <img
+                        src="/uploads/images/pending/<%= synth.img %>"
+                        alt="Uploaded Image"
+                        class="img-upload-display"
                       />
+                      <div class="file-input-wrapper">
+                        <div class="custom-file-input input-margin-bottom">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name"><%= synth.img %></span>
+                          <input
+                            required
+                            type="file"
+                            name="<%= `synths[${i}][img]` %>"
+                            class="imageInput"
+                            accept="image/*"
+                          />
+                        </div>
+                        <small
+                          >Upload an image of the synth. Minimum dimensions:
+                          1000 x 1000 pixels.</small
+                        >
+                      </div>
                     </div>
-                    <small
-                      >Upload an image of the synth. Minimum dimensions: 1000 x
-                      1000 pixels.</small
-                    >
                   </label>
 
                   <% Object.entries(synth.presets).forEach(([j, preset]) => { %>
@@ -329,7 +382,7 @@
                             required
                             type="text"
                             name="<%= `synths[${i}][presets][${j}][name]` %>"
-                            value="<%= preset.name || '' %>"
+                            value="<%= preset.name %>"
                           />
                           <small>
                             Enter the full name of the exact preset used (e.g., 2 Sparklepad BT, LD King of Buzz 2).
@@ -374,18 +427,34 @@
                         </label>
                     
                       <label
-                        >Preset Audio (Optional)
-                        <div class="custom-file-input">
-                          <button type="button" class="browse-button">
-                            Browse...
-                          </button>
-                          <span class="file-name">No file selected.</span>
-                          <input
-                            type="file"
-                            name="synths[0][presets][0][audio]"
-                            class="audioInput"
-                            accept="audio/mpeg"
-                          />
+                        >Preset Audio <span class="red">*</span>
+                        <div class="audio-upload-container input-margin-bottom">
+                          <div class="audio-upload-btn-container">
+                            <i
+                              class="fa-solid fa-circle-play audio-upload--play-btn"
+                            ></i>
+                            <i
+                              class="fa-solid fa-circle-stop audio-upload--play-btn-active hidden"
+                            ></i>
+                          </div>
+                          <audio 
+                            class="uploaded-audio" 
+                            src="<%= preset.audio ? 
+                                `/uploads/audio/pending/${preset.audio}` : '' %>">
+                          </audio>
+                          <div class="custom-file-input">
+                            <button type="button" class="browse-button">
+                              Browse...
+                            </button>
+                            <span class="file-name"><%= preset.audio || '' %></span>
+                            <input
+                              required
+                              type="file"
+                              name="<%= `synths[${i}][presets][${j}][audio]` %>"
+                              class="audioInput"
+                              accept="audio/mpeg"
+                            />
+                          </div>
                         </div>
                         <small>
                           Upload a short <kbd>.mp3</kbd> audio clip
@@ -410,7 +479,6 @@
                   </div>
                   <% }) %>
                 </div>
-                <hr class="hr--btns" />
               </fieldset>
               <% }) %>
               <div class="btn-container">

@@ -623,6 +623,22 @@ const handleAudioPlayback = function (playBtns) {
   });
 };
 
+const setupAudio = function (input, audioSrc, fileName = null) {
+  const container = input.closest(".audio-upload-container");
+  const audioDisplay = container.querySelector(".uploaded-audio");
+  const playBtns = container.querySelector(".audio-upload-btn-container");
+  const fileNameDisplay = input
+    .closest(".custom-file-input")
+    ?.querySelector(".file-name");
+
+  if (fileName && fileNameDisplay) {
+    fileNameDisplay.textContent = fileName;
+  }
+
+  audioDisplay.src = audioSrc;
+  handleAudioPlayback(playBtns);
+};
+
 const handleAudioInputs = function () {
   const audioInputs = document.querySelectorAll(".audioInput");
 
@@ -643,24 +659,7 @@ const handleAudioInputs = function () {
         if (audio.duration > 120) {
           alert("Audio file must be 2 minutes or less.");
         } else {
-          // Change filename
-          const fileNameDisplay = audioInput
-            .closest(".custom-file-input")
-            .querySelector(".file-name");
-
-          fileNameDisplay.textContent = file.name;
-
-          // Set audio, handle playback
-          const audioDisplay = audioInput
-            .closest(".audio-upload-container")
-            .querySelector(".uploaded-audio");
-
-          audioDisplay.src = audio.src;
-
-          const playBtns = audioInput
-            .closest(".audio-upload-container")
-            .querySelector(".audio-upload-btn-container");
-          handleAudioPlayback(playBtns);
+          setupAudio(audioInput, audio.src, file.name);
         }
       };
     });
