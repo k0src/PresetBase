@@ -667,36 +667,52 @@ const handleAudioInputs = function () {
 };
 
 /* ----------------------------- Autofill fields ---------------------------- */
-const handleAutofillInputs = function () {
+const fetchAutofillResults = async function (type, query, limit) {
+  const url = `/api/autofill/${encodeURIComponent(
+    type
+  )}?query=${encodeURIComponent(query)}&limit=${limit}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Autofill fetch failed");
+
+  const data = await res.json();
+  const results = data.map((row) => Object.values(row)[0]);
+  console.log(results);
+
+  return results;
+};
+
+const handleAutofillInputs = async function () {
   const inputs = document.querySelectorAll("input");
 
-  const data = window.__SEARCH_DATA__;
-  const dataset = {
-    songTitle: data.songTitles.map((s) => ({ label: s.song_title })),
-    albumTitle: data.albumTitles.map((a) => ({ label: a.album_title })),
-    genre: data.genres.map((g) => ({ label: g.genre })),
-    artistName: data.artistNames.map((a) => ({ label: a.artist_name })),
-    artistCountry: data.artistCountrys.map((a) => ({
-      label: a.artist_country,
-    })),
-    artistRole: data.artistRoles.map((a) => ({ label: a.artist_role })),
-    synthName: data.synthNames.map((s) => ({ label: s.synth_name })),
-    synthManufacturer: data.synthManufacturers.map((s) => ({
-      label: s.synth_manufacturer,
-    })),
-    presetName: data.presetNames.map((p) => ({ label: p.preset_name })),
-    presetPack: data.presetPacks.map((p) => ({ label: p.preset_pack_name })),
-    presetAuthor: data.presetAuthors.map((p) => ({ label: p.preset_author })),
-    presetUsageType: data.presetUsageTypes.map((p) => ({
-      label: p.preset_usage_type,
-    })),
-  };
+  // const data = window.__SEARCH_DATA__;
+  // const dataset = {
+  //   songTitle: data.songTitles.map((s) => ({ label: s.song_title })),
+  //   albumTitle: data.albumTitles.map((a) => ({ label: a.album_title })),
+  //   genre: data.genres.map((g) => ({ label: g.genre })),
+  //   artistName: data.artistNames.map((a) => ({ label: a.artist_name })),
+  //   artistCountry: data.artistCountrys.map((a) => ({
+  //     label: a.artist_country,
+  //   })),
+  //   artistRole: data.artistRoles.map((a) => ({ label: a.artist_role })),
+  //   synthName: data.synthNames.map((s) => ({ label: s.synth_name })),
+  //   synthManufacturer: data.synthManufacturers.map((s) => ({
+  //     label: s.synth_manufacturer,
+  //   })),
+  //   presetName: data.presetNames.map((p) => ({ label: p.preset_name })),
+  //   presetPack: data.presetPacks.map((p) => ({ label: p.preset_pack_name })),
+  //   presetAuthor: data.presetAuthors.map((p) => ({ label: p.preset_author })),
+  //   presetUsageType: data.presetUsageTypes.map((p) => ({
+  //     label: p.preset_usage_type,
+  //   })),
+  // };
 
   let debounceTimeout;
-  inputs.forEach((input) => {
-    if (!dataset[input.dataset.key]) {
-      return;
-    }
+  inputs.forEach(async (input) => {
+    const inputType = input.dataset.key;
+    // if (!dataset[input.dataset.key]) {
+    //   return;
+    // }
 
     const dropdown = input.parentElement.querySelector(
       ".autocomplete-dropdown"
@@ -712,7 +728,7 @@ const handleAutofillInputs = function () {
       }
     );
 
-    input.addEventListener("input", () => {
+    input.addEventListener("input", async () => {
       input.addEventListener("blur", () => {
         setTimeout(() => {
           hideDropdown(dropdown);
@@ -720,28 +736,36 @@ const handleAutofillInputs = function () {
       });
 
       clearTimeout(debounceTimeout);
-      debounceTimeout = setTimeout(() => {
+      debounceTimeout = setTimeout(async () => {
         const query = input.value.trim();
+
         if (query.length === 0) {
           hideDropdown(dropdown);
           return;
         }
 
-        const fuse = new Fuse(dataset[input.dataset.key], {
-          keys: ["label"],
-          includeScore: true,
-          threshold: 0.3,
-          distance: 100,
-          ignoreLocation: true,
-        });
+        // const fuse = new Fuse(dataset[input.dataset.key], {
+        //   keys: ["label"],
+        //   includeScore: true,
+        //   threshold: 0.3,
+        //   distance: 100,
+        //   ignoreLocation: true,
+        // });
 
-        renderDropdown(
-          dropdown,
-          fuse
-            .search(query)
-            .slice(0, 5)
-            .map((r) => r.item)
-        );
+        try {
+          const results = await fetchAutofillResults(inputType, query, 5);
+          renderDropdown(dropdown, results);
+        } catch (err) {
+          console.error("Error fetching autofill results: ", err);
+        }
+
+        // renderDropdown(
+        //   dropdown,
+        //   fuse
+        //     .search(query)
+        //     .slice(0, 5)
+        //     .map((r) => r.item)
+        // );
         selectedIndex = -1;
       }, 150);
     });
@@ -756,16 +780,14 @@ const handleAutofillInputs = function () {
     }
 
     items.forEach((item, index) => {
-      const listItem = item.label;
-
       const li = document.createElement("li");
-      li.textContent = listItem;
+      li.textContent = item;
       li.setAttribute("data-index", index);
 
       li.addEventListener("click", (e) => {
         e.preventDefault();
         const input = dropdown.parentElement.querySelector(".form-input");
-        input.value = listItem;
+        input.value = item;
         hideDropdown(dropdown);
       });
 

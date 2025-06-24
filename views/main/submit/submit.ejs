@@ -3,22 +3,6 @@
   <head>
     <title>PresetBase &mdash; Submit</title>
     <link rel="stylesheet" href="/styles/main/submit.css" />
-    <script>
-      window.__SEARCH_DATA__ = {
-        songTitles: <%- JSON.stringify(songTitles) %>,
-        albumTitles: <%- JSON.stringify(albumTitles) %>,
-        genres: <%- JSON.stringify(genres) %>,
-        artistNames: <%- JSON.stringify(artistNames) %>,
-        artistCountrys: <%- JSON.stringify(artistCountrys) %>,
-        artistRoles: <%- JSON.stringify(artistRoles) %>,
-        synthNames: <%- JSON.stringify(synthNames) %>,
-        synthManufacturers: <%- JSON.stringify(synthManufacturers) %>,
-        presetNames: <%- JSON.stringify(presetNames) %>,
-        presetPacks: <%- JSON.stringify(presetPacks) %>,
-        presetAuthors: <%- JSON.stringify(presetAuthors) %>,
-        presetUsageTypes: <%- JSON.stringify(presetUsageTypes) %>
-      };
-    </script>
     <script type="module" src="/js/main/submit/submit.js" defer></script>
     <%- include('../../partials/html-head') %>
   </head>

@@ -10,6 +10,10 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
+/* ----------------------------------- API ---------------------------------- */
+const apiRoutes = require("./routes/api/api");
+app.use("/api", apiRoutes);
+
 /* ------------------------------- Static routes ------------------------------ */
 const indexRoutes = require("./routes/static/index");
 app.use("/", indexRoutes);
