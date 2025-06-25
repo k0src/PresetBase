@@ -335,6 +335,7 @@ small a {
 .synth-entry--new {
   display: flex;
   flex-direction: column;
+  gap: 1.8rem;
 }
 
 hr {
@@ -414,6 +415,9 @@ hr {
 
 .clear-btn--example:hover {
   background-color: #c86c6c;
+}
+
+.entry-found-alert {
 }
 
 /* ------------------------------- Suggestions ------------------------------ */

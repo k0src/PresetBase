@@ -35,9 +35,8 @@
               ><strong
                 >Please read and fill out all required fields carefully</strong
               >. Mistakes may lead to your entry being rejected.
-              <a href="/submit/example" target="_blank"
-                >Click here to view an example of a approved submission.</a
-              >
+              <a href="/submit/example" target="_blank">Click here</a> to view
+              an example of a approved submission.
             </span>
           </div>
           <% } %>
@@ -50,102 +49,108 @@
             >
               <legend>Song Information</legend>
               <fieldset>
-                <label
-                  >Song Title <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    required
-                    type="text"
-                    name="songTitle"
-                    autocomplete="off"
-                    data-key="songTitle"
-                  />
-                  <ul class="autocomplete-dropdown hidden"></ul>
-                  <small
-                    >Provide the full title of the song. Do not include featured
-                    artists or producers.</small
-                  >
-                </label>
-                <label
-                  >Genre <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
-                    required
-                    title="First letters must be capitalized."
-                    type="text"
-                    name="songGenre"
-                    autocomplete="off"
-                    data-key="genre"
-                  />
-                  <ul class="autocomplete-dropdown hidden"></ul>
-                  <small
-                    >Specify the music genre (e.g., Trap, House, Hip
-                    Hop).</small
-                  >
-                </label>
-                <label
-                  >Release Year <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    pattern="^(19|20)\d{2}$"
-                    required
-                    title="Enter a valid year."
-                    type="number"
-                    name="songYear"
-                  />
-                  <small
-                    >Enter the year the song was released (e.g., 2018).</small
-                  >
-                </label>
-                <label
-                  >Song URL <span class="red">*</span>
-                  <input
-                    class="form-input"
-                    required
-                    type="url"
-                    name="songUrl"
-                  />
-                  <small
-                    >Paste the YouTube URL of the song. Use the official
-                    artist's channel. Avoid music videos unless no official
-                    audio uploads exist.</small
-                  >
-                </label>
-                <label>
-                  Song Image
-                  <div class="img-upload-container">
-                    <img
-                      src="/assets/images/image-upload-placeholder.webp"
-                      alt="Uploaded Image"
-                      class="img-upload-display"
+                <div class="form-section">
+                  <label
+                    >Song Title <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="text"
+                      name="songTitle"
+                      autocomplete="off"
+                      data-key="songTitle"
+                      data-primary="true"
                     />
-                    <div class="file-input-wrapper">
-                      <div class="custom-file-input input-margin-bottom">
-                        <button type="button" class="browse-button">
-                          Browse...
-                        </button>
-                        <span class="file-name">No file selected.</span>
-                        <input
-                          type="file"
-                          name="songImg"
-                          class="imageInput"
-                          accept="image/*"
-                        />
+                    <ul class="autocomplete-dropdown hidden"></ul>
+                    <small
+                      >Provide the full title of the song. Do not include
+                      featured artists or producers.</small
+                    >
+                  </label>
+                  <label
+                    >Genre <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
+                      required
+                      title="First letters must be capitalized."
+                      type="text"
+                      name="songGenre"
+                      autocomplete="off"
+                      data-key="genre"
+                    />
+                    <ul class="autocomplete-dropdown hidden"></ul>
+                    <small
+                      >Specify the music genre (e.g., Trap, House, Hip
+                      Hop).</small
+                    >
+                  </label>
+                  <label
+                    >Release Year <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      pattern="^(19|20)\d{2}$"
+                      required
+                      title="Enter a valid year."
+                      type="number"
+                      name="songYear"
+                      data-key="songYear"
+                    />
+                    <small
+                      >Enter the year the song was released (e.g., 2018).</small
+                    >
+                  </label>
+                  <label
+                    >Song URL <span class="red">*</span>
+                    <input
+                      class="form-input"
+                      required
+                      type="url"
+                      name="songUrl"
+                      data-key="songUrl"
+                    />
+                    <small
+                      >Paste the YouTube URL of the song. Use the official
+                      artist's channel. Avoid music videos unless no official
+                      audio uploads exist.</small
+                    >
+                  </label>
+                  <label>
+                    Song Image
+                    <div class="img-upload-container">
+                      <img
+                        src="/assets/images/image-upload-placeholder.webp"
+                        alt="Uploaded Image"
+                        class="img-upload-display"
+                      />
+                      <div class="file-input-wrapper">
+                        <div class="custom-file-input input-margin-bottom">
+                          <button type="button" class="browse-button">
+                            Browse...
+                          </button>
+                          <span class="file-name">No file selected.</span>
+                          <input
+                            type="file"
+                            name="songImg"
+                            class="imageInput"
+                            accept="image/*"
+                            data-key="songImg"
+                          />
+                        </div>
+                        <small
+                          >Upload the song's cover image. Leave blank to default
+                          to the album cover. Minimum dimensions: 1000 x 1000
+                          pixels.</small
+                        >
                       </div>
-                      <small
-                        >Upload the son's cover image. Leave blank to default to
-                        the album cover. Minimum dimensions: 1000 x 1000
-                        pixels.</small
-                      >
                     </div>
-                  </div>
-                </label>
+                  </label>
+                </div>
               </fieldset>
 
               <legend>Artist Information</legend>
               <fieldset id="artistSection">
-                <div class="artist-entry">
+                <div class="artist-entry form-section">
                   <label
                     >Artist Name <span class="red">*</span>
                     <input
@@ -155,6 +160,7 @@
                       name="artists[0][name]"
                       autocomplete="off"
                       data-key="artistName"
+                      data-primary="true"
                     />
                     <ul class="autocomplete-dropdown hidden"></ul>
                     <small>Enter the name of the artist.</small>
@@ -208,6 +214,7 @@
                             name="artists[0][img]"
                             class="imageInput"
                             accept="image/*"
+                            data-key="artistImg"
                           />
                         </div>
                         <small
@@ -226,146 +233,66 @@
 
               <legend>Album Information</legend>
               <fieldset>
-                <div class="checkbox-container">
-                  <label class="checkbox-label">
-                    <input type="hidden" name="single" value="no" />
-                    <input
-                      type="checkbox"
-                      id="singleCheckBox"
-                      class="custom-input"
-                    />
-                    <span class="custom-checkbox"></span>
-                    <span class="checkbox-text">
-                      Check this box if the song is a single (doesn't appear on
-                      any albums besides possibly compilation albums).
-                    </span>
-                  </label>
-                </div>
-                <label
-                  >Album Title <span class="red">*</span>
-                  <input
-                    class="form-input album-field"
-                    required
-                    type="text"
-                    name="albumTitle"
-                    autocomplete="off"
-                    data-key="albumTitle"
-                  />
-                  <ul class="autocomplete-dropdown hidden"></ul>
-                  <small>Provide the album's title.</small>
-                </label>
-                <label
-                  >Genre <span class="red">*</span>
-                  <input
-                    class="form-input album-field"
-                    pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
-                    required
-                    title="First letters must be capitalized."
-                    type="text"
-                    name="albumGenre"
-                    autocomplete="off"
-                    data-key="genre"
-                  />
-                  <ul class="autocomplete-dropdown hidden"></ul>
-                  <small>Indicate the album's genre.</small>
-                </label>
-                <label
-                  >Release Year <span class="red">*</span>
-                  <input
-                    class="form-input album-field"
-                    pattern="^(19|20)\d{2}$"
-                    title="Enter a valid year."
-                    required
-                    type="number"
-                    name="albumYear"
-                  />
-                  <small>Enter the year the album was released.</small>
-                </label>
-                <label>
-                  Album Image <span class="red">*</span>
-                  <div class="img-upload-container">
-                    <img
-                      src="/assets/images/image-upload-placeholder.webp"
-                      alt="Uploaded Image"
-                      class="img-upload-display"
-                    />
-                    <div class="file-input-wrapper">
-                      <div class="custom-file-input input-margin-bottom">
-                        <button type="button" class="browse-button">
-                          Browse...
-                        </button>
-                        <span class="file-name">No file selected.</span>
-                        <input
-                          type="file"
-                          name="albumImg"
-                          class="imageInput album-field"
-                          accept="image/*"
-                        />
-                      </div>
-                      <small
-                        >Upload the album's cover image. Minimum dimensions:
-                        1000 x 1000 pixels.</small
-                      >
-                    </div>
+                <div class="form-section">
+                  <div class="checkbox-container">
+                    <label class="checkbox-label">
+                      <input type="hidden" name="single" value="no" />
+                      <input
+                        type="checkbox"
+                        id="singleCheckBox"
+                        class="custom-input"
+                      />
+                      <span class="custom-checkbox"></span>
+                      <span class="checkbox-text">
+                        Check this box if the song is a single (doesn't appear
+                        on any albums besides possibly compilation albums).
+                      </span>
+                    </label>
                   </div>
-                </label>
-              </fieldset>
-
-              <legend>Preset Information</legend>
-              <fieldset id="synthPresetSection">
-                <div class="synth-entry" data-synth-index="0">
                   <label
-                    >Synth Name <span class="red">*</span>
+                    >Album Title <span class="red">*</span>
                     <input
-                      class="form-input"
+                      class="form-input album-field"
                       required
                       type="text"
-                      name="synths[0][name]"
+                      name="albumTitle"
                       autocomplete="off"
-                      data-key="synthName"
+                      data-key="albumTitle"
+                      data-primary="true"
                     />
                     <ul class="autocomplete-dropdown hidden"></ul>
-                    <small>Name the synth used in the track.</small>
+                    <small>Provide the album's title.</small>
                   </label>
                   <label
-                    >Manufacturer <span class="red">*</span>
+                    >Genre <span class="red">*</span>
                     <input
-                      class="form-input"
+                      class="form-input album-field"
+                      pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
                       required
+                      title="First letters must be capitalized."
                       type="text"
-                      name="synths[0][manufacturer]"
+                      name="albumGenre"
                       autocomplete="off"
-                      data-key="synthManufacturer"
+                      data-key="genre"
                     />
                     <ul class="autocomplete-dropdown hidden"></ul>
-                    <small
-                      >Provide the manufacturer or developer (e.g.,
-                      Spectrasonics).</small
-                    >
+                    <small>Indicate the album's genre.</small>
                   </label>
                   <label
                     >Release Year <span class="red">*</span>
                     <input
-                      class="form-input"
+                      class="form-input album-field"
                       pattern="^(19|20)\d{2}$"
+                      title="Enter a valid year."
                       required
                       type="number"
-                      name="synths[0][year]"
+                      name="albumYear"
+                      data-key="albumYear"
                     />
-                    <small>Enter the synth's release year.</small>
-                  </label>
-                  <label
-                    >Type <span class="red">*</span>
-                    <select required name="synths[0][type]">
-                      <option value="VST">VST</option>
-                      <option value="Hardware">Hardware</option>
-                      <option value="Kontakt Bank">Kontakt Bank</option>
-                      <option value="SoundFont">SoundFont</option>
-                    </select>
-                    <small>Select the synth format.</small>
+                    <small>Enter the year the album was released.</small>
                   </label>
                   <label>
-                    Synth Image <span class="red">*</span>
+                    Album Image <span class="red">*</span>
                     <div class="img-upload-container">
                       <img
                         src="/assets/images/image-upload-placeholder.webp"
@@ -379,23 +306,117 @@
                           </button>
                           <span class="file-name">No file selected.</span>
                           <input
-                            required
                             type="file"
-                            name="synths[0][img]"
-                            class="imageInput"
+                            name="albumImg"
+                            class="imageInput album-field"
                             accept="image/*"
+                            data-key="albumImg"
                           />
                         </div>
                         <small
-                          >Upload an image of the synth. Minimum dimensions:
+                          >Upload the album's cover image. Minimum dimensions:
                           1000 x 1000 pixels.</small
                         >
                       </div>
                     </div>
                   </label>
+                </div>
+              </fieldset>
+
+              <legend>Preset Information</legend>
+              <fieldset id="synthPresetSection">
+                <div class="synth-entry" data-synth-index="0">
+                  <div class="form-section">
+                    <label
+                      >Synth Name <span class="red">*</span>
+                      <input
+                        class="form-input"
+                        required
+                        type="text"
+                        name="synths[0][name]"
+                        autocomplete="off"
+                        data-key="synthName"
+                        data-primary="true"
+                      />
+                      <ul class="autocomplete-dropdown hidden"></ul>
+                      <small>Name the synth used in the track.</small>
+                    </label>
+                    <label
+                      >Manufacturer <span class="red">*</span>
+                      <input
+                        class="form-input"
+                        required
+                        type="text"
+                        name="synths[0][manufacturer]"
+                        autocomplete="off"
+                        data-key="synthManufacturer"
+                      />
+                      <ul class="autocomplete-dropdown hidden"></ul>
+                      <small
+                        >Provide the manufacturer or developer (e.g.,
+                        Spectrasonics).</small
+                      >
+                    </label>
+                    <label
+                      >Release Year <span class="red">*</span>
+                      <input
+                        class="form-input"
+                        pattern="^(19|20)\d{2}$"
+                        required
+                        type="number"
+                        name="synths[0][year]"
+                        data-key="synthYear"
+                      />
+                      <small>Enter the synth's release year.</small>
+                    </label>
+                    <label
+                      >Type <span class="red">*</span>
+                      <select
+                        required
+                        data-key="synthType"
+                        name="synths[0][type]"
+                      >
+                        <option value="VST">VST</option>
+                        <option value="Hardware">Hardware</option>
+                        <option value="Kontakt Bank">Kontakt Bank</option>
+                        <option value="SoundFont">SoundFont</option>
+                      </select>
+                      <small>Select the synth format.</small>
+                    </label>
+                    <label>
+                      Synth Image <span class="red">*</span>
+                      <div class="img-upload-container">
+                        <img
+                          src="/assets/images/image-upload-placeholder.webp"
+                          alt="Uploaded Image"
+                          class="img-upload-display"
+                        />
+                        <div class="file-input-wrapper">
+                          <div class="custom-file-input input-margin-bottom">
+                            <button type="button" class="browse-button">
+                              Browse...
+                            </button>
+                            <span class="file-name">No file selected.</span>
+                            <input
+                              required
+                              type="file"
+                              name="synths[0][img]"
+                              class="imageInput"
+                              accept="image/*"
+                              data-key="synthImg"
+                            />
+                          </div>
+                          <small
+                            >Upload an image of the synth. Minimum dimensions:
+                            1000 x 1000 pixels.</small
+                          >
+                        </div>
+                      </div>
+                    </label>
+                  </div>
 
                   <div class="preset-section">
-                    <div class="preset-entry">
+                    <div class="preset-entry form-section">
                       <label
                         >Preset Name <span class="red">*</span>
                         <input
@@ -405,6 +426,7 @@
                           name="synths[0][presets][0][name]"
                           autocomplete="off"
                           data-key="presetName"
+                          data-primary="true"
                         />
                         <ul class="autocomplete-dropdown hidden"></ul>
                         <small

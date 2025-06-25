@@ -2,6 +2,77 @@ const express = require("express");
 const router = express.Router();
 const { dbAll } = require("../../util/UTIL.js");
 
+router.get("/loadcomplete/:type", async (req, res) => {
+  const types = [
+    "songTitle",
+    "artistName",
+    "albumTitle",
+    "synthName",
+    "presetName",
+  ];
+
+  const type = req.params.type;
+  const query = req.query.query;
+
+  if (!types.includes(type)) {
+    return res.status(400).send("Invalid type parameter");
+  }
+
+  const queries = {
+    songTitle: `
+      SELECT
+        songs.title AS songTitle,
+        songs.song_url AS songUrl,
+        songs.image_url AS songImg,
+        songs.genre AS genre,
+        songs.release_year AS songYear
+      FROM songs
+      WHERE songs.title LIKE ?`,
+
+    artistName: `
+      SELECT
+        artists.name AS artistName,
+        artists.image_url AS artistImg,
+        artists.country AS artistCountry
+      FROM artists
+      WHERE artists.name LIKE ?`,
+
+    albumTitle: `
+      SELECT
+        albums.title AS albumTitle,
+        albums.genre AS genre,
+        albums.release_year AS albumYear,
+        albums.image_url AS albumImg
+      FROM albums
+      WHERE albums.title LIKE ?`,
+
+    synthName: `
+      SELECT
+        synths.synth_name AS synthName,
+        synths.manufacturer AS synthManufacturer,
+        synths.synth_type AS synthType,
+        synths.image_url AS synthImg,
+        synths.release_year AS synthYear
+      FROM synths
+      WHERE synths.synth_name LIKE ?`,
+
+    presetName: `
+      SELECT
+        presets.preset_name AS presetName,
+        presets.pack_name AS presetPack,
+        presets.author AS presetAuthor
+      FROM presets
+      WHERE presets.preset_name LIKE ?`,
+  };
+
+  try {
+    const results = await dbAll(queries[type], [`%${query}%`]);
+    return res.json(results);
+  } catch (err) {
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+  }
+});
+
 router.get("/autofill/:type", async (req, res) => {
   const types = [
     "songTitle",
@@ -13,7 +84,7 @@ router.get("/autofill/:type", async (req, res) => {
     "synthName",
     "synthManufacturer",
     "presetName",
-    "presetPackName",
+    "presetPack",
     "presetAuthor",
     "presetUsageType",
   ];
@@ -29,90 +100,90 @@ router.get("/autofill/:type", async (req, res) => {
   const queries = {
     songTitle: `
       SELECT DISTINCT
-        songs.title AS song_title
+        songs.title AS songTitle
       FROM songs
-      WHERE song_title LIKE ?
+      WHERE songs.title LIKE ?
       LIMIT ?`,
 
     albumTitle: `
       SELECT DISTINCT
-        albums.title AS album_title
+        albums.title AS albumTitle
       FROM albums
-      WHERE albums.id != 0 AND album_title LIKE ?
+      WHERE albums.id != 0 AND albums.title LIKE ?
       LIMIT ?`,
 
     genre: `
       SELECT DISTINCT
         songs.genre AS genre
       FROM songs
-      WHERE genre LIKE ?
+      WHERE songs.genre LIKE ?
       LIMIT ?`,
 
     artistName: `
       SELECT DISTINCT
-        artists.name AS artist_name
+        artists.name AS artistName
       FROM artists
-      WHERE artist_name LIKE ?
+      WHERE artists.name LIKE ?
       LIMIT ?`,
 
     artistCountry: `
       SELECT DISTINCT
-        artists.country AS artist_country
+        artists.country AS artistCountry
       FROM artists
-      WHERE artist_country LIKE ?
+      WHERE artists.country LIKE ?
       LIMIT ?`,
 
     artistRole: `
       SELECT DISTINCT
-        song_artists.role AS artist_role
+        song_artists.role AS artistRole
       FROM song_artists
-      WHERE artist_role LIKE ?
+      WHERE song_artists.role LIKE ?
       LIMIT ?`,
 
     synthName: `
       SELECT DISTINCT
-        synths.synth_name AS synth_name
+        synths.synth_name AS synthName
       FROM synths
-      WHERE synth_name LIKE ?
+      WHERE synths.synth_name LIKE ?
       LIMIT ?`,
 
     synthManufacturer: `
       SELECT DISTINCT
-        synths.manufacturer AS synth_manufacturer
+        synths.manufacturer AS synthManufacturer
       FROM synths
-      WHERE synth_manufacturer LIKE ?
+      WHERE synths.manufacturer LIKE ?
       LIMIT ?`,
 
     presetName: `
       SELECT DISTINCT
-        presets.preset_name AS preset_name
+        presets.preset_name AS presetName
       FROM presets
-      WHERE preset_name LIKE ?
+      WHERE presets.preset_name LIKE ?
       LIMIT ?`,
 
-    presetPackName: `
+    presetPack: `
       SELECT DISTINCT
-        presets.pack_name AS preset_pack_name
+        presets.pack_name AS presetPack
       FROM presets
       WHERE presets.pack_name != 'unknown' AND 
       presets.pack_name != 'Unknown' AND 
-      preset_pack_name LIKE ?
+      presets.pack_name LIKE ?
       LIMIT ?`,
 
     presetAuthor: `
       SELECT DISTINCT
-        presets.author AS preset_author
+        presets.author AS presetAuthor
       FROM presets
       WHERE presets.author != 'unknown' AND 
       presets.author != 'Unknown' AND 
-      preset_author LIKE ?
+      presets.author LIKE ?
       LIMIT ?`,
 
     presetUsageType: `
       SELECT DISTINCT
-        song_presets.usage_type AS preset_usage_type
+        song_presets.usage_type AS presetUsageType
       FROM song_presets
-      WHERE preset_usage_type LIKE ?
+      WHERE song_presets.usage_type LIKE ?
       LIMIT ?`,
   };
 
