@@ -1,0 +1,60 @@
+body {
+  background-color: #171b1f;
+}
+
+.container {
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
+  border-bottom: 0.2rem solid #2d343a;
+  background-color: #202429;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+
+/* ------------------------------- Main Styles ------------------------------ */
+.copyright--header {
+  padding: 3.2rem 0 2.4rem 0;
+}
+
+.heading-primary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.heading-secondary {
+  color: #899096;
+  font-size: 2rem;
+  padding: 3.2rem 0 0 0;
+}
+
+.copyright--list-item,
+.copyright--body-text {
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
+.copyright--body-text a {
+  text-decoration: underline !important;
+}
+
+.copyright--list-ordered,
+.copyright--list {
+  list-style-type: disc;
+  padding: 1rem 2rem;
+}
+
+.copyright--list-item {
+  padding: 0.4rem 0;
+}
+
+.padding-bottom--small {
+  padding-bottom: 1rem;
+}
+
+.address-container {
+  padding: 1.2rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
+}

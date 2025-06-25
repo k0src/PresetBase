@@ -25,6 +25,10 @@ app.get("/privacy-policy", (req, res) => {
   res.render("static/privacy-policy", { PATH_URL: "privacy-policy" });
 });
 
+app.get("/copyright", (req, res) => {
+  res.render("static/copyright", { PATH_URL: "copyright" });
+});
+
 /* ------------------------------- Main routes ------------------------------ */
 const statsRoutes = require("./routes/main/stats");
 app.use("/stats", statsRoutes);
