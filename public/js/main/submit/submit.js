@@ -885,7 +885,7 @@ function updateSelection(items, index) {
 const validateForm = function () {
   const form = document.getElementById("entryForm");
   const albumImg = document.querySelector('input[name="albumImg"]');
-  const synthImg = document.querySelector('input[name="synthImg"]');
+  const synthImgs = document.querySelectorAll('input[data-key="synthImg"]');
   const singleCheckBox = document.getElementById("singleCheckBox");
 
   form.addEventListener("submit", (e) => {
@@ -896,10 +896,12 @@ const validateForm = function () {
 
     if (!autofilled) {
       const albumImgUploaded = albumImg.files.length > 0;
-      const synthImgUploaded = synthImg.files.length > 0;
+      const synthImgsUploaded = Array.from(synthImgs).every(
+        (img) => img.files.length > 0
+      );
 
-      if (!synthImgUploaded) {
-        return failSubmit("You must upload an image for the synth.");
+      if (!synthImgsUploaded) {
+        return failSubmit("You must upload an image for the synths.");
       }
 
       if (!singleCheckBox.checked) {

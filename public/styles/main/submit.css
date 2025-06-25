@@ -338,15 +338,18 @@ small a {
   gap: 1.8rem;
 }
 
-hr {
+.hr--sep {
   color: #2d343a;
   border: 0.1rem solid #2d343a;
   border-radius: 0.8rem;
-}
-
-.hr--sep {
   margin-top: 1.8rem;
   margin-bottom: 1.8rem;
+}
+
+.hr--btns {
+  color: #2d343a;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.8rem;
 }
 
 .synth-entry--new-header,
@@ -598,4 +601,16 @@ select:disabled {
   vertical-align: middle;
   content: "";
   border-radius: 0.4rem;
+}
+
+.margin-bottom--large {
+  margin-bottom: 3.2rem;
+}
+
+.deny-btn {
+  background-color: #c25c5c;
+}
+
+.deny-btn:hover {
+  background-color: #c86c6c;
 }

@@ -25,7 +25,6 @@ const handleInputSelections = function () {
 
 /* ----------------------------- Single checkboxes -------------------------- */
 const singleCheckBoxes = document.querySelectorAll(".single-checkbox");
-console.log(singleCheckBoxes);
 
 singleCheckBoxes.forEach((singleCheckBox) => {
   const albumSingleInput = singleCheckBox

@@ -103,6 +103,8 @@ const addedDaysAgo = function (timestamp) {
 
 /* ---------------------------------- Files --------------------------------- */
 const attachFilesToBody = function (body, files) {
+  if (!files.length) return;
+
   const updated = structuredClone(body);
 
   for (const file of files) {
@@ -148,22 +150,28 @@ const attachFilesToBody = function (body, files) {
   return updated;
 };
 
-/* --------------- Helper to delete images from pending folder -------------- */
-const deletePendingImage = async (filename) => {
+/* --------------- Helper to delete files from pending folder --------------- */
+const deletePendingFile = async (filename, type) => {
+  const types = ["images", "audio"];
+  if (!types.includes(type)) {
+    throw new Error(`Invalid file type: ${type}`);
+  }
+
   try {
     const filepath = path.join(
       __dirname,
       "..",
       "public",
       "uploads",
-      "images",
+      type,
       "pending",
       filename
     );
+
     await fs.unlink(filepath);
   } catch (err) {
     if (err.code !== "ENOENT") {
-      throw new Error(`Failed to delete ${filename}:`, err.message);
+      throw new Error(`Failed to delete ${filename}: ${err.message}`);
     }
   }
 };
@@ -187,7 +195,7 @@ const mergeAndValidateSubmitData = async function (data) {
       validated.albumYear = String(albumDB.year);
       if (validated.albumImg) {
         validated.albumImg = albumDB.image_url;
-        await deletePendingImage(data.albumImg);
+        await deletePendingFile(data.albumImg, "images");
       } else if (!validated.albumImg) {
         validated.albumImg = albumDB.image_url;
       }
@@ -209,7 +217,7 @@ const mergeAndValidateSubmitData = async function (data) {
       validated.songUrl = songDB.song_url;
       if (validated.songImg) {
         validated.songImg = songDB.image_url;
-        await deletePendingImage(data.songImg);
+        await deletePendingFile(data.songImg, "images");
       } else if (!validated.songImg) {
         validated.songImg = songDB.image_url;
       }
@@ -233,7 +241,7 @@ const mergeAndValidateSubmitData = async function (data) {
         artist.country = artistDB.country;
         if (artist.img) {
           artist.img = artistDB.image_url;
-          await deletePendingImage(data.artists[i].img);
+          await deletePendingFile(data.artists[i].img, "images");
         } else if (!artist.img) {
           artist.img = artistDB.image_url;
         }
@@ -258,7 +266,7 @@ const mergeAndValidateSubmitData = async function (data) {
         synth.year = String(synthDB.year);
         if (synth.img) {
           synth.img = synthDB.image_url;
-          await deletePendingImage(data.synths[i].img);
+          await deletePendingFile(data.synths[i].img, "images");
         } else if (!synth.img) {
           synth.img = synthDB.image_url;
         }
@@ -322,6 +330,90 @@ const sanitizeData = function (data) {
   }
 };
 
+/* ----------------------------- Merge Datasets ----------------------------- */
+const mergeDataSets = function (oldData, newData) {
+  if (Array.isArray(oldData) && Array.isArray(newData)) {
+    return oldData.map((item, i) => mergeDataSets(item, newData[i] || {}));
+  }
+
+  if (typeof oldData === "object" && typeof newData === "object") {
+    const merged = { ...oldData };
+    for (const key of Object.keys(newData)) {
+      if (newData[key] !== undefined && newData[key] !== "") {
+        merged[key] = mergeDataSets(oldData[key], newData[key]);
+      }
+    }
+    return merged;
+  }
+
+  return newData ?? oldData;
+};
+
+/* ------------------- Move files from pending to approved ------------------ */
+const approveFile = async function (filename, type) {
+  const types = ["images", "audio"];
+  if (!types.includes(type)) {
+    throw new Error(`Invalid file type: ${type}`);
+  }
+
+  try {
+    const sourcePath = path.join(
+      __dirname,
+      "..",
+      "public",
+      "uploads",
+      type,
+      "pending",
+      filename
+    );
+    const destPath = path.join(
+      __dirname,
+      "..",
+      "public",
+      "uploads",
+      type,
+      "approved",
+      filename
+    );
+
+    await fs.rename(sourcePath, destPath);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      throw new Error(`Failed to move ${filename}: ${err.message}`);
+    }
+  }
+};
+
+/* ------------------------ Delete all pending files ------------------------ */
+const deleteAllPendingFiles = async function (data) {
+  try {
+    if (data.songImg) {
+      await deletePendingFile(data.songImg, "images");
+    }
+    if (data.albumImg) {
+      await deletePendingFile(data.albumImg, "images");
+    }
+    for (const artist of data.artists || []) {
+      if (artist.img) {
+        await deletePendingFile(artist.img, "images");
+      }
+    }
+    for (const synth of data.synths || []) {
+      if (synth.img) {
+        await deletePendingFile(synth.img, "images");
+      }
+
+      for (const preset of synth.presets || []) {
+        if (preset.audio) {
+          await deletePendingFile(preset.audio, "audio");
+        }
+      }
+    }
+  } catch (err) {
+    throw new Error(`Failed to delete pending files: ${err.message}`);
+  }
+};
+
 module.exports = {
   dbAll,
   dbGet,
@@ -334,4 +426,8 @@ module.exports = {
   attachFilesToBody,
   sanitizeData,
   mergeAndValidateSubmitData,
+  deletePendingFile,
+  deleteAllPendingFiles,
+  mergeDataSets,
+  approveFile,
 };

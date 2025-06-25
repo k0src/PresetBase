@@ -3,7 +3,7 @@
   <head>
     <title>PresetBase &mdash; Submit</title>
     <link rel="stylesheet" href="/styles/main/submit.css" />
-    <script type="module" src="/js/admin/approvals.js" defer></script>
+    <script src="/js/admin/approvals.js" defer></script>
     <%- include('../partials/html-head') %>
   </head>
   <body>
@@ -38,9 +38,10 @@
             <form
               id="entryForm"
               method="POST"
-              action="/submit"
+              action="/admin/approve"
               enctype="multipart/form-data"
             >
+              <input type="hidden" name="entryId" value="<%= entry.id %>" />
               <legend>Song Information</legend>
               <fieldset>
                 <label
@@ -185,7 +186,6 @@
                           </button>
                           <span class="file-name"><%= artist.img %></span>
                           <input
-                            required
                             type="file"
                             name="<%= `artists[${i}][img]` %>"
                             class="imageInput"
@@ -193,8 +193,7 @@
                           />
                         </div>
                         <small
-                          >Upload the artist's image. Leave blank to default to
-                          the album cover. Minimum dimensions: 1000 x 1000
+                          >Upload the artist's image. Minimum dimensions: 1000 x 1000
                           pixels.</small
                         >
                       </div>
@@ -356,7 +355,6 @@
                           </button>
                           <span class="file-name"><%= synth.img %></span>
                           <input
-                            required
                             type="file"
                             name="<%= `synths[${i}][img]` %>"
                             class="imageInput"
@@ -391,6 +389,7 @@
                         <label>
                           Pack Name
                           <input
+                            required
                             class="form-input"
                             type="text"
                             name="<%= `synths[${i}][presets][${j}][packName]` %>"
@@ -403,6 +402,7 @@
                         <label>
                           Author
                           <input
+                            required
                             class="form-input"
                             type="text"
                             name="<%= `synths[${i}][presets][${j}][author]` %>"
@@ -415,6 +415,7 @@
                         <label>
                           Usage Type <span class="red">*</span>
                           <input
+                            required
                             class="form-input"
                             required
                             type="text"
@@ -448,7 +449,6 @@
                             </button>
                             <span class="file-name"><%= preset.audio || '' %></span>
                             <input
-                              required
                               type="file"
                               name="<%= `synths[${i}][presets][${j}][audio]` %>"
                               class="audioInput"
@@ -459,20 +459,7 @@
                         <small>
                           Upload a short <kbd>.mp3</kbd> audio clip
                           (approximately 4 bars) demonstrating how the preset is
-                          used in the song. The clip should feature the melody
-                          played
-                          <strong>without any external effects</strong
-                          >.<br /><br />
-
-                          &bull; If external effects are essential, include 4
-                          bars of the <strong>wet</strong> version (with
-                          effects), followed by 4 bars of the
-                          <strong>dry</strong> version (without effects).<br />
-                          &bull; If the same preset is used for multiple
-                          melodies in the song, include all relevant sections in
-                          the same clip, one after another.<br />
-                          &bull; If you're unsure how to do this or find these
-                          instructions unclear, you may leave this field blank.
+                          used in the song.
                         </small>
                       </label>
                     </div>
@@ -481,7 +468,20 @@
                 </div>
               </fieldset>
               <% }) %>
-              <div class="btn-container">
+              <div class="btn-container margin-bottom--large">
+                <button
+                  class="submit-btn deny-btn"
+                  type="button"
+                  onclick="post('/admin/deny/<%= entry.id %>')"
+                >
+                  Deny
+                </button>
+                <button 
+                  class="submit-btn approve-btn"
+                  type="submit"
+                >
+                  Approve
+                </button>
               </div>
             </form>
             <% }) %>

@@ -1,15 +1,22 @@
 const express = require("express");
 const router = express.Router();
-const db = require("../../db/db.js");
-const { dbRun, dbGet } = require("../../util/UTIL.js");
+const multer = require("../../middleware/multer.js");
+const {
+  dbRun,
+  dbAll,
+  dbGet,
+  attachFilesToBody,
+  deleteAllPendingFiles,
+  approveFile,
+  mergeDataSets,
+} = require("../../util/UTIL.js");
 
 /* -------------------------------- Approvals ------------------------------- */
-
-router.get("/approvals", (req, res) => {
+router.get("/approvals", async (req, res) => {
   const query = `SELECT id, data, submitted_at FROM pending_submissions`;
 
-  db.all(query, [], (err, rows) => {
-    if (err) return res.status(500).send("DB error: " + err.message);
+  try {
+    const rows = await dbAll(query);
 
     const submissions = rows.map((row) => ({
       id: row.id,
@@ -18,46 +25,51 @@ router.get("/approvals", (req, res) => {
     }));
 
     res.render("admin/approvals", { submissions, PATH_URL: "admin" });
-  });
+  } catch (err) {
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+  }
 });
 
 /* ---------------------------- Approve submisson --------------------------- */
-
-router.post("/approve/:id", async (req, res) => {
-  const id = req.params.id;
-
+router.post("/approve", multer, async (req, res) => {
   try {
-    const row = await dbGet(
-      `SELECT data, submitted_at FROM pending_submissions WHERE id = ?`,
-      [id]
+    // Get submission data
+    const originalEntry = await dbGet(
+      `SELECT id, data, submitted_at FROM pending_submissions WHERE id = ?`,
+      [req.body.entryId]
     );
 
-    if (!row) return res.status(404).send("Submission not found");
+    if (!originalEntry) {
+      throw new Error("Submission not found");
+    }
 
-    const { submitted_at: submittedTime, data } = row;
-    const submission = JSON.parse(data);
-    const isSingle = submission.single === "on";
+    const submissionId = originalEntry.id;
+    const submittedTime = originalEntry.submitted_at;
 
+    // Parse data, merge data, attach files
+    const originalData = JSON.parse(originalEntry.data);
+    const updatedBody = attachFilesToBody(req.body, req.files);
+    const finalData = mergeDataSets(originalData, updatedBody);
+
+    console.log(finalData);
+
+    // Add entry to database
+    const isSingle = finalData.single === "yes";
     const {
       songTitle,
       songGenre,
       songYear,
       songUrl,
       songImg,
-      artists,
       albumTitle,
       albumGenre,
       albumYear,
       albumImg,
-      synthName,
-      synthMaker,
-      synthYear,
-      synthType,
-      synthImg,
-      presets,
-    } = submission;
+      artists,
+      synths,
+    } = finalData;
 
-    // SONG
+    // Insert song
     let song = await dbGet(
       `SELECT id FROM songs WHERE title = ? AND song_url = ?`,
       [songTitle, songUrl]
@@ -71,7 +83,7 @@ router.post("/approve/:id", async (req, res) => {
           [songTitle, songGenre, songYear, songUrl, songImg, submittedTime]
         );
 
-    // ALBUM
+    // Insert album
     let albumId;
 
     if (!isSingle) {
@@ -97,7 +109,7 @@ router.post("/approve/:id", async (req, res) => {
       [songId, albumId]
     );
 
-    // ARTISTS
+    // Insert artists
     for (const artist of artists) {
       let existingArtist = await dbGet(
         `SELECT id FROM artists WHERE name = ? AND country = ?`,
@@ -109,8 +121,13 @@ router.post("/approve/:id", async (req, res) => {
         : await dbRun(
             `INSERT INTO artists (name, country, image_url, timestamp)
              VALUES (?, ?, ?, ?)`,
-            [artist.name, artist.country, artist.image_url, submittedTime]
+            [artist.name, artist.country, artist.img, submittedTime]
           );
+
+      if (!artistId)
+        throw new Error(
+          "artistId is undefined for artist: " + JSON.stringify(artist)
+        );
 
       await dbRun(
         `INSERT INTO song_artists (song_id, artist_id, role)
@@ -119,66 +136,118 @@ router.post("/approve/:id", async (req, res) => {
       );
     }
 
-    // SYNTH
-    let synth = await dbGet(
-      `SELECT id FROM synths WHERE synth_name = ? AND manufacturer = ?`,
-      [synthName, synthMaker]
-    );
-
-    const synthId = synth
-      ? synth.id
-      : await dbRun(
-          `INSERT INTO synths (synth_name, manufacturer, synth_type, release_year, image_url, timestamp)
-           VALUES (?, ?, ?, ?, ?, ?)`,
-          [synthName, synthMaker, synthType, synthYear, synthImg, submittedTime]
-        );
-
-    // PRESETS
-    for (const preset of presets) {
-      let existingPreset = await dbGet(
-        `SELECT id FROM presets WHERE preset_name = ? AND pack_name = ? AND author = ?`,
-        [preset.name, preset.pack_name, preset.author]
+    // Insert Synths
+    for (const synth of synths) {
+      let existingSynth = await dbGet(
+        `SELECT id FROM synths WHERE synth_name = ? AND manufacturer = ?`,
+        [synth.name, synth.manufacturer]
       );
 
-      const presetId = existingPreset
-        ? existingPreset.id
+      const synthId = existingSynth
+        ? existingSynth.id
         : await dbRun(
-            `INSERT INTO presets (preset_name, pack_name, author, timestamp)
-             VALUES (?, ?, ?, ?)`,
-            [preset.name, preset.pack_name, preset.author, submittedTime]
+            `INSERT INTO synths 
+              (synth_name, manufacturer, synth_type, 
+                release_year, image_url, timestamp)
+             VALUES (?, ?, ?, ?, ?, ?)`,
+            [
+              synth.name,
+              synth.manufacturer,
+              synth.type,
+              synth.year,
+              synth.img,
+              submittedTime,
+            ]
           );
 
-      await dbRun(
-        `INSERT INTO preset_synths (preset_id, synth_id) VALUES (?, ?)`,
-        [presetId, synthId]
-      );
+      // Insert presets
+      for (const preset of synth.presets) {
+        let existingPreset = await dbGet(
+          `SELECT id FROM presets WHERE preset_name = ? AND pack_name = ? AND author = ?`,
+          [preset.name, preset.packName, preset.author]
+        );
 
-      await dbRun(
-        `INSERT INTO song_presets (song_id, preset_id, usage_type, verified, submitted_by)
-         VALUES (?, ?, ?, 't', 'user')`,
-        [songId, presetId, preset.usage_type]
-      );
+        const presetId = existingPreset
+          ? existingPreset.id
+          : await dbRun(
+              `INSERT INTO presets (preset_name, pack_name, author, timestamp)
+                   VALUES (?, ?, ?, ?)`,
+              [preset.name, preset.packName, preset.author, submittedTime]
+            );
+
+        await dbRun(
+          `INSERT INTO preset_synths (preset_id, synth_id)
+           VALUES (?, ?)`,
+          [presetId, synthId]
+        );
+
+        await dbRun(
+          `INSERT INTO song_presets 
+            (song_id, preset_id, usage_type, verified, submitted_by)
+           VALUES (?, ?, ?, 't', 'user')`,
+          [songId, presetId, preset.usageType]
+        );
+      }
     }
 
-    // Remove submission
-    await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [id]);
+    // Delete pending submission
+    await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [submissionId]);
+
+    // Approve files
+    if (finalData.songImg) {
+      await approveFile(finalData.songImg, "images");
+    }
+    if (finalData.albumImg) {
+      await approveFile(finalData.albumImg, "images");
+    }
+    for (const artist of finalData.artists || []) {
+      if (artist.img) {
+        await approveFile(artist.img, "images");
+      }
+    }
+    for (const synth of finalData.synths || []) {
+      if (synth.img) {
+        await approveFile(synth.img, "images");
+      }
+      for (const preset of synth.presets || []) {
+        if (preset.audio) {
+          await approveFile(preset.audio, "audio");
+        }
+      }
+    }
+
+    // Then cleanup unused files
+    await deleteAllPendingFiles(originalData);
 
     res.redirect("/admin/approvals");
   } catch (err) {
-    res.status(500).send("Server error: " + err.message);
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
 /* ----------------------------- Deny submission ---------------------------- */
-
 router.post("/deny/:id", async (req, res) => {
   const id = req.params.id;
+  console.log("denying: ", id);
 
   try {
+    const entry = await dbGet(
+      `SELECT data FROM pending_submissions WHERE id = ?`,
+      [id]
+    );
+
+    if (!entry) {
+      throw new Error("Submission not found");
+    }
+
+    // Delete all pending files
+    const data = JSON.parse(entry.data);
+    await deleteAllPendingFiles(data);
+
     await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [id]);
     res.redirect("/admin/approvals");
   } catch (err) {
-    res.status(500).send("Database error: " + err.message);
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
