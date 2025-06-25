@@ -150,7 +150,6 @@ const attachFilesToBody = function (body, files) {
 
 /* --------------- Helper to delete images from pending folder -------------- */
 const deletePendingImage = async (filename) => {
-  console.log("DELETING!!");
   try {
     const filepath = path.join(
       __dirname,
@@ -162,10 +161,9 @@ const deletePendingImage = async (filename) => {
       filename
     );
     await fs.unlink(filepath);
-    console.log(`Deleted pending image: ${filename}`);
   } catch (err) {
     if (err.code !== "ENOENT") {
-      console.error(`Failed to delete ${filename}:`, err.message);
+      throw new Error(`Failed to delete ${filename}:`, err.message);
     }
   }
 };
