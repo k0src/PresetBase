@@ -354,6 +354,13 @@ hr {
   margin-top: 1.8rem;
 }
 
+.submit--footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+}
+
 .btn-container {
   display: flex;
   gap: 1.8rem;
@@ -417,7 +424,12 @@ hr {
   background-color: #c86c6c;
 }
 
-.entry-found-alert {
+.submit--tos-text {
+  font-size: 1.3rem;
+  display: block;
+  color: #899096 !important;
+  line-height: 1.2;
+  text-decoration: underline !important;
 }
 
 /* ------------------------------- Suggestions ------------------------------ */

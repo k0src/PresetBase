@@ -231,7 +231,6 @@ router.get("/getallnames", async (req, res) => {
     LIMIT ?`;
 
   try {
-    console.log(query, limitNum);
     const results = await dbAll(q, [`%${query}%`, limitNum]);
     return res.json(results);
   } catch (err) {

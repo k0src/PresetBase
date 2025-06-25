@@ -29,6 +29,10 @@ app.get("/copyright", (req, res) => {
   res.render("static/copyright", { PATH_URL: "copyright" });
 });
 
+app.get("/upload-tos", (req, res) => {
+  res.render("static/upload-tos", { PATH_URL: "upload-tos" });
+});
+
 /* ------------------------------- Main routes ------------------------------ */
 const statsRoutes = require("./routes/main/stats");
 app.use("/stats", statsRoutes);
