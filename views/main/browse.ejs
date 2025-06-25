@@ -37,7 +37,7 @@
                   >
                     <div class="hot-songs--img-container">
                       <img
-                        src="<%= song.song_image %>"
+                        src="/uploads/images/approved/<%= song.song_image %>"
                         alt="<%= song.song_name %>"
                         class="hot-song--img"
                       />
@@ -113,11 +113,12 @@
                 <div class="latest-entry-container">
                   <div class="latest-entry--top">
                     <div class="latest-entry--img-container">
-                      <span class="glass-gradient latest-entry--added-days-ago"
-                        ><%= mostRecent.addedDaysAgo %> days ago
+                      <span class="glass-gradient latest-entry--added-days-ago">
+                        <%= mostRecent.addedDaysAgo !== 0 ?
+                        mostRecent.addedDaysAgo + " days ago": "Today" %>
                       </span>
                       <img
-                        src="<%= mostRecent.song_image %>"
+                        src="/uploads/images/approved/<%= mostRecent.song_image %>"
                         alt="<%= mostRecent.song_name %>"
                         class="latest-entry--img"
                       />
@@ -175,7 +176,7 @@
                     <div class="top-genres--img-container">
                       <img
                         class="top-genres--img"
-                        src="<%= genre.song_image %>"
+                        src="/uploads/images/approved/<%= genre.song_image %>"
                         alt="<%= genre.genre %> "
                       />
                       <i class="fa-solid fa-music top-genres--icon"></i>
@@ -204,7 +205,7 @@
                   >
                     <div class="top-synths--img-container">
                       <img
-                        src="<%= synth.synth_image %>"
+                        src="/uploads/images/approved/<%= synth.synth_image %>"
                         alt="<%= synth.name %>"
                         class="top-synths--img"
                       />
@@ -251,7 +252,7 @@
                     class="recently-added--entry"
                   >
                     <img
-                      src="<%= song.song_image %>"
+                      src="/uploads/images/approved/<%= song.song_image %>"
                       alt="Hot Song Image"
                       class="recently-added--img"
                     />
@@ -285,7 +286,7 @@
                   <a href="/song/<%= song.song_id %>" class="popular--entry">
                     <div class="popular--img-container">
                       <img
-                        src="<%= song.song_image %>"
+                        src="/uploads/images/approved/<%= song.song_image %>"
                         alt="<%= song.song_name %>"
                         class="popular--img"
                       />

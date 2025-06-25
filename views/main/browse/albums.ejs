@@ -83,7 +83,7 @@
                 <div class="result-entry--title-container">
                   <div class="result-entry--img-container">
                     <img
-                      src="<%= album.album_image %>"
+                      src="/uploads/images/approved/<%= album.album_image %>"
                       class="result-entry--img"
                     />
                     <% if (album.is_new) { %>
@@ -136,7 +136,10 @@
               <% Object.entries(albums).forEach(([i, album]) => { %>
               <div class="card-entry">
                 <div class="card-entry--img-container">
-                  <img src="<%= album.album_image %>" class="card-entry--img" />
+                  <img
+                    src="/uploads/images/approved/<%= album.album_image %>"
+                    class="card-entry--img"
+                  />
                   <% if (album.is_new) { %>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"

@@ -59,7 +59,10 @@
               >
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
-                  <img src="<%= song.song_image %>" class="result-entry--img" />
+                  <img
+                    src="/uploads/images/approved/<%= song.song_image %>"
+                    class="result-entry--img"
+                  />
                   <div class="result-entry--title">
                     <span class="result-entry--secondary">
                       <%= song.artist_name %></span
@@ -98,7 +101,7 @@
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
                   <img
-                    src="<%= artist.artist_image %>"
+                    src="/uploads/images/approved/<%= artist.artist_image %>"
                     class="result-entry--img"
                   />
                   <span class="result-entry--primary"
@@ -131,7 +134,7 @@
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
                   <img
-                    src="<%= album.album_image %>"
+                    src="/uploads/images/approved/<%= album.album_image %>"
                     class="result-entry--img"
                   />
                   <span class="result-entry--primary">
@@ -169,7 +172,7 @@
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
                   <img
-                    src="<%= synth.synth_image %>"
+                    src="/uploads/images/approved/<%= synth.synth_image %>"
                     class="result-entry--img"
                   />
                   <span class="result-entry--primary"
@@ -206,7 +209,7 @@
                 <span class="result-entry--number"><%= +i + 1 %></span>
                 <div class="result-entry--title-container">
                   <img
-                    src="<%= preset.synth_image %>"
+                    src="/uploads/images/approved/<%= preset.synth_image %>"
                     class="result-entry--img"
                   />
                   <span class="result-entry--primary">

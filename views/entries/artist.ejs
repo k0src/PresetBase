@@ -20,7 +20,7 @@
                 <div class="entry--title-container">
                   <div class="entry--img-container">
                     <img
-                      src="<%= artist.image_url %>"
+                      src="/uploads/images/approved/<%= artist.image_url %>"
                       alt="<%= artist.artist_name %>"
                       class="entry--img"
                     />
@@ -75,7 +75,7 @@
                       href="/album/<%= album.album_id %>"
                     >
                       <img
-                        src="<%= album.image_url %>"
+                        src="/uploads/images/approved/<%= album.image_url %>"
                         alt="<%= album.album_title %>"
                         class="albums--img"
                       />
@@ -118,7 +118,7 @@
                     <span class="list-entry--number"><%= +i + 1 %></span>
                     <div class="list-entry--title-container">
                       <img
-                        src="<%= song.image_url %>"
+                        src="/uploads/images/approved/<%= song.image_url %>"
                         class="list-entry--img"
                       />
                       <span class="list-entry--primary"><%= song.title %></span>

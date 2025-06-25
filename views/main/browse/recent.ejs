@@ -84,7 +84,7 @@
                 <div class="result-entry--title-container">
                   <div class="result-entry--img-container">
                     <img
-                      src="<%= song.song_image %>"
+                      src="/uploads/images/approved/<%= song.song_image %>"
                       class="result-entry--img"
                     />
                     <svg
@@ -128,7 +128,10 @@
               <% Object.entries(songs).forEach(([i, song]) => { %>
               <div class="card-entry">
                 <div class="card-entry--img-container">
-                  <img src="<%= song.song_image %>" class="card-entry--img" />
+                  <img
+                    src="/uploads/images/approved/<%= song.song_image %>"
+                    class="card-entry--img"
+                  />
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"

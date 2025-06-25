@@ -83,7 +83,7 @@
                 <div class="result-entry--title-container">
                   <div class="result-entry--img-container">
                     <img
-                      src="<%= synth.synth_image %>"
+                      src="/uploads/images/approved/<%= synth.synth_image %>"
                       class="result-entry--img"
                     />
                     <% if (synth.is_new) { %>
@@ -136,7 +136,10 @@
               <% Object.entries(synths).forEach(([i, synth]) => { %>
               <div class="card-entry">
                 <div class="card-entry--img-container">
-                  <img src="<%= synth.synth_image %>" class="card-entry--img" />
+                  <img
+                    src="/uploads/images/approved/<%= synth.synth_image %>"
+                    class="card-entry--img"
+                  />
                   <% if (synth.is_new) { %>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
