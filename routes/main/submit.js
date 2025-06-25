@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const multer = require("../../middleware/multer.js");
-const { dbRun, dbAll, attachFilesToBody } = require("../../util/UTIL.js");
+const {
+  dbRun,
+  dbAll,
+  attachFilesToBody,
+  sanitizeData,
+  mergeAndValidateSubmitData,
+} = require("../../util/UTIL.js");
 
 /* Example submission */
 router.get("/example", async (req, res) => {
@@ -134,14 +140,29 @@ router.get("/", async (req, res) => {
   }
 });
 
+/*
+for existing songs, merge data, overwrite with data from db (e.i if new song date = 2021,
+and db song data = 2022, keep old)
+
+if image was changed, or exisitng image was used, delete old uplaoded image from pending, 
+otherwsie, move to approved
+
+if author, song img, pack name etc )optinal fields) blank, fill in in backend on approval
+
+*/
+
 router.post("/", multer, async (req, res) => {
   const rawData = attachFilesToBody(req.body, req.files);
-  const pendingData = JSON.stringify(rawData);
-
-  const query = `INSERT INTO pending_submissions (data) VALUES (?)`;
-
   try {
-    await dbRun(query, [pendingData]);
+    const sanitizedData = sanitizeData(rawData);
+    const fullBodyData = await mergeAndValidateSubmitData(sanitizedData);
+
+    console.log("VALIDATED, MERGED:", fullBodyData);
+
+    // const pendingData = JSON.stringify(fullBodyData);
+    // const query = `INSERT INTO pending_submissions (data) VALUES (?)`;
+
+    // await dbRun(query, [pendingData]);
   } catch (err) {
     return res.render("static/db-error", { err, PATH_URL: "db-error" });
   }

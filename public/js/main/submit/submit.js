@@ -19,13 +19,19 @@ singleCheckBox.addEventListener("change", () => {
     const fileInputField = field.closest(".custom-file-input");
 
     if (isChecked) {
-      field.removeAttribute("required");
-      field.setAttribute("disabled", "true");
-      if (fileInputField) fileInputField.classList.add("disabled");
+      if (fileInputField) {
+        fileInputField.classList.add("disabled");
+      } else {
+        field.removeAttribute("required");
+        field.setAttribute("disabled", "true");
+      }
     } else {
-      field.setAttribute("required", "true");
-      field.removeAttribute("disabled");
-      if (fileInputField) fileInputField.classList.remove("disabled");
+      if (fileInputField) {
+        fileInputField.classList.remove("disabled");
+      } else {
+        field.setAttribute("required", "true");
+        field.removeAttribute("disabled");
+      }
     }
   });
 });
@@ -112,7 +118,6 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
                 </button>
                 <span class="file-name">No file selected.</span>
                 <input
-                  required
                   type="file"
                   name="artists[${artistIndex}][img]"
                   class="imageInput"
@@ -121,8 +126,7 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
                   />
             </div>
             <small
-                >Upload the artist's image. Leave blank to default to the
-            album cover. Minimum dimensions: 1000 x 1000
+                >Upload the artist's image. Minimum dimensions: 1000 x 1000
             pixels.</small
                 >
           </div>
@@ -230,7 +234,6 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
                 </button>
                 <span class="file-name">No file selected.</span>
                 <input
-                    required
                     type="file"
                     name="synths[${synthIndex}][img]"
                     class="imageInput"
@@ -304,7 +307,6 @@ document.querySelector(".add-synth-btn").addEventListener("click", () => {
           Usage Type <span class="red">*</span>
           <input
               class="form-input"
-              pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
               required
               title="First letter must be capitalized."
               type="text"
@@ -467,7 +469,6 @@ const addPreset = function (currSynthIndex) {
       Usage Type <span class="red">*</span>
       <input
           class="form-input"
-          pattern="^([A-Z][a-z]*)(\s[A-Z][a-z]*)*$"
           required
           title="First letter must be capitalized."
           type="text"
@@ -713,8 +714,9 @@ const fetchFillInfo = async function (type, query) {
 };
 
 /* ----------------------- Attempt to autofill section ---------------------- */
+let autofilled = false;
+
 const attemptToAutofill = async function (section, inputType) {
-  const sectionInputs = section.querySelectorAll("input");
   const primaryInput = section.querySelector("input[data-primary='true']");
   if (!primaryInput) return;
 
@@ -761,6 +763,8 @@ const attemptToAutofill = async function (section, inputType) {
         }
       }
     });
+
+    autofilled = true;
   } catch (err) {
     console.error("Error fetching autofill section results: ", err);
   }
@@ -780,6 +784,9 @@ const handleAutofillInputs = function () {
     const dropdown = input.parentElement.querySelector(
       ".autocomplete-dropdown"
     );
+
+    if (!dropdown) return;
+
     let selectedIndex = -1;
     let debounceTimeout;
 
@@ -877,32 +884,41 @@ function updateSelection(items, index) {
 /* ----------------------------- Form validation ---------------------------- */
 const validateForm = function () {
   const form = document.getElementById("entryForm");
-  const songImg = document.querySelector('input[name="songImg"]');
   const albumImg = document.querySelector('input[name="albumImg"]');
+  const synthImg = document.querySelector('input[name="synthImg"]');
+  const songImg = document.querySelector('input[name="songImg"]');
+  const singleCheckBox = document.getElementById("singleCheckBox");
 
   form.addEventListener("submit", (e) => {
-    const songImgUploaded = songImg.files.length > 0;
-    const albumImgUploaded = albumImg.files.length > 0;
-
     const failSubmit = (msg) => {
       e.preventDefault();
       alert(msg);
     };
 
-    if (!singleCheckBox.checked) {
-      if (!albumImgUploaded && !songImgUploaded) {
-        return failSubmit("You must upload at least the album image.");
+    if (!autofilled) {
+      const albumImgUploaded = albumImg.files.length > 0;
+      const synthImgUploaded = synthImg.files.length > 0;
+
+      if (!synthImgUploaded) {
+        return failSubmit("You must upload an image for the synth.");
       }
-      if (songImgUploaded && !albumImgUploaded) {
-        return failSubmit(
-          "You must upload the album image if you upload the song image."
-        );
+
+      if (!singleCheckBox.checked) {
+        if (!albumImgUploaded && !songImgUploaded) {
+          return failSubmit("You must upload at least the album image.");
+        }
+        if (songImgUploaded && !albumImgUploaded) {
+          return failSubmit(
+            "You must upload the album image if you upload the song image."
+          );
+        }
       }
     }
 
     const roleInputs = form.querySelectorAll(
       'input[name^="artists"][name$="[role]"]'
     );
+
     const hasMainRole = Array.from(roleInputs).some(
       (input) => input.value.trim() === "Main"
     );
