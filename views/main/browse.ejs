@@ -110,7 +110,10 @@
                 <div class="latest-entry--header">
                   <h2 class="heading-secondary">Latest entry</h2>
                 </div>
-                <div class="latest-entry-container">
+                <a
+                  href="/song/<%= mostRecent.song_id %>"
+                  class="latest-entry-container"
+                >
                   <div class="latest-entry--top">
                     <div class="latest-entry--img-container">
                       <span class="glass-gradient latest-entry--added-days-ago">
@@ -124,28 +127,27 @@
                       />
                     </div>
                     <div class="latest-entry--top-right">
+                      <% const mainArtist = mostRecent.artists.filter(artist =>
+                      artist.artist_role === "Main")[0]?.artist_name; const
+                      otherArtists = mostRecent.artists.filter(artist =>
+                      artist.artist_role !== "Main"); %>
                       <span class="latest-entry--artist">
-                        <%= mostRecent.artists.filter((artist) =>
-                        artist.artist_role === "Main")[0].artist_name %>
+                        <%= mainArtist %>
                       </span>
-                      <a
-                        href="/song/<%= mostRecent.song_id %>"
-                        class="latest-entry--title"
-                        ><%= mostRecent.song_title %></a
+                      <span class="latest-entry--title"
+                        ><%= mostRecent.song_title %></span
                       >
                       <span class="latest-entry--album"
                         ><%= mostRecent.album_title === "[SINGLE]" ? "Single" :
                         mostRecent.album_title %></span
                       >
-                      <% mostRecent.artists.forEach((artist) => { %> <% if
-                      (artist.artist_role !== "Main") { %>
+                      <% otherArtists.slice(0, 2).forEach((artist) => { %>
                       <span class="latest-entry--supporting-artist">
                         <%= artist.artist_name %> &mdash; <%= artist.artist_role
                         %>
                       </span>
-                      <% } %> <% }) %>
+                      <% }) %>
                       <div class="latest-entry--year-container">
-                        <span class="latest-entry--year-text">Released</span>
                         <span class="latest-entry--year"
                           ><%= mostRecent.song_release_year %></span
                         >
@@ -155,14 +157,12 @@
                   <hr class="latest-entry--hr" />
                   <div class="latest-entry--bottom">
                     <% mostRecent.synths.forEach((synth) => { %>
-                    <a
-                      href="/synth/<%= synth.synth_id %>"
-                      class="latest-entry--synth"
-                      ><%= synth.synth_name %></a
+                    <span class="latest-entry--synth"
+                      ><%= synth.synth_name %></span
                     >
                     <% }) %>
                   </div>
-                </div>
+                </a>
                 <!-- Top Genres -->
                 <div class="top-genres-header">
                   <h2 class="heading-secondary">Top Genres</h2>

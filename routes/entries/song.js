@@ -39,7 +39,7 @@ router.get("/:id", async (req, res) => {
             'preset_id', presets.id,
             'name', presets.preset_name,
             'usage_type', song_presets.usage_type,
-            'song_presets_id', song_presets.id,
+            'audio_url', song_presets.audio_url,
             'synth_id', synths.id,
             'synth_name', synths.synth_name,
             'synth_image', synths.image_url

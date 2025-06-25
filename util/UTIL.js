@@ -199,6 +199,7 @@ const mergeAndValidateSubmitData = async function (data) {
       } else if (!validated.albumImg) {
         validated.albumImg = albumDB.image_url;
       }
+      validated.albumFilled = true;
     }
 
     const songDB = await dbGet(
@@ -221,6 +222,7 @@ const mergeAndValidateSubmitData = async function (data) {
       } else if (!validated.songImg) {
         validated.songImg = songDB.image_url;
       }
+      validated.songFilled = true;
     } else {
       if (!validated.songImg || validated.songImg.trim() === "") {
         validated.songImg = validated.albumImg;
@@ -245,6 +247,7 @@ const mergeAndValidateSubmitData = async function (data) {
         } else if (!artist.img) {
           artist.img = artistDB.image_url;
         }
+        artist.filled = true;
       }
     }
 
@@ -270,6 +273,7 @@ const mergeAndValidateSubmitData = async function (data) {
         } else if (!synth.img) {
           synth.img = synthDB.image_url;
         }
+        synth.filled = true;
       }
 
       for (let j = 0; j < synth.presets.length; j++) {

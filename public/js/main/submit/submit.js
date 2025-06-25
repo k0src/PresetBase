@@ -758,7 +758,7 @@ const attemptToAutofill = async function (section, inputType) {
         if (imgContainer) {
           const img = imgContainer.querySelector("img.img-upload-display");
           const label = imgContainer.querySelector(".file-name");
-          if (img) img.src = val;
+          if (img) img.src = `/uploads/images/approved/${val}`;
           if (label) label.textContent = `${result[inputType]}`;
         }
       }

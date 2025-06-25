@@ -146,6 +146,8 @@ router.post("/", multer, async (req, res) => {
     const sanitizedData = sanitizeData(rawData);
     const fullBodyData = await mergeAndValidateSubmitData(sanitizedData);
 
+    console.log(fullBodyData);
+
     const pendingData = JSON.stringify(fullBodyData);
     const query = `INSERT INTO pending_submissions (data) VALUES (?)`;
 

@@ -335,7 +335,7 @@ body {
   position: absolute;
   top: 0;
   right: 0;
-  transform: translate(-0.6rem, 0.6rem);
+  transform: translate(-0.8rem, 0.8rem);
   border-radius: 0.8rem;
   padding: 0.8rem 1rem;
   font-size: 1.4rem;
@@ -353,7 +353,8 @@ body {
 }
 
 .latest-entry--top-right {
-  padding: 1.6rem 0 1.6rem;
+  padding: 0.4rem 0;
+  gap: 0.4rem;
   flex: 1;
   min-width: 0;
   display: flex;
@@ -381,8 +382,7 @@ body {
   font-weight: 700;
 }
 
-.latest-entry--title:link,
-.latest-entry--title:visited {
+.latest-entry--title {
   font-size: 3.2rem;
   font-weight: 600;
   line-height: 1.1;
@@ -398,21 +398,13 @@ body {
 .latest-entry--supporting-artist {
   font-size: 1.6rem;
   color: #899096 !important;
+  line-height: 1.1;
 }
 
 .latest-entry--year-container {
   display: flex;
   align-items: center;
   gap: 0.8rem;
-}
-
-.latest-entry--year-text {
-  font-size: 1.6rem;
-  color: #899096 !important;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  overflow: hidden;
-  min-width: 0;
 }
 
 .latest-entry--year {
@@ -824,8 +816,7 @@ body {
 }
 
 @media (max-width: 64em) {
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 2.8rem;
   }
 
@@ -959,8 +950,7 @@ body {
     padding: 1.8rem 0 1.6rem;
   }
 
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 2.4rem;
   }
 
@@ -990,10 +980,6 @@ body {
   .browse-top-category-container {
     gap: 0;
     justify-content: space-between;
-  }
-
-  .latest-entry--year-text {
-    display: none;
   }
 
   .top-genres--img {
@@ -1073,16 +1059,12 @@ body {
     padding: 1.6rem 0 1.6rem;
   }
 
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 3.6rem;
   }
 
   .latest-entry--artist {
     font-size: 1.8rem;
-  }
-  .latest-entry--year-text {
-    display: block;
   }
 
   .browse-top-category-container {
@@ -1141,8 +1123,7 @@ body {
     font-size: 1.8rem;
   }
 
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 2.4rem;
   }
 
@@ -1234,8 +1215,7 @@ body {
     font-size: 1.6rem;
   }
 
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 2.2rem;
   }
 
@@ -1244,10 +1224,6 @@ body {
   }
 
   .latest-entry--supporting-artist {
-    font-size: 1.4rem;
-  }
-
-  .latest-entry--year-text {
     font-size: 1.4rem;
   }
 
@@ -1281,10 +1257,6 @@ body {
     gap: 1.4rem;
   }
 
-  .latest-entry--year-text {
-    display: none;
-  }
-
   .latest-entry--top {
     display: flex;
     flex-direction: column;
@@ -1299,8 +1271,7 @@ body {
     gap: 0.6rem;
   }
 
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 3.2rem;
   }
 
@@ -1386,8 +1357,7 @@ body {
     height: 12rem;
   }
 
-  .latest-entry--title:link,
-  .latest-entry--title:visited {
+  .latest-entry--title {
     font-size: 2.4rem;
   }
 }

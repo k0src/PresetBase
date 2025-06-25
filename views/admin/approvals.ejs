@@ -100,11 +100,19 @@
                     audio uploads exist.</small
                   >
                 </label>
+                <%
+                  let songImgSrc;
+                  if (entry.data.songFilled) {
+                    songImgSrc = `/uploads/images/approved/${entry.data.songImg}`;
+                  } else {
+                    songImgSrc = `/uploads/images/pending/${entry.data.songImg}`;
+                  }
+                %>
                 <label>
                   Song Image
                   <div class="img-upload-container">
                     <img
-                      src="/uploads/images/pending/<%= entry.data.songImg %>"
+                      src="<%= songImgSrc %>"
                       alt="Uploaded Image"
                       class="img-upload-display"
                     />
@@ -171,11 +179,19 @@
                       primary artist. Enter only one role.</small
                     >
                   </label>
+                  <%
+                    let artistImgSrc;
+                    if (artist.filled) {
+                      artistImgSrc = `/uploads/images/approved/${artist.img}`;
+                    } else {
+                      artistImgSrc = `/uploads/images/pending/${artist.img}`;
+                    }
+                  %>
                   <label>
                     Artist Image <span class="red">*</span>
                     <div class="img-upload-container">
                       <img
-                        src="/uploads/images/pending/<%= artist.img %>"
+                        src="<%= artistImgSrc %>"
                         alt="Uploaded Image"
                         class="img-upload-display"
                       />
@@ -258,12 +274,20 @@
                   <small>Enter the year the album was released.</small>
                 </label>
                 <label>
+                  <%
+                    let albumImgSrc;
+                    if (isSingle) {
+                      albumImgSrc = "/assets/images/image-upload-placeholder.webp";
+                    } else if (entry.data.albumFilled) {
+                      albumImgSrc = `/uploads/images/approved/${entry.data.albumImg}`;
+                    } else {
+                      albumImgSrc = `/uploads/images/pending/${entry.data.albumImg}`;
+                    }
+                  %>
                   Album Image <span class="red">*</span>
                   <div class="img-upload-container">
                     <img
-                      src="<%= entry.data.albumImg ? 
-                          `/uploads/images/pending/${entry.data.albumImg}` : 
-                          '/assets/images/image-upload-placeholder.webp' %>"
+                      src="<%= albumImgSrc %>"
                       alt="Uploaded Image"
                       class="img-upload-display"
                     />
@@ -333,18 +357,30 @@
                   <label
                     >Type <span class="red">*</span>
                     <select required name="<%= `synths[${i}][type]` %>">
-                        <option value="VST" <%= synth.type === 'VST' ? 'selected' : '' %>>VST</option>
-                        <option value="Hardware" <%= synth.type === 'Hardware' ? 'selected' : '' %>>Hardware</option>
-                        <option value="Kontakt Bank" <%= synth.type === 'Kontakt Bank' ? 'selected' : '' %>>Kontakt Bank</option>
-                        <option value="SoundFont" <%= synth.type === 'SoundFont' ? 'selected' : '' %>>SoundFont</option>
+                        <option value="VST" 
+                          <%= synth.type === 'VST' ? 'selected' : '' %>>VST</option>
+                        <option value="Hardware" 
+                          <%= synth.type === 'Hardware' ? 'selected' : '' %>>Hardware</option>
+                        <option value="Kontakt Bank" 
+                          <%= synth.type === 'Kontakt Bank' ? 'selected' : '' %>>Kontakt Bank</option>
+                        <option value="SoundFont" 
+                          <%= synth.type === 'SoundFont' ? 'selected' : '' %>>SoundFont</option>
                     </select>
                     <small>Select the synth format.</small>
                   </label>
+                  <%
+                    let synthImgSrc;
+                    if (synth.filled) {
+                      synthImgSrc = `/uploads/images/approved/${synth.img}`;
+                    } else {
+                      synthImgSrc = `/uploads/images/pending/${synth.img}`;
+                    }
+                  %>
                   <label>
                     Synth Image <span class="red">*</span>
                     <div class="img-upload-container">
                       <img
-                        src="/uploads/images/pending/<%= synth.img %>"
+                        src="<%= synthImgSrc %>"
                         alt="Uploaded Image"
                         class="img-upload-display"
                       />
