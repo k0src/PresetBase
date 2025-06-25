@@ -173,6 +173,26 @@ const mergeAndValidateSubmitData = async function (data) {
   try {
     const validated = structuredClone(data);
 
+    const albumDB = await dbGet(
+      `SELECT 
+        id, 
+        genre, 
+        release_year AS year, 
+        image_url 
+      FROM albums WHERE title = ? AND release_year = ?`,
+      [validated.albumTitle, validated.albumYear]
+    );
+    if (albumDB) {
+      validated.albumGenre = albumDB.genre;
+      validated.albumYear = String(albumDB.year);
+      if (validated.albumImg) {
+        validated.albumImg = albumDB.image_url;
+        await deletePendingImage(data.albumImg);
+      } else if (!validated.albumImg) {
+        validated.albumImg = albumDB.image_url;
+      }
+    }
+
     const songDB = await dbGet(
       `SELECT 
         id, 
@@ -193,25 +213,9 @@ const mergeAndValidateSubmitData = async function (data) {
       } else if (!validated.songImg) {
         validated.songImg = songDB.image_url;
       }
-    }
-
-    const albumDB = await dbGet(
-      `SELECT 
-        id, 
-        genre, 
-        release_year AS year, 
-        image_url 
-      FROM albums WHERE title = ? AND release_year = ?`,
-      [validated.albumTitle, validated.albumYear]
-    );
-    if (albumDB) {
-      validated.albumGenre = albumDB.genre;
-      validated.albumYear = String(albumDB.year);
-      if (validated.albumImg) {
-        validated.albumImg = albumDB.image_url;
-        await deletePendingImage(data.albumImg);
-      } else if (!validated.albumImg) {
-        validated.albumImg = albumDB.image_url;
+    } else {
+      if (!validated.songImg || validated.songImg.trim() === "") {
+        validated.songImg = validated.albumImg;
       }
     }
 
@@ -271,9 +275,17 @@ const mergeAndValidateSubmitData = async function (data) {
           WHERE presets.preset_name = ?`,
           [preset.name]
         );
+
         if (presetDB) {
           preset.packName = presetDB.pack_name;
           preset.author = presetDB.author;
+        } else {
+          if (!preset.packName || preset.packName.trim() === "") {
+            preset.packName = "Factory";
+          }
+          if (!preset.author || preset.author.trim() === "") {
+            preset.author = synth.manufacturer;
+          }
         }
       }
     }

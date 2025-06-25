@@ -88,7 +88,7 @@ document.querySelector(".add-artist-btn").addEventListener("click", () => {
     </label>
     <label
       >
-      Artist role <span class="red">*</span>
+      Artist Role <span class="red">*</span>
       <input
           class="form-input"
           required
