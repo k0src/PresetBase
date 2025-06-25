@@ -62,7 +62,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
       try {
         const results = await fetchSearchSuggestions(query, 7);
-        console.log(results);
         renderDropdown(results);
       } catch (err) {
         console.error("Error fetching search suggestions: ", err);

@@ -770,7 +770,7 @@ const attemptToAutofill = async function (section, inputType) {
   }
 };
 
-/* -------------------------- Main autiofill logic -------------------------- */
+/* --------------------------- Main autofill logic -------------------------- */
 const handleAutofillInputs = function () {
   const inputs = document.querySelectorAll("input");
 
