@@ -195,4 +195,48 @@ router.get("/autofill/:type", async (req, res) => {
   }
 });
 
+router.get("/getallnames", async (req, res) => {
+  const { query, limit } = req.query;
+  const limitNum = Math.min(Number(limit));
+
+  const q = `
+    WITH search_results AS (
+      SELECT 'song' AS type, songs.id AS id, songs.title AS name
+      FROM songs
+      
+      UNION ALL
+      
+      SELECT 'artist' AS type, artists.id AS id, artists.name AS name
+      FROM artists
+      
+      UNION ALL
+      
+      SELECT 'album' AS type, albums.id AS id, albums.title AS name
+      FROM albums
+      WHERE albums.id != 0
+      
+      UNION ALL
+      
+      SELECT 'synth' AS type, synths.id AS id, synths.synth_name AS name
+      FROM synths
+      
+      UNION ALL
+      
+      SELECT 'preset' AS type, presets.id AS id, presets.preset_name AS name
+      FROM presets
+    )
+    SELECT * FROM search_results 
+    WHERE name LIKE ?
+    ORDER BY type, name
+    LIMIT ?`;
+
+  try {
+    console.log(query, limitNum);
+    const results = await dbAll(q, [`%${query}%`, limitNum]);
+    return res.json(results);
+  } catch (err) {
+    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+  }
+});
+
 module.exports = router;

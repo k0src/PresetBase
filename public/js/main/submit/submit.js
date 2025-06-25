@@ -886,7 +886,6 @@ const validateForm = function () {
   const form = document.getElementById("entryForm");
   const albumImg = document.querySelector('input[name="albumImg"]');
   const synthImg = document.querySelector('input[name="synthImg"]');
-  const songImg = document.querySelector('input[name="songImg"]');
   const singleCheckBox = document.getElementById("singleCheckBox");
 
   form.addEventListener("submit", (e) => {

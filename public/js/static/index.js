@@ -1,5 +1,3 @@
-import Fuse from "https://cdn.jsdelivr.net/npm/fuse.js@7.1.0/dist/fuse.mjs";
-
 /* ------------------------------ Search Button ----------------------------- */
 const searchInput = document.querySelector(".search-box--input");
 const searchButton = document.querySelector(".search-box--button");
@@ -25,21 +23,25 @@ searchInput.addEventListener("keydown", (e) => {
   }
 });
 
-/* ----------------------- Search Suggestions - Fuzzy ----------------------- */
+/* --------------------------- Search Suggestions --------------------------- */
+const fetchSearchSuggestions = async function (query, limit) {
+  const url = `/api/getallnames?query=${encodeURIComponent(
+    query
+  )}&limit=${limit}`;
+
+  const res = await fetch(url);
+  if (!res.ok) throw new Error("Search suggestions fetch failed");
+
+  const data = await res.json();
+  return data.map((row) => row.name);
+};
+
 document.addEventListener("DOMContentLoaded", () => {
   const input = document.querySelector(".search-box--input");
   const dropdown = document.querySelector(".autocomplete-dropdown");
 
-  const data = window.__SEARCH_DATA__;
-  const dataset = [
-    ...data.songs.map((s) => ({ label: s.song_title })),
-    ...data.artists.map((a) => ({ label: a.artist_name })),
-    ...data.albums.map((a) => ({ label: a.album_title })),
-    ...data.synths.map((s) => ({ label: s.synth_name })),
-    ...data.presets.map((p) => ({ label: p.preset_name })),
-  ];
-
   let selectedIndex = -1;
+  let debounceTimeout;
   handleKeyboardNavigation(
     input,
     dropdown,
@@ -49,29 +51,23 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   );
 
-  const fuse = new Fuse(dataset, {
-    keys: ["label"],
-    includeScore: true,
-    threshold: 0.4,
-    distance: 100,
-    ignoreLocation: true,
-  });
-
-  let debounceTimeout;
   input.addEventListener("input", () => {
     clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
+    debounceTimeout = setTimeout(async () => {
       const query = input.value.trim();
       if (query.length === 0) {
         hideDropdown();
         return;
       }
 
-      const results = fuse
-        .search(query)
-        .slice(0, 7)
-        .map((r) => r.item);
-      renderDropdown(results);
+      try {
+        const results = await fetchSearchSuggestions(query, 7);
+        console.log(results);
+        renderDropdown(results);
+      } catch (err) {
+        console.error("Error fetching search suggestions: ", err);
+      }
+
       selectedIndex = -1;
     }, 150);
   });
@@ -84,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     items.forEach((item, index) => {
-      const listItem = item.label;
+      const listItem = item;
       const li = document.createElement("li");
       li.textContent = listItem;
       li.setAttribute("data-index", index);
@@ -142,9 +138,9 @@ document.addEventListener("DOMContentLoaded", () => {
         case "Enter":
           e.preventDefault();
           if (currentIndex >= 0 && items[currentIndex]) {
-            input.value = items[currentIndex].textContent;
             hideDropdown(dropdown);
             setSelectedIndex(-1);
+            searchForQuery(items[currentIndex].textContent);
           }
           break;
 
