@@ -26,7 +26,9 @@ router.get("/approvals", async (req, res) => {
 
     res.render("admin/approvals", { submissions, PATH_URL: "admin" });
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
@@ -219,7 +221,9 @@ router.post("/approve", multer, async (req, res) => {
 
     res.redirect("/admin/approvals");
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
@@ -245,7 +249,9 @@ router.post("/deny/:id", async (req, res) => {
     await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [id]);
     res.redirect("/admin/approvals");
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 

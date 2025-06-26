@@ -68,7 +68,9 @@ router.get("/", async (req, res) => {
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 

@@ -7,7 +7,9 @@ router.get("/tag-editor", async (req, res) => {
   try {
     res.render("admin/tag-editor", { PATH_URL: "admin" });
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
@@ -21,7 +23,9 @@ router.post("/tag-editor", async (req, res) => {
       [name, slug, textColor, borderColor, backgroundColor]
     );
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 
   res.redirect("/admin/tag-editor?success=1");

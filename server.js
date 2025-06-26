@@ -87,7 +87,7 @@ app.use("/admin", adminTagEditor);
 
 /* ----------------------------------- 404 ---------------------------------- */
 app.use((req, res) => {
-  res.status(404).render("static/404", { PATH_URL: "404" });
+  return res.status(404).render("static/404", { PATH_URL: "404" });
 });
 
 app.listen(PORT, () => {

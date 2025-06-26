@@ -18,7 +18,9 @@ router.get("/upload", async (req, res) => {
       PATH_URL: "admin",
     });
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
@@ -184,7 +186,9 @@ router.post("/upload", multer, async (req, res) => {
 
     res.redirect("/admin/upload");
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 

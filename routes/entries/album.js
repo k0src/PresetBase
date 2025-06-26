@@ -65,9 +65,17 @@ router.get("/:id", async (req, res) => {
       LEFT JOIN album_songs ON albums.id = album_songs.album_id
       LEFT JOIN song_artists ON album_songs.song_id = song_artists.song_id
       LEFT JOIN album_clicks ON albums.id = album_clicks.album_id
-      WHERE song_artists.artist_id = ?
+      WHERE song_artists.artist_id = (
+          SELECT artists.id
+          FROM album_songs
+          JOIN song_artists ON album_songs.song_id = song_artists.song_id
+          JOIN artists ON song_artists.artist_id = artists.id
+          WHERE album_songs.album_id = ?
+            AND song_artists.role = 'Main'
+          LIMIT 1
+        )
         AND song_artists.role = 'Main'
-        AND albums.title IS NOT '[SINGLE]'
+        AND albums.title != '[SINGLE]'
         AND albums.id != ?
       GROUP BY albums.id
       ORDER BY clicks DESC
@@ -76,6 +84,10 @@ router.get("/:id", async (req, res) => {
   };
 
   try {
+    if (albumId === "0") {
+      return res.status(404).render("static/404", { PATH_URL: "404" });
+    }
+
     await dbRun(queries.updateClick, [albumId, now]);
 
     const [album, moreAlbums] = await Promise.all([
@@ -97,7 +109,9 @@ router.get("/:id", async (req, res) => {
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 

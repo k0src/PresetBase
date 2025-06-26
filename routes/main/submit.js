@@ -21,7 +21,9 @@ router.get("/", async (req, res) => {
       PATH_URL: "submit",
     });
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 });
 
@@ -36,7 +38,9 @@ router.post("/", multer, async (req, res) => {
 
     await dbRun(query, [pendingData]);
   } catch (err) {
-    return res.render("static/db-error", { err, PATH_URL: "db-error" });
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
   }
 
   res.redirect("/submit?success=1");
