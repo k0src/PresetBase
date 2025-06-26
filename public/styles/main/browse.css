@@ -353,8 +353,7 @@ body {
 }
 
 .latest-entry--top-right {
-  padding: 0.4rem 0;
-  gap: 0.4rem;
+  padding: 1rem 0;
   flex: 1;
   min-width: 0;
   display: flex;

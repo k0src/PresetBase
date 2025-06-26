@@ -78,6 +78,10 @@ app.use("/browse/recent", recentlyAddedRoute);
 /* ------------------------------ Admin routes ------------------------------ */
 const adminRoute = require("./routes/admin/admin");
 app.use("/admin", adminRoute);
+const adminApprovalsRoute = require("./routes/admin/approvals");
+app.use("/admin", adminApprovalsRoute);
+const adminUploadRoute = require("./routes/admin/upload");
+app.use("/admin", adminUploadRoute);
 
 /* ----------------------------------- 404 ---------------------------------- */
 app.use((req, res) => {

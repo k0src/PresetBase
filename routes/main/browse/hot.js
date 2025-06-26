@@ -32,7 +32,15 @@ router.get("/", async (req, res) => {
           MAX(albums.title) AS album_title,
           MAX(albums.id) AS album_id,
           songs.timestamp AS song_added_timestamp,
-          COALESCE(MAX(song_clicks.recent_click), 0) AS song_recent_click
+          COALESCE(MAX(song_clicks.clicks), 0) AS total_clicks,
+          COALESCE(MAX(song_clicks.recent_click), 0) AS recent_clicks,
+          (
+            0.6 * COALESCE(MAX(song_clicks.recent_click), 0) +
+            0.3 * COALESCE(MAX(song_clicks.clicks), 0) +
+            0.1 * (
+              1.0 / NULLIF((julianday('now') - julianday(songs.timestamp)) + 1, 0)
+            )
+          ) AS hot_score
       FROM songs
       LEFT JOIN song_artists ON songs.id = song_artists.song_id
       LEFT JOIN artists ON song_artists.artist_id = artists.id
@@ -42,7 +50,7 @@ router.get("/", async (req, res) => {
       WHERE song_artists.role = 'Main'
       GROUP BY songs.id, songs.title, songs.genre, songs.release_year,
               songs.image_url, songs.timestamp
-      ORDER BY song_clicks.recent_click DESC
+      ORDER BY hot_score DESC
       LIMIT 10
     )
     SELECT * FROM hot_songs

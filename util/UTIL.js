@@ -309,7 +309,7 @@ const mergeAndValidateSubmitData = async function (data) {
 };
 
 /* -------------------------------- Sanitize -------------------------------- */
-const sanitizeData = function (data) {
+const sanitizeData = async function (data) {
   try {
     const sanitized = structuredClone(data);
 
