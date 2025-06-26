@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { dbAll, dbGet } = require("../../util/UTIL.js");
+const { dbAll, dbGet, getGenreStyles } = require("../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
   const searchQuery = req.query.query.toLowerCase().trim();
@@ -105,6 +105,8 @@ router.get("/", async (req, res) => {
         dbAll(queries.presets, [`%${searchQuery}%`]),
       ]);
 
+    const genreStyles = await getGenreStyles();
+
     res.render("main/search", {
       totalResults: totalResults.total_results,
       songs: songs || [],
@@ -113,6 +115,7 @@ router.get("/", async (req, res) => {
       synths: synths || [],
       presets: presets || [],
       searchQuery: searchQuery,
+      genreStyles: genreStyles,
       PATH_URL: "search",
     });
   } catch (err) {

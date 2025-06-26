@@ -1,6 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const { dbAll, convertTimestamps } = require("../../../util/UTIL.js");
+const {
+  dbAll,
+  convertTimestamps,
+  getGenreStyles,
+} = require("../../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
   const sortKeys = {
@@ -61,9 +65,12 @@ router.get("/", async (req, res) => {
 
     convertTimestamps(songs, "song");
 
+    const genreStyles = await getGenreStyles();
+
     res.render("main/browse/hot", {
       songs,
       totalResults: 10,
+      genreStyles: genreStyles,
       PATH_URL: "browse",
     });
   } catch (err) {

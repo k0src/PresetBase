@@ -6,6 +6,7 @@ const {
   convertTimestamps,
   markNew,
   markHot,
+  getGenreStyles,
 } = require("../../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
@@ -68,9 +69,12 @@ router.get("/", async (req, res) => {
     markHot(albums, hotAlbums, "album");
     convertTimestamps(albums, "album");
 
+    const genreStyles = await getGenreStyles();
+
     res.render("main/browse/albums", {
       totalResults: totalResults.total_results,
       albums,
+      genreStyles,
       PATH_URL: "browse",
     });
   } catch (err) {

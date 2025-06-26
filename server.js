@@ -82,6 +82,8 @@ const adminApprovalsRoute = require("./routes/admin/approvals");
 app.use("/admin", adminApprovalsRoute);
 const adminUploadRoute = require("./routes/admin/upload");
 app.use("/admin", adminUploadRoute);
+const adminTagEditor = require("./routes/admin/tag-editor");
+app.use("/admin", adminTagEditor);
 
 /* ----------------------------------- 404 ---------------------------------- */
 app.use((req, res) => {

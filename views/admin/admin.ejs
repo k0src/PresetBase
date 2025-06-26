@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PresetBase &mdash; Submit</title>
+    <link rel="stylesheet" href="/styles/admin/admin.css" />
+    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="admin--header">
+            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
+            label: "Admin Dashboard", href: "" }]; %> <%-
+            include('../partials/admin-breadcrumbs', { breadcrumbs }) %>
+            <h1 class="heading-primary">Admin Dashboard</h1>
+          </section>
+          <!-- --------------------------- Submit Section ---------------------------- -->
+          <section class="admin-main-container">
+            <div class="admin-grid-layout">
+              <a href="/admin/approvals" class="admin-card">
+                <i class="fa-solid fa-file admin-card-icon"></i>
+                <span class="admin-card-text">User Submissions</span>
+              </a>
+              <a href="/admin/upload" class="admin-card">
+                <i class="fa-solid fa-upload admin-card-icon"></i>
+                <span class="admin-card-text">Upload</span>
+              </a>
+              <a href="#" class="admin-card">
+                <i class="fa-solid fa-database admin-card-icon"></i>
+                <span class="admin-card-text">Manage Database</span>
+              </a>
+              <a href="#" class="admin-card">
+                <i class="fa-solid fa-users admin-card-icon"></i>
+                <span class="admin-card-text">Manage Users</span>
+              </a>
+              <a href="/admin/tag-editor" class="admin-card">
+                <i class="fa-solid fa-tag admin-card-icon"></i>
+                <span class="admin-card-text">Tag Editor</span>
+              </a>
+              <a href="#" class="admin-card">
+                <i class="fa-solid fa-link admin-card-icon"></i>
+                <span class="admin-card-text">Relationship Editor</span>
+              </a>
+            </div>
+          </section>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>

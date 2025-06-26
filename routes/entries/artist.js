@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { dbGet, dbRun, dbAll } = require("../../util/UTIL.js");
+const { dbGet, dbRun, dbAll, getGenreStyles } = require("../../util/UTIL.js");
 
 router.get("/:id", async (req, res) => {
   const artistId = req.params.id;
@@ -96,11 +96,14 @@ router.get("/:id", async (req, res) => {
       artist.songs = JSON.parse(artist.songs);
     }
 
+    const genreStyles = await getGenreStyles();
+
     res.render("entries/artist", {
       artist: artist,
       albums: albums,
       totalSongs: totalSongs.total_songs,
       favoriteSynth: favoriteSynth,
+      genreStyles: genreStyles,
       PATH_URL: "browse",
     });
   } catch (err) {

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>PresetBase &mdash; Submit</title>
+    <link rel="stylesheet" href="/styles/admin/admin.css" />
+    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
+    <link rel="stylesheet" href="/styles/partials/coloris.min.css" />
+    <script src="/js/admin/tag-editor.js" defer></script>
+    <script src="/js/partials/coloris.min.js" defer></script>
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="admin--header">
+            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
+            label: "Admin Dashboard", href: "/admin" },{ label: "Tag Editor",
+            href: "" }]; %> <%- include('../partials/admin-breadcrumbs', {
+            breadcrumbs }) %>
+            <h1 class="heading-primary">Tag Editor</h1>
+          </section>
+          <!-- --------------------------- Submit Section ---------------------------- -->
+          <section class="admin-main-container">
+            <form id="tag-form" action="/admin/tag-editor" method="POST">
+              <div class="tag-editor-main">
+                <div class="tag-editor-main-top">
+                  <div class="tag-editor-left">
+                    <span class="tag-demo">Tag Name</span>
+                  </div>
+
+                  <div class="tag-editor-right">
+                    <div class="color-pickers-container">
+                      <div class="color-picker">
+                        <span class="tag-input-text">Text Color</span>
+                        <input
+                          type="text"
+                          required
+                          class="coloris instance1 color-picker-input"
+                          value="#ff5a9c"
+                          data-coloris
+                          data-key="color"
+                          name="textColor"
+                        />
+                      </div>
+                      <div class="color-picker">
+                        <span class="tag-input-text">Border Color</span>
+                        <input
+                          type="text"
+                          required
+                          class="coloris instance2 color-picker-input"
+                          value="#51152b"
+                          data-coloris
+                          data-key="border-color"
+                          name="borderColor"
+                        />
+                      </div>
+                      <div class="color-picker">
+                        <span class="tag-input-text">Background Color</span>
+                        <input
+                          type="text"
+                          required
+                          class="coloris instance3 color-picker-input"
+                          value="#3a0a1e"
+                          data-coloris
+                          data-key="background-color"
+                          name="backgroundColor"
+                        />
+                      </div>
+                    </div>
+                    <hr class="tag-inputs-hr" />
+                    <div class="tag-inputs-container">
+                      <div class="tag-name-input-container">
+                        <span class="tag-input-text">Genre Name</span>
+                        <input
+                          type="text"
+                          required
+                          class="tag-input name-input"
+                          placeholder="Hip Hop"
+                          name="name"
+                        />
+                      </div>
+                      <div class="tag-name-input-container">
+                        <span class="tag-input-text">Genre Slug</span>
+                        <input
+                          type="text"
+                          required
+                          class="tag-input"
+                          placeholder="hip-hop"
+                          name="slug"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="tag-editor-main-bottom">
+                  <button class="submit-btn" type="submit">Save Tag</button>
+                  <button class="clear-btn" type="reset">Reset</button>
+                </div>
+              </div>
+            </form>
+          </section>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>

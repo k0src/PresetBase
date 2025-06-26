@@ -418,6 +418,36 @@ const deleteAllPendingFiles = async function (data) {
   }
 };
 
+/* ------------------------------- Genre Tags ------------------------------- */
+const getGenreStyles = async function () {
+  try {
+    const genreTags = await dbAll(
+      `SELECT
+        slug,
+        text_color,
+        border_color,
+        bg_color
+      FROM genre_tags`
+    );
+
+    const genreStyles = genreTags
+      .map((t) => {
+        return `
+        .tag--${t.slug} {
+          color: ${t.text_color};
+          border-color: ${t.border_color};
+          background-color: ${t.bg_color};
+        }
+      `;
+      })
+      .join("\n");
+
+    return genreStyles;
+  } catch (err) {
+    throw new Error(`Failed to get genre tags: ${err.message}`);
+  }
+};
+
 module.exports = {
   dbAll,
   dbGet,
@@ -434,4 +464,5 @@ module.exports = {
   deleteAllPendingFiles,
   mergeDataSets,
   approveFile,
+  getGenreStyles,
 };
