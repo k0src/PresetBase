@@ -3,11 +3,15 @@
   <head>
     <title>PresetBase &mdash; Submit</title>
     <link rel="stylesheet" href="/styles/admin/admin.css" />
+    <link rel="stylesheet" href="/styles/admin/tag-editor.css" />
     <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <link rel="stylesheet" href="/styles/partials/coloris.min.css" />
     <script src="/js/admin/tag-editor.js" defer></script>
     <script src="/js/partials/coloris.min.js" defer></script>
     <%- include('../partials/html-head') %>
+    <style id="dynamic-tag-styles">
+      <%- genreStyles %>
+    </style>
   </head>
   <body>
     <div class="page-wrapper">
@@ -28,8 +32,13 @@
             <form id="tag-form" action="/admin/tag-editor" method="POST">
               <div class="tag-editor-main">
                 <div class="tag-editor-main-top">
+                  <% if (editing) { %>
+                  <i class="fa-solid fa-pen-to-square editing-mode-icon"></i>
+                  <% } %>
                   <div class="tag-editor-left">
-                    <span class="tag-demo">Tag Name</span>
+                    <span class="tag-demo">
+                      <%= editing ? tag.name : "Tag Name" %>
+                    </span>
                   </div>
 
                   <div class="tag-editor-right">
@@ -40,7 +49,7 @@
                           type="text"
                           required
                           class="coloris instance1 color-picker-input"
-                          value="#ff5a9c"
+                          value="<%= editing ? tag.text_color : '#ff5a9c' %>"
                           data-coloris
                           data-key="color"
                           name="textColor"
@@ -52,7 +61,7 @@
                           type="text"
                           required
                           class="coloris instance2 color-picker-input"
-                          value="#51152b"
+                          value="<%= editing ? tag.border_color : '#51152b' %>"
                           data-coloris
                           data-key="border-color"
                           name="borderColor"
@@ -64,7 +73,7 @@
                           type="text"
                           required
                           class="coloris instance3 color-picker-input"
-                          value="#3a0a1e"
+                          value="<%= editing ? tag.bg_color : '#3a0a1e' %>"
                           data-coloris
                           data-key="background-color"
                           name="backgroundColor"
@@ -80,7 +89,9 @@
                           required
                           class="tag-input name-input"
                           placeholder="Hip Hop"
+                          autocomplete="off"
                           name="name"
+                          value="<%= editing ? tag.name : '' %>"
                         />
                       </div>
                       <div class="tag-name-input-container">
@@ -88,20 +99,72 @@
                         <input
                           type="text"
                           required
-                          class="tag-input"
+                          class="tag-input slug-input"
                           placeholder="hip-hop"
+                          autocomplete="off"
                           name="slug"
+                          value="<%= editing ? tag.slug : '' %>"
                         />
                       </div>
                     </div>
                   </div>
                 </div>
+                <input type="hidden" value="<%= editing %>" name="editing" />
+                <input
+                  type="hidden"
+                  value="<%= editing ? tag.id : '' %>"
+                  name="tagId"
+                />
                 <div class="tag-editor-main-bottom">
                   <button class="submit-btn" type="submit">Save Tag</button>
+                  <% if (editing) { %>
+                  <button
+                    class="clear-btn"
+                    type="button"
+                    onclick="window.location.href='/admin/tag-editor'"
+                  >
+                    Exit Edit Mode
+                  </button>
+                  <% } else { %>
                   <button class="clear-btn" type="reset">Reset</button>
+                  <% } %>
                 </div>
               </div>
             </form>
+
+            <div class="tag-list-header">
+              <h2 class="heading-secondary">Tags</h2>
+            </div>
+            <div class="tag-entry-columns grid-layout-tags">
+              <span>#</span>
+              <span>Name</span>
+              <span>Slug</span>
+              <span>Text Color</span>
+              <span>Border Color</span>
+              <span>Background Color</span>
+            </div>
+            <% Object.entries(tags).forEach(([i, t]) => { %>
+            <div class="grid-layout-tags list-entry">
+              <span class="list-entry--number"><%= +i + 1 %></span>
+              <span class="--tag"><%= t.name %></span>
+              <span class="list-entry--slug"><%= t.slug %></span>
+              <span class="list-entry--color"><%= t.text_color %></span>
+              <span class="list-entry--color"><%= t.border_color %></span>
+              <span class="list-entry--color"><%= t.bg_color %></span>
+              <form action="/admin/tag-editor/edit-tag" method="POST">
+                <input type="hidden" value="<%= t.id %>" name="tagId" />
+                <button class="hidden-btn" type="submit">
+                  <i class="fa-solid fa-pen-to-square list-entry--icon"></i>
+                </button>
+              </form>
+              <form action="/admin/tag-editor/delete-tag" method="POST">
+                <input type="hidden" value="<%= t.id %>" name="tagId" />
+                <button class="hidden-btn" type="submit">
+                  <i class="fa-solid fa-trash list-entry--icon"></i>
+                </button>
+              </form>
+            </div>
+            <% }) %>
           </section>
         </main>
       </div>
