@@ -6,6 +6,11 @@
   gap: 2.4rem;
 }
 
+.tag-editor-info-text {
+  color: #899096;
+  font-size: 1.6rem;
+}
+
 .tag-editor-main-top {
   display: flex;
   align-items: center;
@@ -53,7 +58,31 @@
   gap: 1.4rem;
 }
 
-.color-picker-input,
+.color-pickers-container {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: space-between;
+}
+
+.color-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.color-picker-input {
+  min-width: 13rem;
+  width: 13rem;
+  height: 4rem;
+  padding: 0 1.2rem;
+  border: 2px solid #2d343a;
+  background-color: #171b1f;
+  border-radius: 0.8rem;
+  font-family: "Geist", sans-serif;
+  font-size: 1.3rem;
+  color: #899096;
+}
+
 .tag-input {
   min-width: 28rem;
   height: 3.6rem;
@@ -66,15 +95,13 @@
   color: #899096;
 }
 
-.tag-inputs-container,
-.color-pickers-container {
+.tag-inputs-container {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
 }
 
-.tag-name-input-container,
-.color-picker {
+.tag-name-input-container {
   display: flex;
   align-items: center;
   gap: 1.8rem;

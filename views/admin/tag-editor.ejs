@@ -29,13 +29,13 @@
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->
           <section class="tag-editor-section">
+            <span class="tag-editor-info-text"
+              ><%= editing ? `Editing tag: ${tag.name}` : "Create new tag"
+              %></span
+            >
             <form id="tag-form" action="/admin/tag-editor" method="POST">
               <div class="tag-editor-main">
                 <div class="tag-editor-main-top">
-                  <% if (editing) { %>
-                  <i class="fa-solid fa-pen-to-square editing-mode-icon"></i>
-                  <% } %>
-
                   <div class="tag-editor-left">
                     <span class="tag-demo">
                       <%= editing ? tag.name : "Tag Name" %>
