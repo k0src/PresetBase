@@ -99,4 +99,41 @@ document.addEventListener("DOMContentLoaded", () => {
   bindNameInputEvents();
   bindResetButton();
   updateDemoTagFromInputs();
+  validateForm();
 });
+
+/* ----------------------------- Form validation ---------------------------- */
+const validateForm = function () {
+  const form = document.getElementById("tag-form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const slug = document.querySelector(".slug-input").value.trim();
+    const name = document.querySelector(".name-input").value.trim();
+
+    const url = `/api/checktags?name=${encodeURIComponent(
+      name
+    )}&slug=${encodeURIComponent(slug)}`;
+
+    try {
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        console.error("Failed to check tag existence:", response.statusText);
+        return;
+      }
+
+      const data = await response.json();
+
+      if (data.tag_exists) {
+        alert("Duplicate tag exists. Please choose a different name or slug.");
+        return;
+      }
+
+      form.submit();
+    } catch (error) {
+      console.error("Error during fetch:", error);
+    }
+  });
+};

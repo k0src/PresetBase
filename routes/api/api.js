@@ -244,4 +244,30 @@ router.get("/getallnames", async (req, res) => {
   }
 });
 
+router.get("/checktags", async (req, res) => {
+  const { name, slug } = req.query;
+
+  if (!name && !slug) {
+    return res
+      .status(400)
+      .json({ error: "Missing 'name' or 'slug' query parameter" });
+  }
+
+  const q = `
+    SELECT EXISTS(
+      SELECT 1 FROM genre_tags 
+      WHERE name = ? OR slug = ?
+    ) AS tag_exists;
+  `;
+
+  try {
+    const result = await dbAll(q, [name, slug]);
+    return res.json(result[0]);
+  } catch (err) {
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
+  }
+});
+
 module.exports = router;
