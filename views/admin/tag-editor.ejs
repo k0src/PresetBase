@@ -28,13 +28,14 @@
             <h1 class="heading-primary">Tag Editor</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->
-          <section class="admin-main-container">
+          <section class="tag-editor-section">
             <form id="tag-form" action="/admin/tag-editor" method="POST">
               <div class="tag-editor-main">
                 <div class="tag-editor-main-top">
                   <% if (editing) { %>
                   <i class="fa-solid fa-pen-to-square editing-mode-icon"></i>
                   <% } %>
+
                   <div class="tag-editor-left">
                     <span class="tag-demo">
                       <%= editing ? tag.name : "Tag Name" %>
@@ -55,6 +56,7 @@
                           name="textColor"
                         />
                       </div>
+
                       <div class="color-picker">
                         <span class="tag-input-text">Border Color</span>
                         <input
@@ -67,6 +69,7 @@
                           name="borderColor"
                         />
                       </div>
+
                       <div class="color-picker">
                         <span class="tag-input-text">Background Color</span>
                         <input
@@ -80,7 +83,9 @@
                         />
                       </div>
                     </div>
+
                     <hr class="tag-inputs-hr" />
+
                     <div class="tag-inputs-container">
                       <div class="tag-name-input-container">
                         <span class="tag-input-text">Genre Name</span>
@@ -92,8 +97,10 @@
                           autocomplete="off"
                           name="name"
                           value="<%= editing ? tag.name : '' %>"
+                          oninput="document.querySelector('.tag-demo').innerText = this.value || 'Tag Name'"
                         />
                       </div>
+
                       <div class="tag-name-input-container">
                         <span class="tag-input-text">Genre Slug</span>
                         <input
@@ -109,12 +116,14 @@
                     </div>
                   </div>
                 </div>
+
                 <input type="hidden" value="<%= editing %>" name="editing" />
                 <input
                   type="hidden"
                   value="<%= editing ? tag.id : '' %>"
                   name="tagId"
                 />
+
                 <div class="tag-editor-main-bottom">
                   <button class="submit-btn" type="submit">Save Tag</button>
                   <% if (editing) { %>
@@ -131,7 +140,9 @@
                 </div>
               </div>
             </form>
+          </section>
 
+          <section class="tag-list-section">
             <div class="tag-list-header">
               <h2 class="heading-secondary">Tags</h2>
             </div>

@@ -13,7 +13,7 @@
   flex-shrink: 0;
   background: #171b1f;
   border-radius: 0.8rem;
-  padding: 2.4rem;
+  padding: 2.8rem;
   border: 0.2rem solid #2d343a;
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   position: relative;
@@ -145,6 +145,10 @@
 }
 
 /* -------------------------------- Tag List -------------------------------- */
+.tag-list-section {
+  padding-bottom: 4.8rem;
+}
+
 .tag-list-header {
   padding-top: 1.6rem;
 }
