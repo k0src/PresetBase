@@ -35,7 +35,7 @@
 .tag-demo {
   display: block;
   user-select: none;
-  font-size: 7.2rem;
+  font-size: 6.4rem;
   width: fit-content;
   height: fit-content;
   padding: 3.6rem 4.8rem;
@@ -53,6 +53,7 @@
 }
 
 .tag-editor-right {
+  padding-left: 2.8rem;
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
@@ -65,14 +66,14 @@
 }
 
 .color-picker {
+  gap: 1rem;
   display: flex;
   flex-direction: column;
-  gap: 0.8rem;
 }
 
 .color-picker-input {
-  min-width: 13rem;
-  width: 13rem;
+  min-width: 14rem;
+  width: 14rem;
   height: 4rem;
   padding: 0 1.2rem;
   border: 2px solid #2d343a;
@@ -198,13 +199,13 @@
 .list-entry {
   padding: 1.2rem;
   border-bottom: 0.1rem solid #2d343a;
+  min-width: 0;
 }
 
 .list-entry:nth-child(odd) {
   background-color: #1e2227;
 }
 
-.--tag,
 .list-entry--number,
 .list-entry--slug,
 .list-entry--color,
@@ -215,12 +216,25 @@
   width: 100%;
   max-width: 100%;
   font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.tag-wrapper {
+  width: 100%;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .--tag {
+  text-overflow: ellipsis;
+  max-width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
   user-select: none;
   font-size: 1.4rem;
-  width: fit-content;
   height: fit-content;
   padding: 0.6rem 0.8rem;
   border-radius: 0.8rem;
@@ -254,4 +268,227 @@
 
 .list-entry--icon:hover {
   color: #e3e5e4 !important;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 75em) {
+  .tag-demo {
+    font-size: 5.8rem;
+  }
+}
+
+@media (max-width: 62em) {
+  .tag-demo {
+    font-size: 4.8rem;
+    padding: 2.7rem 3.6rem;
+    border-radius: 3.6rem;
+    border: 0.6rem solid;
+  }
+
+  .tag-editor-right {
+    padding-left: 2rem;
+  }
+
+  .color-pickers-container {
+    gap: 1rem;
+  }
+
+  .color-picker-input {
+    min-width: 10rem;
+    width: 10rem;
+  }
+
+  .tag-input {
+    min-width: 20rem;
+  }
+
+  .tag-inputs-container {
+    gap: 1rem;
+  }
+
+  .tag-name-input-container {
+    gap: 1.4rem;
+  }
+
+  .tag-inputs-hr {
+    border: 0.05rem solid #2d343a;
+    border-radius: 0.8rem;
+  }
+
+  .tag-input-text {
+    font-size: 1.2rem;
+  }
+
+  .tag-editor-main-top {
+    padding: 2rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .list-entry--number,
+  .list-entry--slug,
+  .list-entry--color,
+  .--tag {
+    font-size: 1.2rem;
+  }
+
+  .list-entry--icon {
+    font-size: 1.4rem;
+  }
+
+  .tag-editor-left {
+    max-width: 100%;
+  }
+
+  .tag-editor-main-top {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2.4rem;
+    padding: 2.8rem;
+  }
+
+  .tag-demo {
+    font-size: 4.8rem;
+    padding: 2.7rem 3.6rem;
+    border-radius: 3.6rem;
+    border: 0.6rem solid;
+  }
+
+  .tag-editor-right {
+    padding-left: 0;
+  }
+
+  .color-pickers-container {
+    gap: 1.2rem;
+  }
+
+  .color-picker-input {
+    min-width: 14rem;
+    width: 14rem;
+    height: 4rem;
+  }
+
+  .tag-input {
+    min-width: 28rem;
+    height: 3.6rem;
+  }
+
+  .tag-inputs-container {
+    gap: 1rem;
+  }
+
+  .tag-name-input-container {
+    gap: 1.8rem;
+  }
+
+  .tag-inputs-hr {
+    border: 0.05rem solid #2d343a;
+    border-radius: 0.8rem;
+  }
+
+  .tag-input-text {
+    font-size: 1.4rem;
+  }
+
+  .tag-editor-main {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .list-entry--number,
+  .list-entry--slug,
+  .list-entry--color,
+  .--tag {
+    font-size: 1.4rem;
+  }
+
+  .grid-layout-tags {
+    grid-template-columns: 2rem 1fr 1fr 2.8rem 2.8rem;
+  }
+
+  .header-color,
+  .list-entry--color {
+    display: none;
+  }
+
+  .tag-demo {
+    font-size: 3.6rem;
+    padding: 2.025rem 2.7rem;
+    border-radius: 2.7rem;
+    border: 0.45rem solid;
+  }
+
+  .tag-editor-main-top {
+    padding: 2rem;
+  }
+
+  .color-pickers-container {
+    gap: 1rem;
+  }
+
+  .color-picker-input {
+    min-width: 10rem;
+    width: 10rem;
+  }
+
+  .tag-input {
+    min-width: 20rem;
+  }
+
+  .tag-inputs-container {
+    gap: 1rem;
+  }
+
+  .tag-name-input-container {
+    gap: 1.4rem;
+  }
+
+  .tag-inputs-hr {
+    border: 0.05rem solid #2d343a;
+    border-radius: 0.8rem;
+  }
+
+  .tag-input-text {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 26.5em) {
+  .tag-demo {
+    font-size: 2.88rem;
+    padding: 1.62rem 2.16rem;
+    border-radius: 2.16rem;
+    border: 0.36rem solid;
+  }
+
+  .color-pickers-container {
+    flex-direction: column;
+    gap: 1.2rem;
+  }
+
+  .color-picker-input {
+    width: 100%;
+  }
+
+  .tag-input {
+    width: 12rem;
+  }
+}
+
+@media (max-width: 22.5em) {
+  .list-entry--slug,
+  .header-slug {
+    display: none;
+  }
+  .grid-layout-tags {
+    grid-template-columns: 2rem 1fr 2rem 2rem;
+  }
+
+  .tag-name-input-container {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
 }

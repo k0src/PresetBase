@@ -22,3 +22,25 @@
 .breadcrumb-active {
   text-decoration: underline;
 }
+
+@media (max-width: 48em) {
+  .admin-breadcrumb ul {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 26.5em) {
+  .admin-breadcrumb li + li::before {
+    margin: 0 0.4rem;
+  }
+}
+
+@media (max-width: 24em) {
+  .admin-breadcrumb ul {
+    font-size: 1.1rem;
+  }
+
+  .admin-breadcrumb li + li::before {
+    margin: 0 0.4rem;
+  }
+}

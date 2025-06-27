@@ -147,17 +147,23 @@
               <h2 class="heading-secondary">Tags</h2>
             </div>
             <div class="tag-entry-columns grid-layout-tags">
-              <span>#</span>
-              <span>Name</span>
-              <span>Slug</span>
-              <span>Text Color</span>
-              <span>Border Color</span>
-              <span>Background Color</span>
+              <span class="tag-list-header-text">#</span>
+              <span class="tag-list-header-text">Name</span>
+              <span class="tag-list-header-text header-slug">Slug</span>
+              <span class="tag-list-header-text header-color">Text Color</span>
+              <span class="tag-list-header-text header-color"
+                >Border Color</span
+              >
+              <span class="tag-list-header-text header-color"
+                >Background Color</span
+              >
             </div>
             <% Object.entries(tags).forEach(([i, t]) => { %>
             <div class="grid-layout-tags list-entry">
               <span class="list-entry--number"><%= +i + 1 %></span>
-              <span class="--tag"><%= t.name %></span>
+              <div class="tag-wrapper">
+                <span class="--tag"><%= t.name %></span>
+              </div>
               <span class="list-entry--slug"><%= t.slug %></span>
               <span class="list-entry--color"><%= t.text_color %></span>
               <span class="list-entry--color"><%= t.border_color %></span>
