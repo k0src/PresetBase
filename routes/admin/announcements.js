@@ -60,7 +60,6 @@ router.post("/", async (req, res) => {
       VALUES (?, ?, ?, ?, ?)`,
       [title, description, 1, utcDateTime, now]
     );
-    res.status(200).send();
   } catch (err) {
     return res
       .status(500)
@@ -79,13 +78,12 @@ router.post("/deactivate-announcement/:announcementId", async (req, res) => {
       WHERE id = ?`,
       [announcementId]
     );
-    res.status(200).send();
   } catch (err) {
     return res
       .status(500)
       .send("Error deactivating announcement: " + err.message);
   }
-  res.redirect("/admin/announcements?success=1");
+  res.redirect("/admin/announcements");
 });
 
 module.exports = router;

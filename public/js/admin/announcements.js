@@ -5,7 +5,7 @@ const modalDeleteBtn = document.querySelector(".deactivate-btn--delete");
 
 const deactivateActiveAnnouncement = async (activeAnnouncementId) => {
   try {
-    fetch(
+    const response = await fetch(
       `/admin/announcements/deactivate-announcement/${encodeURIComponent(
         activeAnnouncementId
       )}`,
@@ -16,6 +16,10 @@ const deactivateActiveAnnouncement = async (activeAnnouncementId) => {
         },
       }
     );
+
+    if (response.redirected) {
+      window.location.href = response.url;
+    }
   } catch (err) {
     console.error("Error deactivating announcement:", err);
     return;

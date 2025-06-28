@@ -15,8 +15,7 @@
   border: 0.2rem solid #2d343a;
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   align-items: center;
-  gap: 1.8rem;
-  justify-content: space-between;
+  gap: 2.4rem;
 }
 
 .active-announcement-icon {
