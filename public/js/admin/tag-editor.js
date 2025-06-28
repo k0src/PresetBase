@@ -102,6 +102,56 @@ document.addEventListener("DOMContentLoaded", () => {
   validateForm();
 });
 
+/* ------------------------------ Delete Modal ------------------------------ */
+const modal = document.querySelector(".delete-tag-modal");
+const modalDesc = modal.querySelector(".delete-tag-desc");
+const modalOverlay = document.querySelector(".delete-tag-modal-overlay");
+const modalCancelBtn = document.querySelector(".delete-tag-btn--cancel");
+const modalDeleteBtn = document.querySelector(".delete-tag-btn--delete");
+
+const closeDeleteModal = function () {
+  modalOverlay.style.display = "none";
+};
+
+const showDeleteModal = function (btn) {
+  const tagId = btn.parentNode.querySelector("[name=tagId]").value;
+  const tagName = btn.parentNode.querySelector(".--tag").textContent;
+  const tagEntry = btn.closest(".list-entry");
+
+  modalOverlay.style.display = "block";
+  modalDesc.textContent = `You are about to delete tag "${tagName}"`;
+
+  modalCancelBtn.addEventListener("click", closeDeleteModal);
+  modalOverlay.addEventListener("click", closeDeleteModal);
+  document.addEventListener("keydown", function escListener(e) {
+    if (e.key === "Escape") {
+      closeDeleteModal();
+      document.removeEventListener("keydown", escListener);
+    }
+  });
+
+  modalDeleteBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    deleteTag(tagEntry, tagId);
+    closeDeleteModal();
+  });
+};
+
+const deleteTag = async (tagEntry, tagId) => {
+  try {
+    fetch(`/admin/tag-editor/delete-tag/${encodeURIComponent(tagId)}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    tagEntry.remove();
+  } catch (err) {
+    console.error("Error deleting tag:", err);
+    return;
+  }
+};
+
 /* ----------------------------- Form validation ---------------------------- */
 const validateForm = function () {
   const form = document.getElementById("tag-form");

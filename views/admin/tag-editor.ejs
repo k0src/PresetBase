@@ -29,6 +29,20 @@
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->
           <section class="tag-editor-section">
+            <div class="delete-tag-modal-overlay">
+              <div class="delete-tag-modal">
+                <i class="fa-solid fa-trash delete-tag-icon"></i>
+                <span class="delete-tag-title">Delete Tag?</span>
+                <span class="delete-tag-desc"
+                  >You are about to delete "Tag Name"</span
+                >
+                <div class="delete-tag-btn-container">
+                  <button class="delete-tag-btn--cancel">Cancel</button>
+                  <button class="delete-tag-btn--delete">Delete</button>
+                </div>
+              </div>
+            </div>
+
             <span class="tag-editor-info-text"
               ><%= editing ? `Editing tag: ${tag.name}` : "Create new tag"
               %></span
@@ -174,12 +188,15 @@
                   <i class="fa-solid fa-pen-to-square list-entry--icon"></i>
                 </button>
               </form>
-              <form action="/admin/tag-editor/delete-tag" method="POST">
-                <input type="hidden" value="<%= t.id %>" name="tagId" />
-                <button class="hidden-btn" type="submit">
-                  <i class="fa-solid fa-trash list-entry--icon"></i>
-                </button>
-              </form>
+
+              <input type="hidden" value="<%= t.id %>" name="tagId" />
+              <button
+                class="hidden-btn"
+                type="button"
+                onclick="showDeleteModal(this)"
+              >
+                <i class="fa-solid fa-trash list-entry--icon"></i>
+              </button>
             </div>
             <% }) %>
           </section>

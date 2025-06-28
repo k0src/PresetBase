@@ -61,20 +61,6 @@ router.post("/tag-editor", async (req, res) => {
   res.redirect("/admin/tag-editor?success=1");
 });
 
-router.post("/tag-editor/delete-tag", async (req, res) => {
-  const { tagId } = req.body;
-
-  try {
-    await dbRun(`DELETE FROM genre_tags WHERE id = ?`, [tagId]);
-  } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
-  }
-
-  res.redirect("/admin/tag-editor");
-});
-
 router.post("/tag-editor/edit-tag", async (req, res) => {
   const { tagId } = req.body;
 
@@ -107,6 +93,17 @@ router.post("/tag-editor/edit-tag", async (req, res) => {
     return res
       .status(500)
       .render("static/db-error", { err, PATH_URL: "db-error" });
+  }
+});
+
+router.delete("/tag-editor/delete-tag/:tagId", async (req, res) => {
+  const tagId = req.params.tagId;
+
+  try {
+    await dbRun(`DELETE FROM genre_tags WHERE id = ?`, [tagId]);
+    res.status(200).send();
+  } catch (err) {
+    return res.status(500).send("Error deleting tag: " + err.message);
   }
 });
 
