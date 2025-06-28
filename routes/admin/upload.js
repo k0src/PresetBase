@@ -11,7 +11,7 @@ const {
 } = require("../../util/UTIL.js");
 
 /* ------------------------------ Admin Upload ------------------------------ */
-router.get("/upload", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     res.render("admin/upload", {
       success: req.query.success === "1",
@@ -24,7 +24,7 @@ router.get("/upload", async (req, res) => {
   }
 });
 
-router.post("/upload", multer, async (req, res) => {
+router.post("/", multer, async (req, res) => {
   try {
     // Parse data
     const rawData = attachFilesToBody(req.body, req.files);

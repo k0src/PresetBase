@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin &mdash; Announcements</title>
+    <link rel="stylesheet" href="/styles/admin/admin.css" />
+    <link rel="stylesheet" href="/styles/admin/announcements.css" />
+    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
+    <script src="/js/admin/announcements.js" defer></script>
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <!-- ------------------------------ Main Page ------------------------------ -->
+        <main class="container">
+          <!-- ------------------------------- Header -------------------------------- -->
+          <section class="admin--header">
+            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
+            label: "Admin Dashboard", href: "/admin" },{ label: "Announcements",
+            href: "" }]; %> <%- include('../partials/admin-breadcrumbs', {
+            breadcrumbs }) %>
+            <h1 class="heading-primary">Announcements</h1>
+          </section>
+          <!-- ------------------------ Announcements Section  ----------------------- -->
+          <section class="announcements-section">
+            <div class="deactivate-modal-overlay">
+              <div class="deactivate-modal">
+                <i class="fa-solid fa-power-off deactivate-icon"></i>
+                <span class="deactivate-title">Deactivate Announcement?</span>
+                <div class="deactivate-btn-container">
+                  <button class="deactivate-btn--cancel">Cancel</button>
+                  <button class="deactivate-btn--delete">Deactivate</button>
+                </div>
+              </div>
+            </div>
+
+            <h2 class="heading-secondary">Active Announcement</h2>
+
+            <div class="active-announcement-wrapper">
+              <% if (activeAnnouncement) { const createdAt = new
+              Date(activeAnnouncement.created_at); const expiresAt = new
+              Date(activeAnnouncement.expires_at); const formatDate = (date) =>
+              date.toLocaleDateString('en-US', { year: 'numeric', month: 'long',
+              day: 'numeric' }); %>
+              <div class="active-announcement-container">
+                <i class="fa-solid fa-circle-info active-announcement-icon"></i>
+                <div class="active-announcement-content">
+                  <span class="active-announcement-title"
+                    ><%= activeAnnouncement.title %></span
+                  >
+                  <span class="active-announcement-text"
+                    ><%= activeAnnouncement.description %></span
+                  >
+                </div>
+              </div>
+              <div class="active-announcement-time-info-container">
+                <span class="active-announcement-time-info-text"
+                  >Created: <%= formatDate(createdAt) %></span
+                >
+                <span
+                  class="active-announcement--divider"
+                  aria-hidden="true"
+                ></span>
+                <span class="active-announcement-time-info-text"
+                  >Expires: <%= formatDate(expiresAt) %></span
+                >
+              </div>
+
+              <div class="active-announcement-btn-container">
+                <input
+                  type="hidden"
+                  value="<%= activeAnnouncement.id %>"
+                  name="activeAnnouncementId"
+                />
+                <button
+                  class="active-announcement-deactivate-btn"
+                  type="button"
+                  onclick="showDeleteModal(this)"
+                >
+                  Deactivate Announcement
+                </button>
+              </div>
+              <% } else { %>
+              <div class="active-announcement-container">
+                <span class="active-announcement-title --no-active"
+                  >No active announcement</span
+                >
+              </div>
+              <% } %>
+            </div>
+
+            <div class="announcement-header">
+              <h2 class="heading-secondary">Create new announcement</h2>
+            </div>
+            <form id="tag-form" action="/admin/announcements" method="POST">
+              <div class="announcement-form-container">
+                <label for="announcement-title">Title</label>
+                <input type="text" id="title" name="title" required />
+                <label for="announcement-description">Description</label>
+                <textarea
+                  id="description"
+                  name="description"
+                  rows="5"
+                  required
+                ></textarea>
+                <label for="expires-at">Expires At</label>
+                <input
+                  type="datetime-local"
+                  id="expires-at"
+                  name="expires_at"
+                  required
+                />
+              </div>
+              <button type="submit" class="submit-announcement-btn">
+                Create Announcement
+              </button>
+            </form>
+
+            <div class="announcement-header">
+              <h2 class="heading-secondary">Past announcements</h2>
+            </div>
+          </section>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>

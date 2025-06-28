@@ -2,8 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { dbRun, dbAll, dbGet, getGenreStyles } = require("../../util/UTIL.js");
 
-/* ----------------------------- Main Admin Page ---------------------------- */
-router.get("/tag-editor", async (req, res) => {
+router.get("/", async (req, res) => {
   const query = `
     SELECT id, name, slug, text_color, border_color, bg_color
     FROM genre_tags`;
@@ -26,7 +25,7 @@ router.get("/tag-editor", async (req, res) => {
   }
 });
 
-router.post("/tag-editor", async (req, res) => {
+router.post("/", async (req, res) => {
   const {
     name,
     slug,
@@ -61,7 +60,7 @@ router.post("/tag-editor", async (req, res) => {
   res.redirect("/admin/tag-editor?success=1");
 });
 
-router.post("/tag-editor/edit-tag", async (req, res) => {
+router.post("/edit-tag", async (req, res) => {
   const { tagId } = req.body;
 
   try {
@@ -96,7 +95,7 @@ router.post("/tag-editor/edit-tag", async (req, res) => {
   }
 });
 
-router.delete("/tag-editor/delete-tag/:tagId", async (req, res) => {
+router.delete("/delete-tag/:tagId", async (req, res) => {
   const tagId = req.params.tagId;
 
   try {

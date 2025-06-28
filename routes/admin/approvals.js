@@ -12,7 +12,7 @@ const {
 } = require("../../util/UTIL.js");
 
 /* -------------------------------- Approvals ------------------------------- */
-router.get("/approvals", async (req, res) => {
+router.get("/", async (req, res) => {
   const query = `SELECT id, data, submitted_at FROM pending_submissions`;
 
   try {

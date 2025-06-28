@@ -79,11 +79,13 @@ app.use("/browse/recent", recentlyAddedRoute);
 const adminRoute = require("./routes/admin/admin");
 app.use("/admin", adminRoute);
 const adminApprovalsRoute = require("./routes/admin/approvals");
-app.use("/admin", adminApprovalsRoute);
+app.use("/admin/approvals", adminApprovalsRoute);
 const adminUploadRoute = require("./routes/admin/upload");
-app.use("/admin", adminUploadRoute);
+app.use("/admin/upload", adminUploadRoute);
 const adminTagEditor = require("./routes/admin/tag-editor");
-app.use("/admin", adminTagEditor);
+app.use("/admin/tag-editor", adminTagEditor);
+const adminAnnouncements = require("./routes/admin/announcements");
+app.use("/admin/announcements", adminAnnouncements);
 
 /* ----------------------------------- 404 ---------------------------------- */
 app.use((req, res) => {

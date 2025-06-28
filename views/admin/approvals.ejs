@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>PresetBase &mdash; Submit</title>
+    <title>Admin &mdash; Approvals</title>
     <link rel="stylesheet" href="/styles/main/submit.css" />
     <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <script src="/js/admin/approvals.js" defer></script>
@@ -43,7 +43,7 @@
             <form
               id="entryForm"
               method="POST"
-              action="/admin/approve"
+              action="/admin/approvals/approve"
               enctype="multipart/form-data"
             >
               <input type="hidden" name="entryId" value="<%= entry.id %>" />
@@ -513,7 +513,7 @@
                 <button
                   class="submit-btn deny-btn"
                   type="button"
-                  onclick="post('/admin/deny/<%= entry.id %>')"
+                  onclick="post('/admin/approvals/deny/<%= entry.id %>')"
                 >
                   Deny
                 </button>
