@@ -38,11 +38,7 @@
             <h2 class="heading-secondary">Active Announcement</h2>
 
             <div class="active-announcement-wrapper">
-              <% if (activeAnnouncement) { const createdAt = new
-              Date(activeAnnouncement.created_at); const expiresAt = new
-              Date(activeAnnouncement.expires_at); const formatDate = (date) =>
-              date.toLocaleDateString('en-US', { year: 'numeric', month: 'long',
-              day: 'numeric' }); %>
+              <% if (activeAnnouncement) { %>
               <div class="active-announcement-container">
                 <i class="fa-solid fa-circle-info active-announcement-icon"></i>
                 <div class="active-announcement-content">
@@ -56,14 +52,14 @@
               </div>
               <div class="active-announcement-time-info-container">
                 <span class="active-announcement-time-info-text"
-                  >Created: <%= formatDate(createdAt) %></span
+                  >Created: <%= activeAnnouncement.created_at %></span
                 >
                 <span
                   class="active-announcement--divider"
                   aria-hidden="true"
                 ></span>
                 <span class="active-announcement-time-info-text"
-                  >Expires: <%= formatDate(expiresAt) %></span
+                  >Expires: <%= activeAnnouncement.expires_at %></span
                 >
               </div>
 
@@ -76,7 +72,7 @@
                 <button
                   class="active-announcement-deactivate-btn"
                   type="button"
-                  onclick="showDeleteModal(this)"
+                  onclick="showDeactivateModal(this)"
                 >
                   Deactivate Announcement
                 </button>
@@ -95,32 +91,88 @@
             </div>
             <form id="tag-form" action="/admin/announcements" method="POST">
               <div class="announcement-form-container">
-                <label for="announcement-title">Title</label>
-                <input type="text" id="title" name="title" required />
-                <label for="announcement-description">Description</label>
+                <label for="announcement-title"
+                  >Title <span class="red">*</span></label
+                >
+                <input
+                  class="form-input"
+                  type="text"
+                  id="title"
+                  name="title"
+                  required
+                />
+                <label for="announcement-description"
+                  >Description <span class="red">*</span></label
+                >
                 <textarea
                   id="description"
                   name="description"
-                  rows="5"
+                  rows="6"
                   required
                 ></textarea>
-                <label for="expires-at">Expires At</label>
+                <label for="expires-at"
+                  >Expires At <span class="red">*</span></label
+                >
                 <input
+                  class="form-input"
                   type="datetime-local"
                   id="expires-at"
                   name="expires_at"
                   required
                 />
               </div>
-              <button type="submit" class="submit-announcement-btn">
-                Create Announcement
-              </button>
+              <div class="submit-announcement-btn-container">
+                <button type="submit" class="submit-announcement-btn">
+                  Create Announcement
+                </button>
+              </div>
             </form>
+          </section>
 
-            <div class="announcement-header">
+          <% if (announcements.length) { %>
+          <section class="past-announcements-section">
+            <div class="past-announcement-header">
               <h2 class="heading-secondary">Past announcements</h2>
             </div>
+
+            <div class="past-announcement-container">
+              <% Object.entries(announcements).forEach(([i, a]) => { %>
+              <div class="past-announcement">
+                <div class="past-announcement-left">
+                  <span class="past-announcement-title"><%= a.title %></span>
+                  <span class="past-announcement-text"
+                    ><%= a.description %></span
+                  >
+                  <div class="past-announcement-time-info-container">
+                    <span class="past-announcement-time-info-text"
+                      >Created: <%= a.created_at %></span
+                    >a
+                    <span
+                      class="past-announcement--divider"
+                      aria-hidden="true"
+                    ></span>
+                    <span class="past-announcement-time-info-text"
+                      >Expired: <%= a.expires_at %></span
+                    >
+                  </div>
+                </div>
+                <input
+                  type="hidden"
+                  value="<%= a.id %>"
+                  name="announcementId"
+                />
+                <button
+                  class="hidden-btn"
+                  type="submit"
+                  onclick="deleteAnnouncement(this)"
+                >
+                  <i class="fa-solid fa-trash list-entry--icon"></i>
+                </button>
+              </div>
+              <% }) %>
+            </div>
           </section>
+          <% } %>
         </main>
       </div>
       <%- include('../partials/footer') %>

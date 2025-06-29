@@ -30,7 +30,7 @@ const closeDeleteModal = function () {
   modalOverlay.style.display = "none";
 };
 
-const showDeleteModal = function (btn) {
+const showDeactivateModal = function (btn) {
   const activeAnnouncementId = btn.parentNode.querySelector(
     "[name=activeAnnouncementId]"
   ).value;
@@ -50,4 +50,30 @@ const showDeleteModal = function (btn) {
     deactivateActiveAnnouncement(activeAnnouncementId);
     closeDeleteModal();
   });
+};
+
+/* ---------------------------- Announcement List --------------------------- */
+const deleteAnnouncement = async function (btn) {
+  const announcementId = btn.parentNode.querySelector(
+    "[name=announcementId]"
+  ).value;
+  const announcementEntry = btn.closest(".past-announcement");
+
+  try {
+    await fetch(
+      `/admin/announcements/delete-announcement/${encodeURIComponent(
+        announcementId
+      )}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    announcementEntry.remove();
+  } catch (err) {
+    console.error("Error deactivating announcement:", err);
+    return;
+  }
 };

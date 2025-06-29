@@ -3,6 +3,8 @@ const router = express.Router();
 const { dbRun, dbAll, dbGet } = require("../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
+  const now = new Date().toISOString();
+
   const queries = {
     announcements: `
         SELECT 
@@ -24,13 +26,37 @@ router.get("/", async (req, res) => {
             created_at
         FROM announcements
         WHERE is_active = 1 AND 
-            (expires_at IS NULL OR expires_at > datetime('now'))
+            (expires_at IS NULL OR expires_at > ?)
         LIMIT 1`,
   };
 
   try {
     const announcements = await dbAll(queries.announcements);
-    const activeAnnouncement = await dbGet(queries.activeAnnouncement);
+    const activeAnnouncement = await dbGet(queries.activeAnnouncement, [now]);
+
+    // Visual date formatting
+    const formatDate = (date) =>
+      date.toLocaleString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
+
+    if (activeAnnouncement) {
+      activeAnnouncement.created_at = formatDate(
+        new Date(activeAnnouncement.created_at)
+      );
+      activeAnnouncement.expires_at = formatDate(
+        new Date(activeAnnouncement.expires_at)
+      );
+    }
+
+    announcements.forEach((announcement) => {
+      announcement.created_at = formatDate(new Date(announcement.created_at));
+      announcement.expires_at = formatDate(new Date(announcement.expires_at));
+    });
 
     res.render("admin/announcements", {
       announcements: announcements,
@@ -84,6 +110,17 @@ router.post("/deactivate-announcement/:announcementId", async (req, res) => {
       .send("Error deactivating announcement: " + err.message);
   }
   res.redirect("/admin/announcements");
+});
+
+router.delete("/delete-announcement/:announcementId", async (req, res) => {
+  const announcementId = req.params.announcementId;
+
+  try {
+    await dbRun(`DELETE FROM announcements WHERE id = ?`, [announcementId]);
+    res.status(200).send();
+  } catch (err) {
+    return res.status(500).send("Error deleting announcement: " + err.message);
+  }
 });
 
 module.exports = router;
