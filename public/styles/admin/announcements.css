@@ -114,6 +114,7 @@
 .submit-announcement-btn-container {
   display: flex;
   justify-content: center;
+  padding-bottom: 2.4rem;
 }
 
 .submit-announcement-btn {
@@ -187,6 +188,7 @@ textarea,
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   align-items: center;
   justify-content: space-between;
+  gap: 1.2rem;
 }
 
 .past-announcement-left {
@@ -328,4 +330,59 @@ textarea,
 
 .deactivate-btn--cancel:hover {
   background-color: #7b8287;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 48em) {
+  .deactivate-modal {
+    display: flex;
+    gap: 1.6rem;
+    padding: 2.4rem;
+  }
+
+  .deactivate-icon {
+    font-size: 3rem;
+  }
+
+  .deactivate-title {
+    font-size: 2rem;
+  }
+
+  .deactivate-btn-container {
+    gap: 1.2rem;
+  }
+
+  .active-announcement-title {
+    font-size: 1.4rem;
+  }
+
+  .active-announcement-text {
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+
+  label {
+    font-size: 1.4rem;
+  }
+
+  .past-announcement-title {
+    font-size: 1.6rem;
+  }
+
+  .past-announcement-text {
+    font-size: 1.2rem;
+    line-height: 1.3;
+  }
+
+  .active-announcement-icon {
+    font-size: 2.8rem;
+  }
+
+  .list-entry--icon {
+    font-size: 2rem;
+  }
+
+  .past-announcement-time-info-text {
+    font-size: 1rem;
+  }
 }
