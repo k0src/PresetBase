@@ -154,8 +154,8 @@ router.post("/", multer, async (req, res) => {
 
         await dbRun(
           `INSERT INTO song_presets 
-            (song_id, preset_id, usage_type, verified, submitted_by, audio_url)
-           VALUES (?, ?, ?, 't', 'user', ?)`,
+            (song_id, preset_id, usage_type, verified, submitted_by, audio_url, timestamp)
+           VALUES (?, ?, ?, 't', 'user', ?, datetime())`,
           [songId, presetId, preset.usageType, preset.audio]
         );
       }

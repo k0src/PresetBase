@@ -2,6 +2,19 @@
 <html>
   <head>
     <title>PresetBase &mdash; Stats</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js" defer></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://unpkg.com/@uiw/react-heat-map/dist/heat-map.min.js"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/cal-heatmap.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/cal-heatmap/dist/cal-heatmap.css"
+    />
+    <script src="https://unpkg.com/dayjs@1.11.10/dayjs.min.js"></script>
+    <script src="https://unpkg.com/@popperjs/core@2"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/plugins/Tooltip.min.js"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/plugins/LegendLite.min.js"></script>
+    <script src="https://unpkg.com/cal-heatmap/dist/plugins/CalendarLabel.min.js"></script>
     <script src="/js/main/stats.js" defer></script>
     <link rel="stylesheet" href="/styles/main/stats.css" />
     <%- include('../partials/html-head') %>
@@ -17,7 +30,148 @@
             <h1 class="heading-primary">Stats</h1>
           </section>
           <!-- --------------------------- Stats Section ---------------------------- -->
-          <section class="stats-main--container"></section>
+          <section class="stats-main--container">
+            <div class="announcement-header--small">
+              <h2 class="heading-secondary heading-centered">
+                Current database stats
+              </h2>
+            </div>
+            <div class="stats-db-stats">
+              <div class="db-stats--card">
+                <span class="db-stats--number"><%= dbStats.total_songs %></span>
+                <span class="db-stats--text">Songs</span>
+              </div>
+              <div class="db-stats--card">
+                <span class="db-stats--number"
+                  ><%= dbStats.total_artists %></span
+                >
+                <span class="db-stats--text">Artists</span>
+              </div>
+              <div class="db-stats--card">
+                <span class="db-stats--number"
+                  ><%= dbStats.total_albums %></span
+                >
+                <span class="db-stats--text">Albums</span>
+              </div>
+              <div class="db-stats--card">
+                <span class="db-stats--number"
+                  ><%= dbStats.total_synths %></span
+                >
+                <span class="db-stats--text">Synths</span>
+              </div>
+              <div class="db-stats--card">
+                <span class="db-stats--number"
+                  ><%= dbStats.total_presets %></span
+                >
+                <span class="db-stats--text">Presets</span>
+              </div>
+            </div>
+
+            <div class="announcement-header--link">
+              <h2 class="heading-secondary">Top presets</h2>
+              <a href="/browse/presets" class="chart-view-more"
+                >View more presets</a
+              >
+            </div>
+            <div class="wide-chart-container top-presets-chart-container">
+              <canvas id="topPresetChart"></canvas>
+            </div>
+
+            <div class="synth-charts-container">
+              <div class="synth-charts-entry">
+                <div class="announcement-header">
+                  <h2 class="heading-secondary">Presets per synth</h2>
+                </div>
+                <div
+                  class="wide-chart-container presets-per-synth-chart-container"
+                >
+                  <canvas id="presetsPerSynthChart"></canvas>
+                </div>
+              </div>
+
+              <div class="synth-charts-entry">
+                <div class="announcement-header">
+                  <h2 class="heading-secondary">Top synths by song</h2>
+                </div>
+                <div class="wide-chart-container top-presets-chart-container">
+                  <canvas id="topSynthsChart"></canvas>
+                </div>
+              </div>
+            </div>
+
+            <div class="announcement-header--link">
+              <h2 class="heading-secondary">Synth popularity over time</h2>
+              <a href="/browse/synths" class="chart-view-more"
+                >View more synths</a
+              >
+            </div>
+            <div class="wide-chart-container synth-time-chart-container">
+              <canvas id="synthTimeChart"></canvas>
+            </div>
+
+            <div class="announcement-header">
+              <h2 class="heading-secondary">Longest preset chain</h2>
+            </div>
+
+            <div class="announcement-header">
+              <h2 class="heading-secondary">Community stats</h2>
+            </div>
+            <div class="community-stats-container">
+              <div class="heatmap-container">
+                <div id="cal-heatmap"></div>
+                <div class="clearfix">
+                  <div class="navigation-buttons">
+                    <a href="#" class="nav-button" id="prev-btn"
+                      ><i class="fa-solid fa-arrow-left"></i
+                    ></a>
+                    <a href="#" class="nav-button" id="next-btn"
+                      ><i class="fa-solid fa-arrow-right"></i
+                    ></a>
+                  </div>
+                  <div class="legend-container">
+                    <span class="legend-text">Less</span>
+                    <div
+                      id="cal-heatmap-legend"
+                      style="display: inline-block; margin: 0 4px"
+                    ></div>
+                    <span class="legend-text">More</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="community-stats-text">
+                <div class="community-stats-title">
+                  Since
+                  <span
+                    class="community-stats-number"
+                    style="animation-delay: 0.1s"
+                  >
+                    June 12, 2025</span
+                  >,
+                </div>
+                <div class="community-stats-title">
+                  PresetBase has received
+                  <span
+                    class="community-stats-number"
+                    style="animation-delay: 0.3s"
+                  >
+                    <%= totalDbStats.total_count %>
+                  </span>
+                  total submissions,
+                </div>
+
+                <div class="community-stats-title">
+                  with an average of
+                  <span
+                    class="community-stats-number"
+                    style="animation-delay: 0.5s"
+                    ><%=submissionsPerDay.avg_submissions_per_day %></span
+                  >
+                  submissions per day.
+                </div>
+              </div>
+            </div>
+          </section>
         </main>
       </div>
       <%- include('../partials/footer') %>

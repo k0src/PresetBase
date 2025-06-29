@@ -448,6 +448,88 @@ const getGenreStyles = async function () {
   }
 };
 
+const longestChain = function (graph, presetToArtists, preset_id) {
+  const artistMap = presetToArtists.get(preset_id);
+  const users = Array.from(artistMap.keys());
+
+  let maxChain = [];
+
+  const visited = new Set();
+
+  function dfs(node, path) {
+    visited.add(node);
+    path.push(node);
+
+    if (path.length > maxChain.length) {
+      maxChain = [...path];
+    }
+
+    for (const neighbor of graph.get(node) || []) {
+      if (!visited.has(neighbor) && artistMap.has(neighbor)) {
+        dfs(neighbor, path);
+      }
+    }
+
+    path.pop();
+    visited.delete(node);
+  }
+
+  for (const user of users) {
+    dfs(user, []);
+  }
+
+  return maxChain.map((id) => artistMap.get(id));
+};
+
+const buildPresetChain = async function (artistPresetMap, artistCollabMap) {
+  const graph = new Map();
+  for (const { artist1, artist2 } of artistCollabMap) {
+    if (!graph.has(artist1)) graph.set(artist1, []);
+    if (!graph.has(artist2)) graph.set(artist2, []);
+    graph.get(artist1).push(artist2);
+    graph.get(artist2).push(artist1);
+  }
+
+  const presetToArtists = new Map();
+  const presetNames = new Map();
+  for (const {
+    artist_id,
+    artist_name,
+    preset_id,
+    preset_name,
+  } of artistPresetMap) {
+    if (!presetToArtists.has(preset_id)) {
+      presetToArtists.set(preset_id, new Map());
+      presetNames.set(preset_id, preset_name);
+    }
+    presetToArtists.get(preset_id).set(artist_id, {
+      id: artist_id,
+      name: artist_name,
+    });
+  }
+
+  let maxChain = {
+    preset_id: null,
+    preset_name: null,
+    length: 0,
+    chain: [],
+  };
+
+  for (const preset_id of presetToArtists.keys()) {
+    const chain = longestChain(graph, presetToArtists, preset_id);
+    if (chain.length > maxChain.length) {
+      maxChain = {
+        preset_id,
+        preset_name: presetNames.get(preset_id),
+        length: chain.length,
+        chain,
+      };
+    }
+  }
+
+  return maxChain;
+};
+
 module.exports = {
   dbAll,
   dbGet,
@@ -465,4 +547,5 @@ module.exports = {
   mergeDataSets,
   approveFile,
   getGenreStyles,
+  buildPresetChain,
 };

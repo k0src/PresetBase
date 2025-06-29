@@ -897,7 +897,8 @@ body {
   .popular-songs-container > :nth-child(6),
   .recently-added-songs-container > :nth-child(6),
   .popular-songs-container > :nth-child(7),
-  .popular-songs-container > :nth-child(8) {
+  .popular-songs-container > :nth-child(8),
+  .hot-songs-container {
     display: none;
   }
 
