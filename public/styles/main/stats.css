@@ -251,3 +251,12 @@ body {
     filter: blur(0);
   }
 }
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 60em) {
+  .community-stats-container,
+  .synth-charts-container {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    gap: 2.4rem;
+  }
+}

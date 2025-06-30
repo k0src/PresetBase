@@ -96,3 +96,12 @@ a:active {
     background-position: 0% 50%;
   }
 }
+
+/* ---------------------------------- Tags ---------------------------------- */
+.tag--vst,
+.tag--hardware,
+.tag--kontakt-bank {
+  color: #969a9d;
+  background-color: #2d343a;
+  border-color: #242a2e;
+}

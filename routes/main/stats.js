@@ -207,7 +207,7 @@ router.get("/preset-chain-data", async (req, res) => {
       dbAll(queries.artistCollabMap),
     ]);
 
-    const chartData = buildPresetChain(artistPresetMap, artistCollabMap);
+    const chartData = await buildPresetChain(artistPresetMap, artistCollabMap);
     res.json({ chartData });
   } catch (err) {
     res.status(500).json({ error: err.message });

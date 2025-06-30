@@ -14,6 +14,7 @@ const communityStatsContainer = document.querySelector(
 const communityStatsNumbers = document.querySelectorAll(
   ".community-stats-number"
 );
+const presetChainContainer = document.querySelector(".preset-chain-container");
 
 const createTopPresetsChart = async function () {
   try {
@@ -469,8 +470,6 @@ const createHeatmap = async function () {
     e.preventDefault();
     cal.next();
   });
-
-  console.log("Heatmap created successfully");
 };
 
 window.addEventListener("resize", () => {
