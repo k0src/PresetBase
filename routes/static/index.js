@@ -16,11 +16,14 @@ router.get("/", async (req, res) => {
     LIMIT 1`;
 
   try {
+    const isAuth = req.isAuthenticated();
     const announcement = await dbGet(announcementQuery, [
       new Date().toISOString(),
     ]);
+
     res.render("static/index", {
       announcement,
+      isAuth,
       PATH_URL: "home",
     });
   } catch (err) {

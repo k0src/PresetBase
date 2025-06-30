@@ -151,6 +151,8 @@ router.get("/", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
+
     const [
       totalResults,
       hot,
@@ -181,6 +183,7 @@ router.get("/", async (req, res) => {
       topGenres,
       mostRecent,
       topSynths,
+      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {

@@ -95,6 +95,7 @@ router.get("/", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
     const [totalResults, songs, artists, albums, synths, presets] =
       await Promise.all([
         dbGet(queries.totalResults, Array(5).fill(`%${searchQuery}%`)),
@@ -116,6 +117,7 @@ router.get("/", async (req, res) => {
       presets: presets || [],
       searchQuery: searchQuery,
       genreStyles: genreStyles,
+      isAuth,
       PATH_URL: "search",
     });
   } catch (err) {

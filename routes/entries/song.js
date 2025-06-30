@@ -81,6 +81,7 @@ router.get("/:id", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
     await dbRun(queries.updateClick, [songId, now]);
 
     const [song, moreSongs] = await Promise.all([
@@ -97,6 +98,7 @@ router.get("/:id", async (req, res) => {
     res.render("entries/song", {
       song: song,
       moreSongs: moreSongs || [],
+      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {

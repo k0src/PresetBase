@@ -11,14 +11,21 @@ const isAuth = require("../../middleware/is-auth.js");
 
 /* Example submission */
 router.get("/example", async (req, res) => {
-  res.render("main/submit/submit-example", { PATH_URL: "submit" });
+  const isAuth = req.isAuthenticated();
+  res.render("main/submit/submit-example", {
+    isAuth,
+    PATH_URL: "submit",
+  });
 });
 
 /* Main submit page */
 router.get("/", isAuth, async (req, res) => {
   try {
+    const isAuth = req.isAuthenticated();
+
     res.render("main/submit/submit", {
       success: req.query.success === "1",
+      isAuth,
       PATH_URL: "submit",
     });
   } catch (err) {
@@ -29,9 +36,20 @@ router.get("/", isAuth, async (req, res) => {
 });
 
 router.post("/", isAuth, multer, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  if (!isAuth) {
+    return res.status(403).send("Forbidden");
+  }
+
+  const userId = req.user.id;
+
   const rawData = attachFilesToBody(req.body, req.files);
+  const rawDataUser = {
+    ...rawData,
+    userId: userId,
+  };
   try {
-    const sanitizedData = await sanitizeData(rawData);
+    const sanitizedData = await sanitizeData(rawDataUser);
     const fullBodyData = await mergeAndValidateSubmitData(sanitizedData);
 
     const pendingData = JSON.stringify(fullBodyData);

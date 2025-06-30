@@ -52,6 +52,7 @@ router.get("/", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
     const [totalResults, synths, hotSynths] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.synths),
@@ -65,6 +66,7 @@ router.get("/", async (req, res) => {
     res.render("main/browse/synths", {
       totalResults: totalResults.total_results,
       synths,
+      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {

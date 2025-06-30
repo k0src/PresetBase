@@ -67,6 +67,7 @@ router.post("/approve", multer, async (req, res) => {
       albumImg,
       artists,
       synths,
+      userId,
     } = finalData;
 
     // Insert song
@@ -183,9 +184,16 @@ router.post("/approve", multer, async (req, res) => {
 
         await dbRun(
           `INSERT INTO song_presets 
-            (song_id, preset_id, usage_type, verified, submitted_by, audio_url, timestamp)
-           VALUES (?, ?, ?, 't', 'user', ?, datetime())`,
+            (song_id, preset_id, usage_type, verified, audio_url, timestamp)
+           VALUES (?, ?, ?, 't', ?, datetime())`,
           [songId, presetId, preset.usageType, preset.audio]
+        );
+
+        // add user info
+        await dbRun(
+          `INSERT INTO user_submissions (user_id, submission_id)
+           VALUES (?, ?)`,
+          [userId, submissionId]
         );
       }
     }

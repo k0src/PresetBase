@@ -84,6 +84,8 @@ router.get("/:id", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
+
     if (albumId === "0") {
       return res.status(404).render("static/404", { PATH_URL: "404" });
     }
@@ -106,6 +108,7 @@ router.get("/:id", async (req, res) => {
       album: album,
       moreAlbums: moreAlbums || [],
       genreStyles: genreStyles,
+      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {

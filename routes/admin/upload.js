@@ -27,6 +27,7 @@ router.get("/", async (req, res) => {
 router.post("/", multer, async (req, res) => {
   try {
     // Parse data
+    const userId = req.user.id;
     const rawData = attachFilesToBody(req.body, req.files);
     const sanitizedData = await sanitizeData(rawData);
     const finalData = await mergeAndValidateSubmitData(sanitizedData);
@@ -152,11 +153,18 @@ router.post("/", multer, async (req, res) => {
           [presetId, synthId]
         );
 
-        await dbRun(
+        const submissionId = await dbRun(
           `INSERT INTO song_presets 
-            (song_id, preset_id, usage_type, verified, submitted_by, audio_url, timestamp)
-           VALUES (?, ?, ?, 't', 'user', ?, datetime())`,
+            (song_id, preset_id, usage_type, verified, audio_url, timestamp)
+           VALUES (?, ?, ?, 't', ?, datetime())`,
           [songId, presetId, preset.usageType, preset.audio]
+        );
+
+        // Add user info
+        await dbRun(
+          `INSERT INTO user_submissions (user_id, submission_id)
+           VALUES (?, ?)`,
+          [userId, submissionId]
         );
       }
     }

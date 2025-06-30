@@ -61,6 +61,7 @@ router.get("/:id", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
     await dbRun(queries.updateClick, [synthId, now]);
 
     const [synth, moreSynths] = await Promise.all([
@@ -75,6 +76,7 @@ router.get("/:id", async (req, res) => {
     res.render("entries/synth", {
       synth: synth,
       moreSynths: moreSynths || [],
+      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {

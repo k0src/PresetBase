@@ -49,6 +49,7 @@ router.get("/", async (req, res) => {
     ORDER BY ${sortKey}`;
 
   try {
+    const isAuth = req.isAuthenticated();
     const songs = await dbAll(query);
 
     convertTimestamps(songs, "song");
@@ -56,6 +57,7 @@ router.get("/", async (req, res) => {
     res.render("main/browse/popular", {
       songs,
       totalResults: 10,
+      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {

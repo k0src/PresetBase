@@ -36,9 +36,15 @@
     <a href="https://github.com/k0src/presetbase" target="_blank">
       <i class="fa-brands fa-github navbar--icon"></i>
     </a>
-    <a href="/login">
-      <i class="fa-solid fa-circle-user navbar--icon"></i>
-    </a>
+    <% if (isAuth) { %>
+      <a href="#">
+        <i class="fa-solid fa-circle-user navbar--icon"></i>
+      </a>
+    <% } else { %>
+      <a href="/login">
+        <i class="fa-solid fa-circle-user navbar--icon"></i>
+      </a>
+    <% } %>
   </div>
 
   <button class="button-mobile-nav">

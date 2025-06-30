@@ -33,6 +33,7 @@ router.get("/", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
     const [dbStats, totalDbStats, submissionsPerDay] = await Promise.all([
       dbGet(queries.dbStats),
       dbGet(queries.totalDbStats),
@@ -43,6 +44,7 @@ router.get("/", async (req, res) => {
       dbStats,
       totalDbStats,
       submissionsPerDay,
+      isAuth,
       PATH_URL: "stats",
     });
   } catch (err) {
