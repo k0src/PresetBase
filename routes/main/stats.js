@@ -48,9 +48,11 @@ router.get("/", async (req, res) => {
       PATH_URL: "stats",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
@@ -76,9 +78,11 @@ router.get("/top-presets-data", async (req, res) => {
 
     res.json({ labels, values });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
@@ -102,9 +106,11 @@ router.get("/presets-per-synth-data", async (req, res) => {
 
     res.json({ labels, values });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
@@ -129,9 +135,11 @@ router.get("/top-synths-data", async (req, res) => {
 
     res.json({ labels, values });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
@@ -154,7 +162,11 @@ router.get("/synth-time-data", async (req, res) => {
   } catch (err) {
     return res
       .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+      .render("static/db-error", {
+        err,
+        isAuth: req.isAuthenticated(),
+        PATH_URL: "db-error",
+      });
   }
 });
 

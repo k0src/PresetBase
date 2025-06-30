@@ -29,9 +29,11 @@ router.get("/", isAuth, async (req, res) => {
       PATH_URL: "submit",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
@@ -59,7 +61,11 @@ router.post("/", isAuth, multer, async (req, res) => {
   } catch (err) {
     return res
       .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+      .render("static/db-error", {
+        err,
+        isAuth: req.isAuthenticated(),
+        PATH_URL: "db-error",
+      });
   }
 
   res.redirect("/submit?success=1");

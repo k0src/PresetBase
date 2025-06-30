@@ -1,8 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { dbRun, dbAll, dbGet } = require("../../util/UTIL.js");
+const isAdmin = require("../../middleware/is-admin.js");
 
-router.get("/", async (req, res) => {
+router.get("/", isAdmin, async (req, res) => {
   const now = new Date().toISOString();
 
   const queries = {
@@ -31,6 +32,7 @@ router.get("/", async (req, res) => {
   };
 
   try {
+    const isAuth = req.isAuthenticated();
     const announcements = await dbAll(queries.announcements);
     const activeAnnouncement = await dbGet(queries.activeAnnouncement, [now]);
 
@@ -61,12 +63,15 @@ router.get("/", async (req, res) => {
     res.render("admin/announcements", {
       announcements: announcements,
       activeAnnouncement: activeAnnouncement,
+      isAuth,
       PATH_URL: "admin",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
@@ -87,9 +92,11 @@ router.post("/", async (req, res) => {
       [title, description, 1, utcDateTime, now]
     );
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
   res.redirect("/admin/announcements?success=1");
 });

@@ -9,22 +9,27 @@ const {
   mergeAndValidateSubmitData,
   approveFile,
 } = require("../../util/UTIL.js");
+const isAdmin = require("../../middleware/is-admin.js");
 
 /* ------------------------------ Admin Upload ------------------------------ */
-router.get("/", async (req, res) => {
+router.get("/", isAdmin, async (req, res) => {
   try {
+    const isAuth = req.isAuthenticated();
     res.render("admin/upload", {
       success: req.query.success === "1",
+      isAuth,
       PATH_URL: "admin",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
-router.post("/", multer, async (req, res) => {
+router.post("/", isAdmin, multer, async (req, res) => {
   try {
     // Parse data
     const userId = req.user.id;
@@ -194,9 +199,11 @@ router.post("/", multer, async (req, res) => {
 
     res.redirect("/admin/upload");
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 

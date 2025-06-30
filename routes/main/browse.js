@@ -212,7 +212,11 @@ router.get("/chart-data", async (req, res) => {
   } catch (err) {
     return res
       .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+      .render("static/db-error", {
+        err,
+        isAuth: req.isAuthenticated(),
+        PATH_URL: "db-error",
+      });
   }
 });
 

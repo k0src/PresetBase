@@ -1,13 +1,15 @@
 const express = require("express");
 const router = express.Router();
 const { dbRun, dbAll, dbGet, getGenreStyles } = require("../../util/UTIL.js");
+const isAdmin = require("../../middleware/is-admin.js");
 
-router.get("/", async (req, res) => {
+router.get("/", isAdmin, async (req, res) => {
   const query = `
     SELECT id, name, slug, text_color, border_color, bg_color
     FROM genre_tags`;
 
   try {
+    const isAuth = req.isAuthenticated();
     const tags = await dbAll(query);
     const genreStyles = await getGenreStyles();
 
@@ -16,16 +18,19 @@ router.get("/", async (req, res) => {
       tags,
       editing: false,
       genreStyles,
+      isAuth,
       PATH_URL: "admin",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", isAdmin, async (req, res) => {
   const {
     name,
     slug,
@@ -52,15 +57,17 @@ router.post("/", async (req, res) => {
       );
     }
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 
   res.redirect("/admin/tag-editor?success=1");
 });
 
-router.post("/edit-tag", async (req, res) => {
+router.post("/edit-tag", isAdmin, async (req, res) => {
   const { tagId } = req.body;
 
   try {
@@ -89,13 +96,15 @@ router.post("/edit-tag", async (req, res) => {
       PATH_URL: "admin",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
-router.delete("/delete-tag/:tagId", async (req, res) => {
+router.delete("/delete-tag/:tagId", isAdmin, async (req, res) => {
   const tagId = req.params.tagId;
 
   try {

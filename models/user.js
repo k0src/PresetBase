@@ -1,18 +1,24 @@
 const { dbGet, dbRun, dbAll } = require("./UTIL");
 
 class User {
-  constructor(id = null, email, username) {
+  constructor(id = null, email, username, is_admin = false) {
     this.id = id;
     this.email = email;
     this.username = username;
     this.timestamp = new Date().toISOString();
+    this.is_admin = is_admin;
   }
 
   static async getUserById(id) {
     try {
       const user = await dbGet(`SELECT * FROM users WHERE id = ?`, [id]);
       if (!user) return null;
-      return new User(user.id, user.email, user.username);
+      return new User(
+        user.id,
+        user.email,
+        user.username,
+        user.is_admin === "t"
+      );
     } catch (err) {
       console.error(err);
       throw err;
@@ -23,7 +29,12 @@ class User {
     try {
       const user = await dbGet(`SELECT * FROM users WHERE email = ?`, [email]);
       if (!user) return null;
-      return new User(user.id, user.email, user.username);
+      return new User(
+        user.id,
+        user.email,
+        user.username,
+        user.is_admin === "t"
+      );
     } catch (err) {
       console.error(err);
       throw err;
@@ -51,6 +62,10 @@ class User {
       console.error(err);
       throw err;
     }
+  }
+
+  async isAdmin() {
+    return !!this.is_admin;
   }
 }
 

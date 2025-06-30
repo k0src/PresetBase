@@ -10,9 +10,11 @@ const {
   approveFile,
   mergeDataSets,
 } = require("../../util/UTIL.js");
+const isAdmin = require("../../middleware/is-admin.js");
 
 /* -------------------------------- Approvals ------------------------------- */
-router.get("/", async (req, res) => {
+router.get("/", isAdmin, async (req, res) => {
+  const isAuth = req.isAuthenticated();
   const query = `SELECT id, data, submitted_at FROM pending_submissions`;
 
   try {
@@ -24,16 +26,18 @@ router.get("/", async (req, res) => {
       submittedAt: row.submitted_at,
     }));
 
-    res.render("admin/approvals", { submissions, PATH_URL: "admin" });
+    res.render("admin/approvals", { submissions, isAuth, PATH_URL: "admin" });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
 /* ---------------------------- Approve submisson --------------------------- */
-router.post("/approve", multer, async (req, res) => {
+router.post("/approve", isAdmin, multer, async (req, res) => {
   try {
     // Get submission data
     const originalEntry = await dbGet(
@@ -229,14 +233,16 @@ router.post("/approve", multer, async (req, res) => {
 
     res.redirect("/admin/approvals");
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
 /* ----------------------------- Deny submission ---------------------------- */
-router.post("/deny/:id", async (req, res) => {
+router.post("/deny/:id", isAdmin, async (req, res) => {
   const id = req.params.id;
   console.log("denying: ", id);
 
@@ -257,9 +263,11 @@ router.post("/deny/:id", async (req, res) => {
     await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [id]);
     res.redirect("/admin/approvals");
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", { err, PATH_URL: "db-error" });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 
