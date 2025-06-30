@@ -382,10 +382,6 @@
 }
 
 /* ---------------------------------- Util ---------------------------------- */
-.hide {
-  display: none !important;
-}
-
 .--tag--small {
   user-select: none;
   font-size: 1rem;

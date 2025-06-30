@@ -27,12 +27,12 @@ const setToggleViewMode = function (mode) {
   const grid = document.querySelector(".search-results-grid--container");
   const list = document.querySelector(".search-results-list--container");
   if (mode === "grid") {
-    grid.classList.remove("hide");
-    list.classList.add("hide");
+    grid.classList.remove("hidden");
+    list.classList.add("hidden");
     viewModeToggle.setAttribute("data-mode", "grid");
   } else {
-    grid.classList.add("hide");
-    list.classList.remove("hide");
+    grid.classList.add("hidden");
+    list.classList.remove("hidden");
     viewModeToggle.setAttribute("data-mode", "list");
   }
 };
@@ -95,7 +95,7 @@ const filterEntries = function (query, entrySelector, prefix) {
     if (entrySelector === ".card-entry") {
       entry.style.display = !lowerQuery || matchFound ? "flex" : "none";
     } else {
-      entry.classList.toggle("hide", lowerQuery && !matchFound);
+      entry.classList.toggle("hidden", lowerQuery && !matchFound);
     }
   });
 };

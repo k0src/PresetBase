@@ -21,7 +21,7 @@ const filterEntries = function (query) {
       return el && el.textContent.toLowerCase().includes(lowerQuery);
     });
 
-    entry.classList.toggle("hide", lowerQuery && !matchFound);
+    entry.classList.toggle("hidden", lowerQuery && !matchFound);
   });
 };
 
@@ -55,10 +55,10 @@ if (currentPage === "song") {
             .querySelector(".preset-entry-btn-container");
           otherContainer
             .querySelector(".preset-entry--play-btn")
-            .classList.remove("hide");
+            .classList.remove("hidden");
           otherContainer
             .querySelector(".preset-entry--play-btn-active")
-            .classList.add("hide");
+            .classList.add("hidden");
         }
       });
 
@@ -69,19 +69,19 @@ if (currentPage === "song") {
       if (audio.paused) {
         audio.play();
 
-        playBtn.classList.add("hide");
-        stopBtn.classList.remove("hide");
+        playBtn.classList.add("hidden");
+        stopBtn.classList.remove("hidden");
       } else {
         audio.pause();
         audio.currentTime = 0;
 
-        playBtn.classList.remove("hide");
-        stopBtn.classList.add("hide");
+        playBtn.classList.remove("hidden");
+        stopBtn.classList.add("hidden");
       }
 
       audio.addEventListener("ended", () => {
-        playBtn.classList.remove("hide");
-        stopBtn.classList.add("hide");
+        playBtn.classList.remove("hidden");
+        stopBtn.classList.add("hidden");
       });
     });
 
@@ -93,8 +93,8 @@ if (currentPage === "song") {
       audio.pause();
       audio.currentTime = 0;
 
-      playBtn.classList.remove("hide");
-      stopBtn.classList.add("hide");
+      playBtn.classList.remove("hidden");
+      stopBtn.classList.add("hidden");
     });
   });
 }

@@ -3,12 +3,15 @@
   <head>
     <title>PresetBase &mdash; Browse Presets</title>
     <link rel="stylesheet" href="styles/static/index.css" />
+    <link rel="stylesheet" href="styles/partials/announcement.css" />
     <script type="module" src="/js/static/index.js" defer></script>
     <%- include('../partials/html-head') %>
   </head>
   <body>
     <%- include('../partials/navbar') %>
     <main class="container">
+      <% if (announcement) { %> <%- include('../partials/announcement') %> <% }
+      %>
       <div class="splash-container">
         <img
           class="splash-logo"

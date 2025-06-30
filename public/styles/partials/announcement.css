@@ -1,0 +1,71 @@
+.announcement-container {
+  position: absolute;
+  top: 8rem;
+  left: 50%;
+  width: 100vw;
+  max-width: 120rem;
+  background: #171b1f;
+  border-radius: 0.8rem;
+  padding: 2.8rem 2rem;
+  border: 0.2rem solid #2d343a;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 2.4rem;
+  transform: translateX(-50%);
+  z-index: 1000;
+}
+
+.announcement-content {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.announcement-icon {
+  font-size: 3.2rem;
+}
+
+.announcement-title {
+  font-size: 1.8rem;
+  text-transform: uppercase;
+  color: #899096;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.announcement-text {
+  font-size: 1.4rem;
+  line-height: 1.2;
+}
+
+.announcement-text > a {
+  text-decoration: underline !important;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 59em) {
+  .announcement-title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .announcement-title {
+    font-size: 1.4rem;
+  }
+
+  .announcement-text {
+    font-size: 1.2rem;
+  }
+
+  .announcement-content {
+    gap: 0.8rem;
+  }
+}
+
+@media (max-width: 30em) {
+  .announcement-icon {
+    font-size: 2.4rem;
+  }
+}

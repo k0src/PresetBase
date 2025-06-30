@@ -11,10 +11,6 @@ body {
   border-bottom-right-radius: 0.8rem;
 }
 
-.hide {
-  display: none !important;
-}
-
 /* ----------------------------- Text modifiers ----------------------------- */
 .more-albums--album-title,
 .more-albums--header-title,

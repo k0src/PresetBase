@@ -138,7 +138,6 @@ body {
 }
 
 /* --------------------------------- Queries -------------------------------- */
-
 @media (max-width: 59em) {
   .splash-text {
     font-size: 3rem;
