@@ -1,11 +1,16 @@
 const express = require("express");
 const router = express.Router();
 
-router.get("/", (req, res) => {
-  res.send(`
-    <h1>Login</h1>
-    <a href="/auth/google">Login with Google</a>
-  `);
+router.get("/", async (req, res) => {
+  try {
+    res.render("auth/login", {
+      PATH_URL: "login",
+    });
+  } catch (err) {
+    return res
+      .status(500)
+      .render("static/db-error", { err, PATH_URL: "db-error" });
+  }
 });
 
 module.exports = router;
