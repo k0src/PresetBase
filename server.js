@@ -13,7 +13,10 @@ const PORT = process.env.PORT || 3000;
 /* -------------------------------- Sessions -------------------------------- */
 app.use(
   session({
-    store: new SQLiteStore({ db: "sessions.sqlite" }),
+    store: new SQLiteStore({
+      db: "sessions.sqlite",
+      dir: path.join(__dirname, "db"),
+    }),
     secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
