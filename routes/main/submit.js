@@ -7,6 +7,7 @@ const {
   sanitizeData,
   mergeAndValidateSubmitData,
 } = require("../../util/UTIL.js");
+const isAuth = require("../../middleware/is-auth.js");
 
 /* Example submission */
 router.get("/example", async (req, res) => {
@@ -14,7 +15,7 @@ router.get("/example", async (req, res) => {
 });
 
 /* Main submit page */
-router.get("/", async (req, res) => {
+router.get("/", isAuth, async (req, res) => {
   try {
     res.render("main/submit/submit", {
       success: req.query.success === "1",
@@ -27,7 +28,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.post("/", multer, async (req, res) => {
+router.post("/", isAuth, multer, async (req, res) => {
   const rawData = attachFilesToBody(req.body, req.files);
   try {
     const sanitizedData = await sanitizeData(rawData);

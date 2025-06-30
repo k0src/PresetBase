@@ -1,14 +1,40 @@
 const express = require("express");
 const app = express();
 const path = require("path");
+const session = require("express-session");
+const passport = require("passport");
+const SQLiteStore = require("connect-sqlite3")(session);
+require("dotenv").config();
+
+require("./config/passport");
 
 const PORT = process.env.PORT || 3000;
 
+/* -------------------------------- Sessions -------------------------------- */
+app.use(
+  session({
+    store: new SQLiteStore({ db: "sessions.sqlite" }),
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+
+/* ------------------------------- Middleware ------------------------------- */
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+/* ---------------------------------- Auth ---------------------------------- */
+const authRoutes = require("./routes/auth/auth");
+app.use("/auth", authRoutes);
+const loginRoutes = require("./routes/auth/login");
+app.use("/login", loginRoutes);
 
 /* ----------------------------------- API ---------------------------------- */
 const apiRoutes = require("./routes/api/api");
