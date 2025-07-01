@@ -1,24 +1,32 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../models/user");
-const { formatDate, titleCase } = require("../../util/UTIL.js");
+const { formatDate, titleCase, dbRun } = require("../../util/UTIL.js");
 const isAuth = require("../../middleware/is-auth.js");
 
 router.get("/", isAuth, async (req, res) => {
   try {
+    const userTimestamp = await User.getUserTimestamp(req.user.id);
+    const userId = req.user.id;
+
     const isAuth = req.isAuthenticated();
-    const { id, email, username, timestamp, is_admin, authenticated_with } =
-      req.user;
+    const { id, email, username, is_admin, authenticated_with } = req.user;
+
+    const userSubmissions = await User.getUserSubmissions(userId);
+    const pendingSubmissions = await User.getUserPendingSubmissions(userId);
+
     res.render("auth/account-info", {
       isAuth,
       user: {
         id,
         username,
         email,
-        timestamp: formatDate(timestamp),
+        timestamp: formatDate(userTimestamp),
         is_admin,
         authenticated_with: titleCase(authenticated_with),
       },
+      userSubmissions,
+      pendingSubmissions,
       PATH_URL: "account",
     });
   } catch (err) {
@@ -106,5 +114,28 @@ router.post("/delete-account", isAuth, async (req, res) => {
     });
   }
 });
+
+router.delete(
+  "/delete-pending-submission/:submissionId",
+  isAuth,
+  async (req, res) => {
+    const submissionId = req.params.submissionId;
+    const userId = req.user.id;
+
+    try {
+      await dbRun(
+        `DELETE FROM pending_submissions WHERE id = ? AND user_id = ?`,
+        [submissionId, userId]
+      );
+      return res
+        .status(200)
+        .json({ message: "Pending submission deleted successfully." });
+    } catch (err) {
+      return res
+        .status(500)
+        .json({ error: "Error deleting submission: " + err.message });
+    }
+  }
+);
 
 module.exports = router;

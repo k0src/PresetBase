@@ -11,20 +11,27 @@ const {
   mergeDataSets,
 } = require("../../util/UTIL.js");
 const isAdmin = require("../../middleware/is-admin.js");
+const { getUserById } = require("../../models/user");
 
 /* -------------------------------- Approvals ------------------------------- */
 router.get("/", isAdmin, async (req, res) => {
   const isAuth = req.isAuthenticated();
-  const query = `SELECT id, data, submitted_at FROM pending_submissions`;
+  const query = `SELECT id, data, submitted_at, user_id FROM pending_submissions`;
 
   try {
     const rows = await dbAll(query);
 
-    const submissions = rows.map((row) => ({
-      id: row.id,
-      data: JSON.parse(row.data),
-      submittedAt: row.submitted_at,
-    }));
+    const submissions = await Promise.all(
+      rows.map(async (row) => {
+        const user = await getUserById(row.user_id);
+        return {
+          id: row.id,
+          data: JSON.parse(row.data),
+          submittedAt: row.submitted_at,
+          username: user.username,
+        };
+      })
+    );
 
     res.render("admin/approvals", { submissions, isAuth, PATH_URL: "admin" });
   } catch (err) {
@@ -41,7 +48,12 @@ router.post("/approve", isAdmin, multer, async (req, res) => {
   try {
     // Get submission data
     const originalEntry = await dbGet(
-      `SELECT id, data, submitted_at FROM pending_submissions WHERE id = ?`,
+      `SELECT 
+        id, 
+        data, 
+        submitted_at, 
+        user_id 
+      FROM pending_submissions WHERE id = ?`,
       [req.body.entryId]
     );
 
@@ -56,6 +68,7 @@ router.post("/approve", isAdmin, multer, async (req, res) => {
     const originalData = JSON.parse(originalEntry.data);
     const updatedBody = attachFilesToBody(req.body, req.files);
     const finalData = mergeDataSets(originalData, updatedBody);
+    const userId = originalEntry.user_id;
 
     // Add entry to database
     const isSingle = finalData.single === "yes";
@@ -71,7 +84,6 @@ router.post("/approve", isAdmin, multer, async (req, res) => {
       albumImg,
       artists,
       synths,
-      userId,
     } = finalData;
 
     // Insert song

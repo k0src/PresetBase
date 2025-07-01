@@ -33,6 +33,25 @@
               </div>
             </div>
 
+            <div class="delete-pending-modal-overlay">
+              <div class="delete-pending-modal">
+                <i
+                  class="fa-solid fa-triangle-exclamation delete-pending-icon"
+                ></i>
+                <span class="delete-pending-title"
+                  >Delete Pending Submission?</span
+                >
+                <span class="delete-pending-desc"
+                  >You are about to delete your pending submission. This action
+                  cannot be undone.</span
+                >
+                <div class="delete-pending-btn-container">
+                  <button class="delete-pending-btn--cancel">Cancel</button>
+                  <button class="delete-pending-btn--delete">Delete</button>
+                </div>
+              </div>
+            </div>
+
             <div class="account-info">
               <div class="account-info-head-text-container">
                 <span class="account-info-head-text"
@@ -72,15 +91,100 @@
             <div class="user-submissions-header">
               <h2 class="heading-secondary">My submissions</h2>
             </div>
+            <% if (pendingSubmissions.length || userSubmissions.length) { %>
             <div class="user-submissions-wrapper">
-              <div class="user-submissions-container">
+              <% if (pendingSubmissions.length) { %>
+              <div class="user-submissions-header--small">
                 <h3 class="heading-tertiary">Pending</h3>
               </div>
-
               <div class="user-submissions-container">
+                <% pendingSubmissions.forEach((submission) => { const mainArtist
+                = submission.data.artists.find((artist) => artist.role ===
+                "Main").name; %>
+                <div class="user-submission">
+                  <img
+                    src="/uploads/images/pending/<%= submission.data.songImg %>"
+                    alt="<%= submission.data.songTitle %> Cover"
+                    class="user-submission--img"
+                  />
+                  <div class="user-submission--right">
+                    <div class="user-submission--icon-container">
+                      <i class="fa-solid fa-music user-submission--icon"></i>
+                      <span class="user-submission--text-primary"
+                        ><%= mainArtist %> &mdash; <%= submission.data.songTitle
+                        %></span
+                      >
+                    </div>
+                    <hr class="user-submisson--hr" />
+                    <div class="user-submission--icon-container">
+                      <i class="fa-solid fa-sliders user-submission--icon"></i>
+                      <span class="user-submission--text-secondary">
+                        <%= submission.data.synths .flatMap(synth =>
+                        synth.presets.map(preset => preset.name)) .join(', ') %>
+                      </span>
+                    </div>
+                  </div>
+                  <input
+                    type="hidden"
+                    value="<%= submission.id %>"
+                    name="submissionId"
+                  />
+                  <button
+                    type="button"
+                    id="delete-btn"
+                    class="user-submission--delete-pending"
+                    onclick="showDeletePendingModal(this)"
+                  >
+                    <i class="fa-solid fa-trash delete--icon"></i>
+                  </button>
+                </div>
+                <% }) %>
+              </div>
+              <% } %> <% if (userSubmissions.length) { %>
+              <div class="user-submissions-header--small">
                 <h3 class="heading-tertiary">Approved</h3>
               </div>
+              <div class="user-submissions-container">
+                <% userSubmissions.forEach((submission) => { %>
+                <a
+                  href="/song/<%= submission.song_id %>"
+                  class="user-submission--approved"
+                >
+                  <img
+                    src="/uploads/images/approved/<%= submission.song_image %>"
+                    alt="<%= submission.song_title %> Cover"
+                    class="user-submission--img"
+                  />
+                  <div class="user-submission--right">
+                    <div class="user-submission--icon-container">
+                      <i class="fa-solid fa-music user-submission--icon"></i>
+                      <span class="user-submission--text-primary"
+                        ><%= submission.artist_name %> &mdash; <%=
+                        submission.song_title %></span
+                      >
+                    </div>
+                    <hr class="user-submisson--hr" />
+                    <div class="user-submission--icon-container">
+                      <i class="fa-solid fa-sliders user-submission--icon"></i>
+                      <span class="user-submission--text-secondary">
+                        <%= submission.presets.map(preset =>
+                        preset.preset_name).join(', ') %>
+                      </span>
+                    </div>
+                  </div>
+                </a>
+                <% }) %>
+              </div>
+              <% } %>
             </div>
+            <% } else { %>
+            <div class="no-submissions-container">
+              <span class="no-submissions-text"
+                >No submissions yet. Submit a preset
+                <a href="/submit">here</a>.</span
+              >
+            </div>
+            <% } %>
 
             <div class="account-info-footer">
               <div class="btn-container">
@@ -100,7 +204,8 @@
           </section>
         </main>
       </div>
-      <%- include('../partials/scroll-to-top') %>
+      <%- include('../partials/footer') %>
     </div>
   </body>
+  <%- include('../partials/scroll-to-top') %>
 </html>

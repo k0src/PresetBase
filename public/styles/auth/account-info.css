@@ -24,23 +24,18 @@ body {
 .heading-secondary {
   color: #899096;
   font-size: 2rem;
-  padding-bottom: 1.6rem;
 }
 
 .heading-tertiary {
   font-size: 1.8rem;
-  padding: 2.4rem 0 1.2rem 0;
 }
 
 /* ------------------------------- Main Styles ------------------------------ */
-.account-main--container {
-}
-
 .account-info {
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
-  background-color: #202429;
+  background: #171b1f;
   border: 0.2rem solid #2d343a;
   border-radius: 0.8rem;
   padding: 2.4rem 2.8rem;
@@ -136,15 +131,132 @@ body {
   background-color: #73988a;
 }
 
+/* ---------------------------- User Submissions ---------------------------- */
 .user-submissions-header {
+  padding: 3.2rem 0 2.4rem 0;
 }
 
 .user-submissions-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 1.6rem;
+  padding-bottom: 3.2rem;
 }
 
 .user-submissions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  padding-bottom: 1.6rem;
 }
 
+.user-submission--approved,
+.user-submission {
+  flex-shrink: 0;
+  background: #171b1f;
+  display: flex;
+  align-items: center;
+  gap: 1.8rem;
+  border-radius: 0.8rem;
+  padding: 2rem;
+  border: 0.2rem solid #2d343a;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  width: 100%;
+  min-width: 0;
+}
+
+.user-submission--approved {
+  cursor: pointer;
+}
+
+.user-submission--approved:hover {
+  box-shadow: 0 0.6rem 1rem rgba(0, 0, 0, 0.1);
+  transform: translateY(-0.2rem);
+}
+
+.user-submission--img {
+  width: 9.6rem;
+  height: 9.6rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.8rem;
+}
+
+.user-submission--right {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  width: 100%;
+  min-width: 0;
+}
+
+.user-submission--icon-container {
+  display: flex;
+  gap: 0.8rem;
+  align-items: center;
+  min-width: 0;
+  width: 100%;
+}
+
+.user-submission--icon {
+  font-size: 1.6rem;
+  color: #899096 !important;
+}
+
+.user-submission--text-primary {
+  font-size: 1.6rem;
+  color: #899096 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.user-submisson--hr {
+  width: 100%;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.4rem;
+  color: #2d343a;
+}
+
+.user-submission--text-secondary {
+  font-size: 1.3rem;
+  color: #899096 !important;
+  line-height: 1.1;
+}
+
+.user-submission--text-primary,
+.user-submission--text-secondary {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+}
+
+.delete--icon {
+  color: #899096 !important;
+  font-size: 1.8rem;
+  transition: color 0.2s ease;
+}
+
+.delete--icon:hover {
+  color: #e3e5e4 !important;
+}
+
+.user-submission--delete-pending {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+}
+
+/* ----------------------------- Footer buttons ----------------------------- */
 .account-info-footer {
   display: flex;
   flex-direction: column;
@@ -186,7 +298,29 @@ body {
   background-color: #c86c6c;
 }
 
+.no-submissions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  background: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 2.4rem 2.8rem;
+  margin-bottom: 3.2rem;
+}
+
+.no-submissions-text {
+  font-size: 1.6rem;
+  color: #899096 !important;
+}
+
+.no-submissions-text > a {
+  text-decoration: underline !important;
+}
+
 /* ---------------------------------- Modal --------------------------------- */
+.delete-pending-modal-overlay,
 .delete-account-modal-overlay {
   position: fixed;
   top: 0;
@@ -201,6 +335,7 @@ body {
   display: none;
 }
 
+.delete-pending-modal,
 .delete-account-modal {
   position: fixed;
   top: 50%;
@@ -218,25 +353,31 @@ body {
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
 }
 
+.delete-pending-icon,
 .delete-account-icon {
   font-size: 3.2rem;
 }
 
+.delete-pending-title,
 .delete-account-title {
   font-size: 2.4rem;
 }
 
+.delete-pending-desc,
 .delete-account-desc {
   font-size: 1.4rem;
   line-height: 1.1;
 }
 
+.delete-pending-btn-container,
 .delete-account-btn-container {
   display: flex;
   align-items: center;
   gap: 1.4rem;
 }
 
+.delete-pending-btn--delete,
+.delete-pending-btn--cancel,
 .delete-account-btn--delete,
 .delete-account-btn--cancel {
   cursor: pointer;
@@ -248,20 +389,24 @@ body {
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
 }
 
+.delete-pending-btn--delete,
 .delete-account-btn--delete {
   color: #e3e5e4;
   background-color: #c25c5c;
 }
 
+.delete-pending-btn--delete:hover,
 .delete-account-btn--delete:hover {
   background-color: #c86c6c;
 }
 
+.delete-pending-btn--cancel,
 .delete-account-btn--cancel {
   color: #e3e5e4;
   background-color: #899096;
 }
 
+.delete-pending-btn--cancel:hover,
 .delete-account-btn--cancel:hover {
   background-color: #7b8287;
 }

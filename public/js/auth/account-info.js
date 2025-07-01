@@ -76,36 +76,41 @@ signOutBtn.addEventListener("click", async () => {
 
 /* ------------------------------ Delete Modal ------------------------------ */
 const deleteAccountBtn = document.getElementById("delete-account-btn");
-const modal = document.querySelector(".delete-account-modal");
-const modalOverlay = document.querySelector(".delete-account-modal-overlay");
-const modalCancelBtn = document.querySelector(".delete-account-btn--cancel");
-const modalDeleteBtn = document.querySelector(".delete-account-btn--delete");
+const deleteModalOverlay = document.querySelector(
+  ".delete-account-modal-overlay"
+);
+const deleteModalCancelBtn = document.querySelector(
+  ".delete-account-btn--cancel"
+);
+const deleteModalDeleteBtn = document.querySelector(
+  ".delete-account-btn--delete"
+);
 
-const closeDeleteModal = function () {
-  modalOverlay.style.display = "none";
+const closeDeleteAccountModal = function () {
+  deleteModalOverlay.style.display = "none";
 };
 
-const showDeleteModal = function (btn) {
-  modalOverlay.style.display = "block";
+const showDeleteAccountModal = function () {
+  deleteModalOverlay.style.display = "block";
 
-  modalCancelBtn.addEventListener("click", closeDeleteModal);
-  modalOverlay.addEventListener("click", closeDeleteModal);
+  deleteModalCancelBtn.addEventListener("click", closeDeleteAccountModal);
+  deleteModalOverlay.addEventListener("click", closeDeleteAccountModal);
   document.addEventListener("keydown", function escListener(e) {
     if (e.key === "Escape") {
-      closeDeleteModal();
+      closeDeleteAccountModal();
       document.removeEventListener("keydown", escListener);
     }
   });
 
-  modalDeleteBtn.addEventListener("click", (e) => {
+  deleteModalDeleteBtn.addEventListener("click", (e) => {
     e.preventDefault();
     deleteAccount();
-    closeDeleteModal();
+    closeDeleteAccountModal();
   });
 };
 
 deleteAccountBtn.addEventListener("click", () => {
-  showDeleteModal();
+  showDeleteAccountModal();
 });
 
 /* ----------------------------- Delete Account ----------------------------- */
@@ -128,5 +133,74 @@ const deleteAccount = async function () {
     footerHint.textContent = err.message;
     footerHint.classList.remove("hidden");
     console.error(err);
+  }
+};
+
+/* -------------------- Delete Pending Submissions Modal -------------------- */
+const pendingModalOverlay = document.querySelector(
+  ".delete-pending-modal-overlay"
+);
+const pendingModalCancelBtn = document.querySelector(
+  ".delete-pending-btn--cancel"
+);
+const pendingModalDeleteBtn = document.querySelector(
+  ".delete-pending-btn--delete"
+);
+
+const closeDeletePendingModal = function () {
+  pendingModalOverlay.style.display = "none";
+};
+
+const showDeletePendingModal = function (btn) {
+  const submissionId = btn.parentNode.querySelector(
+    "[name=submissionId]"
+  ).value;
+  const pendingSubmissionEntry = btn.closest(".user-submission");
+
+  pendingModalOverlay.style.display = "block";
+
+  pendingModalCancelBtn.addEventListener("click", closeDeletePendingModal);
+  pendingModalOverlay.addEventListener("click", closeDeletePendingModal);
+  document.addEventListener("keydown", function escListener(e) {
+    if (e.key === "Escape") {
+      closeDeletePendingModal();
+      document.removeEventListener("keydown", escListener);
+    }
+  });
+
+  pendingModalDeleteBtn.addEventListener("click", (e) => {
+    e.preventDefault();
+    deletePendingSubmission(pendingSubmissionEntry, submissionId);
+    closeDeletePendingModal();
+  });
+};
+
+/* ------------------------ Delete Pending Submission ----------------------- */
+const deletePendingSubmission = async function (
+  pendingSubmissionEntry,
+  submissionId
+) {
+  try {
+    const response = await fetch(
+      `/account-info/delete-pending-submission/${encodeURIComponent(
+        submissionId
+      )}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error);
+    }
+
+    pendingSubmissionEntry.remove();
+  } catch (err) {
+    console.error(err);
+    return;
   }
 };

@@ -11,7 +11,6 @@ class User {
     this.id = id;
     this.email = email;
     this.username = username;
-    this.timestamp = new Date().toISOString();
     this.is_admin = is_admin;
     this.authenticated_with = authenticated_with;
   }
@@ -115,6 +114,18 @@ class User {
     }
   }
 
+  static async getUserTimestamp(id) {
+    try {
+      const user = await dbGet(`SELECT timestamp FROM users WHERE id = ?`, [
+        id,
+      ]);
+      return user ? user.timestamp : null;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   static async setAdmin(id) {
     try {
       await dbRun(`UPDATE users SET is_admin = 't' WHERE id = ?`, [id]);
@@ -154,6 +165,75 @@ class User {
       await dbRun(`DELETE FROM users WHERE id = ?`, [id]);
       await User.#deleteAllUserData(id);
       return true;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async getUserSubmissions(id) {
+    try {
+      const query = `
+        SELECT
+        songs.title AS song_title,
+        songs.id AS song_id,
+        songs.image_url AS song_image,
+        artists.name AS artist_name,
+        json_group_array(
+          json_object(
+            'synth_name', synths.synth_name,
+            'preset_name', presets.preset_name
+          )
+        ) AS presets
+        FROM presets
+        LEFT JOIN preset_synths ON 
+          presets.id = preset_synths.preset_id
+        LEFT JOIN synths ON 
+          preset_synths.synth_id = synths.id
+        LEFT JOIN song_presets ON 
+          presets.id = song_presets.preset_id
+        LEFT JOIN songs ON 
+          song_presets.song_id = songs.id
+        LEFT JOIN song_artists ON 
+          songs.id = song_artists.song_id
+        LEFT JOIN artists ON 
+          song_artists.artist_id = artists.id
+        LEFT JOIN user_submissions ON 
+          song_presets.id = user_submissions.submission_id
+        WHERE song_artists.role = 'Main' AND user_submissions.user_id = ?
+        GROUP BY songs.id`;
+
+      const submission = await dbAll(query, [id]);
+      return submission.map((s) => ({
+        song_title: s.song_title,
+        song_id: s.song_id,
+        song_image: s.song_image,
+        artist_name: s.artist_name,
+        presets: JSON.parse(s.presets || "[]"),
+      }));
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async getUserPendingSubmissions(id) {
+    try {
+      const submissions = await dbAll(
+        `SELECT
+          id, 
+          data,
+          submitted_at 
+        FROM pending_submissions 
+        WHERE user_id = ?`,
+        [id]
+      );
+
+      return submissions.map((s) => ({
+        id: s.id,
+        data: JSON.parse(s.data),
+        submitted_at: s.submitted_at,
+      }));
     } catch (err) {
       console.error(err);
       throw err;
