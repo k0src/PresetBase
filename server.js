@@ -33,11 +33,13 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-/* ---------------------------------- Auth ---------------------------------- */
+/* ------------------------------ Auth/Account ------------------------------ */
 const authRoutes = require("./routes/auth/auth");
 app.use("/auth", authRoutes);
 const loginRoutes = require("./routes/auth/login");
 app.use("/login", loginRoutes);
+const accountInfoRoutes = require("./routes/auth/account-info");
+app.use("/account-info", accountInfoRoutes);
 
 /* ----------------------------------- API ---------------------------------- */
 const apiRoutes = require("./routes/api/api");

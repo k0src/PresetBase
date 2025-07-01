@@ -186,7 +186,7 @@ router.post("/approve", isAdmin, multer, async (req, res) => {
           [presetId, synthId]
         );
 
-        await dbRun(
+        const submissionId = await dbRun(
           `INSERT INTO song_presets 
             (song_id, preset_id, usage_type, verified, audio_url, timestamp)
            VALUES (?, ?, ?, 't', ?, datetime())`,

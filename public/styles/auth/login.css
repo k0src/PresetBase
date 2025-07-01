@@ -103,6 +103,14 @@ body {
   border-radius: 0.4rem;
 }
 
+.auth-input:disabled {
+  background-color: #121417;
+  border-color: #3a3f44;
+  color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
 .auth-btn {
   cursor: pointer;
   font-family: "Geist", sans-serif;
@@ -117,8 +125,17 @@ body {
   background-color: #5a7f71;
 }
 
+.auth-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
 .auth-btn:hover {
   background-color: #73988a;
+}
+
+.auth-btn:disabled:hover {
+  background-color: #5a7f71;
 }
 
 .auth-link {

@@ -530,6 +530,29 @@ const buildPresetChain = async function (artistPresetMap, artistCollabMap) {
   return maxChain;
 };
 
+/* ------------------------------- Formatting ------------------------------- */
+const formatDate = (date) =>
+  new Date(date).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+const titleCase = function (str) {
+  if (!str) {
+    return "";
+  }
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(function (word) {
+      return word.charAt(0).toUpperCase() + word.slice(1);
+    })
+    .join(" ");
+};
+
 module.exports = {
   dbAll,
   dbGet,
@@ -548,4 +571,6 @@ module.exports = {
   approveFile,
   getGenreStyles,
   buildPresetChain,
+  formatDate,
+  titleCase,
 };

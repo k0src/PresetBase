@@ -19,6 +19,7 @@ passport.use(
           user = await User.createUser({
             email,
             username: generateUsername(name),
+            authenticated_with: "google",
           });
         }
         return done(null, user);
@@ -31,8 +32,8 @@ passport.use(
 
 passport.serializeUser((user, done) => {
   console.log("Serializing user:", user);
+
   if (!user || !user.id) {
-    console.error("Invalid user passed to serializeUser:", user);
     return done(new Error("Invalid user object"), null);
   }
   done(null, user.id);

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Account Information</title>
+    <script src="/js/auth/account-info.js" defer></script>
+    <link rel="stylesheet" href="/styles/auth/account-info.css" />
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <main class="container">
+          <section class="account--header">
+            <h1 class="heading-primary">Account information</h1>
+          </section>
+
+          <section class="account-main--container">
+            <div class="delete-account-modal-overlay">
+              <div class="delete-account-modal">
+                <i
+                  class="fa-solid fa-triangle-exclamation delete-account-icon"
+                ></i>
+                <span class="delete-account-title">Delete Account?</span>
+                <span class="delete-account-desc"
+                  >You are about to delete your account. This action cannot be
+                  undone.</span
+                >
+                <div class="delete-account-btn-container">
+                  <button class="delete-account-btn--cancel">Cancel</button>
+                  <button class="delete-account-btn--delete">Delete</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="account-info">
+              <div class="account-info-head-text-container">
+                <span class="account-info-head-text"
+                  >Joined: <%= user.timestamp %></span
+                >
+                <span class="account-info-head-text">&bull;</span>
+                <span class="account-info-head-text"
+                  >Authenticated with: <%= user.authenticated_with %></span
+                >
+              </div>
+
+              <div class="account-info-input-container">
+                <span class="account-info-text">Username</span>
+                <input
+                  type="text"
+                  id="username"
+                  class="account-info-input"
+                  placeholder="Username"
+                  value="<%= user.username %>"
+                />
+                <div id="username-hint" class="input-hint hidden"></div>
+                <span class="account-info-text">Email</span>
+                <input type="email" id="email" class="account-info-input"
+                placeholder="Email" <%- user.authenticated_with === "site" ? ""
+                : "disabled" %> value="<%= user.email %>" />
+              </div>
+              <button
+                id="apply-changes-btn"
+                type="button"
+                class="account-info-btn"
+                disabled
+              >
+                Apply changes
+              </button>
+            </div>
+
+            <div class="user-submissions-header">
+              <h2 class="heading-secondary">My submissions</h2>
+            </div>
+            <div class="user-submissions-wrapper">
+              <div class="user-submissions-container">
+                <h3 class="heading-tertiary">Pending</h3>
+              </div>
+
+              <div class="user-submissions-container">
+                <h3 class="heading-tertiary">Approved</h3>
+              </div>
+            </div>
+
+            <div class="account-info-footer">
+              <div class="btn-container">
+                <button id="sign-out-btn" type="button" class="sign-out-btn">
+                  Sign Out
+                </button>
+                <button
+                  id="delete-account-btn"
+                  type="button"
+                  class="delete-account-btn"
+                >
+                  Delete Account
+                </button>
+              </div>
+              <div id="footer-hint" class="input-hint hidden"></div>
+            </div>
+          </section>
+        </main>
+      </div>
+      <%- include('../partials/scroll-to-top') %>
+    </div>
+  </body>
+</html>

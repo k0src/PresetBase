@@ -12,10 +12,12 @@ router.get("/", async (req, res) => {
         (SELECT COUNT(*) FROM presets) AS total_presets`;
 
   try {
+    const isAuth = req.isAuthenticated();
     const dbStats = await dbGet(query);
 
     res.render("static/about", {
       dbStats,
+      isAuth,
       PATH_URL: "about",
     });
   } catch (err) {
