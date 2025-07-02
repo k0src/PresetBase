@@ -614,3 +614,19 @@ select:disabled {
 .deny-btn:hover {
   background-color: #c86c6c;
 }
+
+.no-submissions-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  background: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 2.4rem 2.8rem;
+}
+
+.no-submissions-text {
+  font-size: 1.6rem;
+  color: #899096 !important;
+}
