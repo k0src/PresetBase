@@ -150,9 +150,10 @@ router.get("/", async (req, res) => {
     `,
   };
 
-  try {
-    const isAuth = req.isAuthenticated();
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
 
+  try {
     const [
       totalResults,
       hot,
@@ -176,6 +177,8 @@ router.get("/", async (req, res) => {
     mostRecent.addedDaysAgo = addedDaysAgo(mostRecent.song_added_timestamp);
 
     res.render("main/browse", {
+      isAuth,
+      userIsAdmin,
       totalResults: totalResults.total_results,
       hot,
       popular,
@@ -183,7 +186,6 @@ router.get("/", async (req, res) => {
       topGenres,
       mostRecent,
       topSynths,
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
@@ -203,6 +205,9 @@ router.get("/chart-data", async (req, res) => {
     ORDER BY num_presets DESC
   `;
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
     const chartData = await dbAll(query);
     const labels = chartData.map((row) => row.synth_name).slice(0, 20);
@@ -210,13 +215,12 @@ router.get("/chart-data", async (req, res) => {
 
     res.json({ labels, values });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

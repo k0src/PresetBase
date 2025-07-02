@@ -94,8 +94,10 @@ router.get("/", async (req, res) => {
       ORDER BY presets.preset_name`,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const [totalResults, songs, artists, albums, synths, presets] =
       await Promise.all([
         dbGet(queries.totalResults, Array(5).fill(`%${searchQuery}%`)),
@@ -109,6 +111,8 @@ router.get("/", async (req, res) => {
     const genreStyles = await getGenreStyles();
 
     res.render("main/search", {
+      isAuth,
+      userIsAdmin,
       totalResults: totalResults.total_results,
       songs: songs || [],
       artists: artists || [],
@@ -117,17 +121,15 @@ router.get("/", async (req, res) => {
       presets: presets || [],
       searchQuery: searchQuery,
       genreStyles: genreStyles,
-      isAuth,
       PATH_URL: "search",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

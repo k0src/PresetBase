@@ -31,8 +31,10 @@ router.get("/", isAdmin, async (req, res) => {
         LIMIT 1`,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const announcements = await dbAll(queries.announcements);
     const activeAnnouncement = await dbGet(queries.activeAnnouncement, [now]);
 
@@ -61,21 +63,26 @@ router.get("/", isAdmin, async (req, res) => {
     });
 
     res.render("admin/announcements", {
+      isAuth,
+      userIsAdmin,
       announcements: announcements,
       activeAnnouncement: activeAnnouncement,
-      isAuth,
       PATH_URL: "admin",
     });
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", isAdmin, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   const { title, description, expires_at } = req.body;
   const utcDateTime = new Date(expires_at).toISOString();
   const now = new Date().toISOString();
@@ -94,40 +101,51 @@ router.post("/", async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
   res.redirect("/admin/announcements?success=1");
 });
 
-router.post("/deactivate-announcement/:announcementId", async (req, res) => {
-  const announcementId = req.params.announcementId;
+router.post(
+  "/deactivate-announcement/:announcementId",
+  isAdmin,
+  async (req, res) => {
+    const announcementId = req.params.announcementId;
 
-  try {
-    await dbRun(
-      `UPDATE announcements
+    try {
+      await dbRun(
+        `UPDATE announcements
       SET is_active = 0
       WHERE id = ?`,
-      [announcementId]
-    );
-  } catch (err) {
-    return res
-      .status(500)
-      .send("Error deactivating announcement: " + err.message);
+        [announcementId]
+      );
+    } catch (err) {
+      return res
+        .status(500)
+        .send("Error deactivating announcement: " + err.message);
+    }
+    res.redirect("/admin/announcements");
   }
-  res.redirect("/admin/announcements");
-});
+);
 
-router.delete("/delete-announcement/:announcementId", async (req, res) => {
-  const announcementId = req.params.announcementId;
+router.delete(
+  "/delete-announcement/:announcementId",
+  isAdmin,
+  async (req, res) => {
+    const announcementId = req.params.announcementId;
 
-  try {
-    await dbRun(`DELETE FROM announcements WHERE id = ?`, [announcementId]);
-    res.status(200).send();
-  } catch (err) {
-    return res.status(500).send("Error deleting announcement: " + err.message);
+    try {
+      await dbRun(`DELETE FROM announcements WHERE id = ?`, [announcementId]);
+      res.status(200).send();
+    } catch (err) {
+      return res
+        .status(500)
+        .send("Error deleting announcement: " + err.message);
+    }
   }
-});
+);
 
 module.exports = router;

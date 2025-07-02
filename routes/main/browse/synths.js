@@ -51,8 +51,10 @@ router.get("/", async (req, res) => {
       LIMIT 10`,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const [totalResults, synths, hotSynths] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.synths),
@@ -64,19 +66,19 @@ router.get("/", async (req, res) => {
     convertTimestamps(synths, "synth");
 
     res.render("main/browse/synths", {
+      isAuth,
+      userIsAdmin,
       totalResults: totalResults.total_results,
       synths,
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

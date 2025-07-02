@@ -58,8 +58,10 @@ router.get("/", async (req, res) => {
       LIMIT 10`,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const [totalResults, albums, hotAlbums] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.albums),
@@ -73,20 +75,20 @@ router.get("/", async (req, res) => {
     const genreStyles = await getGenreStyles();
 
     res.render("main/browse/albums", {
+      isAuth,
+      userIsAdmin,
       totalResults: totalResults.total_results,
       albums,
       genreStyles,
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

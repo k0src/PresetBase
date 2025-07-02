@@ -43,8 +43,10 @@ router.get("/", async (req, res) => {
         ORDER BY ${sortKey}`,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const [totalResults, presets] = await Promise.all([
       dbGet(queries.totalResults),
       dbAll(queries.presets),
@@ -54,19 +56,19 @@ router.get("/", async (req, res) => {
     convertTimestamps(presets, "preset");
 
     res.render("main/browse/presets", {
+      isAuth,
+      userIsAdmin,
       totalResults: totalResults.total_results,
       presets,
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

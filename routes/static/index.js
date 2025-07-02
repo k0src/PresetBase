@@ -15,15 +15,16 @@ router.get("/", async (req, res) => {
         (expires_at IS NULL OR expires_at > ?)
     LIMIT 1`;
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
-    const isAdmin = req.user && isAuth && req.user.is_admin;
     const announcement = await dbGet(announcementQuery, [
       new Date().toISOString(),
     ]);
 
     res.render("static/index", {
-      isAdmin,
+      userIsAdmin,
       isAuth,
       announcement,
       PATH_URL: "home",
@@ -31,7 +32,8 @@ router.get("/", async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }

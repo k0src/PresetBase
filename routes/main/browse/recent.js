@@ -51,8 +51,10 @@ router.get("/", async (req, res) => {
     SELECT * FROM recent_songs
     ORDER BY ${sortKey}`;
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const songs = await dbAll(query);
 
     convertTimestamps(songs, "song");
@@ -60,20 +62,20 @@ router.get("/", async (req, res) => {
     const genreStyles = await getGenreStyles();
 
     res.render("main/browse/recent", {
+      isAuth,
+      userIsAdmin,
       songs,
       totalResults: 10,
       genreStyles,
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

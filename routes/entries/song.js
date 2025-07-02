@@ -80,8 +80,10 @@ router.get("/:id", async (req, res) => {
     `,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     await dbRun(queries.updateClick, [songId, now]);
 
     const [song, moreSongs] = await Promise.all([
@@ -96,19 +98,19 @@ router.get("/:id", async (req, res) => {
     }
 
     res.render("entries/song", {
+      isAuth,
+      userIsAdmin,
       song: song,
       moreSongs: moreSongs || [],
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

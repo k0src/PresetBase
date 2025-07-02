@@ -83,9 +83,9 @@ router.get("/:id", async (req, res) => {
     `,
   };
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
   try {
-    const isAuth = req.isAuthenticated();
-
     if (albumId === "0") {
       return res.status(404).render("static/404", { PATH_URL: "404" });
     }
@@ -105,20 +105,20 @@ router.get("/:id", async (req, res) => {
     const genreStyles = await getGenreStyles();
 
     res.render("entries/album", {
+      isAuth,
+      userIsAdmin,
       album: album,
       moreAlbums: moreAlbums || [],
       genreStyles: genreStyles,
-      isAuth,
       PATH_URL: "browse",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
   }
 });
 

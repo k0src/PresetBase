@@ -11,19 +11,22 @@ router.get("/", async (req, res) => {
         (SELECT COUNT(*) FROM synths) AS total_synths,
         (SELECT COUNT(*) FROM presets) AS total_presets`;
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
   try {
-    const isAuth = req.isAuthenticated();
     const dbStats = await dbGet(query);
 
     res.render("static/about", {
-      dbStats,
       isAuth,
+      userIsAdmin,
+      dbStats,
       PATH_URL: "about",
     });
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }

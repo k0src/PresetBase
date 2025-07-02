@@ -12,34 +12,49 @@ const isAuth = require("../../middleware/is-auth.js");
 /* Example submission */
 router.get("/example", async (req, res) => {
   const isAuth = req.isAuthenticated();
-  res.render("main/submit/submit-example", {
-    isAuth,
-    PATH_URL: "submit",
-  });
-});
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
 
-/* Main submit page */
-router.get("/", isAuth, async (req, res) => {
   try {
-    const isAuth = req.isAuthenticated();
-
-    res.render("main/submit/submit", {
-      success: req.query.success === "1",
+    res.render("main/submit/submit-example", {
       isAuth,
+      userIsAdmin,
       PATH_URL: "submit",
     });
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "db-error",
+    });
+  }
+});
+
+/* Main submit page */
+router.get("/", isAuth, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
+  try {
+    res.render("main/submit/submit", {
+      isAuth,
+      userIsAdmin,
+      success: req.query.success === "1",
+      PATH_URL: "submit",
+    });
+  } catch (err) {
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
 });
 
 router.post("/", isAuth, multer, async (req, res) => {
-  console.log(req.body);
   const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
 
   if (!isAuth) {
     return res.status(403).send("Forbidden");
@@ -47,11 +62,7 @@ router.post("/", isAuth, multer, async (req, res) => {
 
   const userId = req.user.id;
   const now = new Date().toISOString();
-
   const rawData = attachFilesToBody(req.body, req.files);
-
-  console.log(rawData);
-  console.log(userId);
 
   try {
     const sanitizedData = await sanitizeData(rawData);
@@ -69,7 +80,8 @@ router.post("/", isAuth, multer, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }

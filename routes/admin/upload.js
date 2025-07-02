@@ -13,17 +13,21 @@ const isAdmin = require("../../middleware/is-admin.js");
 
 /* ------------------------------ Admin Upload ------------------------------ */
 router.get("/", isAdmin, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     res.render("admin/upload", {
-      success: req.query.success === "1",
       isAuth,
+      userIsAdmin,
+      success: req.query.success === "1",
       PATH_URL: "admin",
     });
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
@@ -31,6 +35,9 @@ router.get("/", isAdmin, async (req, res) => {
 
 router.post("/", isAdmin, multer, async (req, res) => {
   try {
+    const isAuth = req.isAuthenticated();
+    const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
     // Parse data
     const userId = req.user.id;
     const rawData = attachFilesToBody(req.body, req.files);
@@ -201,7 +208,8 @@ router.post("/", isAdmin, multer, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }

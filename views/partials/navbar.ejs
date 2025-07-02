@@ -15,7 +15,7 @@
       <%= PATH_URL === "about" ? "navbar-link--active" : "" %>">About</a>
       <a href="/submit" class="navbar-link
       <%= PATH_URL === "submit" ? "navbar-link--active" : "" %>">Submit</a>
-      <% if (isAdmin) { %>
+      <% if (userIsAdmin) { %>
       <a href="/admin" class="navbar-link
       <%= PATH_URL === "admin" ? "navbar-link--active" : "" %>">Admin Panel</a>
       <% } %>
@@ -64,7 +64,7 @@
   <a href="/about-us" class="mobile-nav-link">About</a>
   <a href="/submit" class="mobile-nav-link">Submit</a>
   <a href="<%= isAuth ? '/account-info' : '/login' %>" class="mobile-nav-link">My Account</a>
-  <% if (isAdmin) { %>
+  <% if (userIsAdmin) { %>
   <a href="/admin" class="mobile-nav-link">Admin Panel</a>
   <% } %>
   <input 

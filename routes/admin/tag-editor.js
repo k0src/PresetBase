@@ -8,17 +8,20 @@ router.get("/", isAdmin, async (req, res) => {
     SELECT id, name, slug, text_color, border_color, bg_color
     FROM genre_tags`;
 
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   try {
-    const isAuth = req.isAuthenticated();
     const tags = await dbAll(query);
     const genreStyles = await getGenreStyles();
 
     res.render("admin/tag-editor", {
+      isAuth,
+      userIsAdmin,
       tag: null,
       tags,
       editing: false,
       genreStyles,
-      isAuth,
       PATH_URL: "admin",
     });
   } catch (err) {
@@ -31,6 +34,9 @@ router.get("/", isAdmin, async (req, res) => {
 });
 
 router.post("/", isAdmin, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   const {
     name,
     slug,
@@ -59,7 +65,8 @@ router.post("/", isAdmin, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
@@ -68,6 +75,9 @@ router.post("/", isAdmin, async (req, res) => {
 });
 
 router.post("/edit-tag", isAdmin, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   const { tagId } = req.body;
 
   try {
@@ -89,6 +99,8 @@ router.post("/edit-tag", isAdmin, async (req, res) => {
     }
 
     res.render("admin/tag-editor", {
+      isAuth,
+      userIsAdmin,
       tag: tag,
       tags,
       editing: true,
@@ -98,7 +110,8 @@ router.post("/edit-tag", isAdmin, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }

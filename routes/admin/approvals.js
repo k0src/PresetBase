@@ -15,8 +15,10 @@ const { getUserById } = require("../../models/user");
 
 /* -------------------------------- Approvals ------------------------------- */
 router.get("/", isAdmin, async (req, res) => {
-  const isAuth = req.isAuthenticated();
   const query = `SELECT id, data, submitted_at, user_id FROM pending_submissions`;
+
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
 
   try {
     const rows = await dbAll(query);
@@ -33,11 +35,17 @@ router.get("/", isAdmin, async (req, res) => {
       })
     );
 
-    res.render("admin/approvals", { submissions, isAuth, PATH_URL: "admin" });
+    res.render("admin/approvals", {
+      isAuth,
+      userIsAdmin,
+      submissions,
+      PATH_URL: "admin",
+    });
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
@@ -45,6 +53,9 @@ router.get("/", isAdmin, async (req, res) => {
 
 /* ---------------------------- Approve submisson --------------------------- */
 router.post("/approve", isAdmin, multer, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   try {
     // Get submission data
     const originalEntry = await dbGet(
@@ -247,7 +258,8 @@ router.post("/approve", isAdmin, multer, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
@@ -255,6 +267,9 @@ router.post("/approve", isAdmin, multer, async (req, res) => {
 
 /* ----------------------------- Deny submission ---------------------------- */
 router.post("/deny/:id", isAdmin, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = req.user && isAuth && req.user.is_admin;
+
   const id = req.params.id;
   console.log("denying: ", id);
 
@@ -277,7 +292,8 @@ router.post("/deny/:id", isAdmin, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
