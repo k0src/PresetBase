@@ -119,6 +119,7 @@ body {
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
+
 .hot-song--carousel-item:hover {
   z-index: 99;
   box-shadow: 0 0.6rem 1rem rgba(0, 0, 0, 0.1);

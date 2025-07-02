@@ -5,18 +5,19 @@ const { formatDate, titleCase, dbRun } = require("../../util/UTIL.js");
 const isAuth = require("../../middleware/is-auth.js");
 
 router.get("/", isAuth, async (req, res) => {
+  const isAuth = req.isAuthenticated();
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
+
   try {
     const userTimestamp = await User.getUserTimestamp(req.user.id);
-    const userId = req.user.id;
-
-    const isAuth = req.isAuthenticated();
     const { id, email, username, is_admin, authenticated_with } = req.user;
 
-    const userSubmissions = await User.getUserSubmissions(userId);
-    const pendingSubmissions = await User.getUserPendingSubmissions(userId);
+    const userSubmissions = await User.getUserSubmissions(id);
+    const pendingSubmissions = await User.getUserPendingSubmissions(id);
 
     res.render("auth/account-info", {
       isAuth,
+      userIsAdmin,
       user: {
         id,
         username,
@@ -32,7 +33,8 @@ router.get("/", isAuth, async (req, res) => {
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
-      isAuth: req.isAuthenticated(),
+      isAuth,
+      userIsAdmin,
       PATH_URL: "db-error",
     });
   }
