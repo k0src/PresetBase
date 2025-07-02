@@ -52,6 +52,23 @@ const showDeactivateModal = function (btn) {
   });
 };
 
+/* ----------------------- Remove Announcement Element ---------------------- */
+const removePastAnnouncementElement = function (element) {
+  const pastAnnouncementContainer = element.closest(
+    ".past-announcement-container"
+  );
+
+  element.remove();
+
+  if (pastAnnouncementContainer.children.length === 0) {
+    const pastAnnouncementHeader = document.querySelector(
+      ".past-announcement-header"
+    );
+    pastAnnouncementHeader.remove();
+    pastAnnouncementContainer.remove();
+  }
+};
+
 /* ---------------------------- Announcement List --------------------------- */
 const deleteAnnouncement = async function (btn) {
   const announcementId = btn.parentNode.querySelector(
@@ -71,7 +88,7 @@ const deleteAnnouncement = async function (btn) {
         },
       }
     );
-    announcementEntry.remove();
+    removePastAnnouncementElement(announcementEntry);
   } catch (err) {
     console.error("Error deactivating announcement:", err);
     return;

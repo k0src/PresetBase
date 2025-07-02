@@ -103,7 +103,7 @@ const addedDaysAgo = function (timestamp) {
 
 /* ---------------------------------- Files --------------------------------- */
 const attachFilesToBody = function (body, files) {
-  if (!files.length) return;
+  if (!files.length) return body;
 
   const updated = structuredClone(body);
 

@@ -38,6 +38,7 @@ router.get("/", isAuth, async (req, res) => {
 });
 
 router.post("/", isAuth, multer, async (req, res) => {
+  console.log(req.body);
   const isAuth = req.isAuthenticated();
 
   if (!isAuth) {
@@ -49,9 +50,14 @@ router.post("/", isAuth, multer, async (req, res) => {
 
   const rawData = attachFilesToBody(req.body, req.files);
 
+  console.log(rawData);
+  console.log(userId);
+
   try {
     const sanitizedData = await sanitizeData(rawData);
+    console.log(sanitizedData);
     const fullBodyData = await mergeAndValidateSubmitData(sanitizedData);
+    console.log(fullBodyData);
 
     const pendingData = JSON.stringify(fullBodyData);
     const query = `

@@ -28,8 +28,26 @@ const dbRun = function (query, params = []) {
   });
 };
 
+const formatDateAndTime = (date) =>
+  new Date(date).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+
+const formatDate = (date) =>
+  new Date(date).toLocaleString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+
 module.exports = {
   dbAll,
   dbGet,
   dbRun,
+  formatDateAndTime,
+  formatDate,
 };

@@ -155,7 +155,7 @@ const showDeletePendingModal = function (btn) {
   const submissionId = btn.parentNode.querySelector(
     "[name=submissionId]"
   ).value;
-  const pendingSubmissionEntry = btn.closest(".user-submission");
+  const pendingSubmissionEntry = btn.closest(".user-submission--pending");
 
   pendingModalOverlay.style.display = "block";
 
@@ -170,16 +170,29 @@ const showDeletePendingModal = function (btn) {
 
   pendingModalDeleteBtn.addEventListener("click", (e) => {
     e.preventDefault();
-    deletePendingSubmission(pendingSubmissionEntry, submissionId);
+    deletePendingSubmission(submissionId);
+    removePendingSubmissionElement(pendingSubmissionEntry);
     closeDeletePendingModal();
   });
 };
 
+/* ----------------------- Remove Pending Submission Element ---------------- */
+const removePendingSubmissionElement = function (element) {
+  const pendingSubmissionsContainer = element.closest(
+    ".pending-submissions-container"
+  );
+
+  element.remove();
+
+  if (pendingSubmissionsContainer.children.length === 0) {
+    const pendingHeader = document.querySelector(".pending--header");
+    pendingHeader.remove();
+    pendingSubmissionsContainer.remove();
+  }
+};
+
 /* ------------------------ Delete Pending Submission ----------------------- */
-const deletePendingSubmission = async function (
-  pendingSubmissionEntry,
-  submissionId
-) {
+const deletePendingSubmission = async function (submissionId) {
   try {
     const response = await fetch(
       `/account-info/delete-pending-submission/${encodeURIComponent(
@@ -197,8 +210,6 @@ const deletePendingSubmission = async function (
       const error = await response.json();
       throw new Error(error.error);
     }
-
-    pendingSubmissionEntry.remove();
   } catch (err) {
     console.error(err);
     return;

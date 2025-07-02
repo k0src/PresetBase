@@ -1,4 +1,4 @@
-const { dbGet, dbRun, dbAll } = require("./UTIL");
+const { dbGet, dbRun, dbAll, formatDate } = require("./UTIL");
 
 class User {
   constructor(
@@ -179,6 +179,7 @@ class User {
         songs.id AS song_id,
         songs.image_url AS song_image,
         artists.name AS artist_name,
+        song_presets.timestamp,
         json_group_array(
           json_object(
             'synth_name', synths.synth_name,
@@ -209,6 +210,7 @@ class User {
         song_id: s.song_id,
         song_image: s.song_image,
         artist_name: s.artist_name,
+        timestamp: s.timestamp,
         presets: JSON.parse(s.presets || "[]"),
       }));
     } catch (err) {

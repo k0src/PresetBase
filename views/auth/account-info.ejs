@@ -94,36 +94,55 @@
             <% if (pendingSubmissions.length || userSubmissions.length) { %>
             <div class="user-submissions-wrapper">
               <% if (pendingSubmissions.length) { %>
-              <div class="user-submissions-header--small">
+              <div class="user-submissions-header--small pending--header">
                 <h3 class="heading-tertiary">Pending</h3>
               </div>
-              <div class="user-submissions-container">
+              <div class="pending-submissions-container">
                 <% pendingSubmissions.forEach((submission) => { const mainArtist
                 = submission.data.artists.find((artist) => artist.role ===
                 "Main").name; %>
-                <div class="user-submission">
-                  <img
-                    src="/uploads/images/pending/<%= submission.data.songImg %>"
-                    alt="<%= submission.data.songTitle %> Cover"
-                    class="user-submission--img"
-                  />
-                  <div class="user-submission--right">
-                    <div class="user-submission--icon-container">
-                      <i class="fa-solid fa-music user-submission--icon"></i>
-                      <span class="user-submission--text-primary"
-                        ><%= mainArtist %> &mdash; <%= submission.data.songTitle
-                        %></span
-                      >
+                <div class="user-submission--pending">
+                  <div class="user-submission--left">
+                    <div class="user-submission--top">
+                      <% let songImgSrc; if (submission.data.songFilled) {
+                      songImgSrc =
+                      `/uploads/images/approved/${submission.data.songImg}`; }
+                      else { songImgSrc =
+                      `/uploads/images/pending/${submission.data.songImg}`; } %>
+                      <img
+                        src="<%= songImgSrc %>"
+                        alt="<%= submission.data.songTitle %> Cover"
+                        class="user-submission--img"
+                      />
+                      <div class="user-submission--title-container">
+                        <span class="user-submission--text-secondary"
+                          ><%= mainArtist%></span
+                        >
+                        <span class="user-submission--text-primary"
+                          ><%= submission.data.songTitle%></span
+                        >
+                        <span class="user-submission--time"
+                          ><%= submission.submitted_at %></span
+                        >
+                      </div>
                     </div>
+
                     <hr class="user-submisson--hr" />
-                    <div class="user-submission--icon-container">
-                      <i class="fa-solid fa-sliders user-submission--icon"></i>
-                      <span class="user-submission--text-secondary">
-                        <%= submission.data.synths .flatMap(synth =>
-                        synth.presets.map(preset => preset.name)) .join(', ') %>
-                      </span>
+                    <div class="user-submission--preset-list-container">
+                      <% submission.data.synths.forEach(function(synth) {
+                      synth.presets.forEach((preset) => { %>
+                      <div class="user-submission--icon-container">
+                        <i
+                          class="fa-solid fa-sliders user-submission--icon"
+                        ></i>
+                        <span class="user-submission--text-tertiary">
+                          <%= preset.name %>
+                        </span>
+                      </div>
+                      <% }); }); %>
                     </div>
                   </div>
+
                   <input
                     type="hidden"
                     value="<%= submission.id %>"
@@ -140,6 +159,7 @@
                 </div>
                 <% }) %>
               </div>
+
               <% } %> <% if (userSubmissions.length) { %>
               <div class="user-submissions-header--small">
                 <h3 class="heading-tertiary">Approved</h3>
@@ -150,27 +170,34 @@
                   href="/song/<%= submission.song_id %>"
                   class="user-submission--approved"
                 >
-                  <img
-                    src="/uploads/images/approved/<%= submission.song_image %>"
-                    alt="<%= submission.song_title %> Cover"
-                    class="user-submission--img"
-                  />
-                  <div class="user-submission--right">
-                    <div class="user-submission--icon-container">
-                      <i class="fa-solid fa-music user-submission--icon"></i>
+                  <div class="user-submission--top">
+                    <img
+                      src="/uploads/images/approved/<%= submission.song_image %>"
+                      alt="<%= submission.song_title %> Cover"
+                      class="user-submission--img"
+                    />
+                    <div class="user-submission--title-container">
+                      <span class="user-submission--text-secondary"
+                        ><%= submission.artist_name %></span
+                      >
                       <span class="user-submission--text-primary"
-                        ><%= submission.artist_name %> &mdash; <%=
-                        submission.song_title %></span
+                        ><%= submission.song_title %></span
+                      >
+                      <span class="user-submission--time"
+                        ><%= submission.timestamp %></span
                       >
                     </div>
-                    <hr class="user-submisson--hr" />
+                  </div>
+                  <hr class="user-submisson--hr" />
+                  <div class="user-submission--preset-list-container">
+                    <% submission.presets.forEach((preset) => { %>
                     <div class="user-submission--icon-container">
                       <i class="fa-solid fa-sliders user-submission--icon"></i>
-                      <span class="user-submission--text-secondary">
-                        <%= submission.presets.map(preset =>
-                        preset.preset_name).join(', ') %>
+                      <span class="user-submission--text-tertiary">
+                        <%= preset.preset_name %>
                       </span>
                     </div>
+                    <% }) %>
                   </div>
                 </a>
                 <% }) %>
