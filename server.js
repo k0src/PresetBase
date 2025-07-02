@@ -117,6 +117,8 @@ const adminTagEditor = require("./routes/admin/tag-editor");
 app.use("/admin/tag-editor", adminTagEditor);
 const adminAnnouncements = require("./routes/admin/announcements");
 app.use("/admin/announcements", adminAnnouncements);
+const adminManageUsers = require("./routes/admin/manage-users");
+app.use("/admin/manage-users", adminManageUsers);
 
 /* ----------------------------------- 404 ---------------------------------- */
 app.use((req, res) => {

@@ -7,7 +7,11 @@ router.get("/", isAdmin, async (req, res) => {
   const userIsAdmin = req.user && req.user.is_admin;
 
   try {
-    res.render("admin/admin", { isAuth, userIsAdmin, PATH_URL: "admin" });
+    res.render("admin/manage-users", {
+      isAuth,
+      userIsAdmin,
+      PATH_URL: "admin",
+    });
   } catch (err) {
     return res.status(500).render("static/db-error", {
       err,
