@@ -17,23 +17,23 @@ router.get("/", async (req, res) => {
 
   try {
     const isAuth = req.isAuthenticated();
+    const isAdmin = req.user && isAuth && req.user.is_admin;
     const announcement = await dbGet(announcementQuery, [
       new Date().toISOString(),
     ]);
 
     res.render("static/index", {
-      announcement,
+      isAdmin,
       isAuth,
+      announcement,
       PATH_URL: "home",
     });
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 

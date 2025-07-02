@@ -252,7 +252,7 @@ html {
 }
 
 /* --------------------------------- Queries -------------------------------- */
-@media (max-width: 60em) {
+@media (max-width: 62em) {
   .navbar-search--container {
     min-width: 24rem;
   }
@@ -260,11 +260,11 @@ html {
   .navbar-left,
   .navbar-right,
   .navbar-link--container {
-    gap: 2.4rem;
+    gap: 2rem;
   }
 }
 
-@media (max-width: 48em) {
+@media (max-width: 53em) {
   .navbar-link--container,
   .navbar-right {
     display: none;
