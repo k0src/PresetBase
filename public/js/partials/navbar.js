@@ -168,27 +168,29 @@ document.addEventListener("DOMContentLoaded", () => {
       input.focus();
     }
   });
-});
 
-/* ------------------------------- Mobile Nav ------------------------------- */
-const btnMobileNav = document.querySelector(".button-mobile-nav");
-const mobileNav = document.querySelector(".mobile-nav");
-const iconBars = btnMobileNav.querySelector(".fa-bars");
-const iconClose = btnMobileNav.querySelector(".fa-xmark");
-const mobileSearchInput = document.querySelector(".mobile-nav-search-input");
+  /* ------------------------------- Mobile Nav ------------------------------- */
+  const btnMobileNav = document.querySelector(".button-mobile-nav");
+  const mobileNav = document.querySelector(".mobile-nav");
+  const iconBars = btnMobileNav.querySelector(".fa-bars");
+  const iconClose = btnMobileNav.querySelector(".fa-xmark");
+  const mobileSearchInput = document.querySelector(".mobile-nav-search-input");
 
-btnMobileNav.addEventListener("click", () => {
-  mobileNav.classList.toggle("nav-open");
-  iconBars.classList.toggle("hidden");
-  iconClose.classList.toggle("hidden");
-});
+  btnMobileNav.addEventListener("click", () => {
+    mobileNav.classList.toggle("nav-open");
+    iconBars.classList.toggle("hidden");
+    iconClose.classList.toggle("hidden");
+  });
 
-mobileSearchInput.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    if (mobileSearchInput.value) {
-      const searchValue = mobileSearchInput.value.trim().toLowerCase();
-      window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
-      mobileSearchInput.value = "";
+  mobileSearchInput.addEventListener("keydown", function (event) {
+    if (event.key === "Enter") {
+      if (mobileSearchInput.value) {
+        const searchValue = mobileSearchInput.value.trim().toLowerCase();
+        window.location.href = `/search?query=${encodeURIComponent(
+          searchValue
+        )}`;
+        mobileSearchInput.value = "";
+      }
     }
-  }
+  });
 });
