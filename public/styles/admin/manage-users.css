@@ -1,0 +1,206 @@
+body {
+  background-color: #171b1f;
+}
+
+.container {
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
+  border-bottom: 0.2rem solid #2d343a;
+  background-color: #202429;
+  border-bottom-left-radius: 0.8rem;
+  border-bottom-right-radius: 0.8rem;
+}
+
+/* -------------------------------- No users -------------------------------- */
+.no-users--container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.8rem;
+  background: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 2.4rem 2.8rem;
+  margin-bottom: 3.2rem;
+}
+
+.no-users--text {
+  font-size: 1.6rem;
+  color: #899096 !important;
+}
+
+/* ------------------------------- Main Styles ------------------------------ */
+.manage-users--header {
+  padding: 3.2rem 0 2rem 0;
+  display: flex;
+  gap: 3.2rem;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.heading-primary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.heading-secondary {
+  color: #899096;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.manage-users-header--top {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.users-count {
+  color: #899096;
+  font-size: 1.3rem;
+}
+
+.manage-users-header--bottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.manage-users-result-filter--container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
+.manage-users-result-filter {
+  display: flex;
+  align-items: center;
+  background-color: #171b1f;
+  border: 2px solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 0 1.2rem;
+  min-width: 2.4rem;
+  position: relative;
+}
+
+.manage-users-filter--input {
+  font-family: "Geist", sans-serif;
+  font-size: 1.3rem;
+  color: #899096;
+  background-color: transparent;
+  border: none;
+  flex: 1;
+  padding: 0.8rem 0;
+}
+
+.result-filter--clear {
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #899096;
+  transition: color 0.2s ease;
+}
+
+.result-filter--clear:hover {
+  color: #e3e5e4;
+}
+
+.manage-users---select-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
+.manage-users--sort-select {
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #899096;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  padding: 0.4rem 1.6rem;
+  flex: 1;
+}
+
+.sort-icon {
+  color: #899096;
+  font-size: 1.6rem;
+}
+
+/* ------------------------------- Grid Layout ------------------------------ */
+.grid-layout--users {
+  display: grid;
+  grid-template-columns: 2rem 100fr 100fr 100fr 100fr 50fr 2rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.result-columns {
+  color: #899096;
+  font-size: 1.3rem;
+  border-top: 0.1rem solid #2d343a;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.4rem;
+}
+
+.user-entry {
+  padding: 1.4rem;
+  border-bottom: 0.1rem solid #2d343a;
+  transition: background-color 0.2s ease;
+  min-width: 0;
+}
+
+.user-entry:hover,
+.user-entry:nth-child(odd):hover {
+  background-color: #2d343a;
+}
+
+.user-entry:nth-child(odd) {
+  background-color: #1e2227;
+}
+
+.user-entry--number,
+.user-entry--primary,
+.user-entry--date,
+.user-entry--auth,
+.user-entry--role {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.4rem;
+}
+
+.edit--icon {
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #899096 !important;
+  transition: color 0.2s ease;
+}
+
+.edit--icon:hover {
+  color: #e3e5e4 !important;
+}
+
+.user-entry--primary {
+  line-height: 1.1;
+}
+
+.user-entry--date {
+  font-family: monospace;
+  color: #899096 !important;
+  line-height: 1.1;
+  padding-top: 0.2rem;
+}
+
+.user-entry--role,
+.user-entry--auth {
+  color: #899096;
+  line-height: 1.1;
+}

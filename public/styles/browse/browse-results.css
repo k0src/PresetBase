@@ -6,7 +6,7 @@
 .browse-results--header {
   padding: 3.2rem 0 2rem 0;
   display: flex;
-  gap: 2rem;
+  gap: 3.2rem;
   flex-direction: column;
   align-items: baseline;
   justify-content: space-between;

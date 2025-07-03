@@ -241,6 +241,23 @@ class User {
       throw err;
     }
   }
+
+  // Returns all user data including submissions and pending submissions, as objects
+  static async getAllUserData(sortKey = null) {
+    try {
+      const users = await dbAll(`SELECT * FROM users ORDER BY ${sortKey}`);
+
+      for (const user of users) {
+        user.submissions = await User.getUserSubmissions(user.id);
+        user.pendingSubmissions = await User.getUserPendingSubmissions(user.id);
+      }
+
+      return users;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
 }
 
 module.exports = User;

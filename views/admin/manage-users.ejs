@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manage Users</title>
+    <script src="/js/admin/manage-users.js" defer></script>
+    <link rel="stylesheet" href="/styles/admin/manage-users.css" />
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <main class="container">
+          <% if (!totalUsers) { %>
+          <section class="manage-users--header">
+            <div class="manage-users-header--top">
+              <h1 class="heading-primary">Manage Users</h1>
+            </div>
+          </section>
+          <div class="no-users--container">
+            <span class="no-users--text">No users found.</span>
+          </div>
+          <% } else { %>
+          <section class="manage-users--header">
+            <div class="manage-users-header--top">
+              <h1 class="heading-primary">Manage Users</h1>
+              <span class="users-count"><%= totalUsers %> users</span>
+            </div>
+            <div class="manage-users-header--bottom">
+              <div class="manage-users-result-filter--container">
+                <div class="manage-users-result-filter">
+                  <input
+                    type="text"
+                    placeholder="Filter users"
+                    class="manage-users-filter--input"
+                  />
+                  <i class="fa-solid fa-xmark result-filter--clear"></i>
+                </div>
+              </div>
+              <div class="manage-users---select-container">
+                <select name="sort" class="manage-users--sort-select">
+                  <option value="" selected disabled hidden>Sort</option>
+                  <option value="username">Username</option>
+                  <option value="email">Email</option>
+                  <option value="joined">Join Date</option>
+                  <option value="auth">Authentication Provider</option>
+                  <option value="role">Role</option>
+                </select>
+                <i class="fa-solid fa-sort sort-icon"></i>
+              </div>
+            </div>
+          </section>
+
+          <section class="users-list--container">
+            <div class="result-columns grid-layout--users">
+              <span>#</span>
+              <span>Username</span>
+              <span>Email</span>
+              <span>Join Date</span>
+              <span>Authentication Provider</span>
+              <span>Role</span>
+            </div>
+            <% Object.entries(userData).forEach(([i, user]) => { %>
+            <div class="grid-layout--users user-entry">
+              <span class="user-entry--number"><%= +i + 1 %></span>
+              <span class="user-entry--primary"><%= user.username %></span>
+              <span class="user-entry--primary"><%= user.email %></span>
+              <span class="user-entry--date"><%= user.timestamp %></span>
+              <span class="user-entry--auth"
+                ><%= user.authenticated_with %></span
+              >
+              <span class="user-entry--role"
+                ><%= user.is_admin === "t" ? "Admin" : "User" %></span
+              >
+              <i class="fa-solid fa-pen-to-square edit--icon"></i>
+            </div>
+            <% }) %>
+          </section>
+          <% } %>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>
