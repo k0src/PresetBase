@@ -273,17 +273,17 @@ router.post("/deny/:id", isAdmin, async (req, res) => {
   const id = req.params.id;
 
   try {
-    const entry = await dbGet(
+    const submission = await dbGet(
       `SELECT data FROM pending_submissions WHERE id = ?`,
       [id]
     );
 
-    if (!entry) {
+    if (!submission) {
       throw new Error("Submission not found");
     }
 
     // Delete all pending files
-    const data = JSON.parse(entry.data);
+    const data = JSON.parse(submission.data);
     await deleteAllPendingFiles(data);
 
     await dbRun(`DELETE FROM pending_submissions WHERE id = ?`, [id]);

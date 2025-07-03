@@ -1,7 +1,13 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../../models/user");
-const { formatDate, titleCase, dbRun } = require("../../util/UTIL.js");
+const {
+  formatDate,
+  titleCase,
+  dbRun,
+  dbGet,
+  deleteAllPendingFiles,
+} = require("../../util/UTIL.js");
 const isAuth = require("../../middleware/is-auth.js");
 
 router.get("/", isAuth, async (req, res) => {
@@ -125,6 +131,19 @@ router.delete(
     const userId = req.user.id;
 
     try {
+      const submission = await dbGet(
+        `SELECT data FROM pending_submissions WHERE id = ? AND user_id = ?`,
+        [submissionId, userId]
+      );
+
+      if (!submission) {
+        throw new Error("Submission not found");
+      }
+
+      // Delete all pending files
+      const data = JSON.parse(submission.data);
+      await deleteAllPendingFiles(data);
+
       await dbRun(
         `DELETE FROM pending_submissions WHERE id = ? AND user_id = ?`,
         [submissionId, userId]
