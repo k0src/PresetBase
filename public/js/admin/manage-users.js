@@ -55,21 +55,38 @@ filterClearBtn.addEventListener("click", () => {
 
 /* -------------------------------- Slide Out ------------------------------- */
 const populateSlideOut = async function (user) {
+  const banBtn = document.getElementById("ban-btn");
+  const unbanBtn = document.getElementById("unban-btn");
+  const promoteBtn = document.getElementById("promote-btn");
+  const demoteBtn = document.getElementById("demote-btn");
+
   document.getElementById("slideout-username").value = user.username;
   document.getElementById("slideout-email").value = user.email;
   document.getElementById("slideout-timestamp").textContent = user.timestamp;
   document.getElementById("slideout-auth").textContent = user.auth;
   document.getElementById("slideout-role").textContent = user.role;
+  document.getElementById("slideout-banned").textContent = user.banned;
+
+  if (user.banned === "true") {
+    banBtn.classList.add("hidden");
+    unbanBtn.classList.remove("hidden");
+  }
+
+  if (user.role === "Admin") {
+    promoteBtn.classList.add("hidden");
+    demoteBtn.classList.remove("hidden");
+  }
 };
 
 const createUserData = async function (userEntry) {
   const user = {
+    id: userEntry.dataset.userid,
     username: userEntry.querySelector(".user--username").textContent,
     email: userEntry.querySelector(".user--email").textContent,
     timestamp: userEntry.querySelector(".user--timestamp").textContent,
     auth: userEntry.querySelector(".user--auth").textContent,
     role: userEntry.querySelector(".user--role").textContent,
-    id: userEntry.dataset.userid,
+    banned: userEntry.dataset.banned,
   };
   return user;
 };
@@ -224,22 +241,39 @@ const demoteUser = async function (userId) {
   }
 };
 
-const handleActions = async function (user) {
+const handleActions = async function (user, userEntry) {
   const userId = user.id;
+
+  const slideoutBanned = document.getElementById("slideout-banned");
+  const slideoutRole = document.getElementById("slideout-role");
+
+  const entryRole = userEntry.querySelector(`.user--role`);
 
   const banBtn = document.getElementById("ban-btn");
   const promoteBtn = document.getElementById("promote-btn");
+  const unbanBtn = document.getElementById("unban-btn");
+  const demoteBtn = document.getElementById("demote-btn");
+
   const actionsHint = document.getElementById("actions-hint");
 
   const banBtnClone = banBtn.cloneNode(true);
   banBtn.parentNode.replaceChild(banBtnClone, banBtn);
+  const unbanBtnClone = unbanBtn.cloneNode(true);
+  unbanBtn.parentNode.replaceChild(unbanBtnClone, unbanBtn);
 
   const promoteBtnClone = promoteBtn.cloneNode(true);
   promoteBtn.parentNode.replaceChild(promoteBtnClone, promoteBtn);
+  const demoteBtnClone = demoteBtn.cloneNode(true);
+  demoteBtn.parentNode.replaceChild(demoteBtnClone, demoteBtn);
 
   banBtnClone.addEventListener("click", async () => {
     try {
       const response = await banUser(userId);
+      banBtnClone.classList.add("hidden");
+      unbanBtnClone.classList.remove("hidden");
+
+      slideoutBanned.textContent = "true";
+
       actionsHint.textContent = response.message;
       actionsHint.classList.remove("hidden");
       actionsHint.classList.remove("input-hint--error");
@@ -256,6 +290,55 @@ const handleActions = async function (user) {
   promoteBtnClone.addEventListener("click", async () => {
     try {
       const response = await promoteUser(userId);
+      promoteBtnClone.classList.add("hidden");
+      demoteBtnClone.classList.remove("hidden");
+
+      slideoutRole.textContent = "Admin";
+      entryRole.textContent = "Admin";
+
+      actionsHint.textContent = response.message;
+      actionsHint.classList.remove("hidden");
+      actionsHint.classList.remove("input-hint--error");
+      actionsHint.classList.add("input-hint--success");
+    } catch (err) {
+      actionsHint.textContent = err.message;
+      actionsHint.classList.remove("hidden");
+      actionsHint.classList.remove("input-hint--success");
+      actionsHint.classList.add("input-hint--error");
+      console.error(err);
+    }
+  });
+
+  unbanBtnClone.addEventListener("click", async () => {
+    try {
+      const response = await unbanUser(userId);
+      unbanBtnClone.classList.add("hidden");
+      banBtnClone.classList.remove("hidden");
+
+      slideoutBanned.textContent = "false";
+
+      actionsHint.textContent = response.message;
+      actionsHint.classList.remove("hidden");
+      actionsHint.classList.remove("input-hint--error");
+      actionsHint.classList.add("input-hint--success");
+    } catch (err) {
+      actionsHint.textContent = err.message;
+      actionsHint.classList.remove("hidden");
+      actionsHint.classList.remove("input-hint--success");
+      actionsHint.classList.add("input-hint--error");
+      console.error(err);
+    }
+  });
+
+  demoteBtnClone.addEventListener("click", async () => {
+    try {
+      const response = await demoteUser(userId);
+      demoteBtnClone.classList.add("hidden");
+      promoteBtnClone.classList.remove("hidden");
+
+      slideoutRole.textContent = "User";
+      entryRole.textContent = "User";
+
       actionsHint.textContent = response.message;
       actionsHint.classList.remove("hidden");
       actionsHint.classList.remove("input-hint--error");

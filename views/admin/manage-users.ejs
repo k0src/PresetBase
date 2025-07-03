@@ -123,6 +123,15 @@
                       class="user-info-bottom-text"
                     ></span>
                   </div>
+                  <div class="user-info-bottom-entry">
+                    <span class="user-info-bottom-text"
+                      ><strong>Banned:</strong></span
+                    >
+                    <span
+                      id="slideout-banned"
+                      class="user-info-bottom-text"
+                    ></span>
+                  </div>
                 </div>
               </div>
 
@@ -133,8 +142,18 @@
                   <button id="ban-btn" type="button" class="ban-btn">
                     Ban User
                   </button>
+                  <button id="unban-btn" type="button" class="ban-btn hidden">
+                    Unban User
+                  </button>
                   <button id="promote-btn" type="button" class="promote-btn">
                     Promote To Admin
+                  </button>
+                  <button
+                    id="demote-btn"
+                    type="button"
+                    class="promote-btn hidden"
+                  >
+                    Revoke Admin Role
                   </button>
                 </div>
                 <div id="actions-hint" class="input-hint hidden"></div>
@@ -156,6 +175,7 @@
             <% Object.entries(userData).forEach(([i, user]) => { %>
             <div
               data-userId="<%= user.id %>"
+              data-banned="<%= user.banned === 't'%>"
               class="grid-layout--users user-entry"
             >
               <span class="user-entry--number"><%= +i + 1 %></span>
