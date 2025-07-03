@@ -8,6 +8,7 @@ const {
   mergeAndValidateSubmitData,
 } = require("../../util/UTIL.js");
 const isAuth = require("../../middleware/is-auth.js");
+const isNotBanned = require("../../middleware/is-not-banned.js");
 
 /* Example submission */
 router.get("/example", async (req, res) => {
@@ -31,7 +32,7 @@ router.get("/example", async (req, res) => {
 });
 
 /* Main submit page */
-router.get("/", isAuth, async (req, res) => {
+router.get("/", isAuth, isNotBanned, async (req, res) => {
   const isAuth = req.isAuthenticated();
   const userIsAdmin = isAuth && req.user && req.user.is_admin;
 
@@ -52,7 +53,7 @@ router.get("/", isAuth, async (req, res) => {
   }
 });
 
-router.post("/", isAuth, multer, async (req, res) => {
+router.post("/", isAuth, isNotBanned, multer, async (req, res) => {
   const isAuth = req.isAuthenticated();
   const userIsAdmin = isAuth && req.user && req.user.is_admin;
 

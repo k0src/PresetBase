@@ -5,14 +5,16 @@ class User {
     id = null,
     email,
     username,
+    authenticated_with = null,
     is_admin = false,
-    authenticated_with = null
+    banned = false
   ) {
     this.id = id;
     this.email = email;
     this.username = username;
-    this.is_admin = is_admin;
     this.authenticated_with = authenticated_with;
+    this.is_admin = is_admin;
+    this.banned = banned;
   }
 
   static async getUserById(id) {
@@ -23,8 +25,9 @@ class User {
         user.id,
         user.email,
         user.username,
+        user.authenticated_with,
         user.is_admin === "t",
-        user.authenticated_with
+        user.banned === "t"
       );
     } catch (err) {
       console.error(err);
@@ -40,8 +43,9 @@ class User {
         user.id,
         user.email,
         user.username,
+        user.authenticated_with,
         user.is_admin === "t",
-        user.authenticated_with
+        user.banned === "t"
       );
     } catch (err) {
       console.error(err);
@@ -61,13 +65,13 @@ class User {
   static async createUser({ email, username, authenticated_with = null }) {
     try {
       const now = new Date().toISOString();
-      const result = await dbRun(
+      const id = await dbRun(
         `INSERT INTO users 
-            (email, username, timestamp, is_admin, authenticated_with) 
-        VALUES (?, ?, ?, ?, ?)`,
-        [email, username, now, "f", authenticated_with]
+            (email, username, authenticated_with, timestamp, is_admin, banned) 
+        VALUES (?, ?, ?, ?, ?, ?)`,
+        [email, username, authenticated_with, now, "f", "f"]
       );
-      return new User(result, email, username, false, authenticated_with);
+      return new User(id, email, username, authenticated_with);
     } catch (err) {
       console.error(err);
       throw err;
@@ -253,6 +257,36 @@ class User {
       }
 
       return users;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async exists(id) {
+    try {
+      const user = await dbGet(`SELECT id FROM users WHERE id = ?`, [id]);
+      return !!user;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async banUser(id) {
+    try {
+      await dbRun(`UPDATE users SET banned = 't' WHERE id = ?`, [id]);
+      return true;
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  static async unbanUser(id) {
+    try {
+      await dbRun(`UPDATE users SET banned = 'f' WHERE id = ?`, [id]);
+      return true;
     } catch (err) {
       console.error(err);
       throw err;

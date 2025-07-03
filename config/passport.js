@@ -17,7 +17,7 @@ passport.use(
         let user = await User.getUserByEmail(email);
         if (!user) {
           user = await User.createUser({
-            email,
+            email: email,
             username: generateUsername(name),
             authenticated_with: "google",
           });

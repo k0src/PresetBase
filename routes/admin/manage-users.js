@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const isAdmin = require("../../middleware/is-admin.js");
+const isNotBanned = require("../../middleware/is-not-banned.js");
 const User = require("../../models/user");
 
 router.get("/", isAdmin, async (req, res) => {
@@ -63,6 +64,86 @@ router.put("/update-username", isAdmin, async (req, res) => {
 
     res.status(500).json({
       error: "An error occurred while updating the username.",
+    });
+  }
+});
+
+router.post("/ban-user", isAdmin, async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    if (!User.exists(userId)) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await User.banUser(userId);
+
+    res.json({ message: "User banned successfully." });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "An error occurred while banning the user.",
+    });
+  }
+});
+
+router.post("/unban-user", isAdmin, async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    if (!User.exists(userId)) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await User.unbanUser(userId);
+
+    res.json({ message: "User unbanned successfully." });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "An error occurred while unbanning the user.",
+    });
+  }
+});
+
+router.post("/promote-user", isAdmin, async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    if (!User.exists(userId)) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await User.setAdmin(userId);
+
+    res.json({ message: "User promoted to admin successfully." });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "An error occurred while promoting the user.",
+    });
+  }
+});
+
+router.post("/demote-user", isAdmin, async (req, res) => {
+  const { userId } = req.body;
+
+  try {
+    if (!User.exists(userId)) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await User.unsetAdmin(userId);
+
+    res.json({ message: "User demoted from admin successfully." });
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "An error occurred while demoting the user.",
     });
   }
 });

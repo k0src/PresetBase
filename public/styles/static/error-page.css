@@ -3,7 +3,6 @@ body {
 }
 
 /* ------------------------------- Main styles ------------------------------ */
-
 .error--container {
   min-height: 60vh;
   color: #899096;
@@ -42,13 +41,47 @@ body {
 .error--home-button:hover {
   background-color: #73988a;
 }
+
 .error--home-button:active {
   transform: scale(0.95);
   transition: transform 0.1s ease;
 }
 
-/* --------------------------------- Queries -------------------------------- */
+.btn-container {
+  display: flex;
+  gap: 1.8rem;
+}
 
+.go-home-btn--small,
+.sign-out-btn--small {
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.6rem;
+  padding: 1rem 1.4rem;
+  color: #e3e5e4 !important;
+  border: none;
+  border-radius: 0.4rem;
+  transition: background-color 0.2s ease;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+}
+
+.go-home-btn--small {
+  background-color: #5a7f71;
+}
+
+.go-home-btn--small:hover {
+  background-color: #73988a;
+}
+
+.sign-out-btn--small {
+  background-color: #899096;
+}
+
+.sign-out-btn--small:hover {
+  background-color: #7b8287;
+}
+
+/* --------------------------------- Queries -------------------------------- */
 @media (max-width: 48em) {
   .error--text {
     font-size: 2rem;

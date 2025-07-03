@@ -9,8 +9,9 @@ const {
   deleteAllPendingFiles,
 } = require("../../util/UTIL.js");
 const isAuth = require("../../middleware/is-auth.js");
+const isNotBanned = require("../../middleware/is-not-banned.js");
 
-router.get("/", isAuth, async (req, res) => {
+router.get("/", isAuth, isNotBanned, async (req, res) => {
   const isAuth = req.isAuthenticated();
   const userIsAdmin = isAuth && req.user && req.user.is_admin;
 
@@ -46,7 +47,7 @@ router.get("/", isAuth, async (req, res) => {
   }
 });
 
-router.put("/update-username", isAuth, async (req, res) => {
+router.put("/update-username", isAuth, isNotBanned, async (req, res) => {
   const { newUsername } = req.body;
 
   try {
@@ -96,7 +97,7 @@ router.post("/sign-out", isAuth, async (req, res) => {
   }
 });
 
-router.post("/delete-account", isAuth, async (req, res) => {
+router.post("/delete-account", isAuth, isNotBanned, async (req, res) => {
   try {
     const userId = req.user.id;
     const user = await User.getUserById(userId);
@@ -126,6 +127,7 @@ router.post("/delete-account", isAuth, async (req, res) => {
 router.delete(
   "/delete-pending-submission/:submissionId",
   isAuth,
+  isNotBanned,
   async (req, res) => {
     const submissionId = req.params.submissionId;
     const userId = req.user.id;
