@@ -66,9 +66,7 @@ router.post("/", isAuth, multer, async (req, res) => {
 
   try {
     const sanitizedData = await sanitizeData(rawData);
-    console.log(sanitizedData);
     const fullBodyData = await mergeAndValidateSubmitData(sanitizedData);
-    console.log(fullBodyData);
 
     const pendingData = JSON.stringify(fullBodyData);
     const query = `

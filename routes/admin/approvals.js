@@ -271,7 +271,6 @@ router.post("/deny/:id", isAdmin, async (req, res) => {
   const userIsAdmin = req.user && isAuth && req.user.is_admin;
 
   const id = req.params.id;
-  console.log("denying: ", id);
 
   try {
     const entry = await dbGet(

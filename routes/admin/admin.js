@@ -4,7 +4,7 @@ const isAdmin = require("../../middleware/is-admin.js");
 
 router.get("/", isAdmin, async (req, res) => {
   const isAuth = req.isAuthenticated();
-  const userIsAdmin = req.user && req.user.is_admin;
+  const userIsAdmin = isAuth && req.user && req.user.is_admin;
 
   try {
     res.render("admin/admin", { isAuth, userIsAdmin, PATH_URL: "admin" });
