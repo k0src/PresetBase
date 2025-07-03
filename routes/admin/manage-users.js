@@ -41,4 +41,30 @@ router.get("/", isAdmin, async (req, res) => {
   }
 });
 
+router.put("/update-username", isAdmin, async (req, res) => {
+  const { newUsername, userId } = req.body;
+
+  try {
+    const user = await User.getUserById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    await user.setUsername(newUsername);
+
+    res.json({ username: newUsername });
+  } catch (err) {
+    console.error(err);
+
+    if (err.message === "Invalid username format") {
+      return res.status(400).json({ error: err.message });
+    }
+
+    res.status(500).json({
+      error: "An error occurred while updating the username.",
+    });
+  }
+});
+
 module.exports = router;

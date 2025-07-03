@@ -51,6 +51,98 @@
             </div>
           </section>
 
+          <div
+            id="slideout-backdrop"
+            class="slideout-backdrop hidden"
+            onclick="closeSlideOut()"
+          ></div>
+
+          <aside id="slideout-panel" class="slideout hidden">
+            <header class="slideout-header">
+              <h2 class="heading-secondary">Edit User</h2>
+              <button class="close-btn" onclick="closeSlideOut()">
+                <i class="fa-solid fa-xmark slide-out-icon"></i>
+              </button>
+            </header>
+            <div class="slideout-content">
+              <div class="user-info-container">
+                <div class="user-info-input-container">
+                  <span class="user-info-text">Username</span>
+                  <input
+                    type="text"
+                    id="slideout-username"
+                    class="user-info-input"
+                    placeholder="Username"
+                    value=""
+                  />
+                  <div id="username-hint" class="input-hint hidden"></div>
+                  <span class="user-info-text">Email</span>
+                  <input
+                    type="email"
+                    id="slideout-email"
+                    class="user-info-input"
+                    placeholder="Email"
+                    disabled
+                    value=""
+                  />
+                </div>
+                <button
+                  id="apply-changes-btn"
+                  type="button"
+                  class="user-info-btn"
+                  disabled
+                >
+                  Apply changes
+                </button>
+
+                <div class="user-info-bottom-container">
+                  <div class="user-info-bottom-entry">
+                    <span class="user-info-bottom-text"
+                      ><strong>Joined:</strong></span
+                    >
+                    <span
+                      id="slideout-timestamp"
+                      class="user-info-bottom-text"
+                    ></span>
+                  </div>
+                  <div class="user-info-bottom-entry">
+                    <span class="user-info-bottom-text"
+                      ><strong>Authenticated with:</strong></span
+                    >
+                    <span
+                      id="slideout-auth"
+                      class="user-info-bottom-text"
+                    ></span>
+                  </div>
+                  <div class="user-info-bottom-entry">
+                    <span class="user-info-bottom-text"
+                      ><strong>Role:</strong></span
+                    >
+                    <span
+                      id="slideout-role"
+                      class="user-info-bottom-text"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="user-info--hr" />
+
+              <div class="user-info-actions">
+                <div class="btn-container">
+                  <button id="ban-btn" type="button" class="ban-btn">
+                    Ban User
+                  </button>
+                  <button id="promote-btn" type="button" class="promote-btn">
+                    Promote To Admin
+                  </button>
+                </div>
+              </div>
+
+              <div class="submissions-section"></div>
+            </div>
+          </aside>
+
           <section class="users-list--container">
             <div class="result-columns grid-layout--users">
               <span>#</span>
@@ -61,18 +153,33 @@
               <span>Role</span>
             </div>
             <% Object.entries(userData).forEach(([i, user]) => { %>
-            <div class="grid-layout--users user-entry">
+            <div
+              data-userId="<%= user.id %>"
+              class="grid-layout--users user-entry"
+            >
               <span class="user-entry--number"><%= +i + 1 %></span>
-              <span class="user-entry--primary"><%= user.username %></span>
-              <span class="user-entry--primary"><%= user.email %></span>
-              <span class="user-entry--date"><%= user.timestamp %></span>
-              <span class="user-entry--auth"
+              <span class="user-entry--primary user--username"
+                ><%= user.username %></span
+              >
+              <span class="user-entry--primary user--email"
+                ><%= user.email %></span
+              >
+              <span class="user-entry--date user--timestamp"
+                ><%= user.timestamp %></span
+              >
+              <span class="user-entry--auth user--auth"
                 ><%= user.authenticated_with %></span
               >
-              <span class="user-entry--role"
+              <span class="user-entry--role user--role"
                 ><%= user.is_admin === "t" ? "Admin" : "User" %></span
               >
-              <i class="fa-solid fa-pen-to-square edit--icon"></i>
+              <button
+                class="hidden-btn"
+                type="button"
+                onclick="showSlideOut(this)"
+              >
+                <i class="fa-solid fa-pen-to-square edit--icon"></i>
+              </button>
             </div>
             <% }) %>
           </section>
