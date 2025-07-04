@@ -185,7 +185,7 @@ class UserManagerSlideout {
   }
 
   #hintTimeout;
-  static activeInstance = null;
+  static adminId = null;
 
   constructor() {
     this.userId = null;
@@ -215,7 +215,10 @@ class UserManagerSlideout {
   async loadUser(userId) {
     this.userId = userId;
     this.userData = await this.#getUserData();
+
     await this.initDOMReferences();
+    UserManagerSlideout.adminId = this.slideout.dataset.userid;
+
     await this.populateSlideout();
   }
 
@@ -259,6 +262,29 @@ class UserManagerSlideout {
     this.roleListEntryField = userEntry
       ? userEntry.querySelector(`.user--role`)
       : null;
+  }
+
+  async populateSlideout() {
+    // Fields
+    this.usernameInput.value = this.userData.username;
+    this.emailInput.value = this.userData.email;
+    this.timestampField.textContent = this.userData.timestamp;
+    this.authField.textContent = this.userData.authenticated_with;
+    this.roleField.textContent = this.userData.is_admin ? "Admin" : "User";
+    this.bannedField.textContent = this.userData.banned ? "True" : "False";
+
+    // Buttons
+    const isSelf = UserManagerSlideout.adminId === this.userId;
+    [this.banBtn, this.unbanBtn, this.promoteBtn, this.demoteBtn].forEach(
+      (btn) => (btn.disabled = isSelf)
+    );
+
+    this.banBtn.classList.toggle("hidden", this.userData.banned);
+    this.unbanBtn.classList.toggle("hidden", !this.userData.banned);
+    this.promoteBtn.classList.toggle("hidden", this.userData.is_admin);
+    this.demoteBtn.classList.toggle("hidden", !this.userData.is_admin);
+
+    // Submissions section
   }
 
   // Event listeners
@@ -384,24 +410,6 @@ class UserManagerSlideout {
     this.demoteBtn.addEventListener("click", this.handleDemote.bind(this));
 
     this.eventListenersBound = true;
-  }
-
-  async populateSlideout() {
-    // Fields
-    this.usernameInput.value = this.userData.username;
-    this.emailInput.value = this.userData.email;
-    this.timestampField.textContent = this.userData.timestamp;
-    this.authField.textContent = this.userData.authenticated_with;
-    this.roleField.textContent = this.userData.is_admin ? "Admin" : "User";
-    this.bannedField.textContent = this.userData.banned ? "True" : "False";
-
-    // Buttons
-    this.banBtn.classList.toggle("hidden", this.userData.banned);
-    this.unbanBtn.classList.toggle("hidden", !this.userData.banned);
-    this.promoteBtn.classList.toggle("hidden", this.userData.is_admin);
-    this.demoteBtn.classList.toggle("hidden", !this.userData.is_admin);
-
-    // Submissions section
   }
 
   showInputError(fieldType) {

@@ -53,7 +53,11 @@
 
           <div id="slideout-backdrop" class="slideout-backdrop hidden"></div>
 
-          <aside id="slideout-panel" class="slideout hidden">
+          <aside
+            id="slideout-panel"
+            class="slideout hidden"
+            data-userid="<%= adminId %>"
+          >
             <header class="slideout-header">
               <h2 class="heading-secondary">Edit User</h2>
               <button id="slideout-close-btn" class="close-btn">
@@ -173,7 +177,7 @@
             </div>
             <% Object.entries(userData).forEach(([i, user]) => { %>
             <div
-              data-userId="<%= user.id %>"
+              data-userid="<%= user.id %>"
               data-banned="<%= user.banned === 't'%>"
               class="grid-layout--users user-entry"
             >

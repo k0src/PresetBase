@@ -22,12 +22,14 @@ router.get("/", isAdmin, async (req, res) => {
 
   const isAuth = req.isAuthenticated();
   const userIsAdmin = req.user && req.user.is_admin;
+  const adminId = req.user.id;
 
   try {
     res.render("admin/manage-users", {
       isAuth,
       userIsAdmin,
       userData,
+      adminId,
       totalUsers: userData.length,
       PATH_URL: "admin",
     });

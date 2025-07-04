@@ -424,6 +424,20 @@ body {
   background-color: #c86c6c;
 }
 
+.promote-btn:disabled,
+.ban-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.promote-btn:disabled:hover {
+  background-color: #899096;
+}
+
+.ban-btn:disabled:hover {
+  background-color: #c25c5c;
+}
+
 @media (max-width: 500px) {
   .slideout {
     width: 100%;
