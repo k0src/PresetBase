@@ -246,8 +246,37 @@ class User {
     }
   }
 
+  // Returns user data as object
+  static async getUserData(id) {
+    try {
+      const user = await User.getUserById(id);
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const timestamp = await User.getUserTimestamp(id);
+      const submissions = await User.getUserSubmissions(id);
+      const pendingSubmissions = await User.getUserPendingSubmissions(id);
+
+      return {
+        id: user.id,
+        email: user.email,
+        username: user.username,
+        authenticated_with: user.authenticated_with,
+        is_admin: user.is_admin,
+        banned: user.banned,
+        timestamp,
+        submissions,
+        pendingSubmissions,
+      };
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
   // Returns all user data including submissions and pending submissions, as objects
-  static async getAllUserData(sortKey = null) {
+  static async getAllUsersData(sortKey = null) {
     try {
       const users = await dbAll(`SELECT * FROM users ORDER BY ${sortKey}`);
 

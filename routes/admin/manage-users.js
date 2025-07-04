@@ -1,7 +1,6 @@
 const express = require("express");
 const router = express.Router();
 const isAdmin = require("../../middleware/is-admin.js");
-const isNotBanned = require("../../middleware/is-not-banned.js");
 const User = require("../../models/user");
 
 router.get("/", isAdmin, async (req, res) => {
@@ -19,7 +18,7 @@ router.get("/", isAdmin, async (req, res) => {
     return res.status(400).send("Invalid sort key");
   }
 
-  const userData = await User.getAllUserData(sortKey);
+  const userData = await User.getAllUsersData(sortKey);
 
   const isAuth = req.isAuthenticated();
   const userIsAdmin = req.user && req.user.is_admin;
@@ -72,7 +71,7 @@ router.post("/ban-user", isAdmin, async (req, res) => {
   const { userId } = req.body;
 
   try {
-    if (!User.exists(userId)) {
+    if (!(await User.exists(userId))) {
       return res.status(404).json({ error: "User not found." });
     }
 
@@ -92,7 +91,7 @@ router.post("/unban-user", isAdmin, async (req, res) => {
   const { userId } = req.body;
 
   try {
-    if (!User.exists(userId)) {
+    if (!(await User.exists(userId))) {
       return res.status(404).json({ error: "User not found." });
     }
 
@@ -112,7 +111,7 @@ router.post("/promote-user", isAdmin, async (req, res) => {
   const { userId } = req.body;
 
   try {
-    if (!User.exists(userId)) {
+    if (!(await User.exists(userId))) {
       return res.status(404).json({ error: "User not found." });
     }
 
@@ -132,7 +131,7 @@ router.post("/demote-user", isAdmin, async (req, res) => {
   const { userId } = req.body;
 
   try {
-    if (!User.exists(userId)) {
+    if (!(await User.exists(userId))) {
       return res.status(404).json({ error: "User not found." });
     }
 
@@ -144,6 +143,30 @@ router.post("/demote-user", isAdmin, async (req, res) => {
 
     res.status(500).json({
       error: "An error occurred while demoting the user.",
+    });
+  }
+});
+
+router.get("/user-data/:userId", isAdmin, async (req, res) => {
+  const userId = req.params.userId;
+
+  try {
+    if (!(await User.exists(userId))) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    const userData = await User.getUserData(userId);
+
+    if (!userData) {
+      return res.status(404).json({ error: "User data not found." });
+    }
+
+    res.json(userData);
+  } catch (err) {
+    console.error(err);
+
+    res.status(500).json({
+      error: "An error occurred while fetching user data.",
     });
   }
 });

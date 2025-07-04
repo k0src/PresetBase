@@ -53,81 +53,40 @@ filterClearBtn.addEventListener("click", () => {
   filterUsers(filterInput.value);
 });
 
-/* -------------------------------- Slide Out ------------------------------- */
-const populateSlideOut = async function (user) {
-  const banBtn = document.getElementById("ban-btn");
-  const unbanBtn = document.getElementById("unban-btn");
-  const promoteBtn = document.getElementById("promote-btn");
-  const demoteBtn = document.getElementById("demote-btn");
-
-  document.getElementById("slideout-username").value = user.username;
-  document.getElementById("slideout-email").value = user.email;
-  document.getElementById("slideout-timestamp").textContent = user.timestamp;
-  document.getElementById("slideout-auth").textContent = user.auth;
-  document.getElementById("slideout-role").textContent = user.role;
-  document.getElementById("slideout-banned").textContent = user.banned;
-
-  if (user.banned === "true") {
-    banBtn.classList.add("hidden");
-    unbanBtn.classList.remove("hidden");
-  }
-
-  if (user.role === "Admin") {
-    promoteBtn.classList.add("hidden");
-    demoteBtn.classList.remove("hidden");
-  }
-};
-
-const createUserData = async function (userEntry) {
-  const user = {
-    id: userEntry.dataset.userid,
-    username: userEntry.querySelector(".user--username").textContent,
-    email: userEntry.querySelector(".user--email").textContent,
-    timestamp: userEntry.querySelector(".user--timestamp").textContent,
-    auth: userEntry.querySelector(".user--auth").textContent,
-    role: userEntry.querySelector(".user--role").textContent,
-    banned: userEntry.dataset.banned,
-  };
-  return user;
-};
-
-// Change username
-const handleUsernameInput = async function (user, userEntry) {
-  const userId = Number(user.id);
-
-  const applyChangesBtn = document.getElementById("apply-changes-btn");
-  const usernameInput = document.getElementById("slideout-username");
-  const usernameInputHint = document.getElementById("username-hint");
-
-  const usernameEntryField = userEntry.querySelector(`.user--username`);
-
-  const usernameInputClone = usernameInput.cloneNode(true);
-  usernameInput.parentNode.replaceChild(usernameInputClone, usernameInput);
-  const applyChangesBtnClone = applyChangesBtn.cloneNode(true);
-  applyChangesBtn.parentNode.replaceChild(
-    applyChangesBtnClone,
-    applyChangesBtn
-  );
-
-  usernameInputClone.addEventListener("input", () => {
-    const username = usernameInputClone.value.trim();
-    if (username.length < 3 || username.length > 30) {
-      applyChangesBtnClone.disabled = true;
-    } else {
-      applyChangesBtnClone.disabled = false;
-    }
-  });
-
-  applyChangesBtnClone.addEventListener("click", async () => {
+/* -------------------------------- Slideout -------------------------------- */
+class UserManagerSlideout {
+  // API Methods
+  async #getUserData() {
     try {
-      const newUsername = usernameInputClone.value.trim();
+      const response = await fetch(
+        `/admin/manage-users/user-data/${encodeURIComponent(this.userId)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
-      const response = await fetch("/admin/manage-users/update-username", {
-        method: "PUT",
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (err) {
+      throw new Error(`Failed get user data: ${err.message}`);
+    }
+  }
+
+  async #banUser() {
+    try {
+      const response = await fetch("/admin/manage-users/ban-user", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ newUsername, userId }),
+        body: JSON.stringify({ userId: this.userId }),
       });
 
       if (!response.ok) {
@@ -135,253 +94,412 @@ const handleUsernameInput = async function (user, userEntry) {
         throw new Error(error.error);
       }
 
-      const data = await response.json();
-
-      usernameInputClone.value = data.username;
-      usernameEntryField.textContent = data.username;
-      usernameInputClone.classList.remove("user-info-input--error");
-      applyChangesBtnClone.disabled = true;
-      usernameInputHint.textContent = "Username changed successfully.";
-      usernameInputHint.classList.remove("hidden");
-      usernameInputHint.classList.remove("input-hint--error");
-      usernameInputHint.classList.add("input-hint--success");
+      return await response.json();
     } catch (err) {
-      usernameInputClone.classList.add("user-info-input--error");
-      usernameInputHint.textContent = err.message;
-      usernameInputHint.classList.remove("hidden");
-      usernameInputHint.classList.remove("input-hint--success");
-      usernameInputHint.classList.add("input-hint--error");
-      console.error(err);
+      throw new Error(`Failed to ban user: ${err.message}`);
     }
-  });
-};
-
-// btn actions
-const banUser = async function (userId) {
-  try {
-    const response = await fetch("/admin/manage-users/ban-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
-
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
-    }
-
-    return await response.json();
-  } catch (err) {
-    throw new Error(`Failed to ban user: ${err.message}`);
   }
-};
 
-const promoteUser = async function (userId) {
-  try {
-    const response = await fetch("/admin/manage-users/promote-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
+  async #unbanUser() {
+    try {
+      const response = await fetch("/admin/manage-users/unban-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: this.userId }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (err) {
+      throw new Error(`Failed to unban user: ${err.message}`);
     }
-
-    return await response.json();
-  } catch (err) {
-    throw new Error(`Failed to promote user: ${err.message}`);
   }
-};
 
-const unbanUser = async function (userId) {
-  try {
-    const response = await fetch("/admin/manage-users/unban-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
+  async #promoteUser() {
+    try {
+      const response = await fetch("/admin/manage-users/promote-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: this.userId }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (err) {
+      throw new Error(`Failed to promote user: ${err.message}`);
     }
-
-    return await response.json();
-  } catch (err) {
-    throw new Error(`Failed to unban user: ${err.message}`);
   }
-};
 
-const demoteUser = async function (userId) {
-  try {
-    const response = await fetch("/admin/manage-users/demote-user", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ userId }),
-    });
+  async #demoteUser() {
+    try {
+      const response = await fetch("/admin/manage-users/demote-user", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ userId: this.userId }),
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (err) {
+      throw new Error(`Failed to demote user: ${err.message}`);
     }
-
-    return await response.json();
-  } catch (err) {
-    throw new Error(`Failed to demote user: ${err.message}`);
   }
-};
 
-const handleActions = async function (user, userEntry) {
-  const userId = user.id;
-
-  const slideoutBanned = document.getElementById("slideout-banned");
-  const slideoutRole = document.getElementById("slideout-role");
-
-  const entryRole = userEntry.querySelector(`.user--role`);
-
-  const banBtn = document.getElementById("ban-btn");
-  const promoteBtn = document.getElementById("promote-btn");
-  const unbanBtn = document.getElementById("unban-btn");
-  const demoteBtn = document.getElementById("demote-btn");
-
-  const actionsHint = document.getElementById("actions-hint");
-
-  const banBtnClone = banBtn.cloneNode(true);
-  banBtn.parentNode.replaceChild(banBtnClone, banBtn);
-  const unbanBtnClone = unbanBtn.cloneNode(true);
-  unbanBtn.parentNode.replaceChild(unbanBtnClone, unbanBtn);
-
-  const promoteBtnClone = promoteBtn.cloneNode(true);
-  promoteBtn.parentNode.replaceChild(promoteBtnClone, promoteBtn);
-  const demoteBtnClone = demoteBtn.cloneNode(true);
-  demoteBtn.parentNode.replaceChild(demoteBtnClone, demoteBtn);
-
-  banBtnClone.addEventListener("click", async () => {
+  async #setUserUsername(newUsername) {
     try {
-      const response = await banUser(userId);
-      banBtnClone.classList.add("hidden");
-      unbanBtnClone.classList.remove("hidden");
+      const response = await fetch("/admin/manage-users/update-username", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ newUsername, userId: this.userId }),
+      });
 
-      slideoutBanned.textContent = "true";
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
 
-      actionsHint.textContent = response.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--error");
-      actionsHint.classList.add("input-hint--success");
+      return await response.json();
     } catch (err) {
-      actionsHint.textContent = err.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--success");
-      actionsHint.classList.add("input-hint--error");
+      throw new Error(`Failed to set username: ${err.message}`);
+    }
+  }
+
+  #hintTimeout;
+  static activeInstance = null;
+
+  constructor() {
+    this.userId = null;
+    this.userData = null;
+    this.eventListenersBound = false;
+
+    this.handleClose = this.handleClose.bind(this);
+    this.handleUsernameInput = this.handleUsernameInput.bind(this);
+    this.handleApplyChanges = this.handleApplyChanges.bind(this);
+    this.handleBan = this.handleBan.bind(this);
+    this.handleUnban = this.handleUnban.bind(this);
+    this.handlePromote = this.handlePromote.bind(this);
+    this.handleDemote = this.handleDemote.bind(this);
+  }
+
+  async init(userId) {
+    try {
+      await this.loadUser(userId);
+
+      if (!this.eventListenersBound) await this.bindEvents();
+    } catch (err) {
+      console.error(`Failed to initialize UserManagerSlideout: ${err.message}`);
+      throw err;
+    }
+  }
+
+  async loadUser(userId) {
+    this.userId = userId;
+    this.userData = await this.#getUserData();
+    await this.initDOMReferences();
+    await this.populateSlideout();
+  }
+
+  async initDOMReferences() {
+    // Slideout elements
+    this.slideout = document.getElementById("slideout-panel");
+    this.slideoutBackdrop = document.getElementById("slideout-backdrop");
+    this.slideoutCloseBtn = document.getElementById("slideout-close-btn");
+
+    // Fields
+    this.usernameInput = document.getElementById("slideout-username");
+    this.emailInput = document.getElementById("slideout-email");
+    this.timestampField = document.getElementById("slideout-timestamp");
+    this.authField = document.getElementById("slideout-auth");
+    this.roleField = document.getElementById("slideout-role");
+    this.bannedField = document.getElementById("slideout-banned");
+
+    // Buttons
+    this.applyChangesBtn = document.getElementById(
+      "slideout-apply-changes-btn"
+    );
+    this.banBtn = document.getElementById("ban-btn");
+    this.unbanBtn = document.getElementById("unban-btn");
+    this.promoteBtn = document.getElementById("promote-btn");
+    this.demoteBtn = document.getElementById("demote-btn");
+
+    // Hints
+    this.usernameHint = document.getElementById("slideout-username-hint");
+    this.actionsHint = document.getElementById("slideout-actions-hint");
+
+    // Submissions section
+
+    // List entry fields
+    const userEntry = document.querySelector(
+      `.user-entry[data-userid="${this.userId}"]`
+    );
+    this.usernameListEntryField = userEntry
+      ? userEntry.querySelector(`.user--username`)
+      : null;
+
+    this.roleListEntryField = userEntry
+      ? userEntry.querySelector(`.user--role`)
+      : null;
+  }
+
+  // Event listeners
+  async handleClose() {
+    this.close();
+  }
+
+  async handleUsernameInput() {
+    const input = this.usernameInput.value.trim();
+    this.applyChangesBtn.disabled = input.length < 3 || input.length > 30;
+  }
+
+  async handleApplyChanges() {
+    try {
+      const newUsername = this.usernameInput.value.trim();
+      const response = await this.#setUserUsername(newUsername);
+
+      this.userData.username = response.username;
+      this.usernameListEntryField.textContent = response.username;
+
+      this.showInputSuccess("username");
+      this.showHintSuccess("Username changed successfully.", "username");
+      this.disableApplyChangesBtn();
+    } catch (err) {
+      this.showInputError("username");
+      this.showHintError(err.message, "username");
       console.error(err);
     }
-  });
+  }
 
-  promoteBtnClone.addEventListener("click", async () => {
+  async handleBan() {
     try {
-      const response = await promoteUser(userId);
-      promoteBtnClone.classList.add("hidden");
-      demoteBtnClone.classList.remove("hidden");
+      const response = await this.#banUser();
 
-      slideoutRole.textContent = "Admin";
-      entryRole.textContent = "Admin";
+      this.banBtn.classList.add("hidden");
+      this.unbanBtn.classList.remove("hidden");
 
-      actionsHint.textContent = response.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--error");
-      actionsHint.classList.add("input-hint--success");
+      this.userData.banned = true;
+      this.bannedField.textContent = "True";
+
+      this.showHintSuccess(response.message, "actions");
     } catch (err) {
-      actionsHint.textContent = err.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--success");
-      actionsHint.classList.add("input-hint--error");
+      this.showHintError(err.message, "actions");
       console.error(err);
     }
-  });
+  }
 
-  unbanBtnClone.addEventListener("click", async () => {
+  async handleUnban() {
     try {
-      const response = await unbanUser(userId);
-      unbanBtnClone.classList.add("hidden");
-      banBtnClone.classList.remove("hidden");
+      const response = await this.#unbanUser();
 
-      slideoutBanned.textContent = "false";
+      this.unbanBtn.classList.add("hidden");
+      this.banBtn.classList.remove("hidden");
 
-      actionsHint.textContent = response.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--error");
-      actionsHint.classList.add("input-hint--success");
+      this.userData.banned = false;
+      this.bannedField.textContent = "False";
+
+      this.showHintSuccess(response.message, "actions");
     } catch (err) {
-      actionsHint.textContent = err.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--success");
-      actionsHint.classList.add("input-hint--error");
+      this.showHintError(err.message, "actions");
       console.error(err);
     }
-  });
+  }
 
-  demoteBtnClone.addEventListener("click", async () => {
+  async handlePromote() {
     try {
-      const response = await demoteUser(userId);
-      demoteBtnClone.classList.add("hidden");
-      promoteBtnClone.classList.remove("hidden");
+      const response = await this.#promoteUser();
 
-      slideoutRole.textContent = "User";
-      entryRole.textContent = "User";
+      this.promoteBtn.classList.add("hidden");
+      this.demoteBtn.classList.remove("hidden");
 
-      actionsHint.textContent = response.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--error");
-      actionsHint.classList.add("input-hint--success");
+      this.userData.is_admin = true;
+      this.roleField.textContent = "Admin";
+      this.roleListEntryField.textContent = "Admin";
+
+      this.showHintSuccess(response.message, "actions");
     } catch (err) {
-      actionsHint.textContent = err.message;
-      actionsHint.classList.remove("hidden");
-      actionsHint.classList.remove("input-hint--success");
-      actionsHint.classList.add("input-hint--error");
+      this.showHintError(err.message, "actions");
       console.error(err);
     }
-  });
-};
+  }
+
+  async handleDemote() {
+    try {
+      const response = await this.#demoteUser();
+
+      this.demoteBtn.classList.add("hidden");
+      this.promoteBtn.classList.remove("hidden");
+
+      this.userData.is_admin = false;
+      this.roleField.textContent = "User";
+      this.roleListEntryField.textContent = "User";
+
+      this.showHintSuccess(response.message, "actions");
+    } catch (err) {
+      this.showHintError(err.message, "actions");
+      console.error(err);
+    }
+  }
+
+  async bindEvents() {
+    if (this.eventListenersBound) return;
+
+    this.slideoutCloseBtn.addEventListener(
+      "click",
+      this.handleClose.bind(this)
+    );
+    this.slideoutBackdrop.addEventListener(
+      "click",
+      this.handleClose.bind(this)
+    );
+    this.usernameInput.addEventListener(
+      "input",
+      this.handleUsernameInput.bind(this)
+    );
+    this.applyChangesBtn.addEventListener(
+      "click",
+      this.handleApplyChanges.bind(this)
+    );
+    this.banBtn.addEventListener("click", this.handleBan.bind(this));
+    this.unbanBtn.addEventListener("click", this.handleUnban.bind(this));
+    this.promoteBtn.addEventListener("click", this.handlePromote.bind(this));
+    this.demoteBtn.addEventListener("click", this.handleDemote.bind(this));
+
+    this.eventListenersBound = true;
+  }
+
+  async populateSlideout() {
+    // Fields
+    this.usernameInput.value = this.userData.username;
+    this.emailInput.value = this.userData.email;
+    this.timestampField.textContent = this.userData.timestamp;
+    this.authField.textContent = this.userData.authenticated_with;
+    this.roleField.textContent = this.userData.is_admin ? "Admin" : "User";
+    this.bannedField.textContent = this.userData.banned ? "True" : "False";
+
+    // Buttons
+    this.banBtn.classList.toggle("hidden", this.userData.banned);
+    this.unbanBtn.classList.toggle("hidden", !this.userData.banned);
+    this.promoteBtn.classList.toggle("hidden", this.userData.is_admin);
+    this.demoteBtn.classList.toggle("hidden", !this.userData.is_admin);
+
+    // Submissions section
+  }
+
+  showInputError(fieldType) {
+    const inputEl = this[`${fieldType}Input`];
+
+    if (!inputEl) return;
+
+    this.clearInputErrors();
+    inputEl.classList.add("user-info-input--error");
+  }
+
+  showInputSuccess(fieldType) {
+    const inputEl = this[`${fieldType}Input`];
+
+    if (!inputEl) return;
+
+    this.clearInputErrors();
+    inputEl.classList.remove("user-info-input--error");
+  }
+
+  showHintError(msg, fieldType) {
+    const hintEl = this[`${fieldType}Hint`];
+
+    if (!hintEl) return;
+
+    this.clearHints();
+    hintEl.classList.remove("hidden");
+    hintEl.textContent = msg;
+    hintEl.classList.remove("input-hint--success");
+    hintEl.classList.add("input-hint--error");
+
+    if (this.#hintTimeout) {
+      clearTimeout(this.#hintTimeout);
+    }
+    this.#hintTimeout = setTimeout(() => {
+      this.clearHints();
+      this.#hintTimeout = null;
+    }, 5000);
+  }
+
+  showHintSuccess(msg, fieldType) {
+    const hintEl = this[`${fieldType}Hint`];
+
+    if (!hintEl) return;
+
+    this.clearHints();
+    hintEl.classList.remove("hidden");
+    hintEl.textContent = msg;
+    hintEl.classList.remove("input-hint--error");
+    hintEl.classList.add("input-hint--success");
+
+    if (this.#hintTimeout) {
+      clearTimeout(this.#hintTimeout);
+    }
+    this.#hintTimeout = setTimeout(() => {
+      this.clearHints();
+      this.#hintTimeout = null;
+    }, 5000);
+  }
+
+  disableApplyChangesBtn() {
+    this.applyChangesBtn.disabled = true;
+  }
+
+  clearHints() {
+    this.usernameHint.classList.add("hidden");
+    this.usernameHint.textContent = "";
+    this.actionsHint.classList.add("hidden");
+    this.actionsHint.textContent = "";
+  }
+
+  clearInputErrors() {
+    this.usernameInput.classList.remove("user-info-input--error");
+  }
+
+  show() {
+    this.slideout.classList.remove("hidden");
+    this.slideoutBackdrop.classList.remove("hidden");
+  }
+
+  close() {
+    this.slideout.classList.add("hidden");
+    this.slideoutBackdrop.classList.add("hidden");
+    this.disableApplyChangesBtn();
+    this.clearHints();
+    this.clearInputErrors();
+  }
+}
+
+let currentSlideoutInstance = null;
 
 const showSlideOut = async function (btn) {
-  const slideOut = document.getElementById("slideout-panel");
-  const slideOutBackdrop = document.getElementById("slideout-backdrop");
-  const userEntry = btn.closest(".user-entry");
+  const userId = btn.closest(".user-entry").dataset.userid;
 
-  try {
-    const user = await createUserData(userEntry);
-    await populateSlideOut(user);
-    await handleUsernameInput(user, userEntry);
-    await handleActions(user, userEntry);
-    slideOut.classList.remove("hidden");
-    slideOutBackdrop.classList.remove("hidden");
-  } catch (err) {
-    console.error(`Error showing slide out: ${err.message}`);
+  if (!currentSlideoutInstance) {
+    currentSlideoutInstance = new UserManagerSlideout();
   }
-};
 
-const closeSlideOut = function () {
-  const slideOut = document.getElementById("slideout-panel");
-  const slideOutBackdrop = document.getElementById("slideout-backdrop");
-  const usernameInputHint = document.getElementById("username-hint");
-  const usernameInput = document.getElementById("slideout-username");
-  const applyChangesBtn = document.getElementById("apply-changes-btn");
-  const actionsHint = document.getElementById("actions-hint");
-
-  slideOut.classList.add("hidden");
-  slideOutBackdrop.classList.add("hidden");
-  usernameInputHint.classList.add("hidden");
-  usernameInput.classList.remove("user-info-input--error");
-  actionsHint.classList.add("hidden");
-  applyChangesBtn.disabled = true;
+  await currentSlideoutInstance.init(userId);
+  currentSlideoutInstance.show();
 };

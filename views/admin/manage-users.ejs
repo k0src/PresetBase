@@ -51,16 +51,12 @@
             </div>
           </section>
 
-          <div
-            id="slideout-backdrop"
-            class="slideout-backdrop hidden"
-            onclick="closeSlideOut()"
-          ></div>
+          <div id="slideout-backdrop" class="slideout-backdrop hidden"></div>
 
           <aside id="slideout-panel" class="slideout hidden">
             <header class="slideout-header">
               <h2 class="heading-secondary">Edit User</h2>
-              <button class="close-btn" onclick="closeSlideOut()">
+              <button id="slideout-close-btn" class="close-btn">
                 <i class="fa-solid fa-xmark slide-out-icon"></i>
               </button>
             </header>
@@ -75,7 +71,10 @@
                     placeholder="Username"
                     value=""
                   />
-                  <div id="username-hint" class="input-hint hidden"></div>
+                  <div
+                    id="slideout-username-hint"
+                    class="input-hint hidden"
+                  ></div>
                   <span class="user-info-text">Email</span>
                   <input
                     type="email"
@@ -87,7 +86,7 @@
                   />
                 </div>
                 <button
-                  id="apply-changes-btn"
+                  id="slideout-apply-changes-btn"
                   type="button"
                   class="user-info-btn"
                   disabled
@@ -156,7 +155,7 @@
                     Revoke Admin Role
                   </button>
                 </div>
-                <div id="actions-hint" class="input-hint hidden"></div>
+                <div id="slideout-actions-hint" class="input-hint hidden"></div>
               </div>
 
               <div class="submissions-section"></div>
