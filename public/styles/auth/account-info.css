@@ -133,6 +133,14 @@ body {
   background-color: #73988a;
 }
 
+.account-info--hr {
+  margin-top: 3.2rem;
+  width: 100%;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.4rem;
+  color: #2d343a;
+}
+
 /* ---------------------------- User Submissions ---------------------------- */
 .user-submissions-header {
   padding: 3.2rem 0 2.4rem 0;
