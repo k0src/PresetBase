@@ -168,3 +168,56 @@ body {
 .auth-icon--google {
   font-size: 1.6rem;
 }
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 28em) {
+  .auth-card {
+    gap: 1.62rem;
+    padding: 2.16rem 2.52rem;
+    width: 32.4rem;
+  }
+
+  .auth-img {
+    width: 7.56rem;
+  }
+
+  .auth-text-container {
+    gap: 1.08rem;
+  }
+
+  .auth-text-large {
+    font-size: 2.16rem;
+  }
+
+  .auth-text-small {
+    font-size: 1.26rem;
+  }
+
+  .auth-btn-container {
+    gap: 1.44rem;
+  }
+
+  .auth-email-field {
+    gap: 1.08rem;
+  }
+
+  .auth-input {
+    padding: 1.08rem 0.72rem;
+    font-size: 1.26rem;
+  }
+
+  .auth-btn {
+    font-size: 1.44rem;
+    padding: 0.9rem 1.26rem;
+  }
+
+  .auth-btn--google {
+    gap: 0.9rem;
+    padding: 1.08rem 1.44rem;
+    font-size: 1.26rem;
+  }
+
+  .auth-icon--google {
+    font-size: 1.44rem;
+  }
+}
