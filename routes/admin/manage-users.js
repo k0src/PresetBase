@@ -9,16 +9,22 @@ router.get("/", isAdmin, async (req, res) => {
     email: "users.email",
     joined: "users.timestamp",
     auth: "users.authenticated_with",
-    role: "users.is_admin DESC",
+    role: "users.is_admin",
+  };
+
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
   };
 
   const sortKey = sortKeys[req.query.sort] || sortKeys.joined;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
 
-  if (!sortKey) {
+  if (!sortKey || !sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
-  const userData = await User.getAllUsersData(sortKey);
+  const userData = await User.getAllUsersData(sortKey, sortDirection);
 
   const isAuth = req.isAuthenticated();
   const userIsAdmin = req.user && req.user.is_admin;

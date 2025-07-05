@@ -16,9 +16,15 @@ router.get("/", async (req, res) => {
     added: "presets.timestamp",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
+  };
 
-  if (!sortKey) {
+  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
+
+  if (!sortKey || !sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
@@ -40,7 +46,7 @@ router.get("/", async (req, res) => {
         LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
         GROUP BY presets.id
-        ORDER BY ${sortKey}`,
+        ORDER BY ${sortKey} ${sortDirection}`,
   };
 
   const isAuth = req.isAuthenticated();

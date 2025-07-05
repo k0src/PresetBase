@@ -2,11 +2,32 @@
 const sortSelect = document.querySelector(".manage-users--sort-select");
 
 sortSelect.addEventListener("change", () => {
+  const sortDirection = "asc";
+
   sessionStorage.setItem(`manageUsersSortSelected`, sortSelect.value);
+  sessionStorage.setItem(`manageUsersSortDirection`, sortDirection);
 
   window.location.href = `/admin/manage-users?sort=${encodeURIComponent(
     sortSelect.value
-  )}`;
+  )}&direction=${encodeURIComponent(sortDirection)}`;
+});
+
+const sortToggleBtn = document.querySelector(".sort-icon");
+
+sortToggleBtn.addEventListener("click", () => {
+  const currentSort =
+    sessionStorage.getItem(`manageUsersSortSelected`) || "joined";
+
+  const sortDirection =
+    sessionStorage.getItem(`manageUsersSortDirection`) === "desc"
+      ? "asc"
+      : "desc";
+
+  sessionStorage.setItem(`manageUsersSortDirection`, sortDirection);
+
+  window.location.href = `/admin/manage-users?sort=${encodeURIComponent(
+    currentSort
+  )}&direction=${encodeURIComponent(sortDirection)}`;
 });
 
 /* ------------------------- Setting values on load ------------------------- */
@@ -450,7 +471,6 @@ class UserManagerSlideout {
 
     // Submissions section
     this.pendingSubmissionsSection.innerHTML = "";
-
     if (this.userData.pendingSubmissions.length) {
       this.pendingSubmissionsTitle.classList.remove("hidden");
       this.pendingSubmissionsSection.classList.remove("hidden");

@@ -276,9 +276,11 @@ class User {
   }
 
   // Returns all user data including submissions and pending submissions, as objects
-  static async getAllUsersData(sortKey = null) {
+  static async getAllUsersData(sortKey = null, sortDirection = "ASC") {
     try {
-      const users = await dbAll(`SELECT * FROM users ORDER BY ${sortKey}`);
+      const users = await dbAll(
+        `SELECT * FROM users ORDER BY ${sortKey} ${sortDirection}`
+      );
 
       for (const user of users) {
         user.submissions = await User.getUserSubmissions(user.id);

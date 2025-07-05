@@ -18,9 +18,15 @@ router.get("/", async (req, res) => {
     added: "albums.timestamp",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
+  };
 
-  if (!sortKey) {
+  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
+
+  if (!sortKey || !sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
@@ -46,7 +52,7 @@ router.get("/", async (req, res) => {
         LEFT JOIN album_clicks ON album_clicks.album_id = albums.id
         WHERE song_artists.role = 'Main' AND albums.title NOT LIKE '[SINGLE]'
         GROUP BY albums.id
-        ORDER BY ${sortKey}`,
+        ORDER BY ${sortKey} ${sortDirection}`,
 
     hotAlbums: `
       SELECT

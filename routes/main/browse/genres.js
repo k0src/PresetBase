@@ -9,9 +9,15 @@ router.get("/", async (req, res) => {
     none: "NULL",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys.none;
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
+  };
 
-  if (!sortKey) {
+  const sortKey = sortKeys[req.query.sort] || sortKeys.none;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
+
+  if (!sortKey || !sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
@@ -29,7 +35,7 @@ router.get("/", async (req, res) => {
         FROM songs
         LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
         GROUP BY genre
-        ORDER BY ${sortKey}`,
+        ORDER BY ${sortKey} ${sortDirection}`,
   };
 
   const isAuth = req.isAuthenticated();

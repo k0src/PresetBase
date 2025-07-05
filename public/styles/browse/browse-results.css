@@ -119,6 +119,12 @@
 .sort-icon {
   color: #899096;
   font-size: 1.6rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sort-icon:hover {
+  color: #e3e5e4 !important;
 }
 
 .browse-results--sort-select {

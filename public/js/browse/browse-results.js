@@ -1,3 +1,4 @@
+const noSortSelectPages = ["hot", "popular", "recent"];
 const currentPage = window.location.pathname.split("/")[2];
 
 /* ----------------------------- Skeleton Loader ---------------------------- */
@@ -12,12 +13,39 @@ window.addEventListener("load", () => {
 /* --------------------------------- Sorting -------------------------------- */
 const sortSelect = document.querySelector(".browse-results--sort-select");
 
-sortSelect.addEventListener("change", () => {
+sortSelect?.addEventListener("change", () => {
+  const sortDirection = "asc";
+
   sessionStorage.setItem(`${currentPage}SortSelected`, sortSelect.value);
+  sessionStorage.setItem(`${currentPage}SortDirection`, sortDirection);
 
   window.location.href = `/browse/${currentPage}?sort=${encodeURIComponent(
     sortSelect.value
-  )}`;
+  )}&direction=${encodeURIComponent(sortDirection)}`;
+});
+
+const sortToggleBtn = document.querySelector(".sort-icon");
+
+sortToggleBtn.addEventListener("click", () => {
+  const currentSort =
+    sessionStorage.getItem(`${currentPage}SortSelected`) || "added";
+
+  const sortDirection =
+    sessionStorage.getItem(`${currentPage}SortDirection`) === "desc"
+      ? "asc"
+      : "desc";
+
+  sessionStorage.setItem(`${currentPage}SortDirection`, sortDirection);
+
+  if (noSortSelectPages.includes(currentPage)) {
+    window.location.href = `/browse/${currentPage}?direction=${encodeURIComponent(
+      sortDirection
+    )}`;
+  } else {
+    window.location.href = `/browse/${currentPage}?sort=${encodeURIComponent(
+      currentSort
+    )}&direction=${encodeURIComponent(sortDirection)}`;
+  }
 });
 
 /* ---------------------------- View mode toggle ---------------------------- */
@@ -49,12 +77,14 @@ const setSortSelectValue = function () {
   const urlParams = new URLSearchParams(window.location.search);
   const sortParam = urlParams.get("sort");
 
-  if (sortParam) {
-    sortSelect.value = sortParam;
-    sessionStorage.setItem(`${currentPage}SortSelected`, sortParam);
-  } else {
-    sessionStorage.removeItem(`${currentPage}SortSelected`);
-    sortSelect.value = "";
+  if (sortSelect) {
+    if (sortParam) {
+      sortSelect.value = sortParam;
+      sessionStorage.setItem(`${currentPage}SortSelected`, sortParam);
+    } else {
+      sessionStorage.removeItem(`${currentPage}SortSelected`);
+      sortSelect.value = "";
+    }
   }
 };
 

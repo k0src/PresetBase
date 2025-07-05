@@ -15,9 +15,15 @@ router.get("/", async (req, res) => {
     added: "artists.timestamp",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
+  };
 
-  if (!sortKey) {
+  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
+
+  if (!sortKey || !sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
@@ -35,7 +41,7 @@ router.get("/", async (req, res) => {
             COALESCE(artist_clicks.recent_click, 0) AS artist_recent_click
         FROM artists
         LEFT JOIN artist_clicks ON artist_clicks.artist_id = artists.id
-        ORDER BY ${sortKey}`,
+        ORDER BY ${sortKey} ${sortDirection}`,
 
     hotArtists: `
       SELECT

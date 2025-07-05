@@ -7,19 +7,14 @@ const {
 } = require("../../../util/UTIL.js");
 
 router.get("/", async (req, res) => {
-  const sortKeys = {
-    title: "song_title",
-    genre: "song_genre",
-    year: "song_release_year",
-    artist: "artist_name",
-    album: "album_title",
-    added: "song_added_timestamp",
-    none: "NULL",
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys.none;
+  const sortDirection = sortDirections[req.query.direction] || "DESC";
 
-  if (!sortKey) {
+  if (!sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
@@ -49,7 +44,7 @@ router.get("/", async (req, res) => {
       LIMIT 10
     )
     SELECT * FROM recent_songs
-    ORDER BY ${sortKey}`;
+    ORDER BY song_added_timestamp ${sortDirection}`;
 
   const isAuth = req.isAuthenticated();
   const userIsAdmin = isAuth && req.user && req.user.is_admin;

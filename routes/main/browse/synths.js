@@ -17,9 +17,15 @@ router.get("/", async (req, res) => {
     added: "synths.timestamp",
   };
 
-  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirections = {
+    asc: "ASC",
+    desc: "DESC",
+  };
 
-  if (!sortKey) {
+  const sortKey = sortKeys[req.query.sort] || sortKeys.added;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
+
+  if (!sortKey || !sortDirection) {
     return res.status(400).send("Invalid sort key");
   }
 
@@ -39,7 +45,7 @@ router.get("/", async (req, res) => {
             COALESCE(synth_clicks.recent_click, 0) AS synth_recent_click
         FROM synths
         LEFT JOIN synth_clicks ON synth_clicks.synth_id = synths.id
-        ORDER BY ${sortKey}`,
+        ORDER BY ${sortKey} ${sortDirection}`,
 
     hotSynths: `
       SELECT
