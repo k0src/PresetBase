@@ -554,3 +554,96 @@ body {
 }
 
 /* --------------------------------- Queries -------------------------------- */
+@media (max-width: 60em) {
+  .result-entry--number,
+  .result-entry--secondary,
+  .result-entry--tertiary,
+  .result-entry--quaternary {
+    font-size: 1.2rem;
+  }
+
+  .result-entry--primary {
+    font-size: 1.6rem;
+  }
+
+  .heading-primary {
+    font-size: 2.4rem;
+  }
+
+  .heading-secondary {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .manage-users--header {
+    gap: 1.4rem;
+  }
+
+  .users-count {
+    font-size: 1.2rem;
+  }
+
+  .manage-users--sort-select {
+    padding: 0.4rem 1rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .manage-users-result-filter--container {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .manage-users-result-filter {
+    width: 70%;
+    max-width: 70%;
+  }
+
+  .result-filter--clear {
+    display: none !important;
+  }
+
+  .manage-users-header--bottom {
+    gap: 0;
+  }
+
+  .manage-users--sort-select {
+    display: none;
+  }
+
+  .heading-primary {
+    font-size: 2rem;
+  }
+
+  .grid-layout--users {
+    grid-template-columns: 2rem 50fr 100fr 50fr 2rem;
+  }
+
+  .grid-layout--genres {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .user--timestamp,
+  .user--auth {
+    display: none;
+  }
+
+  .result-columns {
+    display: none;
+  }
+
+  .result-entry {
+    padding: 1rem;
+  }
+
+  .manage-users--header {
+    padding: 2.4rem 0 1.8rem 0;
+  }
+
+  .manage-users--filter-select {
+    font-size: 1.2rem;
+    padding: 0.2rem 1.2rem;
+  }
+}
