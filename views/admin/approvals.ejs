@@ -25,7 +25,7 @@
            <% if (submissions.length) { %>
             <section class="submit-main-container">
               <% submissions.forEach((entry, i) => { %>
-              <div class="submission-header">
+              <div id="entry-<%= entry.id %>" class="submission-header">
                 <div class="submission-header--section">
                   <i class="fa-solid fa-user-pen submission-header--icon"></i>
                   <span class="submission-header--text">Submitted by: <kbd><%= entry.username %></kbd></span>

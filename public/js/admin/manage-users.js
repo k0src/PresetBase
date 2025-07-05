@@ -249,7 +249,19 @@ class UserManagerSlideout {
     this.usernameHint = document.getElementById("slideout-username-hint");
     this.actionsHint = document.getElementById("slideout-actions-hint");
 
-    // Submissions section
+    // Submissions sections
+    this.pendingSubmissionsTitle = document.getElementById(
+      "slideout-pending-submissions-title"
+    );
+    this.approvedSubmissionsTitle = document.getElementById(
+      "slideout-approved-submissions-title"
+    );
+    this.pendingSubmissionsSection = document.getElementById(
+      "slideout-pending-submissions-section"
+    );
+    this.approvedSubmissionsSection = document.getElementById(
+      "slideout-approved-submissions-section"
+    );
 
     // List entry fields
     const userEntry = document.querySelector(
@@ -262,6 +274,158 @@ class UserManagerSlideout {
     this.roleListEntryField = userEntry
       ? userEntry.querySelector(`.user--role`)
       : null;
+  }
+
+  async createPendingSubmissionElement(submission) {
+    const submissionId = submission.id;
+    const submitted_at = submission.submitted_at;
+
+    const mainArtist = submission.data.artists.find(
+      (artist) => artist.role === "Main"
+    ).name;
+    const songTitle = submission.data.songTitle;
+    const presets = submission.data.synths.flatMap((synth) =>
+      synth.presets.map((preset) => preset.name)
+    );
+
+    const submissionEl = document.createElement("div");
+    submissionEl.classList.add("slideout-user-submission");
+
+    submissionEl.innerHTML = `
+      <div class="slideout-user-submission--left">
+        <div class="slideout-user-submission--title-container">
+          <span class="slideout-user-submission--text"
+            >${mainArtist}</span
+          >
+          <span class="slideout-user-submission--text"
+            >${songTitle}</span
+          >
+        </div>
+        <span class="slideout-user-submission--time"
+          >${submitted_at}</span
+        >
+      </div>
+      <div
+        class="slideout-user-submission--preset-list-container"
+      ></div>
+      <a
+        href="/admin/approvals#entry-${submissionId}"
+        class="slideout-submissions-edit-btn"
+      >
+        <i
+          class="fa-solid fa-pen-to-square slideout-submissions-edit-icon"
+        ></i>
+      </a>
+    `;
+
+    const presetListContainer = submissionEl.querySelector(
+      ".slideout-user-submission--preset-list-container"
+    );
+
+    presets.forEach((preset, i) => {
+      const presetEl = document.createElement("div");
+      presetEl.classList.add("slideout-user-submission--icon-container");
+
+      if (i === 2 && presets.length > 3) {
+        presetEl.innerHTML = `
+          <i 
+            class="fa-solid fa-sliders slideout-user-submission--icon"
+          ></i>
+          <span class="slideout-user-submission--text-secondary">
+            ...
+          </span>
+      `;
+      } else if (i < 3) {
+        presetEl.innerHTML = `
+          <i 
+            class="fa-solid fa-sliders slideout-user-submission--icon"
+          ></i>
+          <span class="slideout-user-submission--text-secondary">
+            ${preset}
+          </span>
+      `;
+      } else {
+        return;
+      }
+
+      presetListContainer.appendChild(presetEl);
+    });
+
+    this.pendingSubmissionsSection.appendChild(submissionEl);
+  }
+
+  async createApprovedSubmissionElement(submission) {
+    const songId = submission.song_id;
+    const submitted_at = submission.timestamp;
+
+    const mainArtist = submission.artist_name;
+    const songTitle = submission.song_title;
+    const presets = submission.presets.map((preset) => preset.preset_name);
+
+    const submissionEl = document.createElement("div");
+    submissionEl.classList.add("slideout-user-submission");
+
+    submissionEl.innerHTML = `
+      <div class="slideout-user-submission--left">
+        <div class="slideout-user-submission--title-container">
+          <span class="slideout-user-submission--text"
+            >${mainArtist}</span
+          >
+          <span class="slideout-user-submission--text"
+            >${songTitle}</span
+          >
+        </div>
+        <span class="slideout-user-submission--time"
+          >${submitted_at}</span
+        >
+      </div>
+      <div
+        class="slideout-user-submission--preset-list-container"
+      ></div>
+      <a
+        href="/admin/manage-db/${songId}" 
+        class="slideout-submissions-edit-btn"
+      >
+        <i
+          class="fa-solid fa-pen-to-square slideout-submissions-edit-icon"
+        ></i>
+      </a>
+    `;
+
+    const presetListContainer = submissionEl.querySelector(
+      ".slideout-user-submission--preset-list-container"
+    );
+
+    presets.forEach((preset, i) => {
+      const presetEl = document.createElement("div");
+      presetEl.classList.add("slideout-user-submission--icon-container");
+
+      if (i === 2 && presets.length > 3) {
+        presetEl.innerHTML = `
+          <i 
+            class="fa-solid fa-sliders slideout-user-submission--icon"
+          ></i>
+          <span class="slideout-user-submission--text-secondary">
+            ...
+          </span>
+      `;
+      } else if (i < 3) {
+        presetEl.innerHTML = `
+          <i 
+            class="fa-solid fa-sliders slideout-user-submission--icon"
+          ></i>
+          <span class="slideout-user-submission--text-secondary">
+            ${preset}
+          </span>
+      `;
+      } else {
+        return;
+      }
+
+      presetListContainer.appendChild(presetEl);
+    });
+
+    this.approvedSubmissionsSection.appendChild(submissionEl);
   }
 
   async populateSlideout() {
@@ -285,6 +449,32 @@ class UserManagerSlideout {
     this.demoteBtn.classList.toggle("hidden", !this.userData.is_admin);
 
     // Submissions section
+    this.pendingSubmissionsSection.innerHTML = "";
+
+    if (this.userData.pendingSubmissions.length) {
+      this.pendingSubmissionsTitle.classList.remove("hidden");
+      this.pendingSubmissionsSection.classList.remove("hidden");
+
+      this.userData.pendingSubmissions.forEach(async (submission) => {
+        await this.createPendingSubmissionElement(submission);
+      });
+    } else {
+      this.pendingSubmissionsTitle.classList.add("hidden");
+      this.pendingSubmissionsSection.classList.add("hidden");
+    }
+
+    this.approvedSubmissionsSection.innerHTML = "";
+    if (this.userData.submissions.length) {
+      this.approvedSubmissionsTitle.classList.remove("hidden");
+      this.approvedSubmissionsSection.classList.remove("hidden");
+
+      this.userData.submissions.forEach(async (submission) => {
+        await this.createApprovedSubmissionElement(submission);
+      });
+    } else {
+      this.approvedSubmissionsTitle.classList.add("hidden");
+      this.approvedSubmissionsSection.classList.add("hidden");
+    }
   }
 
   // Event listeners
