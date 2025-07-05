@@ -57,12 +57,16 @@
                 <span class="account-info-head-text"
                   >Joined: <%= user.timestamp %></span
                 >
-                <span class="account-info-head-text">&bull;</span>
+                <span class="account-info-head-text account-info-head--bull"
+                  >&bull;</span
+                >
                 <span class="account-info-head-text"
                   >Authenticated with: <%= user.authenticated_with %></span
                 >
                 <% if (user.is_admin) { %>
-                <span class="account-info-head-text">&bull;</span>
+                <span class="account-info-head-text account-info-head--bull"
+                  >&bull;</span
+                >
                 <span class="account-info-head-text">Admin</span>
                 <% } %>
               </div>
@@ -92,7 +96,7 @@
               </button>
             </div>
 
-            <hr class="account-info--hr" />
+            <hr class="account-info--hr mt--large" />
 
             <div id="my-submissions" class="user-submissions-header">
               <h2 class="heading-secondary">My submissions</h2>
@@ -218,6 +222,8 @@
               >
             </div>
             <% } %>
+
+            <hr class="account-info--hr mb--large" />
 
             <div class="account-info-footer">
               <div class="btn-container">

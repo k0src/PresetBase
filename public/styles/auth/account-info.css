@@ -134,11 +134,18 @@ body {
 }
 
 .account-info--hr {
-  margin-top: 3.2rem;
   width: 100%;
   border: 0.1rem solid #2d343a;
   border-radius: 0.4rem;
   color: #2d343a;
+}
+
+.mt--large {
+  margin-top: 3.2rem;
+}
+
+.mb--large {
+  margin-bottom: 3.2rem;
 }
 
 /* ---------------------------- User Submissions ---------------------------- */
@@ -154,7 +161,7 @@ body {
   display: flex;
   flex-direction: column;
   gap: 1.6rem;
-  padding-bottom: 3.2rem;
+  padding-bottom: 1.6rem;
 }
 
 .pending-submissions-container,
@@ -491,3 +498,61 @@ body {
 }
 
 /* --------------------------------- Queries -------------------------------- */
+@media (max-width: 50em) {
+  .pending-submissions-container,
+  .user-submissions-container {
+    column-count: 2;
+  }
+
+  .user-submission--approved,
+  .user-submission {
+    padding: 1.6rem;
+  }
+
+  .user-submission--pending {
+    padding: 1.6rem;
+  }
+
+  .user-submission--img {
+    width: 7.2rem;
+    height: 7.2rem;
+  }
+
+  .user-submission--text-primary {
+    font-size: 1.8rem;
+  }
+
+  .user-submission--text-secondary {
+    font-size: 1.2rem;
+  }
+
+  .delete--icon {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 40em) {
+  .account-info-head-text-container {
+    gap: 0.8rem;
+  }
+
+  .account-info-head-text {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 32em) {
+  .pending-submissions-container,
+  .user-submissions-container {
+    column-count: 1;
+  }
+
+  .account-info-head-text-container {
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .account-info-head--bull {
+    display: none;
+  }
+}
