@@ -28,9 +28,6 @@ body {
 }
 
 /* ------------------------------- Main Styles ------------------------------ */
-.admin-main-container {
-  padding-bottom: 3.2rem;
-}
 .admin-grid-layout {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -70,4 +67,52 @@ body {
   font-size: 1.8rem;
   font-weight: 600;
   line-height: 1.1;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 40em) {
+  .admin-card-text {
+    font-size: 1.4rem;
+  }
+
+  .admin-card-icon {
+    font-size: 2.8rem;
+  }
+
+  .admin-card {
+    padding: 2rem 1.4rem;
+  }
+}
+
+@media (max-width: 32em) {
+  .admin-card-text {
+    font-size: 1.8rem;
+  }
+
+  .admin-card-icon {
+    font-size: 3.2rem;
+  }
+
+  .admin-card {
+    padding: 2.4rem 1.8rem;
+  }
+
+  .admin-grid-layout {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-rows: repeat(6, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 25em) {
+  .admin-card-text {
+    font-size: 1.4rem;
+  }
+
+  .admin-card-icon {
+    font-size: 2.8rem;
+  }
+
+  .admin-card {
+    padding: 2rem 1.4rem;
+  }
 }
