@@ -64,7 +64,6 @@ router.put("/update-username", isAdmin, async (req, res) => {
     res.json({ username: newUsername });
   } catch (err) {
     console.error(err);
-
     if (err.message === "Invalid username format") {
       return res.status(400).json({ error: err.message });
     }
@@ -88,7 +87,6 @@ router.post("/ban-user", isAdmin, async (req, res) => {
     res.json({ message: "User banned successfully." });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "An error occurred while banning the user.",
     });
@@ -108,7 +106,6 @@ router.post("/unban-user", isAdmin, async (req, res) => {
     res.json({ message: "User unbanned successfully." });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "An error occurred while unbanning the user.",
     });
@@ -128,7 +125,6 @@ router.post("/promote-user", isAdmin, async (req, res) => {
     res.json({ message: "User promoted to admin successfully." });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "An error occurred while promoting the user.",
     });
@@ -148,7 +144,6 @@ router.post("/demote-user", isAdmin, async (req, res) => {
     res.json({ message: "User demoted from admin successfully." });
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "An error occurred while demoting the user.",
     });
@@ -172,7 +167,6 @@ router.get("/user-data/:userId", isAdmin, async (req, res) => {
     res.json(userData);
   } catch (err) {
     console.error(err);
-
     res.status(500).json({
       error: "An error occurred while fetching user data.",
     });

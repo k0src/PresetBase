@@ -14,9 +14,6 @@
           <section class="manage-db--header">
             <div class="manage-db-header--top">
               <h1 class="heading-primary">Manage Database</h1>
-              <span class="tables-count"
-                ><%= totalTables.total_tables %> tables</span
-              >
             </div>
             <div class="manage-db-header--bottom-container">
               <select name="table-select" class="manage-db--table-select">
@@ -159,50 +156,7 @@
             </div>
           </aside>
 
-          <section class="entry-list--container">
-            <div class="result-columns grid-layout--songs">
-              <span>#</span>
-              <span>Title</span>
-              <span>Genre</span>
-              <span>Release Year</span>
-              <span>Song URL</span>
-              <span>Image URL</span>
-              <span>Added Date</span>
-            </div>
-            <% Object.entries(songsData).forEach(([i, song]) => { %>
-            <div
-              data-songid="<%= song.id %>"
-              class="grid-layout--songs db-entry"
-            >
-              <span class="db-entry--number"><%= +i + 1 %></span>
-              <span class="db-entry--primary song-title"
-                ><%= song.song_title %></span
-              >
-              <span class="db-entry--primary song-genre"
-                ><%= song.song_genre %></span
-              >
-              <span class="db-entry--secondary song-year"
-                ><%= song.song_year %></span
-              >
-              <span class="db-entry--secondary song-url"
-                ><%= song.song_url %></span
-              >
-              <span class="db-entry--secondary image-url"
-                ><%= song.song_image %></span
-              >
-              <span class="db-entry--date song-added-date"
-                ><%= song.song_timestamp %></span
-              >
-              <button
-                class="hidden-btn"
-                type="button"
-                onclick="showSlideOut(this)"
-              >
-                <i class="fa-solid fa-pen-to-square edit--icon"></i>
-              </button>
-            </div>
-            <% }) %>
-          </section>
+          <section class="entry-list--container"></section>
         </main>
       </div>
       <%- include('../partials/footer') %>

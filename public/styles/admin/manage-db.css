@@ -147,6 +147,34 @@ body {
   gap: 1.4rem;
 }
 
+.grid-layout--artists {
+  display: grid;
+  grid-template-columns: 2rem 100fr 50fr 100fr 75fr 2rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--albums {
+  display: grid;
+  grid-template-columns: 2rem 100fr 75fr 50fr 100fr 100fr 75fr 2rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--synths {
+  display: grid;
+  grid-template-columns: 2rem 100fr 100fr 50fr 100fr 75fr 2rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.grid-layout--presets {
+  display: grid;
+  grid-template-columns: 2rem 100fr 100fr 100fr 75fr 2rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
 /* -------------------------------- List View ------------------------------- */
 .result-columns {
   color: #899096;

@@ -8,36 +8,18 @@ router.get("/", isAdmin, async (req, res) => {
   const userIsAdmin = req.user && req.user.is_admin;
 
   // Load songs table initally - most important
-  const queries = {
-    songsData: `
-      SELECT
-        id AS song_id,
-        title AS song_title,
-        genre AS song_genre,
-        release_year AS song_year,
-        song_url,
-        image_url AS song_image,
-        timestamp AS song_timestamp
-      FROM songs
-      ORDER BY id ASC`,
-
-    totalTables: `
+  const query = `
       SELECT COUNT(*) AS total_tables
       FROM sqlite_master
       WHERE type = 'table'
-        AND name NOT LIKE 'sqlite_%';`,
-  };
+        AND name NOT LIKE 'sqlite_%'`;
 
   try {
-    const [songsData, totalTables] = await Promise.all([
-      dbAll(queries.songsData),
-      dbGet(queries.totalTables),
-    ]);
+    const totalTables = await dbGet(query);
 
     res.render("admin/manage-db", {
       isAuth,
       userIsAdmin,
-      songsData,
       totalTables,
       PATH_URL: "admin",
     });
@@ -47,6 +29,35 @@ router.get("/", isAdmin, async (req, res) => {
       isAuth,
       userIsAdmin,
       PATH_URL: "db-error",
+    });
+  }
+});
+
+router.get("/table-data/:table", isAdmin, async (req, res) => {
+  const tables = ["songs", "artists", "albums", "synths", "presets"];
+
+  const table = req.params.table;
+
+  if (!tables.includes(table)) {
+    return res.status(404).json({
+      error: "Table not found.",
+    });
+  }
+  const where = table === "albums" ? "WHERE id != 0" : "";
+
+  try {
+    const tableData = await dbAll(`
+      SELECT *
+      FROM ${table}
+      ${where}
+      ORDER BY id ASC
+    `);
+
+    res.json(tableData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching table data.",
     });
   }
 });
