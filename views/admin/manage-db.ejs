@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Manage Database</title>
+    <script src="/js/admin/manage-db.js" defer></script>
+    <link rel="stylesheet" href="/styles/admin/manage-db.css" />
+    <%- include('../partials/html-head') %>
+  </head>
+  <body>
+    <div class="page-wrapper">
+      <%- include('../partials/navbar') %>
+      <div class="content-wrapper">
+        <main class="container">
+          <section class="manage-db--header">
+            <div class="manage-db-header--top">
+              <h1 class="heading-primary">Manage Database</h1>
+              <span class="tables-count"
+                ><%= totalTables.total_tables %> tables</span
+              >
+            </div>
+            <div class="manage-db-header--bottom-container">
+              <select name="table-select" class="manage-db--table-select">
+                <option value="albums">Albums</option>
+                <option value="artists">Artists</option>
+                <option value="presets">Presets</option>
+                <option value="songs" selected>Songs</option>
+                <option value="synths">Synths</option>
+              </select>
+              <div class="manage-db-header--bottom">
+                <div class="manage-db-result-filter--container">
+                  <div class="manage-db-result-filter">
+                    <input
+                      type="text"
+                      placeholder="Filter Entries"
+                      class="manage-db-filter--input"
+                    />
+                    <i class="fa-solid fa-xmark result-filter--clear"></i>
+                  </div>
+                </div>
+                <div class="manage-db--select-container">
+                  <select name="sort" class="manage-db--sort-select">
+                    <option value="" selected disabled hidden>Sort</option>
+                    <option value="title">Title</option>
+                    <option value="genre">Genre</option>
+                    <option value="year">Release Year</option>
+                    <option value="timestamp">Added Date</option>
+                  </select>
+                  <i class="fa-solid fa-sort sort-icon"></i>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <div id="slideout-backdrop" class="slideout-backdrop hidden"></div>
+
+          <aside id="slideout-panel" class="slideout hidden">
+            <header class="slideout-header">
+              <h2 class="heading-secondary">Edit Song</h2>
+              <button id="slideout-close-btn" class="close-btn">
+                <i class="fa-solid fa-xmark slide-out-icon"></i>
+              </button>
+            </header>
+            <div class="slideout-content">
+              <div class="entry-info-container">
+                <div class="entry-info-input-container">
+                  <span class="entry-info-text">Title</span>
+                  <input
+                    type="text"
+                    id="slideout-song-title"
+                    class="entry-info-input"
+                    placeholder="Song Title"
+                    value=""
+                  />
+                  <div
+                    id="slideout-song-title-hint"
+                    class="input-hint hidden"
+                  ></div>
+                  <span class="entry-info-text">Genre</span>
+                  <input
+                    type="text"
+                    id="slideout-song-genre"
+                    class="entry-info-input"
+                    placeholder="Genre"
+                    value=""
+                  />
+                  <div
+                    id="slideout-song-genre-hint"
+                    class="input-hint hidden"
+                  ></div>
+                  <span class="entry-info-text">Release Year</span>
+                  <input
+                    type="text"
+                    id="slideout-song-year"
+                    class="entry-info-input"
+                    placeholder="Release Year"
+                    value=""
+                  />
+                  <div
+                    id="slideout-song-year-hint"
+                    class="input-hint hidden"
+                  ></div>
+                  <span class="entry-info-text">URL</span>
+                  <input
+                    type="text"
+                    id="slideout-song-url"
+                    class="entry-info-input"
+                    placeholder="Song URL"
+                    value=""
+                  />
+                  <div
+                    id="slideout-song-url-hint"
+                    class="input-hint hidden"
+                  ></div>
+                </div>
+                <button
+                  id="slideout-apply-changes-btn"
+                  type="button"
+                  class="entry-info-btn"
+                  disabled
+                >
+                  Apply changes
+                </button>
+
+                <div class="entry-info-bottom-container">
+                  <div class="entry-info-bottom-entry">
+                    <span class="entry-info-bottom-text"
+                      ><strong>Song ID:</strong></span
+                    >
+                    <span
+                      id="slideout-song-id"
+                      class="entry-info-bottom-text"
+                    ></span>
+                  </div>
+                  <div class="entry-info-bottom-entry">
+                    <span class="entry-info-bottom-text"
+                      ><strong>Added:</strong></span
+                    >
+                    <span
+                      id="slideout-song-timestamp"
+                      class="entry-info-bottom-text"
+                    ></span>
+                  </div>
+                </div>
+              </div>
+
+              <hr class="entry-info--hr" />
+
+              <div class="entry-info-actions">
+                <div class="btn-container">
+                  <button id="delete-song-btn" type="button" class="delete-btn">
+                    Delete Song
+                  </button>
+                </div>
+                <div
+                  id="slideout-song-actions-hint"
+                  class="input-hint hidden"
+                ></div>
+              </div>
+            </div>
+          </aside>
+
+          <section class="entry-list--container">
+            <div class="result-columns grid-layout--songs">
+              <span>#</span>
+              <span>Title</span>
+              <span>Genre</span>
+              <span>Release Year</span>
+              <span>Song URL</span>
+              <span>Image URL</span>
+              <span>Added Date</span>
+            </div>
+            <% Object.entries(songsData).forEach(([i, song]) => { %>
+            <div
+              data-songid="<%= song.id %>"
+              class="grid-layout--songs db-entry"
+            >
+              <span class="db-entry--number"><%= +i + 1 %></span>
+              <span class="db-entry--primary song-title"
+                ><%= song.song_title %></span
+              >
+              <span class="db-entry--primary song-genre"
+                ><%= song.song_genre %></span
+              >
+              <span class="db-entry--secondary song-year"
+                ><%= song.song_year %></span
+              >
+              <span class="db-entry--secondary song-url"
+                ><%= song.song_url %></span
+              >
+              <span class="db-entry--secondary image-url"
+                ><%= song.song_image %></span
+              >
+              <span class="db-entry--date song-added-date"
+                ><%= song.song_timestamp %></span
+              >
+              <button
+                class="hidden-btn"
+                type="button"
+                onclick="showSlideOut(this)"
+              >
+                <i class="fa-solid fa-pen-to-square edit--icon"></i>
+              </button>
+            </div>
+            <% }) %>
+          </section>
+        </main>
+      </div>
+      <%- include('../partials/footer') %>
+    </div>
+  </body>
+  <%- include('../partials/scroll-to-top') %>
+</html>

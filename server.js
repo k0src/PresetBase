@@ -119,6 +119,8 @@ const adminAnnouncements = require("./routes/admin/announcements");
 app.use("/admin/announcements", adminAnnouncements);
 const adminManageUsers = require("./routes/admin/manage-users");
 app.use("/admin/manage-users", adminManageUsers);
+const adminManageDb = require("./routes/admin/manage-db");
+app.use("/admin/manage-db", adminManageDb);
 
 /* ----------------------------------- 404 ---------------------------------- */
 app.use((req, res) => {
