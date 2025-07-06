@@ -52,6 +52,13 @@ body {
   flex-direction: column;
 }
 
+.manage-db--table-select-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
 .manage-db--table-select {
   font-family: "Geist", sans-serif;
   font-size: 1.4rem;
@@ -114,7 +121,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 1.4rem;
+  gap: 1.6rem;
 }
 
 .manage-db--sort-select {
@@ -128,6 +135,13 @@ body {
   flex: 1;
 }
 
+.download-icon {
+  color: #899096;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
 .sort-icon {
   color: #899096;
   font-size: 1.6rem;
@@ -135,6 +149,7 @@ body {
   transition: color 0.2s ease;
 }
 
+.download-icon:hover,
 .sort-icon:hover {
   color: #e3e5e4 !important;
 }

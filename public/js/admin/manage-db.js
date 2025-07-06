@@ -213,11 +213,53 @@ class DBViewManager {
     }
   }
 
+  #generateCSV(tableData) {
+    const headers =
+      Array.from(tableData[0].querySelectorAll("span"))
+        .map((el) => el.textContent.trim())
+        .join(",") + "\n";
+    const rows = Array.from(tableData)
+      .map((row) => {
+        return Array.from(row.querySelectorAll("span"))
+          .map((el) => `"${el.textContent.trim()}"`)
+          .join(",");
+      })
+      .join("\n");
+    return headers + rows;
+  }
+
+  #downloadCSV(content, filename) {
+    const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", filename);
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  }
+
   constructor(slideout, config) {
     this.slideout = slideout;
     this.config = config;
     this.currentTable = null;
     this.listContainer = document.querySelector(".entry-list--container");
+    this.exportBtn = document.querySelector(".download-icon");
+
+    this.exportBtn.addEventListener("click", () => {
+      if (!this.currentTable) {
+        console.error("No table loaded.");
+        return;
+      }
+
+      const tableData = this.listContainer.querySelectorAll(".db-entry");
+      if (tableData.length === 0) {
+        console.warn("No data to export.");
+        return;
+      }
+
+      const csvContent = this.#generateCSV(tableData);
+      this.#downloadCSV(csvContent, `${this.currentTable}.csv`);
+    });
   }
 
   async loadTable(table) {
@@ -259,7 +301,6 @@ class DBViewManager {
     tableData.forEach((row, i) => {
       const rowEl = document.createElement("div");
       rowEl.className = `grid-layout--${table} db-entry`;
-      rowEl.dataset.entryid = row[tableConfig.id];
 
       const numberColumn = document.createElement("span");
       numberColumn.className = "db-entry--number";

@@ -108,7 +108,13 @@
   color: #e3e5e4;
 }
 
-.browse-results-result-filter--container,
+.browse-results-result-filter--container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
 .browse-results---select-container {
   display: flex;
   align-items: center;
