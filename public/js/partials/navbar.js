@@ -1,196 +1,198 @@
-const pagesWithoutNavbar = {
-  "/login": true,
-};
+// const pagesWithoutNavbar = {
+//   "/login": true,
+// };
 
-const fetchSearchSuggestions = async function (query, limit) {
-  const url = `/api/getallnames?query=${encodeURIComponent(
-    query
-  )}&limit=${limit}`;
+// const kbdHint = document.querySelector(".navbar-search--shortcut");
 
-  const res = await fetch(url);
-  if (!res.ok) throw new Error("Search suggestions fetch failed");
+// const fetchSearchSuggestions = async function (query, limit) {
+//   const url = `/api/getallnames?query=${encodeURIComponent(
+//     query
+//   )}&limit=${limit}`;
 
-  const data = await res.json();
-  return data.map((row) => row.name);
-};
+//   const res = await fetch(url);
+//   if (!res.ok) throw new Error("Search suggestions fetch failed");
 
-document.addEventListener("DOMContentLoaded", () => {
-  if (window.location.pathname in pagesWithoutNavbar) {
-    return;
-  }
+//   const data = await res.json();
+//   return data.map((row) => row.name);
+// };
 
-  const input = document.querySelector(".navbar-search--input");
-  const dropdown = document.querySelector(".autocomplete-dropdown--nav");
+// document.addEventListener("DOMContentLoaded", () => {
+//   if (window.location.pathname in pagesWithoutNavbar) {
+//     return;
+//   }
 
-  const searchForQuery = function (query) {
-    if (query) {
-      const searchValue = query.trim().toLowerCase();
-      window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
-      input.value = "";
-    }
-  };
+//   const input = document.querySelector(".navbar-search--input");
+//   const dropdown = document.querySelector(".autocomplete-dropdown--nav");
 
-  let selectedIndex = -1;
-  let debounceTimeout;
-  handleKeyboardNavigation(
-    input,
-    dropdown,
-    () => selectedIndex,
-    (val) => {
-      selectedIndex = val;
-    }
-  );
+//   const searchForQuery = function (query) {
+//     if (query) {
+//       const searchValue = query.trim().toLowerCase();
+//       window.location.href = `/search?query=${encodeURIComponent(searchValue)}`;
+//       input.value = "";
+//     }
+//   };
 
-  input.addEventListener("input", () => {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(async () => {
-      const query = input.value.trim();
-      if (query.length === 0) {
-        hideDropdown();
-        return;
-      }
+//   let selectedIndex = -1;
+//   let debounceTimeout;
+//   handleKeyboardNavigation(
+//     input,
+//     dropdown,
+//     () => selectedIndex,
+//     (val) => {
+//       selectedIndex = val;
+//     }
+//   );
 
-      try {
-        const results = await fetchSearchSuggestions(query, 5);
-        renderDropdown(results);
-      } catch (err) {
-        console.error("Error fetching search suggestions: ", err);
-      }
+//   input.addEventListener("input", () => {
+//     clearTimeout(debounceTimeout);
+//     debounceTimeout = setTimeout(async () => {
+//       const query = input.value.trim();
+//       if (query.length === 0) {
+//         hideDropdown();
+//         return;
+//       }
 
-      selectedIndex = -1;
-    }, 150);
-  });
+//       try {
+//         const results = await fetchSearchSuggestions(query, 5);
+//         renderDropdown(results);
+//       } catch (err) {
+//         console.error("Error fetching search suggestions: ", err);
+//       }
 
-  const renderDropdown = function (items) {
-    dropdown.innerHTML = "";
-    if (items.length === 0) {
-      hideDropdown();
-      return;
-    }
+//       selectedIndex = -1;
+//     }, 150);
+//   });
 
-    items.forEach((item, index) => {
-      const listItem = item;
-      const li = document.createElement("li");
-      li.textContent = listItem;
-      li.setAttribute("data-index", index);
+//   const renderDropdown = function (items) {
+//     dropdown.innerHTML = "";
+//     if (items.length === 0) {
+//       hideDropdown();
+//       return;
+//     }
 
-      li.addEventListener("click", () => {
-        hideDropdown();
-        searchForQuery(listItem);
-      });
-      dropdown.appendChild(li);
-    });
+//     items.forEach((item, index) => {
+//       const listItem = item;
+//       const li = document.createElement("li");
+//       li.textContent = listItem;
+//       li.setAttribute("data-index", index);
 
-    dropdown.classList.add("show");
-    dropdown.classList.remove("hidden");
-  };
+//       li.addEventListener("click", () => {
+//         hideDropdown();
+//         searchForQuery(listItem);
+//       });
+//       dropdown.appendChild(li);
+//     });
 
-  function hideDropdown() {
-    dropdown.classList.remove("show");
-    dropdown.classList.add("hidden");
-  }
+//     dropdown.classList.add("show");
+//     dropdown.classList.remove("hidden");
+//   };
 
-  document.addEventListener("click", (e) => {
-    if (!input.contains(e.target) && !dropdown.contains(e.target)) {
-      hideDropdown();
-    }
-  });
+//   function hideDropdown() {
+//     dropdown.classList.remove("show");
+//     dropdown.classList.add("hidden");
+//   }
 
-  function handleKeyboardNavigation(
-    input,
-    dropdown,
-    getSelectedIndex,
-    setSelectedIndex
-  ) {
-    input.addEventListener("keydown", (e) => {
-      const items = dropdown.querySelectorAll("li");
+//   document.addEventListener("click", (e) => {
+//     if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+//       hideDropdown();
+//     }
+//   });
 
-      if (items.length === 0) return;
+//   function handleKeyboardNavigation(
+//     input,
+//     dropdown,
+//     getSelectedIndex,
+//     setSelectedIndex
+//   ) {
+//     input.addEventListener("keydown", (e) => {
+//       const items = dropdown.querySelectorAll("li");
 
-      let currentIndex = getSelectedIndex();
+//       if (items.length === 0) return;
 
-      switch (e.key) {
-        case "ArrowDown":
-          e.preventDefault();
-          currentIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
-          updateSelection(items, currentIndex);
-          setSelectedIndex(currentIndex);
-          break;
+//       let currentIndex = getSelectedIndex();
 
-        case "ArrowUp":
-          e.preventDefault();
-          currentIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
-          updateSelection(items, currentIndex);
-          setSelectedIndex(currentIndex);
-          break;
+//       switch (e.key) {
+//         case "ArrowDown":
+//           e.preventDefault();
+//           currentIndex = currentIndex < items.length - 1 ? currentIndex + 1 : 0;
+//           updateSelection(items, currentIndex);
+//           setSelectedIndex(currentIndex);
+//           break;
 
-        case "Enter":
-          e.preventDefault();
-          if (currentIndex >= 0 && items[currentIndex]) {
-            hideDropdown(dropdown);
-            setSelectedIndex(-1);
-            searchForQuery(items[currentIndex].textContent);
-          }
-          break;
+//         case "ArrowUp":
+//           e.preventDefault();
+//           currentIndex = currentIndex > 0 ? currentIndex - 1 : items.length - 1;
+//           updateSelection(items, currentIndex);
+//           setSelectedIndex(currentIndex);
+//           break;
 
-        case "Escape":
-          hideDropdown(dropdown);
-          setSelectedIndex(-1);
-          break;
-      }
-    });
-  }
+//         case "Enter":
+//           e.preventDefault();
+//           if (currentIndex >= 0 && items[currentIndex]) {
+//             hideDropdown(dropdown);
+//             setSelectedIndex(-1);
+//             searchForQuery(items[currentIndex].textContent);
+//           }
+//           break;
 
-  function updateSelection(items, newIndex) {
-    items.forEach((item) => item.classList.remove("selected"));
+//         case "Escape":
+//           hideDropdown(dropdown);
+//           setSelectedIndex(-1);
+//           break;
+//       }
+//     });
+//   }
 
-    if (newIndex >= 0 && items[newIndex]) {
-      items[newIndex].classList.add("selected");
+//   function updateSelection(items, newIndex) {
+//     items.forEach((item) => item.classList.remove("selected"));
 
-      items[newIndex].scrollIntoView({
-        block: "nearest",
-        behavior: "smooth",
-      });
-    }
-  }
+//     if (newIndex >= 0 && items[newIndex]) {
+//       items[newIndex].classList.add("selected");
 
-  input.addEventListener("keydown", function (e) {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      const query = input.value.trim();
-      searchForQuery(query);
-    }
-  });
+//       items[newIndex].scrollIntoView({
+//         block: "nearest",
+//         behavior: "smooth",
+//       });
+//     }
+//   }
 
-  document.addEventListener("keydown", function (e) {
-    if (e.ctrlKey && e.key.toLowerCase() === "k") {
-      e.preventDefault();
-      input.focus();
-    }
-  });
+//   input.addEventListener("keydown", function (e) {
+//     if (e.key === "Enter") {
+//       e.preventDefault();
+//       const query = input.value.trim();
+//       searchForQuery(query);
+//     }
+//   });
 
-  /* ------------------------------- Mobile Nav ------------------------------- */
-  const btnMobileNav = document.querySelector(".button-mobile-nav");
-  const mobileNav = document.querySelector(".mobile-nav");
-  const iconBars = btnMobileNav.querySelector(".fa-bars");
-  const iconClose = btnMobileNav.querySelector(".fa-xmark");
-  const mobileSearchInput = document.querySelector(".mobile-nav-search-input");
+//   document.addEventListener("keydown", function (e) {
+//     if (e.ctrlKey && e.key.toLowerCase() === "k") {
+//       e.preventDefault();
+//       input.focus();
+//     }
+//   });
 
-  btnMobileNav.addEventListener("click", () => {
-    mobileNav.classList.toggle("nav-open");
-    iconBars.classList.toggle("hidden");
-    iconClose.classList.toggle("hidden");
-  });
+//   /* ------------------------------- Mobile Nav ------------------------------- */
+//   const btnMobileNav = document.querySelector(".button-mobile-nav");
+//   const mobileNav = document.querySelector(".mobile-nav");
+//   const iconBars = btnMobileNav.querySelector(".fa-bars");
+//   const iconClose = btnMobileNav.querySelector(".fa-xmark");
+//   const mobileSearchInput = document.querySelector(".mobile-nav-search-input");
 
-  mobileSearchInput.addEventListener("keydown", function (event) {
-    if (event.key === "Enter") {
-      if (mobileSearchInput.value) {
-        const searchValue = mobileSearchInput.value.trim().toLowerCase();
-        window.location.href = `/search?query=${encodeURIComponent(
-          searchValue
-        )}`;
-        mobileSearchInput.value = "";
-      }
-    }
-  });
-});
+//   btnMobileNav.addEventListener("click", () => {
+//     mobileNav.classList.toggle("nav-open");
+//     iconBars.classList.toggle("hidden");
+//     iconClose.classList.toggle("hidden");
+//   });
+
+//   mobileSearchInput.addEventListener("keydown", function (event) {
+//     if (event.key === "Enter") {
+//       if (mobileSearchInput.value) {
+//         const searchValue = mobileSearchInput.value.trim().toLowerCase();
+//         window.location.href = `/search?query=${encodeURIComponent(
+//           searchValue
+//         )}`;
+//         mobileSearchInput.value = "";
+//       }
+//     }
+//   });
+// });

@@ -127,7 +127,7 @@ html {
   box-shadow: 0 0.2rem 0 0 #2d343a;
 }
 
-.navbar-search--input:focus + .navbar-search--shortcut {
+.navbar-search--input:focus ~ .navbar-search--shortcut {
   opacity: 0;
   visibility: hidden;
 }
