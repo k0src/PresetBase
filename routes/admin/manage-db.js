@@ -3,7 +3,23 @@ const router = express.Router();
 const isAdmin = require("../../middleware/is-admin.js");
 const { dbAll, dbGet } = require("../../util/UTIL.js");
 
-router.get("/", isAdmin, async (req, res) => {
+const tableKeys = ["songs", "artists", "albums", "synths", "presets"];
+const actionKeys = ["add"];
+
+const renderPage = async (req, res) => {
+  const { table, action } = req.params;
+
+  if (
+    (table && !tableKeys.includes(table)) ||
+    (action && !actionKeys.includes(action))
+  ) {
+    return res.status(404).render("static/404", {
+      isAuth: req.isAuthenticated(),
+      userIsAdmin: req.user && req.user.is_admin,
+      PATH_URL: "404",
+    });
+  }
+
   const isAuth = req.isAuthenticated();
   const userIsAdmin = req.user && req.user.is_admin;
 
@@ -31,7 +47,7 @@ router.get("/", isAdmin, async (req, res) => {
       PATH_URL: "db-error",
     });
   }
-});
+};
 
 router.get("/table-data/:table", isAdmin, async (req, res) => {
   const tables = ["songs", "artists", "albums", "synths", "presets"];
@@ -61,5 +77,9 @@ router.get("/table-data/:table", isAdmin, async (req, res) => {
     });
   }
 });
+
+router.get("/", isAdmin, renderPage);
+router.get("/:table", isAdmin, renderPage);
+router.get("/:table/:action", isAdmin, renderPage);
 
 module.exports = router;

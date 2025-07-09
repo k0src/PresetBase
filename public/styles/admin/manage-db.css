@@ -331,6 +331,26 @@ body {
   gap: 1.8rem;
 }
 
+.entry-info-top-container {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.entry-info-top-entry {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.entry-info-top-text {
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: #899096;
+}
+
+.entry-info-top-text strong {
+  font-weight: 600;
+}
+
 .entry-info-input-container {
   display: flex;
   flex-direction: column;
@@ -409,27 +429,6 @@ body {
   border: 0.1rem solid #2d343a;
   border-radius: 0.4rem;
   color: #2d343a;
-}
-
-.entry-info-bottom-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
-}
-
-.entry-info-bottom-entry {
-  display: flex;
-  gap: 0.4rem;
-}
-
-.entry-info-bottom-text {
-  font-size: 1.3rem;
-  line-height: 1.1;
-  color: #899096;
-}
-
-.entry-info-bottom-text strong {
-  font-weight: 600;
 }
 
 .entry-info-actions {

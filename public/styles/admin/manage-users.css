@@ -559,6 +559,11 @@ body {
   color: #e3e5e4 !important;
 }
 
+.slideout-no-submissions {
+  font-size: 1.6rem;
+  color: #899096 !important;
+}
+
 /* --------------------------------- Queries -------------------------------- */
 @media (max-width: 60em) {
   .result-entry--number,

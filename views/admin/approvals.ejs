@@ -3,7 +3,6 @@
   <head>
     <title>Admin &mdash; Approvals</title>
     <link rel="stylesheet" href="/styles/main/submit.css" />
-    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <script src="/js/admin/approvals.js" defer></script>
     <%- include('../partials/html-head') %>
   </head>
@@ -15,10 +14,6 @@
         <main class="container">
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="submit--header">
-            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, 
-            { label: "Admin Dashboard", href: "/admin" },{
-            label: "User Submissions", href: "" }]; %> <%-
-            include('../partials/admin-breadcrumbs', { breadcrumbs }) %>
             <h1 class="heading-primary">User Submitted Entries</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->

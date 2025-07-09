@@ -4,7 +4,6 @@
     <title>Admin &mdash; Tag Editor</title>
     <link rel="stylesheet" href="/styles/admin/admin.css" />
     <link rel="stylesheet" href="/styles/admin/tag-editor.css" />
-    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <link rel="stylesheet" href="/styles/partials/coloris.min.css" />
     <script src="/js/admin/tag-editor.js" defer></script>
     <script src="/js/partials/coloris.min.js" defer></script>
@@ -21,10 +20,6 @@
         <main class="container">
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="admin--header">
-            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
-            label: "Admin Dashboard", href: "/admin" },{ label: "Tag Editor",
-            href: "" }]; %> <%- include('../partials/admin-breadcrumbs', {
-            breadcrumbs }) %>
             <h1 class="heading-primary">Tag Editor</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->

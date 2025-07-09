@@ -329,15 +329,24 @@ class DBViewManager {
   }
 }
 
+// const setTableSelect = function () {
+//   const selectedTable =
+//     sessionStorage.getItem(`manageDBTableSelected`) || "songs";
+//   tableSelect.value = selectedTable;
+// };
+
 document.addEventListener("DOMContentLoaded", async () => {
   setTableSelect();
 
-  const slideout = new DBSlideoutManager();
-  const dbViewManager = new DBViewManager(slideout, TABLE_CONFIG);
-
-  const loadSelectedTable = async () => {
+  const loadSelectedTable = async (updateURL = true) => {
     const selectedTable = tableSelect.value;
     sessionStorage.setItem("manageDBTableSelected", selectedTable);
+
+    if (updateURL) {
+      const newUrl = `/admin/manage-db/${selectedTable}`;
+      history.pushState({ table: selectedTable }, "", newUrl);
+    }
+
     try {
       await dbViewManager.loadTable(selectedTable);
     } catch (err) {
@@ -345,10 +354,27 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   };
 
-  tableSelect.addEventListener("change", loadSelectedTable);
+  const slideout = new DBSlideoutManager();
+  const dbViewManager = new DBViewManager(slideout, TABLE_CONFIG);
 
-  // Initial load
-  tableSelect.value =
-    sessionStorage.getItem("manageDBTableSelected") || "songs";
+  const defaultTable = "songs";
+  const initialTable =
+    window.location.pathname.split("/")[3] ||
+    sessionStorage.getItem("manageDBTableSelected") ||
+    defaultTable;
+
+  tableSelect.value = initialTable;
+  console.log(initialTable);
+
+  await dbViewManager.loadTable(initialTable);
+
+  tableSelect.addEventListener("change", () => loadSelectedTable(true));
+
+  window.addEventListener("popstate", async (e) => {
+    const pathTable = window.location.pathname.split("/")[3] || defaultTable;
+    tableSelect.value = pathTable;
+    await dbViewManager.loadTable(pathTable);
+  });
+
   await loadSelectedTable();
 });

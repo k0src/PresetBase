@@ -271,6 +271,7 @@ class UserManagerSlideout {
     this.actionsHint = document.getElementById("slideout-actions-hint");
 
     // Submissions sections
+    this.submissionsSection = document.getElementById("submissions-section");
     this.pendingSubmissionsTitle = document.getElementById(
       "slideout-pending-submissions-title"
     );
@@ -283,6 +284,7 @@ class UserManagerSlideout {
     this.approvedSubmissionsSection = document.getElementById(
       "slideout-approved-submissions-section"
     );
+    this.noSubmissionsText = document.getElementById("slideout-no-submissions");
 
     // List entry fields
     const userEntry = document.querySelector(
@@ -470,30 +472,41 @@ class UserManagerSlideout {
     this.demoteBtn.classList.toggle("hidden", !this.userData.is_admin);
 
     // Submissions section
-    this.pendingSubmissionsSection.innerHTML = "";
-    if (this.userData.pendingSubmissions.length) {
-      this.pendingSubmissionsTitle.classList.remove("hidden");
-      this.pendingSubmissionsSection.classList.remove("hidden");
+    if (
+      this.userData.pendingSubmissions.length ||
+      this.userData.submissions.length
+    ) {
+      this.submissionsSection.classList.remove("hidden");
+      this.noSubmissionsText.classList.add("hidden");
 
-      this.userData.pendingSubmissions.forEach(async (submission) => {
-        await this.createPendingSubmissionElement(submission);
-      });
+      this.pendingSubmissionsSection.innerHTML = "";
+      if (this.userData.pendingSubmissions.length) {
+        this.pendingSubmissionsTitle.classList.remove("hidden");
+        this.pendingSubmissionsSection.classList.remove("hidden");
+
+        this.userData.pendingSubmissions.forEach(async (submission) => {
+          await this.createPendingSubmissionElement(submission);
+        });
+      } else {
+        this.pendingSubmissionsTitle.classList.add("hidden");
+        this.pendingSubmissionsSection.classList.add("hidden");
+      }
+
+      this.approvedSubmissionsSection.innerHTML = "";
+      if (this.userData.submissions.length) {
+        this.approvedSubmissionsTitle.classList.remove("hidden");
+        this.approvedSubmissionsSection.classList.remove("hidden");
+
+        this.userData.submissions.forEach(async (submission) => {
+          await this.createApprovedSubmissionElement(submission);
+        });
+      } else {
+        this.approvedSubmissionsTitle.classList.add("hidden");
+        this.approvedSubmissionsSection.classList.add("hidden");
+      }
     } else {
-      this.pendingSubmissionsTitle.classList.add("hidden");
-      this.pendingSubmissionsSection.classList.add("hidden");
-    }
-
-    this.approvedSubmissionsSection.innerHTML = "";
-    if (this.userData.submissions.length) {
-      this.approvedSubmissionsTitle.classList.remove("hidden");
-      this.approvedSubmissionsSection.classList.remove("hidden");
-
-      this.userData.submissions.forEach(async (submission) => {
-        await this.createApprovedSubmissionElement(submission);
-      });
-    } else {
-      this.approvedSubmissionsTitle.classList.add("hidden");
-      this.approvedSubmissionsSection.classList.add("hidden");
+      this.submissionsSection.classList.add("hidden");
+      this.noSubmissionsText.classList.remove("hidden");
     }
   }
 

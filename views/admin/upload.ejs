@@ -4,7 +4,6 @@
     <title>Admin &mdash; Upload</title>
     <link rel="stylesheet" href="/styles/main/submit.css" />
     <script type="module" src="/js/main/submit/submit.js" defer></script>
-    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <%- include('../partials/html-head') %>
   </head>
   <body>
@@ -15,10 +14,6 @@
         <main class="container">
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="submit--header">
-            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
-            label: "Admin Dashboard", href: "/admin" },{ label: "Upload Entry",
-            href: "" }]; %> <%- include('../partials/admin-breadcrumbs', {
-            breadcrumbs }) %>
             <h1 class="heading-primary">Upload Entry</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->

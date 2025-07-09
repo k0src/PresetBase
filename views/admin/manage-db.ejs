@@ -62,6 +62,30 @@
             </header>
             <div class="slideout-content">
               <div class="entry-info-container">
+                <div class="entry-info-top-container">
+                  <div class="entry-info-top-entry">
+                    <span class="entry-info-top-text"
+                      ><strong>Song ID:</strong></span
+                    ><span
+                      id="slideout-song-id"
+                      class="entry-info-top-text"
+                    ></span>
+                  </div>
+                  <div class="entry-info-top-entry">
+                    <span class="entry-info-top-text"
+                      ><strong>&bull;</strong></span
+                    >
+                  </div>
+                  <div class="entry-info-top-entry">
+                    <span class="entry-info-top-text"
+                      ><strong>Added:</strong></span
+                    ><span
+                      id="slideout-song-timestamp"
+                      class="entry-info-top-text"
+                    ></span>
+                  </div>
+                </div>
+
                 <div class="entry-info-input-container">
                   <span class="entry-info-text">Title</span>
                   <input
@@ -111,7 +135,22 @@
                     id="slideout-song-url-hint"
                     class="input-hint hidden"
                   ></div>
+                  <span class="entry-info-text">Album</span>
+                  <div class="slideout-dropdown-container">
+                    <input
+                      type="text"
+                      id="slideout-album-selector"
+                      class="entry-info-input"
+                      placeholder="Album Name"
+                      value=""
+                    />
+                    <ul
+                      id="slideout-album-dropdown"
+                      class="slideout-dropdown-selector hidden"
+                    ></ul>
+                  </div>
                 </div>
+
                 <button
                   id="slideout-apply-changes-btn"
                   type="button"
@@ -120,27 +159,6 @@
                 >
                   Apply changes
                 </button>
-
-                <div class="entry-info-bottom-container">
-                  <div class="entry-info-bottom-entry">
-                    <span class="entry-info-bottom-text"
-                      ><strong>Song ID:</strong></span
-                    >
-                    <span
-                      id="slideout-song-id"
-                      class="entry-info-bottom-text"
-                    ></span>
-                  </div>
-                  <div class="entry-info-bottom-entry">
-                    <span class="entry-info-bottom-text"
-                      ><strong>Added:</strong></span
-                    >
-                    <span
-                      id="slideout-song-timestamp"
-                      class="entry-info-bottom-text"
-                    ></span>
-                  </div>
-                </div>
               </div>
 
               <hr class="entry-info--hr" />

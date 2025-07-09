@@ -3,7 +3,6 @@
   <head>
     <title>PresetBase &mdash; Admin Dashboard</title>
     <link rel="stylesheet" href="/styles/admin/admin.css" />
-    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <%- include('../partials/html-head') %>
   </head>
   <body>
@@ -14,9 +13,6 @@
         <main class="container">
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="admin--header">
-            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
-            label: "Admin Dashboard", href: "" }]; %> <%-
-            include('../partials/admin-breadcrumbs', { breadcrumbs }) %>
             <h1 class="heading-primary">Admin Dashboard</h1>
           </section>
           <!-- --------------------------- Submit Section ---------------------------- -->

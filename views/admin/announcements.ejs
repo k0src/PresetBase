@@ -4,7 +4,6 @@
     <title>Admin &mdash; Announcements</title>
     <link rel="stylesheet" href="/styles/admin/admin.css" />
     <link rel="stylesheet" href="/styles/admin/announcements.css" />
-    <link rel="stylesheet" href="/styles/partials/admin-breadcrumbs.css" />
     <script src="/js/admin/announcements.js" defer></script>
     <%- include('../partials/html-head') %>
   </head>
@@ -16,10 +15,6 @@
         <main class="container">
           <!-- ------------------------------- Header -------------------------------- -->
           <section class="admin--header">
-            <% const breadcrumbs = [ { label: "PresetBase Home", href: "/" }, {
-            label: "Admin Dashboard", href: "/admin" },{ label: "Announcements",
-            href: "" }]; %> <%- include('../partials/admin-breadcrumbs', {
-            breadcrumbs }) %>
             <h1 class="heading-primary">Announcements</h1>
           </section>
           <!-- ------------------------ Announcements Section  ----------------------- -->
