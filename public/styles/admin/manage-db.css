@@ -171,7 +171,7 @@ body {
 
 .grid-layout--albums {
   display: grid;
-  grid-template-columns: 2rem 100fr 75fr 50fr 100fr 100fr 75fr 2rem;
+  grid-template-columns: 2rem 100fr 75fr 50fr 100fr 75fr 2rem;
   align-items: center;
   gap: 1.4rem;
 }
@@ -325,44 +325,57 @@ body {
   gap: 2rem;
 }
 
-.entry-info-container {
+.slideout-entry-info-container {
   display: flex;
   flex-direction: column;
   gap: 1.8rem;
 }
 
-.entry-info-top-container {
+.slideout-entry-info-top-container {
   display: flex;
   gap: 1.2rem;
 }
 
-.entry-info-top-entry {
+.slideout-entry-info-top-entry {
   display: flex;
   gap: 0.4rem;
 }
 
-.entry-info-top-text {
-  font-size: 1.3rem;
-  line-height: 1.1;
-  color: #899096;
+.slideout-entry-info-open-icon {
+  font-size: 1rem;
+  color: #899096 !important;
+  align-self: center;
 }
 
-.entry-info-top-text strong {
+.slideout-entry-info-top-text {
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: #899096 !important;
+}
+
+.slideout-entry-info-top-link {
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: #899096 !important;
+  text-decoration: underline !important;
+}
+
+.slideout-entry-info-top-text strong {
   font-weight: 600;
 }
 
-.entry-info-input-container {
+.slideout-entry-info-input-container {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
 }
 
-.entry-info-text {
+.slideout-entry-info-text {
   font-size: 1.6rem;
   line-height: 1.1;
 }
 
-.entry-info-input {
+.slideout-entry-info-input {
   font-family: "Geist", sans-serif;
   color: #e3e5e4;
   width: 100%;
@@ -373,11 +386,11 @@ body {
   border-radius: 0.4rem;
 }
 
-.entry-info-input--error {
+.slideout-entry-info-input--error {
   border-color: #c25c5c !important;
 }
 
-.entry-info-input:disabled {
+.slideout-entry-info-input:disabled {
   background-color: #121417;
   border-color: #3a3f44;
   color: #777;
@@ -385,7 +398,7 @@ body {
   opacity: 0.6;
 }
 
-.entry-info-btn {
+.slideout-entry-info-btn {
   cursor: pointer;
   font-family: "Geist", sans-serif;
   font-size: 1.6rem;
@@ -399,16 +412,16 @@ body {
   background-color: #5a7f71;
 }
 
-.entry-info-btn:disabled {
+.slideout-entry-info-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.entry-info-btn:disabled:hover {
+.slideout-entry-info-btn:disabled:hover {
   background-color: #5a7f71;
 }
 
-.entry-info-btn:hover {
+.slideout-entry-info-btn:hover {
   background-color: #73988a;
 }
 
@@ -424,14 +437,14 @@ body {
   color: #5a7f71;
 }
 
-.entry-info--hr {
+.slideout-entry-info--hr {
   width: 100%;
   border: 0.1rem solid #2d343a;
   border-radius: 0.4rem;
   color: #2d343a;
 }
 
-.entry-info-actions {
+.slideout-entry-info-actions {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -471,4 +484,182 @@ body {
 
 .delete-btn:disabled:hover {
   background-color: #c25c5c;
+}
+
+.slideout-dropdown {
+  position: absolute;
+  left: 0;
+  top: 120%;
+  transform-origin: top;
+  list-style: none;
+  background-color: #171b1f;
+  border: 1px solid #2d343a;
+  border-radius: 0.8rem;
+  max-height: 30rem;
+  overflow-y: auto;
+  opacity: 0;
+  transform: scaleY(0);
+  transition: all 0.3s ease;
+  z-index: 99999;
+  padding: 0.4rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.slideout-dropdown.show {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.slideout-dropdown li {
+  padding: 1.2rem;
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #899096;
+  cursor: pointer;
+  border-radius: 0.4rem;
+  transition: background-color 0.1s ease;
+}
+
+.slideout-dropdown li:hover {
+  background-color: #2d343a;
+}
+
+.slideout-dropdown li.selected {
+  background-color: #2d343a;
+}
+
+.slideout-img-container {
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.slideout-img {
+  width: 9.6rem;
+  height: 9.6rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.slideout-file-input-wrapper,
+.slideout-custom-file-input {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.slideout-custom-file-input {
+  display: flex;
+  align-items: center;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  padding: 1rem 1.2rem;
+  position: relative;
+  max-width: 100%;
+  gap: 0.8rem;
+}
+
+.slideout-custom-file-input .slideout-file-name {
+  font-size: 1.3rem;
+  color: #e3e5e4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.slideout-custom-file-input .slideout-browse-button {
+  background-color: #2d343a;
+  border: none;
+  color: #e3e5e4;
+  padding: 0.6rem 1rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease;
+}
+
+.custom-file-input .browse-button:hover {
+  background-color: #42484e !important;
+}
+
+.slideout-custom-file-input [type="file"] {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.slideout-list-container {
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.slideout-list-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.2rem;
+}
+
+.slideout-list-entry-primary {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: #899096 !important;
+}
+
+.slideout-add-icon,
+.slideout-remove-icon {
+  cursor: pointer;
+  font-size: 1.6rem;
+  color: #899096 !important;
+  transition: color 0.2s ease;
+}
+
+.slideout-add-icon:hover,
+.slideout-remove-icon:hover {
+  color: #e3e5e4 !important;
+}
+
+.slideout-list-add-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slideout-list-add-btn {
+  padding: 0.8rem 0;
+}
+
+.slideout-list-dropdown-container {
+  position: relative;
+}
+
+.slideout-list-input {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 1.2rem 0.8rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
 }

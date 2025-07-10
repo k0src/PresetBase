@@ -59,6 +59,7 @@ router.get("/table-data/:table", isAdmin, async (req, res) => {
       error: "Table not found.",
     });
   }
+
   const where = table === "albums" ? "WHERE id != 0" : "";
 
   try {
@@ -74,6 +75,70 @@ router.get("/table-data/:table", isAdmin, async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "An error occurred while fetching table data.",
+    });
+  }
+});
+
+router.get("/song-data/:songId", isAdmin, async (req, res) => {
+  const songId = req.params.songId;
+
+  const query = `
+    SELECT
+      songs.id AS song_id,
+      songs.title AS song_title,
+      songs.song_url AS song_url,
+      songs.image_url AS song_image,
+      songs.timestamp AS song_timestamp,
+      songs.genre AS song_genre,
+      songs.release_year AS song_year,
+      json_object('id', albums.id, 'title', albums.title) AS album,
+      
+      json_group_array(
+        DISTINCT json_object(
+          'id', artists.id,
+          'name', artists.name,
+          'role', song_artists.role
+        )
+      ) AS artists,
+
+      json_group_array(
+        DISTINCT json_object(
+          'id', presets.id,
+          'name', presets.preset_name,
+          'usage_type', song_presets.usage_type
+        )
+      ) AS presets
+
+    FROM songs
+    LEFT JOIN album_songs ON songs.id = album_songs.song_id
+    LEFT JOIN albums ON album_songs.album_id = albums.id
+    LEFT JOIN song_artists ON songs.id = song_artists.song_id
+    LEFT JOIN artists ON song_artists.artist_id = artists.id
+    LEFT JOIN song_presets ON songs.id = song_presets.song_id
+    LEFT JOIN presets ON song_presets.preset_id = presets.id
+    LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+    LEFT JOIN synths ON preset_synths.synth_id = synths.id
+    WHERE songs.id = ?
+    GROUP BY songs.id`;
+
+  try {
+    const song = await dbGet(query, [songId]);
+
+    if (!song) {
+      return res.status(404).json({
+        error: "Song not found.",
+      });
+    }
+
+    song.artists = song.artists ? JSON.parse(song.artists) : [];
+    song.presets = song.presets ? JSON.parse(song.presets) : [];
+    song.album = song.album ? JSON.parse(song.album) : null;
+
+    res.json(song);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching song data.",
     });
   }
 });

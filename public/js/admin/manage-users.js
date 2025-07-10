@@ -226,6 +226,10 @@ class UserManagerSlideout {
     try {
       await this.loadUser(userId);
 
+      await this.initDOMReferences();
+      UserManagerSlideout.adminId = this.slideout.dataset.userid;
+      await this.populateSlideout();
+
       if (!this.eventListenersBound) await this.bindEvents();
     } catch (err) {
       console.error(`Failed to initialize UserManagerSlideout: ${err.message}`);
@@ -234,13 +238,12 @@ class UserManagerSlideout {
   }
 
   async loadUser(userId) {
-    this.userId = userId;
-    this.userData = await this.#getUserData();
-
-    await this.initDOMReferences();
-    UserManagerSlideout.adminId = this.slideout.dataset.userid;
-
-    await this.populateSlideout();
+    try {
+      this.userId = userId;
+      this.userData = await this.#getUserData();
+    } catch (err) {
+      throw err;
+    }
   }
 
   async initDOMReferences() {
@@ -250,12 +253,14 @@ class UserManagerSlideout {
     this.slideoutCloseBtn = document.getElementById("slideout-close-btn");
 
     // Fields
-    this.usernameInput = document.getElementById("slideout-username");
-    this.emailInput = document.getElementById("slideout-email");
-    this.timestampField = document.getElementById("slideout-timestamp");
     this.authField = document.getElementById("slideout-auth");
     this.roleField = document.getElementById("slideout-role");
     this.bannedField = document.getElementById("slideout-banned");
+
+    // Inputs
+    this.usernameInput = document.getElementById("slideout-username");
+    this.emailInput = document.getElementById("slideout-email");
+    this.timestampField = document.getElementById("slideout-timestamp");
 
     // Buttons
     this.applyChangesBtn = document.getElementById(
