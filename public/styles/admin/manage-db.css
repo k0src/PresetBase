@@ -398,7 +398,7 @@ body {
   opacity: 0.6;
 }
 
-.slideout-entry-info-btn {
+.slideout-apply-changes-btn {
   cursor: pointer;
   font-family: "Geist", sans-serif;
   font-size: 1.6rem;
@@ -412,16 +412,16 @@ body {
   background-color: #5a7f71;
 }
 
-.slideout-entry-info-btn:disabled {
+.slideout-apply-changes-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.slideout-entry-info-btn:disabled:hover {
+.slideout-apply-changes-btn:disabled:hover {
   background-color: #5a7f71;
 }
 
-.slideout-entry-info-btn:hover {
+.slideout-apply-changes-btn:hover {
   background-color: #73988a;
 }
 
@@ -457,7 +457,7 @@ body {
   gap: 1.8rem;
 }
 
-.delete-btn {
+.slideout-delete-btn {
   cursor: pointer;
   font-family: "Geist", sans-serif;
   font-size: 1.6rem;
@@ -469,20 +469,20 @@ body {
   box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
 }
 
-.delete-btn {
+.slideout-delete-btn {
   background-color: #c25c5c;
 }
 
-.delete-btn:hover {
+.slideout-delete-btn:hover {
   background-color: #c86c6c;
 }
 
-.delete-btn:disabled {
+.slideout-delete-btn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
 
-.delete-btn:disabled:hover {
+.slideout-delete-btn:disabled:hover {
   background-color: #c25c5c;
 }
 
@@ -612,18 +612,38 @@ body {
   flex-direction: column;
 }
 
-.slideout-list-entry {
-  display: flex;
-  justify-content: space-between;
+.slideout-list-entry--1 {
+  display: grid;
   align-items: center;
   border-bottom: 0.1rem solid #2d343a;
   padding: 1.2rem;
 }
 
-.slideout-list-entry-primary {
+.slideout-list-entry--2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2rem;
+  column-gap: 0.4rem;
+  align-items: center;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.2rem;
+}
+
+.slideout-list-entry-text {
   font-size: 1.4rem;
   line-height: 1.1;
   color: #899096 !important;
+}
+
+.slideout-list-entry-text-wrapper {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: #899096 !important;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .slideout-add-icon,

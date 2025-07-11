@@ -309,7 +309,7 @@ class DBSlideoutManager {
       await this.renderSlideoutContent();
       await this.initDynamicDOMReferences();
 
-      if (!this.eventListenersBound) await this.bindEvents();
+      await this.bindEvents();
     } catch (err) {
       console.error(`Failed to initialize DBSlideoutManager: ${err.message}`);
       throw err;
@@ -343,12 +343,10 @@ class DBSlideoutManager {
     this.entryInfoInputContainer = document.querySelector(
       ".slideout-entry-info-input-container"
     );
-
-    // Buttons
-    this.applyChangesBtn = document.getElementById(
-      "slideout-apply-changes-btn"
+    this.actionsContainer = document.getElementById("slideout-actions");
+    this.actionsBtnsContainer = document.getElementById(
+      "slideout-actions-btns"
     );
-    this.deleteBtn = document.getElementById("slideout-delete-btn");
   }
 
   async initDynamicDOMReferences() {
@@ -358,6 +356,13 @@ class DBSlideoutManager {
     );
 
     // Buttons
+    this.applyChangesBtn = this.slideoutContentSection.querySelector(
+      ".slideout-apply-changes-btn"
+    );
+    this.deleteBtn = this.slideoutContentSection.querySelector(
+      ".slideout-delete-btn"
+    );
+
     this.removeBtns = this.slideoutContentSection.querySelectorAll(
       ".slideout-list-remove-btn"
     );
@@ -375,6 +380,7 @@ class DBSlideoutManager {
   async resetSlideoutSections() {
     this.entryInfoTopContainer.innerHTML = "";
     this.entryInfoInputContainer.innerHTML = "";
+    this.actionsBtnsContainer.innerHTML = "";
   }
 
   async renderSlideoutTitle() {
@@ -532,6 +538,7 @@ class DBSlideoutManager {
 
     listInputs.forEach((list) => {
       const listData = this.entryData[list.key];
+      const dataFields = list.dataFields;
 
       const inputLabel = document.createElement("span");
       inputLabel.className = "slideout-entry-info-text";
@@ -542,14 +549,18 @@ class DBSlideoutManager {
 
       listData.forEach((data) => {
         const listEntry = document.createElement("div");
-        listEntry.className = "slideout-list-entry";
+        listEntry.className = `slideout-list-entry--${dataFields.length}`;
         listEntry.id = `slideout-list-entry-${data.id}`;
 
-        const listEntryText = document.createElement("span");
-        listEntryText.className = "slideout-list-entry-primary";
-        listEntryText.textContent = data[list.dataFields[0].key];
-
-        listEntry.appendChild(listEntryText);
+        dataFields.forEach((field, i) => {
+          const listEntryTextWrapper = document.createElement("div");
+          listEntryTextWrapper.className = "slideout-list-entry-text-wrapper";
+          const listEntryText = document.createElement("span");
+          listEntryText.className = "slideout-list-entry-text";
+          listEntryText.textContent = data[field.key];
+          listEntryTextWrapper.appendChild(listEntryText);
+          listEntry.appendChild(listEntryTextWrapper);
+        });
 
         const removeBtn = document.createElement("button");
         removeBtn.className = "hidden-btn slideout-list-remove-btn";
@@ -589,9 +600,24 @@ class DBSlideoutManager {
       this.entryInfoInputContainer.appendChild(listContainer);
     });
 
-    this.deleteBtn.textContent = `Delete ${
+    // Apply Changes Btn
+    const applyChangesBtnEl = document.createElement("button");
+    applyChangesBtnEl.type = "button";
+    applyChangesBtnEl.className = "slideout-apply-changes-btn";
+    applyChangesBtnEl.disabled = true;
+    applyChangesBtnEl.textContent = "Apply Changes";
+
+    this.entryInfoInputContainer.appendChild(applyChangesBtnEl);
+
+    // Delete Btn
+    const deleteBtnEl = document.createElement("button");
+    deleteBtnEl.type = "button";
+    deleteBtnEl.className = "slideout-delete-btn";
+    deleteBtnEl.textContent = `Delete ${
       this.slideoutConfig[this.entryType].label
     }`;
+
+    this.actionsBtnsContainer.appendChild(deleteBtnEl);
   }
 
   // Event Listeners
@@ -622,7 +648,7 @@ class DBSlideoutManager {
   }
 
   async handleDelete() {
-    //....
+    console.log(this.entryId);
   }
 
   async handleRemoveListEntry(listEntry) {
@@ -640,21 +666,10 @@ class DBSlideoutManager {
   async bindEvents() {
     if (this.eventListenersBound) return;
 
-    this.slideoutCloseBtn.addEventListener(
-      "click",
-      this.handleClose.bind(this)
-    );
-    this.slideoutBackdrop.addEventListener(
-      "click",
-      this.handleClose.bind(this)
-    );
-    this.applyChangesBtn.addEventListener(
-      "click",
-      this.handleApplyChanges.bind(this)
-    );
-    this.deleteBtn.addEventListener("click", this.handleDelete.bind(this));
-
-    console.log(this.inputELs);
+    this.slideoutCloseBtn.addEventListener("click", this.handleClose);
+    this.slideoutBackdrop.addEventListener("click", this.handleClose);
+    this.applyChangesBtn.addEventListener("click", this.handleApplyChanges);
+    this.deleteBtn.addEventListener("click", this.handleDelete);
 
     this.inputELs.forEach((inputEl) => {
       inputEl.addEventListener("input", (e) => {
