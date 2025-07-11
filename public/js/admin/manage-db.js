@@ -224,12 +224,12 @@ const SLIDEOUT_CONFIG = {
         label: "Song Image",
       },
     ],
-    autofillInputs: [
+    dropdownSelectors: [
       {
         key: "album",
-        dataField: "title",
+        dataFields: ["title", "id"],
         label: "Album",
-        placeholder: "Song URL",
+        placeholder: "Album Name",
         type: "text",
       },
     ],
@@ -237,18 +237,12 @@ const SLIDEOUT_CONFIG = {
       {
         key: "artists",
         label: "Artists",
-        dataFields: [
-          { key: "name", label: "Name" },
-          { key: "role", label: "Role" },
-        ],
+        dataFields: ["name", "role"],
       },
       {
         key: "presets",
         label: "Presets",
-        dataFields: [
-          { key: "name", label: "Name" },
-          { key: "usage_type", label: "Usage Type" },
-        ],
+        dataFields: ["name", "usage_type"],
       },
     ],
   },
@@ -369,12 +363,6 @@ class DBSlideoutManager {
     this.addBtns = this.slideoutContentSection.querySelectorAll(
       ".slideout-list-add-btn"
     );
-
-    // Dropdowns
-    this.dropdownInputs =
-      this.slideoutContentSection.querySelectorAll(".dropdown-input");
-    this.dropdowns =
-      this.slideoutContentSection.querySelectorAll(".slideout-dropdown");
   }
 
   async resetSlideoutSections() {
@@ -505,32 +493,50 @@ class DBSlideoutManager {
       }
     });
 
-    // Autofill Inputs Section
-    const autofillInputs = this.slideoutConfig[this.entryType].autofillInputs;
+    // Dropdowns Section
+    const dropdownSelectors =
+      this.slideoutConfig[this.entryType].dropdownSelectors;
 
-    autofillInputs.forEach((input) => {
-      const inputLabel = document.createElement("span");
-      inputLabel.className = "slideout-entry-info-text";
-      inputLabel.textContent = input.label;
+    dropdownSelectors.forEach((selector) => {
+      const selectorLabel = document.createElement("span");
+      selectorLabel.className = "slideout-entry-info-text";
+      selectorLabel.textContent = selector.label;
+
+      const selectorContainer = document.createElement("div");
+      selectorContainer.className = "slideout-selector-container";
+
+      const selectorText = document.createElement("span");
+      selectorText.className = "slideout-selector-text";
+      selectorText.textContent =
+        this.entryData[selector.key][selector.dataFields[0]];
 
       const dropdownContainer = document.createElement("div");
-      dropdownContainer.className = "slideout-list-dropdown-container";
+      dropdownContainer.className = "slideout-dropdown-container";
 
-      const inputEl = document.createElement("input");
-      inputEl.className = "slideout-entry-info-input dropdown-input";
-      inputEl.type = input.type;
-      inputEl.placeholder = input.placeholder;
-      inputEl.name = input.key;
-      inputEl.value = this.entryData[input.key][input.dataField];
+      const selectorFilterInput = document.createElement("input");
+      selectorFilterInput.className = "slideout-selector-input hidden";
+      selectorFilterInput.type = "text";
+      selectorFilterInput.placeholder = selector.placeholder;
+      selectorFilterInput.name = selector.key;
+      selectorFilterInput.value =
+        this.entryData[selector.key][selector.dataFields[0]];
+
+      const divider = document.createElement("div");
+      divider.className = "slideout-selector-divider";
 
       const dropdownList = document.createElement("ul");
       dropdownList.className = "slideout-dropdown hidden";
-      dropdownList.id = `slideout-dropdown-${input.key}`;
+      dropdownList.id = `slideout-dropdown-${selector.key}`;
 
-      dropdownContainer.appendChild(inputEl);
+      dropdownContainer.appendChild(selectorFilterInput);
+      dropdownContainer.appendChild(divider);
       dropdownContainer.appendChild(dropdownList);
-      this.entryInfoInputContainer.appendChild(inputLabel);
-      this.entryInfoInputContainer.appendChild(dropdownContainer);
+
+      selectorContainer.appendChild(selectorText);
+      selectorContainer.appendChild(dropdownContainer);
+
+      this.entryInfoInputContainer.appendChild(selectorLabel);
+      this.entryInfoInputContainer.appendChild(selectorContainer);
     });
 
     // Lists Section
@@ -552,12 +558,12 @@ class DBSlideoutManager {
         listEntry.className = `slideout-list-entry--${dataFields.length}`;
         listEntry.id = `slideout-list-entry-${data.id}`;
 
-        dataFields.forEach((field, i) => {
+        dataFields.forEach((field) => {
           const listEntryTextWrapper = document.createElement("div");
           listEntryTextWrapper.className = "slideout-list-entry-text-wrapper";
           const listEntryText = document.createElement("span");
           listEntryText.className = "slideout-list-entry-text";
-          listEntryText.textContent = data[field.key];
+          listEntryText.textContent = data[field];
           listEntryTextWrapper.appendChild(listEntryText);
           listEntry.appendChild(listEntryTextWrapper);
         });
@@ -664,8 +670,6 @@ class DBSlideoutManager {
   async handleDropdownClick(dropdown) {}
 
   async bindEvents() {
-    if (this.eventListenersBound) return;
-
     this.slideoutCloseBtn.addEventListener("click", this.handleClose);
     this.slideoutBackdrop.addEventListener("click", this.handleClose);
     this.applyChangesBtn.addEventListener("click", this.handleApplyChanges);
@@ -694,20 +698,6 @@ class DBSlideoutManager {
         }
       });
     });
-
-    this.dropdownInputs.forEach((inputEl) => {
-      inputEl.addEventListener("input", (e) => {
-        this.handleDropdownInput(e.target);
-      });
-    });
-
-    this.dropdowns.forEach((dropdown) => {
-      dropdown.addEventListener("click", (e) => {
-        this.handleDropdownClick(e.target);
-      });
-    });
-
-    this.eventListenersBound = true;
   }
 
   disableApplyChangesBtn() {

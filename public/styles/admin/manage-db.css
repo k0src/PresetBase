@@ -669,10 +669,6 @@ body {
   padding: 0.8rem 0;
 }
 
-.slideout-list-dropdown-container {
-  position: relative;
-}
-
 .slideout-list-input {
   font-family: "Geist", sans-serif;
   color: #e3e5e4;
@@ -682,4 +678,7 @@ body {
   background-color: #171b1f;
   border: 0.2rem solid #2d343a;
   border-radius: 0.4rem;
+}
+
+.slideout-selector-container {
 }
