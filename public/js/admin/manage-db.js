@@ -307,6 +307,7 @@ class DBSlideoutManager {
 
       await this.renderSlideoutTitle();
       await this.renderSlideoutContent();
+      await this.initDynamicDOMReferences();
 
       if (!this.eventListenersBound) await this.bindEvents();
     } catch (err) {
@@ -348,6 +349,27 @@ class DBSlideoutManager {
       "slideout-apply-changes-btn"
     );
     this.deleteBtn = document.getElementById("slideout-delete-btn");
+  }
+
+  async initDynamicDOMReferences() {
+    // Inputs
+    this.inputELs = this.slideoutContentSection.querySelectorAll(
+      ".slideout-entry-info-input"
+    );
+
+    // Buttons
+    this.removeBtns = this.slideoutContentSection.querySelectorAll(
+      ".slideout-list-remove-btn"
+    );
+    this.addBtns = this.slideoutContentSection.querySelectorAll(
+      ".slideout-list-add-btn"
+    );
+
+    // Dropdowns
+    this.dropdownInputs =
+      this.slideoutContentSection.querySelectorAll(".dropdown-input");
+    this.dropdowns =
+      this.slideoutContentSection.querySelectorAll(".slideout-dropdown");
   }
 
   async resetSlideoutSections() {
@@ -578,8 +600,15 @@ class DBSlideoutManager {
   }
 
   async handleInput(inputEl) {
-    const input = inputEl.value.trim();
-    this.applyChangesBtn.disabled = input.length === 0;
+    let inputsFilled = true;
+    for (const input of this.inputELs) {
+      if (input.value.trim().length === 0) {
+        inputsFilled = false;
+        break;
+      }
+    }
+
+    this.applyChangesBtn.disabled = !inputsFilled;
     // dropdown
   }
 
@@ -625,19 +654,15 @@ class DBSlideoutManager {
     );
     this.deleteBtn.addEventListener("click", this.handleDelete.bind(this));
 
-    const inputEls = this.slideoutContentSection.querySelectorAll(
-      ".slideout-entry-info-input"
-    );
-    inputEls.forEach((inputEl) => {
+    console.log(this.inputELs);
+
+    this.inputELs.forEach((inputEl) => {
       inputEl.addEventListener("input", (e) => {
         this.handleInput(e.target);
       });
     });
 
-    const removeBtns = this.slideoutContentSection.querySelectorAll(
-      ".slideout-list-remove-btn"
-    );
-    removeBtns.forEach((btn) => {
+    this.removeBtns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const listEntry = e.target.closest(".slideout-list-entry");
         if (listEntry) {
@@ -646,10 +671,7 @@ class DBSlideoutManager {
       });
     });
 
-    const addBtns = this.slideoutContentSection.querySelectorAll(
-      ".slideout-list-add-btn"
-    );
-    addBtns.forEach((btn) => {
+    this.addBtns.forEach((btn) => {
       btn.addEventListener("click", (e) => {
         const listContainer = e.target.closest(".slideout-list-container");
         if (listContainer) {
@@ -658,17 +680,13 @@ class DBSlideoutManager {
       });
     });
 
-    const dropdownInputs =
-      this.slideoutContentSection.querySelectorAll(".dropdown-input");
-    dropdownInputs.forEach((inputEl) => {
+    this.dropdownInputs.forEach((inputEl) => {
       inputEl.addEventListener("input", (e) => {
         this.handleDropdownInput(e.target);
       });
     });
 
-    const dropdowns =
-      this.slideoutContentSection.querySelectorAll(".slideout-dropdown");
-    dropdowns.forEach((dropdown) => {
+    this.dropdowns.forEach((dropdown) => {
       dropdown.addEventListener("click", (e) => {
         this.handleDropdownClick(e.target);
       });
