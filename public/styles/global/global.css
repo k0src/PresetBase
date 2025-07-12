@@ -53,6 +53,10 @@ a:active {
   display: none !important;
 }
 
+.no-scroll {
+  overflow: hidden;
+}
+
 /* ----------------------------- Glass gradient ----------------------------- */
 .glass-gradient {
   background: linear-gradient(90deg, #2c2c2c, #0093a7, #c43436, #272727);

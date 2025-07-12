@@ -608,8 +608,9 @@ body {
   transition: color 0.2s ease;
 }
 
-.slideout-add-icon:hover,
-.slideout-remove-icon:hover {
+.slideout-selector-add-btn:hover .slideout-add-icon,
+.slideout-list-add-btn:hover .slideout-add-icon,
+.slideout-list-remove-btn:hover .slideout-remove-icon {
   color: #e3e5e4 !important;
 }
 

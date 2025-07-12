@@ -34,7 +34,7 @@ class AutofillDropdownManager {
       resultsLimit = null,
       shouldAutofillInput = true,
       hideDropdownOnClickOff = true,
-      loopNavigation = false,
+      loopNavigation = true,
       debounceDelay = 150,
       classes = {},
     } = options;
