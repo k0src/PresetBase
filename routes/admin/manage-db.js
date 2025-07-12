@@ -4,15 +4,11 @@ const isAdmin = require("../../middleware/is-admin.js");
 const { dbAll, dbGet } = require("../../util/UTIL.js");
 
 const tableKeys = ["songs", "artists", "albums", "synths", "presets"];
-const actionKeys = ["add"];
 
 const renderPage = async (req, res) => {
-  const { table, action } = req.params;
+  const table = req.params.table;
 
-  if (
-    (table && !tableKeys.includes(table)) ||
-    (action && !actionKeys.includes(action))
-  ) {
+  if (table && !tableKeys.includes(table)) {
     return res.status(404).render("static/404", {
       isAuth: req.isAuthenticated(),
       userIsAdmin: req.user && req.user.is_admin,
@@ -91,7 +87,7 @@ router.get("/song-data/:songId", isAdmin, async (req, res) => {
       songs.timestamp AS song_timestamp,
       songs.genre AS song_genre,
       songs.release_year AS song_year,
-      json_object('id', albums.id, 'title', albums.title) AS album,
+      json_object('id', albums.id, 'title', albums.title) AS albums,
       
       json_group_array(
         DISTINCT json_object(
@@ -132,7 +128,7 @@ router.get("/song-data/:songId", isAdmin, async (req, res) => {
 
     song.artists = song.artists ? JSON.parse(song.artists) : [];
     song.presets = song.presets ? JSON.parse(song.presets) : [];
-    song.album = song.album ? JSON.parse(song.album) : null;
+    song.albums = song.albums ? JSON.parse(song.albums) : null;
 
     res.json(song);
   } catch (err) {
@@ -143,8 +139,72 @@ router.get("/song-data/:songId", isAdmin, async (req, res) => {
   }
 });
 
+// For autofill dropdown inputs
+router.get("/field-data/:table", isAdmin, async (req, res) => {
+  const table = req.params.table;
+  const query = req.query.query;
+  const limit = req.query.limit;
+
+  if (!tableKeys.includes(table)) {
+    return res.status(404).json({
+      error: "Table not found.",
+    });
+  }
+
+  const queries = {
+    albums: `
+      SELECT
+        albums.id AS id,
+        albums.title AS label
+      FROM albums
+      WHERE albums.title LIKE ?
+      LIMIT ?`,
+
+    artists: `
+      SELECT
+        artists.id AS id,
+        artists.name AS label
+        FROM artists
+      WHERE artists.name LIKE ?
+      LIMIT ?`,
+
+    presets: `
+      SELECT
+        presets.id AS id,
+        presets.preset_name AS label
+      FROM presets
+      WHERE presets.preset_name LIKE ?
+      LIMIT ?`,
+
+    songs: `
+      SELECT
+        songs.id AS id,
+        songs.title AS label
+      FROM songs
+      WHERE songs.title LIKE ?
+      LIMIT ?`,
+
+    synths: `
+      SELECT
+        synths.id AS id,
+        synths.synth_name AS label
+      FROM synths
+      WHERE synths.synth_name LIKE ?
+      LIMIT ?`,
+  };
+
+  try {
+    const results = await dbAll(queries[table], [`%${query}%`, limit]);
+    res.json(results);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: `An error occurred while fetching ${table} data.`,
+    });
+  }
+});
+
 router.get("/", isAdmin, renderPage);
 router.get("/:table", isAdmin, renderPage);
-router.get("/:table/:action", isAdmin, renderPage);
 
 module.exports = router;

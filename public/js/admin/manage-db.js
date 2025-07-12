@@ -7,6 +7,268 @@ const setTableSelect = function () {
   tableSelect.value = selectedTable;
 };
 
+/* -------------------------------- Dropdown -------------------------------- */
+class AutofillDropdownManager {
+  #input;
+  #dropdown;
+  #onSelectCallback;
+  #limit;
+  #shouldAutofillInput;
+  #fetchResults;
+  #hideDropdownOnClickOff;
+  #debounceDelay;
+  #classes;
+  #selectedIndex;
+  #debounceTimeout;
+  #boundHandleInput;
+  #boundHandleOutsideClicks;
+  #boundHandleKeydown;
+  #loopNavigation;
+
+  constructor(options) {
+    const {
+      fetchResults,
+      inputElement,
+      dropdownElement,
+      onSelectCallback = null,
+      resultsLimit = null,
+      shouldAutofillInput = true,
+      hideDropdownOnClickOff = true,
+      loopNavigation = false,
+      debounceDelay = 150,
+      classes = {},
+    } = options;
+    if (!(inputElement instanceof HTMLInputElement)) {
+      throw new Error("Input must be an HTMLInputElement.");
+    }
+
+    if (!(dropdownElement instanceof HTMLElement)) {
+      throw new Error("Dropdown must be an HTMLElement.");
+    }
+
+    if (typeof fetchResults !== "function") {
+      throw new Error("Invalid fetchResults function.");
+    }
+
+    const defaultClasses = {
+      show: "show",
+      hidden: "hidden",
+      selected: "selected",
+    };
+
+    this.#classes = {
+      ...defaultClasses,
+      ...classes,
+    };
+
+    this.#input = inputElement;
+    this.#dropdown = dropdownElement;
+    this.#onSelectCallback = onSelectCallback;
+    this.#limit = resultsLimit;
+    this.#shouldAutofillInput = shouldAutofillInput;
+    this.#fetchResults = fetchResults;
+    this.#hideDropdownOnClickOff = hideDropdownOnClickOff;
+    this.#loopNavigation = loopNavigation;
+    this.#debounceDelay = debounceDelay;
+    this.#selectedIndex = -1;
+    this.#debounceTimeout = null;
+  }
+
+  get dropdownElement() {
+    return this.#dropdown;
+  }
+
+  async init() {
+    try {
+      this.#bindEvents();
+    } catch (err) {
+      console.error(
+        `Failed to initialize AutofillDropdownManager: ${err.message}`
+      );
+      throw err;
+    }
+  }
+
+  destroy() {
+    this.#unbindEvents();
+  }
+
+  async #fetchAutofillResults(query) {
+    try {
+      return await this.#fetchResults(query, this.#limit);
+    } catch (err) {
+      throw new Error(`Failed to fetch autofill results: ${err.message}`);
+    }
+  }
+
+  #handleKeyboardNavigation(e) {
+    const dropdownItems = this.#dropdown.querySelectorAll("li");
+
+    if (!dropdownItems.length) return;
+
+    switch (e.key) {
+      case "ArrowDown":
+        e.preventDefault();
+        if (this.#selectedIndex < dropdownItems.length - 1) {
+          this.#selectedIndex++;
+        } else {
+          this.#selectedIndex = this.#loopNavigation
+            ? 0
+            : dropdownItems.length - 1;
+        }
+        this.#updateDropdownSelection(dropdownItems);
+        break;
+
+      case "ArrowUp":
+        e.preventDefault();
+        if (this.#selectedIndex > 0) {
+          this.#selectedIndex--;
+        } else {
+          this.#selectedIndex = this.#loopNavigation
+            ? dropdownItems.length - 1
+            : 0;
+        }
+        this.#updateDropdownSelection(dropdownItems);
+        break;
+
+      case "Enter":
+        e.preventDefault();
+        if (this.#selectedIndex >= 0 && dropdownItems[this.#selectedIndex]) {
+          const selectedValue = dropdownItems[this.#selectedIndex].textContent;
+          const selectedValueID =
+            dropdownItems[this.#selectedIndex].getAttribute("data-id");
+          this.#hideDropdown();
+          this.#setInputValue(selectedValue);
+          this.#selectedIndex = -1;
+          if (this.#onSelectCallback) {
+            this.#onSelectCallback?.({
+              label: selectedValue,
+              id: selectedValueID,
+            });
+          }
+        }
+        break;
+
+      case "Escape":
+        this.#hideDropdown();
+        this.#selectedIndex = -1;
+        break;
+    }
+  }
+
+  #updateDropdownSelection(dropdownItems) {
+    dropdownItems.forEach((item) => {
+      item.classList.remove(this.#classes.selected);
+    });
+
+    if (this.#selectedIndex >= 0 && dropdownItems[this.#selectedIndex]) {
+      const selectedItem = dropdownItems[this.#selectedIndex];
+      selectedItem.classList.add(this.#classes.selected);
+      selectedItem.scrollIntoView({
+        block: "nearest",
+        behavior: "smooth",
+      });
+    }
+  }
+
+  #handleInput() {
+    clearTimeout(this.#debounceTimeout);
+    this.#debounceTimeout = setTimeout(async () => {
+      try {
+        const query = this.#input.value.trim();
+
+        if (!query.length) {
+          this.#hideDropdown();
+          return;
+        }
+
+        const results = await this.#fetchAutofillResults(query);
+        this.#renderDropdown(results);
+      } catch (err) {
+        console.error("Error fetching autofill suggestions: ", err);
+        throw err;
+      }
+    }, this.#debounceDelay);
+  }
+
+  #createDropdownItem({ label, id }) {
+    const li = document.createElement("li");
+    li.textContent = label;
+    li.setAttribute("data-id", id);
+    li.addEventListener("click", () => {
+      this.#hideDropdown();
+      this.#setInputValue(label);
+      this.#onSelectCallback?.({ label, id });
+    });
+    return li;
+  }
+
+  #renderDropdown(dropdownItems) {
+    if (!Array.isArray(dropdownItems)) {
+      console.warn("Expected dropdownItems to be an array.");
+      return;
+    }
+
+    this.#dropdown.innerHTML = "";
+    if (!dropdownItems.length) {
+      this.#hideDropdown();
+      return;
+    }
+
+    const fragment = document.createDocumentFragment();
+    dropdownItems.forEach((item) => {
+      fragment.appendChild(this.#createDropdownItem(item));
+    });
+
+    this.#dropdown.appendChild(fragment);
+    this.#showDropdown();
+  }
+
+  #hideDropdown() {
+    this.#dropdown.classList.remove(this.#classes.show);
+    this.#dropdown.classList.add(this.#classes.hidden);
+  }
+
+  #showDropdown() {
+    this.#dropdown.classList.add(this.#classes.show);
+    this.#dropdown.classList.remove(this.#classes.hidden);
+  }
+
+  #setInputValue(value) {
+    if (!this.#shouldAutofillInput) return;
+    this.#input.value = value;
+    this.#input.dispatchEvent(new Event("input"));
+  }
+
+  #handleOutsideClicks(e) {
+    if (!this.#input.contains(e.target) && !this.#dropdown.contains(e.target)) {
+      this.#hideDropdown();
+    }
+  }
+
+  #bindEvents() {
+    this.#boundHandleInput = this.#handleInput.bind(this);
+    this.#boundHandleOutsideClicks = this.#handleOutsideClicks.bind(this);
+    this.#boundHandleKeydown = (e) => this.#handleKeyboardNavigation(e);
+
+    if (this.#hideDropdownOnClickOff) {
+      document.addEventListener("click", this.#boundHandleOutsideClicks);
+    }
+
+    this.#input.addEventListener("keydown", this.#boundHandleKeydown);
+    this.#input.addEventListener("input", this.#boundHandleInput);
+  }
+
+  #unbindEvents() {
+    if (this.#hideDropdownOnClickOff) {
+      document.removeEventListener("click", this.#boundHandleOutsideClicks);
+    }
+
+    this.#input.removeEventListener("keydown", this.#boundHandleKeydown);
+    this.#input.removeEventListener("input", this.#boundHandleInput);
+  }
+}
+
 /* ------------------------------ Table Config ------------------------------ */
 const TABLE_CONFIG = {
   songs: {
@@ -226,22 +488,48 @@ const SLIDEOUT_CONFIG = {
     ],
     dropdownSelectors: [
       {
-        key: "album",
+        key: "albums",
         dataFields: ["title", "id"],
         label: "Album",
-        placeholder: "Album Name",
+        placeholder: "Search for album...",
         type: "text",
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/albums?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
       },
     ],
     lists: [
       {
         key: "artists",
         label: "Artists",
+        placeholder: "Search for artist...",
         dataFields: ["name", "role"],
       },
       {
         key: "presets",
         label: "Presets",
+        placeholder: "Search for preset...",
         dataFields: ["name", "usage_type"],
       },
     ],
@@ -276,7 +564,6 @@ class DBSlideoutManager {
   }
 
   #hintTimeout;
-
   constructor(config, entryType) {
     this.entryType = entryType;
     this.entryId = null;
@@ -290,8 +577,6 @@ class DBSlideoutManager {
     this.handleDelete = this.handleDelete.bind(this);
     this.handleRemoveListEntry = this.handleRemoveListEntry.bind(this);
     this.handleAddListEntry = this.handleAddListEntry.bind(this);
-    this.handleDropdownInput = this.handleDropdownInput.bind(this);
-    this.handleDropdownClick = this.handleDropdownClick.bind(this);
   }
 
   async init(entryId) {
@@ -361,14 +646,41 @@ class DBSlideoutManager {
       ".slideout-list-remove-btn"
     );
     this.addBtns = this.slideoutContentSection.querySelectorAll(
-      ".slideout-list-add-btn"
+      ".slideout-list-add-btn",
+      ".slideout-selector-add-btn"
     );
+
+    // Dropdown Selectors
+    this.dropdownSelectors = this.slideoutContentSection.querySelectorAll(
+      ".slideout-selector-container"
+    );
+    this.dropdownContainers = this.slideoutContentSection.querySelectorAll(
+      ".slideout-dropdown-container"
+    );
+
+    // Lists
+    // list open btns
   }
 
   async resetSlideoutSections() {
     this.entryInfoTopContainer.innerHTML = "";
     this.entryInfoInputContainer.innerHTML = "";
     this.actionsBtnsContainer.innerHTML = "";
+  }
+
+  toggleDropdownContainer(openBtn, dropdownContainer) {
+    openBtn.classList.toggle("show");
+    dropdownContainer.classList.toggle("hidden");
+  }
+
+  closeAllDropdownContainers() {
+    const openBtns = this.dropdownSelectors; // [...this.dropdownSelectors, ...this.listAddBtns];
+    const dropdownContainers = this.dropdownContainers;
+
+    openBtns.forEach((btn) => btn.classList.remove("show"));
+    dropdownContainers.forEach((container) =>
+      container.classList.add("hidden")
+    );
   }
 
   async renderSlideoutTitle() {
@@ -493,7 +805,7 @@ class DBSlideoutManager {
       }
     });
 
-    // Dropdowns Section
+    // Dropdowns Selectors Section
     const dropdownSelectors =
       this.slideoutConfig[this.entryType].dropdownSelectors;
 
@@ -505,34 +817,83 @@ class DBSlideoutManager {
       const selectorContainer = document.createElement("div");
       selectorContainer.className = "slideout-selector-container";
 
+      const selectorTextContainer = document.createElement("div");
+      selectorTextContainer.className = "slideout-selector-text-container";
+
       const selectorText = document.createElement("span");
       selectorText.className = "slideout-selector-text";
       selectorText.textContent =
         this.entryData[selector.key][selector.dataFields[0]];
 
+      const selectorIcon = document.createElement("i");
+      selectorIcon.className = "fa-solid fa-caret-down slideout-selector-icon";
+
+      selectorTextContainer.appendChild(selectorText);
+      selectorTextContainer.appendChild(selectorIcon);
+
       const dropdownContainer = document.createElement("div");
-      dropdownContainer.className = "slideout-dropdown-container";
+      dropdownContainer.className = "slideout-dropdown-container hidden";
 
       const selectorFilterInput = document.createElement("input");
-      selectorFilterInput.className = "slideout-selector-input hidden";
+      selectorFilterInput.className = "slideout-selector-input";
       selectorFilterInput.type = "text";
       selectorFilterInput.placeholder = selector.placeholder;
-      selectorFilterInput.name = selector.key;
-      selectorFilterInput.value =
-        this.entryData[selector.key][selector.dataFields[0]];
-
-      const divider = document.createElement("div");
-      divider.className = "slideout-selector-divider";
+      selectorFilterInput.name = selector.key; // maybe remove
 
       const dropdownList = document.createElement("ul");
       dropdownList.className = "slideout-dropdown hidden";
       dropdownList.id = `slideout-dropdown-${selector.key}`;
 
-      dropdownContainer.appendChild(selectorFilterInput);
-      dropdownContainer.appendChild(divider);
-      dropdownContainer.appendChild(dropdownList);
+      const setValueOfAndToggleSelector = (value, id) => {
+        selectorText.textContent = value;
+        selectorText.setAttribute("data-id", id);
+        this.toggleDropdownContainer(selectorTextContainer, dropdownContainer);
+      };
 
-      selectorContainer.appendChild(selectorText);
+      const dropdownManager = new AutofillDropdownManager({
+        table: selector.key,
+        inputElement: selectorFilterInput,
+        dropdownElement: dropdownList,
+        resultsLimit: 7,
+        shouldAutofillInput: false,
+        onSelectCallback: (selectedValue) => {
+          setValueOfAndToggleSelector(selectedValue.label, selectedValue.id);
+        },
+        fetchResults: selector.apiFunction,
+        hideDropdownOnClickOff: false,
+      });
+
+      dropdownManager.init();
+      selectorTextContainer.addEventListener("click", () => {
+        selectorFilterInput.value = "";
+        selectorFilterInput.value = selectorText.textContent;
+        selectorFilterInput.dispatchEvent(new Event("input"));
+        this.toggleDropdownContainer(selectorTextContainer, dropdownContainer);
+        selectorFilterInput.focus();
+      });
+
+      const addContainer = document.createElement("div");
+      addContainer.className = "slideout-selector-add-container";
+
+      const addBtn = document.createElement("button");
+      addBtn.className = "hidden-btn slideout-selector-add-btn";
+      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
+
+      addBtn.addEventListener("click", () => {
+        window.location.href = `/admin/manage-db/${selector.key}`;
+      });
+
+      addContainer.appendChild(addBtn);
+
+      const divider = document.createElement("div");
+      divider.className = "slideout-selector-divider";
+
+      dropdownContainer.appendChild(selectorFilterInput);
+      dropdownContainer.appendChild(dropdownList);
+      dropdownContainer.appendChild(divider);
+      dropdownContainer.appendChild(addContainer);
+
+      selectorContainer.appendChild(selectorTextContainer);
       selectorContainer.appendChild(dropdownContainer);
 
       this.entryInfoInputContainer.appendChild(selectorLabel);
@@ -665,15 +1026,35 @@ class DBSlideoutManager {
     // ...
   }
 
-  async handleDropdownInput(dropdownInput) {}
-
-  async handleDropdownClick(dropdown) {}
-
   async bindEvents() {
     this.slideoutCloseBtn.addEventListener("click", this.handleClose);
     this.slideoutBackdrop.addEventListener("click", this.handleClose);
     this.applyChangesBtn.addEventListener("click", this.handleApplyChanges);
     this.deleteBtn.addEventListener("click", this.handleDelete);
+
+    // Close all dropdown containers when slideout is clicked or esc is pressed
+    this.slideout.addEventListener("click", (event) => {
+      const excludedElements = [
+        ...this.dropdownSelectors,
+        ...this.dropdownContainers,
+        ...this.addBtns,
+      ];
+
+      const clickedInsideAllowed = excludedElements.some((el) =>
+        el.contains(event.target)
+      );
+
+      if (!clickedInsideAllowed) {
+        this.closeAllDropdownContainers();
+      }
+    });
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        this.closeAllDropdownContainers();
+        this.close();
+      }
+    });
 
     this.inputELs.forEach((inputEl) => {
       inputEl.addEventListener("input", (e) => {
@@ -698,6 +1079,22 @@ class DBSlideoutManager {
         }
       });
     });
+
+    // this.dropdownSelectors.forEach((selector) => {
+    //   const clickArea = selector.querySelector(
+    //     ".slideout-selector-text-container"
+    //   );
+    //   const input = selector.querySelector(".slideout-selector-input");
+
+    //   clickArea.addEventListener("click", () => {
+    //     const dropdownContainer = selector.querySelector(
+    //       ".slideout-dropdown-container"
+    //     );
+    //     input.value = "";
+    //     this.toggleDropdownContainer(selector, dropdownContainer);
+    //     input.focus();
+    //   });
+    // });
   }
 
   disableApplyChangesBtn() {
@@ -898,6 +1295,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   window.addEventListener("popstate", async (e) => {
     const pathTable = window.location.pathname.split("/")[3] || defaultTable;
+
     tableSelect.value = pathTable;
     await dbViewManager.loadTable(pathTable);
   });
