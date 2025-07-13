@@ -92,16 +92,16 @@ router.get("/song-data/:songId", isAdmin, async (req, res) => {
       json_group_array(
         DISTINCT json_object(
           'id', artists.id,
-          'primary', artists.name,
-          'secondary', song_artists.role
+          'name', artists.name,
+          'role', song_artists.role
         )
       ) AS artists,
 
       json_group_array(
         DISTINCT json_object(
           'id', presets.id,
-          'primary', presets.preset_name,
-          'secondary', song_presets.usage_type
+          'name', presets.preset_name,
+          'usage_type', song_presets.usage_type
         )
       ) AS presets
 

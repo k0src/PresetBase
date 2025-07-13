@@ -513,6 +513,11 @@ const SLIDEOUT_CONFIG = {
       {
         key: "artists",
         label: "Artists",
+        dataFields: {
+          id: "id",
+          primary: "name",
+          secondary: "role",
+        },
         placeholder: "Search for artist...",
         apiFunction: async (query, limit) => {
           try {
@@ -542,6 +547,11 @@ const SLIDEOUT_CONFIG = {
       {
         key: "presets",
         label: "Presets",
+        dataFields: {
+          id: "id",
+          primary: "name",
+          secondary: "usage_type",
+        },
         placeholder: "Search for preset...",
         apiFunction: async (query, limit) => {
           try {
@@ -611,7 +621,6 @@ class DBSlideoutManager {
     this.handleInput = this.handleInput.bind(this);
     this.handleApplyChanges = this.handleApplyChanges.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleAddListEntry = this.handleAddListEntry.bind(this);
   }
 
   async init(entryId) {
@@ -622,6 +631,7 @@ class DBSlideoutManager {
       await this.renderSlideoutTitle();
       await this.renderSlideoutContent();
       await this.initDynamicDOMReferences();
+      await this.handleImgInputs();
 
       await this.bindEvents();
     } catch (err) {
@@ -666,7 +676,7 @@ class DBSlideoutManager {
   async initDynamicDOMReferences() {
     // Inputs
     this.inputELs = this.slideoutContentSection.querySelectorAll(
-      ".slideout-entry-info-input"
+      ".slideout-entry-info-input, .slideout-list-entry-input"
     );
 
     // Buttons
@@ -693,8 +703,102 @@ class DBSlideoutManager {
       ".slideout-dropdown-container"
     );
 
-    // Lists
-    // list open btns
+    // Image Inputs
+    this.imageInputs = this.slideoutContentSection.querySelectorAll(
+      ".slideout-img-input"
+    );
+
+    this.hintEl = this.slideoutContentSection.querySelector(".slideout-hint");
+  }
+
+  async handleImgInputs() {
+    this.imageInputs.forEach((imageInput) => {
+      imageInput.addEventListener("change", function () {
+        const file = this.files[0];
+        if (!file) return;
+
+        const img = new Image();
+        img.src = URL.createObjectURL(file);
+
+        img.onerror = function () {
+          alert("Invalid image file.");
+        };
+
+        img.onload = function () {
+          if (img.width < 1000 || img.height < 1000) {
+            alert("Image must be at least 1000x1000 pixels.");
+          } else {
+            const fileNameDisplay = imageInput
+              .closest(".slideout-custom-file-input")
+              .querySelector(".slideout-file-name");
+
+            fileNameDisplay.textContent = file.name;
+
+            const imgDisplay = imageInput
+              .closest(".slideout-img-container")
+              .querySelector(".slideout-img");
+
+            imgDisplay.src = img.src;
+          }
+
+          URL.revokeObjectURL(img.src);
+        };
+      });
+    });
+  }
+
+  showInputError(input) {
+    if (!input) return;
+
+    this.clearInputErrors();
+    input.classList.add("slideout-input--error");
+  }
+
+  showHintError(msg) {
+    this.clearHint();
+    this.hintEl.classList.remove("hidden");
+    this.hintEl.textContent = msg;
+    this.hintEl.classList.remove("slideout-hint--success");
+    this.hintEl.classList.add("slideout-hint--error");
+
+    if (this.#hintTimeout) {
+      clearTimeout(this.#hintTimeout);
+    }
+    this.#hintTimeout = setTimeout(() => {
+      this.clearHint();
+      this.#hintTimeout = null;
+    }, 5000);
+  }
+
+  showHintSuccess(msg) {
+    this.clearHint();
+    this.hintEl.classList.remove("hidden");
+    this.hintEl.textContent = msg;
+    this.hintEl.classList.remove("slideout-hint--error");
+    this.hintEl.classList.add("slideout-hint--success");
+
+    if (this.#hintTimeout) {
+      clearTimeout(this.#hintTimeout);
+    }
+    this.#hintTimeout = setTimeout(() => {
+      this.clearHint();
+      this.#hintTimeout = null;
+    }, 5000);
+  }
+
+  clearHint() {
+    this.hintEl.classList.add("hidden");
+    this.hintEl.textContent = "";
+    this.hintEl.classList.remove(
+      "slideout-hint--error",
+      "slideout-hint--success"
+    );
+  }
+
+  clearInputErrors() {
+    this.inputELs.forEach((input) => {
+      input.classList.remove("slideout-input--error");
+    });
   }
 
   async resetSlideoutSections() {
@@ -716,6 +820,14 @@ class DBSlideoutManager {
     dropdownContainers.forEach((container) =>
       container.classList.add("hidden")
     );
+  }
+
+  normalizeText(text) {
+    if (!text) return "";
+    return text
+      .replace(/_/g, " ")
+      .toLowerCase()
+      .replace(/\b\w/g, (char) => char.toUpperCase());
   }
 
   async renderSlideoutTitle() {
@@ -950,21 +1062,43 @@ class DBSlideoutManager {
       entry.id = `slideout-list-entry-${entryId}`;
 
       fields.forEach((field) => {
+        const textContent = field.text;
+        const placeholder = field.placeholder;
+        const isEditable = field.editable || false;
+
         const textWrapper = document.createElement("div");
         textWrapper.className = "slideout-list-entry-text-wrapper";
-        const text = document.createElement("span");
-        text.className = "slideout-list-entry-text";
-        text.textContent = field;
-        textWrapper.appendChild(text);
+
+        if (isEditable) {
+          const input = document.createElement("input");
+          input.className = "slideout-list-entry-input";
+          input.type = "text";
+          input.value = textContent;
+          input.placeholder = placeholder;
+          textWrapper.appendChild(input);
+
+          input.addEventListener("input", (e) => {
+            this.handleInput();
+          });
+        } else {
+          const text = document.createElement("span");
+          text.className = "slideout-list-entry-text";
+          text.textContent = textContent;
+          textWrapper.appendChild(text);
+        }
+
         entry.appendChild(textWrapper);
       });
 
       const removeBtn = document.createElement("button");
       removeBtn.className = "hidden-btn slideout-list-remove-btn";
       removeBtn.innerHTML = `<i class="fa-solid fa-xmark slideout-remove-icon"></i>`;
-      removeBtn.addEventListener("click", () => entry.remove());
-      entry.appendChild(removeBtn);
+      removeBtn.addEventListener("click", () => {
+        entry.remove();
+        this.handleInput();
+      });
 
+      entry.appendChild(removeBtn);
       return entry;
     };
 
@@ -985,8 +1119,30 @@ class DBSlideoutManager {
       listContainer.className = "slideout-list-container";
 
       // Populate with each field
-      listData.forEach(({ id, primary, secondary }) => {
-        listContainer.appendChild(createListEntry([primary, secondary], id));
+      const {
+        id: idField,
+        primary: primaryField,
+        secondary: secondaryField,
+      } = list.dataFields;
+
+      listData.forEach(async (item) => {
+        const id = item[idField];
+        const primary = item[primaryField];
+        const secondary = item[secondaryField];
+
+        listContainer.appendChild(
+          createListEntry(
+            [
+              { text: primary, placeholder: "", editable: false },
+              {
+                text: secondary,
+                placeholder: this.normalizeText(secondaryField),
+                editable: true,
+              },
+            ],
+            id
+          )
+        );
       });
 
       const addBtnContainer = document.createElement("div");
@@ -1017,7 +1173,14 @@ class DBSlideoutManager {
         shouldAutofillInput: false,
         onSelectCallback: (selectedValue) => {
           const newEntry = createListEntry(
-            [selectedValue.label, selectedValue.id],
+            [
+              { text: selectedValue.label, placeholder: "", editable: false },
+              {
+                text: "",
+                placeholder: this.normalizeText(secondaryField),
+                editable: true,
+              },
+            ],
             selectedValue.id
           );
           listContainer.insertBefore(newEntry, addBtnContainer);
@@ -1070,7 +1233,11 @@ class DBSlideoutManager {
     applyChangesBtnEl.disabled = true;
     applyChangesBtnEl.textContent = "Apply Changes";
 
+    const hintEl = document.createElement("div");
+    hintEl.className = "slideout-hint hidden";
+
     this.entryInfoInputContainer.appendChild(applyChangesBtnEl);
+    this.entryInfoInputContainer.appendChild(hintEl);
 
     // Delete Btn
     const deleteBtnEl = document.createElement("button");
@@ -1088,7 +1255,10 @@ class DBSlideoutManager {
     this.close();
   }
 
-  async handleInput(inputEl) {
+  async handleInput() {
+    this.inputELs = this.slideoutContentSection.querySelectorAll(
+      ".slideout-entry-info-input, .slideout-list-entry-input"
+    );
     let inputsFilled = true;
     for (const input of this.inputELs) {
       if (input.value.trim().length === 0) {
@@ -1098,24 +1268,19 @@ class DBSlideoutManager {
     }
 
     this.applyChangesBtn.disabled = !inputsFilled;
-    // dropdown
   }
 
   async handleApplyChanges() {
     try {
-      // ...
+      this.showHintSuccess("Changes applied successfully.");
     } catch (err) {
-      // show visual error hint
+      this.showHintError(`Failed to apply changes: ${err.message}`);
       console.error(err);
     }
   }
 
   async handleDelete() {
     console.log(this.entryId);
-  }
-
-  async handleAddListEntry(listContainer) {
-    // ...
   }
 
   async bindEvents() {
@@ -1150,25 +1315,9 @@ class DBSlideoutManager {
 
     this.inputELs.forEach((inputEl) => {
       inputEl.addEventListener("input", (e) => {
-        this.handleInput(e.target);
+        this.handleInput();
       });
     });
-
-    // this.dropdownSelectors.forEach((selector) => {
-    //   const clickArea = selector.querySelector(
-    //     ".slideout-selector-text-container"
-    //   );
-    //   const input = selector.querySelector(".slideout-selector-input");
-
-    //   clickArea.addEventListener("click", () => {
-    //     const dropdownContainer = selector.querySelector(
-    //       ".slideout-dropdown-container"
-    //     );
-    //     input.value = "";
-    //     this.toggleDropdownContainer(selector, dropdownContainer);
-    //     input.focus();
-    //   });
-    // });
   }
 
   disableApplyChangesBtn() {
@@ -1184,8 +1333,8 @@ class DBSlideoutManager {
     this.slideout.classList.add("hidden");
     this.slideoutBackdrop.classList.add("hidden");
     this.disableApplyChangesBtn();
-    // this.clearHints();
-    // this.clearInputErrors();
+    this.clearHint();
+    this.clearInputErrors();
   }
 }
 

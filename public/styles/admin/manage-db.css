@@ -364,6 +364,22 @@ body {
   font-weight: 600;
 }
 
+.slideout-hint {
+  font-size: 1.4rem;
+}
+
+.slideout-hint--error {
+  color: #c25c5c;
+}
+
+.slideout-hint--success {
+  color: #5a7f71;
+}
+
+.slideout-input--error {
+  border-color: #c25c5c !important;
+}
+
 .slideout-entry-info-input-container {
   display: flex;
   flex-direction: column;
@@ -585,7 +601,7 @@ body {
 .slideout-list-entry--2 {
   display: grid;
   grid-template-columns: 1fr 1fr 2rem;
-  column-gap: 0.4rem;
+  column-gap: 0.8rem;
   align-items: center;
   border-bottom: 0.1rem solid #2d343a;
   padding: 1.2rem;
@@ -633,14 +649,14 @@ body {
   padding: 0.8rem 0;
 }
 
-.slideout-list-input {
+.slideout-list-entry-input {
   font-family: "Geist", sans-serif;
   color: #e3e5e4;
   width: 100%;
-  padding: 1.2rem 0.8rem;
+  padding: 0.6rem;
   font-size: 1.4rem;
   background-color: #171b1f;
-  border: 0.2rem solid #2d343a;
+  border: 0.1rem solid #2d343a;
   border-radius: 0.4rem;
 }
 
