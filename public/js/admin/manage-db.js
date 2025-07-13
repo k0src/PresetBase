@@ -60,7 +60,6 @@ class AutofillDropdownManager {
       ...defaultClasses,
       ...classes,
     };
-
     this.#input = inputElement;
     this.#dropdown = dropdownElement;
     this.#onSelectCallback = onSelectCallback;
@@ -72,21 +71,12 @@ class AutofillDropdownManager {
     this.#debounceDelay = debounceDelay;
     this.#selectedIndex = -1;
     this.#debounceTimeout = null;
+
+    this.#bindEvents();
   }
 
   get dropdownElement() {
     return this.#dropdown;
-  }
-
-  async init() {
-    try {
-      this.#bindEvents();
-    } catch (err) {
-      console.error(
-        `Failed to initialize AutofillDropdownManager: ${err.message}`
-      );
-      throw err;
-    }
   }
 
   destroy() {
@@ -101,7 +91,7 @@ class AutofillDropdownManager {
     }
   }
 
-  #handleKeyboardNavigation(e) {
+  async #handleKeyboardNavigation(e) {
     const dropdownItems = this.#dropdown.querySelectorAll("li");
 
     if (!dropdownItems.length) return;
@@ -141,7 +131,7 @@ class AutofillDropdownManager {
           this.#setInputValue(selectedValue);
           this.#selectedIndex = -1;
           if (this.#onSelectCallback) {
-            this.#onSelectCallback?.({
+            await this.#onSelectCallback?.({
               label: selectedValue,
               id: selectedValueID,
             });
@@ -524,13 +514,59 @@ const SLIDEOUT_CONFIG = {
         key: "artists",
         label: "Artists",
         placeholder: "Search for artist...",
-        dataFields: ["name", "role"],
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/artists?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
       },
       {
         key: "presets",
         label: "Presets",
         placeholder: "Search for preset...",
-        dataFields: ["name", "usage_type"],
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/presets?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
       },
     ],
   },
@@ -575,7 +611,6 @@ class DBSlideoutManager {
     this.handleInput = this.handleInput.bind(this);
     this.handleApplyChanges = this.handleApplyChanges.bind(this);
     this.handleDelete = this.handleDelete.bind(this);
-    this.handleRemoveListEntry = this.handleRemoveListEntry.bind(this);
     this.handleAddListEntry = this.handleAddListEntry.bind(this);
   }
 
@@ -810,6 +845,15 @@ class DBSlideoutManager {
       this.slideoutConfig[this.entryType].dropdownSelectors;
 
     dropdownSelectors.forEach((selector) => {
+      const fieldPrimary = this.entryData[selector.key][selector.dataFields[0]]
+        ? this.entryData[selector.key][selector.dataFields[0]]
+        : "None";
+      const fieldSecondary = this.entryData[selector.key][
+        selector.dataFields[1]
+      ]
+        ? this.entryData[selector.key][selector.dataFields[1]]
+        : "None";
+
       const selectorLabel = document.createElement("span");
       selectorLabel.className = "slideout-entry-info-text";
       selectorLabel.textContent = selector.label;
@@ -822,8 +866,8 @@ class DBSlideoutManager {
 
       const selectorText = document.createElement("span");
       selectorText.className = "slideout-selector-text";
-      selectorText.textContent =
-        this.entryData[selector.key][selector.dataFields[0]];
+      selectorText.setAttribute("data-id", fieldSecondary);
+      selectorText.textContent = fieldPrimary;
 
       const selectorIcon = document.createElement("i");
       selectorIcon.className = "fa-solid fa-caret-down slideout-selector-icon";
@@ -835,7 +879,7 @@ class DBSlideoutManager {
       dropdownContainer.className = "slideout-dropdown-container hidden";
 
       const selectorFilterInput = document.createElement("input");
-      selectorFilterInput.className = "slideout-selector-input";
+      selectorFilterInput.className = "slideout-filter-input";
       selectorFilterInput.type = "text";
       selectorFilterInput.placeholder = selector.placeholder;
       selectorFilterInput.name = selector.key; // maybe remove
@@ -850,7 +894,7 @@ class DBSlideoutManager {
         this.toggleDropdownContainer(selectorTextContainer, dropdownContainer);
       };
 
-      const dropdownManager = new AutofillDropdownManager({
+      new AutofillDropdownManager({
         table: selector.key,
         inputElement: selectorFilterInput,
         dropdownElement: dropdownList,
@@ -863,7 +907,6 @@ class DBSlideoutManager {
         hideDropdownOnClickOff: false,
       });
 
-      dropdownManager.init();
       selectorTextContainer.addEventListener("click", () => {
         selectorFilterInput.value = "";
         selectorFilterInput.value = selectorText.textContent;
@@ -873,10 +916,10 @@ class DBSlideoutManager {
       });
 
       const addContainer = document.createElement("div");
-      addContainer.className = "slideout-selector-add-container";
+      addContainer.className = "slideout-dropdown-add-container";
 
       const addBtn = document.createElement("button");
-      addBtn.className = "hidden-btn slideout-selector-add-btn";
+      addBtn.className = "hidden-btn slideout-dropdown-add-btn";
       addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
 
       addBtn.addEventListener("click", () => {
@@ -886,7 +929,7 @@ class DBSlideoutManager {
       addContainer.appendChild(addBtn);
 
       const divider = document.createElement("div");
-      divider.className = "slideout-selector-divider";
+      divider.className = "slideout-dropdown-divider";
 
       dropdownContainer.appendChild(selectorFilterInput);
       dropdownContainer.appendChild(dropdownList);
@@ -901,70 +944,123 @@ class DBSlideoutManager {
     });
 
     // Lists Section
-    const listInputs = this.slideoutConfig[this.entryType].lists;
+    const createListEntry = (fields, entryId) => {
+      const entry = document.createElement("div");
+      entry.className = "slideout-list-entry--2";
+      entry.id = `slideout-list-entry-${entryId}`;
 
-    listInputs.forEach((list) => {
+      fields.forEach((field) => {
+        const textWrapper = document.createElement("div");
+        textWrapper.className = "slideout-list-entry-text-wrapper";
+        const text = document.createElement("span");
+        text.className = "slideout-list-entry-text";
+        text.textContent = field;
+        textWrapper.appendChild(text);
+        entry.appendChild(textWrapper);
+      });
+
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "hidden-btn slideout-list-remove-btn";
+      removeBtn.innerHTML = `<i class="fa-solid fa-xmark slideout-remove-icon"></i>`;
+      removeBtn.addEventListener("click", () => entry.remove());
+      entry.appendChild(removeBtn);
+
+      return entry;
+    };
+
+    const listElements = this.slideoutConfig[this.entryType].lists;
+
+    listElements.forEach((list) => {
+      // Data for this list (array of objects for each artist/synth/preset...)
       const listData = this.entryData[list.key];
-      const dataFields = list.dataFields;
 
-      const inputLabel = document.createElement("span");
-      inputLabel.className = "slideout-entry-info-text";
-      inputLabel.textContent = list.label;
+      // Label for the list
+      const label = document.createElement("span");
+      label.className = "slideout-entry-info-text";
+      label.textContent = list.label;
 
+      const listWrapper = document.createElement("div");
+      listWrapper.className = "slideout-list-wrapper";
       const listContainer = document.createElement("div");
       listContainer.className = "slideout-list-container";
 
-      listData.forEach((data) => {
-        const listEntry = document.createElement("div");
-        listEntry.className = `slideout-list-entry--${dataFields.length}`;
-        listEntry.id = `slideout-list-entry-${data.id}`;
-
-        dataFields.forEach((field) => {
-          const listEntryTextWrapper = document.createElement("div");
-          listEntryTextWrapper.className = "slideout-list-entry-text-wrapper";
-          const listEntryText = document.createElement("span");
-          listEntryText.className = "slideout-list-entry-text";
-          listEntryText.textContent = data[field];
-          listEntryTextWrapper.appendChild(listEntryText);
-          listEntry.appendChild(listEntryTextWrapper);
-        });
-
-        const removeBtn = document.createElement("button");
-        removeBtn.className = "hidden-btn slideout-list-remove-btn";
-        removeBtn.innerHTML = `<i class="fa-solid fa-xmark slideout-remove-icon"></i>`;
-
-        listEntry.appendChild(removeBtn);
-        listContainer.appendChild(listEntry);
+      // Populate with each field
+      listData.forEach(({ id, primary, secondary }) => {
+        listContainer.appendChild(createListEntry([primary, secondary], id));
       });
 
-      const addContainer = document.createElement("div");
-      addContainer.className = "slideout-list-add-container";
+      const addBtnContainer = document.createElement("div");
+      addBtnContainer.className = "slideout-list-add-container";
 
-      const addBtn = document.createElement("button");
-      addBtn.className = "hidden-btn slideout-list-add-btn";
-      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
+      const addEntryBtn = document.createElement("button");
+      addEntryBtn.className = "hidden-btn slideout-list-add-btn";
+      addEntryBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
 
       const dropdownContainer = document.createElement("div");
-      dropdownContainer.className = "slideout-list-dropdown-container hidden";
+      dropdownContainer.className = "slideout-dropdown-container hidden";
 
-      const inputEl = document.createElement("input");
-      inputEl.className = "slideout-list-input dropdown-input";
-      inputEl.type = "text";
-      inputEl.placeholder = `Add new ${list.label}`;
-      inputEl.name = list.key;
+      const filterInput = document.createElement("input");
+      filterInput.className = "slideout-filter-input";
+      filterInput.type = "text";
+      filterInput.placeholder = list.placeholder;
+      filterInput.name = list.key;
 
       const dropdownList = document.createElement("ul");
-      dropdownList.className = "slideout-dropdown";
+      dropdownList.className = "slideout-dropdown hidden";
       dropdownList.id = `slideout-dropdown-${list.key}`;
 
-      dropdownContainer.appendChild(inputEl);
-      dropdownContainer.appendChild(dropdownList);
-      addContainer.appendChild(addBtn);
-      addContainer.appendChild(dropdownContainer);
-      listContainer.appendChild(addContainer);
+      new AutofillDropdownManager({
+        table: list.key,
+        inputElement: filterInput,
+        dropdownElement: dropdownList,
+        resultsLimit: 7,
+        shouldAutofillInput: false,
+        onSelectCallback: (selectedValue) => {
+          const newEntry = createListEntry(
+            [selectedValue.label, selectedValue.id],
+            selectedValue.id
+          );
+          listContainer.insertBefore(newEntry, addBtnContainer);
+          this.toggleDropdownContainer(listContainer, dropdownContainer);
+        },
+        fetchResults: list.apiFunction,
+        hideDropdownOnClickOff: false,
+      });
 
-      this.entryInfoInputContainer.appendChild(inputLabel);
-      this.entryInfoInputContainer.appendChild(listContainer);
+      addBtnContainer.addEventListener("click", () => {
+        filterInput.value = "";
+        filterInput.dispatchEvent(new Event("input"));
+        this.toggleDropdownContainer(listContainer, dropdownContainer);
+        filterInput.focus();
+      });
+
+      addBtnContainer.appendChild(addEntryBtn);
+
+      const addContainer = document.createElement("div");
+      addContainer.className = "slideout-dropdown-add-container";
+
+      const addBtn = document.createElement("button");
+      addBtn.className = "hidden-btn slideout-dropdown-add-btn";
+      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
+      addBtn.addEventListener("click", () => {
+        window.location.href = `/admin/manage-db/${list.key}`;
+      });
+      addContainer.appendChild(addBtn);
+
+      const divider = document.createElement("div");
+      divider.className = "slideout-dropdown-divider";
+
+      dropdownContainer.appendChild(filterInput);
+      dropdownContainer.appendChild(dropdownList);
+      dropdownContainer.appendChild(divider);
+      dropdownContainer.appendChild(addContainer);
+
+      listContainer.appendChild(addBtnContainer);
+      listWrapper.appendChild(listContainer);
+      listWrapper.appendChild(dropdownContainer);
+
+      this.entryInfoInputContainer.appendChild(label);
+      this.entryInfoInputContainer.appendChild(listWrapper);
     });
 
     // Apply Changes Btn
@@ -1018,10 +1114,6 @@ class DBSlideoutManager {
     console.log(this.entryId);
   }
 
-  async handleRemoveListEntry(listEntry) {
-    console.log(listEntry);
-  }
-
   async handleAddListEntry(listContainer) {
     // ...
   }
@@ -1059,24 +1151,6 @@ class DBSlideoutManager {
     this.inputELs.forEach((inputEl) => {
       inputEl.addEventListener("input", (e) => {
         this.handleInput(e.target);
-      });
-    });
-
-    this.removeBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const listEntry = e.target.closest(".slideout-list-entry");
-        if (listEntry) {
-          this.handleRemoveListEntry(listEntry);
-        }
-      });
-    });
-
-    this.addBtns.forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        const listContainer = e.target.closest(".slideout-list-container");
-        if (listContainer) {
-          this.handleAddListEntry(listContainer);
-        }
       });
     });
 
