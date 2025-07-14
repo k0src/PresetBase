@@ -21,6 +21,12 @@ body {
   overflow-x: hidden;
 }
 
+html.scroll-lock,
+body.scroll-lock {
+  overflow: hidden !important;
+  height: 100%;
+}
+
 a:link,
 a:visited,
 a:hover,

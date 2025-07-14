@@ -654,6 +654,9 @@ class DBSlideoutManager {
   }
 
   close() {
+    this.#scrollToTop();
+
+    document.documentElement.classList.remove("scroll-lock");
     this.slideout.classList.add("hidden");
     this.backdrop.classList.add("hidden");
     this.#disableApplyBtn();
@@ -663,8 +666,10 @@ class DBSlideoutManager {
   }
 
   show() {
+    document.documentElement.classList.add("scroll-lock");
     this.slideout.classList.remove("hidden");
     this.backdrop.classList.remove("hidden");
+    document.body.style.overflow = "hidden";
   }
 
   #showHint(msg, type) {
@@ -1211,6 +1216,10 @@ class DBSlideoutManager {
       input.removeEventListener("input", this.handleInput)
     );
     this.eventListenersBound = false;
+  }
+
+  #scrollToTop() {
+    this.slideout.scrollTop = 0;
   }
 
   destroy() {
