@@ -592,8 +592,9 @@ body {
 }
 
 .slideout-list-entry--1 {
-  display: grid;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   border-bottom: 0.1rem solid #2d343a;
   padding: 1.2rem;
 }

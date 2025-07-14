@@ -514,6 +514,7 @@ const SLIDEOUT_CONFIG = {
           id: "id",
           primary: "name",
           secondary: "role",
+          numColumns: 2,
         },
         placeholder: "Search for artist...",
         apiFunction: async (query, limit) => {
@@ -548,6 +549,349 @@ const SLIDEOUT_CONFIG = {
           id: "id",
           primary: "name",
           secondary: "usage_type",
+          numColumns: 2,
+        },
+        placeholder: "Search for preset...",
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/presets?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
+      },
+    ],
+  },
+  albums: {
+    id: "album_id",
+    label: "Album",
+    apiEndpoint: "/admin/manage-db/album-data/",
+    title: "Edit Album",
+    hasEntryPage: true,
+    fields: [
+      {
+        key: "album_id",
+        label: "Album ID:",
+        type: "text",
+      },
+      {
+        key: "album_timestamp",
+        label: "Added:",
+        type: "text",
+      },
+      {
+        key: "album_id",
+        label: "View album page",
+        type: "link",
+        href: "/album/",
+      },
+    ],
+    inputs: [
+      {
+        key: "album_title",
+        label: "Album Title",
+        placeholder: "Album Title",
+        type: "text",
+      },
+      {
+        key: "album_genre",
+        label: "Album Genre",
+        placeholder: "Album Genre",
+        type: "text",
+      },
+      {
+        key: "album_year",
+        label: "Release Year",
+        placeholder: "Release Year",
+        type: "text",
+      },
+    ],
+    fileUploads: [
+      {
+        type: "image",
+        key: "album_image",
+        label: "Album Image",
+      },
+    ],
+    dropdownSelectors: [],
+    lists: [
+      {
+        key: "songs",
+        label: "Songs",
+        dataFields: {
+          id: "id",
+          primary: "title",
+          numColumns: 1,
+        },
+        placeholder: "Search for song...",
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/songs?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
+      },
+    ],
+  },
+  artists: {
+    id: "artist_id",
+    label: "Artist",
+    apiEndpoint: "/admin/manage-db/artist-data/",
+    title: "Edit Artist",
+    hasEntryPage: true,
+    fields: [
+      {
+        key: "artist_id",
+        label: "Artist ID:",
+        type: "text",
+      },
+      {
+        key: "artist_timestamp",
+        label: "Added:",
+        type: "text",
+      },
+      {
+        key: "artist_id",
+        label: "View artist page",
+        type: "link",
+        href: "/artist/",
+      },
+    ],
+    inputs: [
+      {
+        key: "artist_name",
+        label: "Artist Name",
+        placeholder: "Artist Name",
+        type: "text",
+      },
+      {
+        key: "artist_country",
+        label: "Artist Country",
+        placeholder: "Artist Country",
+        type: "text",
+      },
+    ],
+    fileUploads: [
+      {
+        type: "image",
+        key: "artist_image",
+        label: "Artist Image",
+      },
+    ],
+    dropdownSelectors: [],
+    lists: [
+      {
+        key: "songs",
+        label: "Songs",
+        dataFields: {
+          id: "id",
+          primary: "title",
+          secondary: "role",
+          numColumns: 2,
+        },
+        placeholder: "Search for song...",
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/songs?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
+      },
+    ],
+  },
+  presets: {
+    id: "preset_id",
+    label: "Preset",
+    apiEndpoint: "/admin/manage-db/preset-data/",
+    title: "Edit Preset",
+    hasEntryPage: false,
+    fields: [
+      {
+        key: "preset_id",
+        label: "Preset ID:",
+        type: "text",
+      },
+      {
+        key: "preset_timestamp",
+        label: "Added:",
+        type: "text",
+      },
+    ],
+    inputs: [
+      {
+        key: "preset_name",
+        label: "Preset Name",
+        placeholder: "Preset Name",
+        type: "text",
+      },
+      {
+        key: "preset_pack_name",
+        label: "Preset Pack Name",
+        placeholder: "Preset Pack Name",
+        type: "text",
+      },
+      {
+        key: "preset_author",
+        label: "Preset Author",
+        placeholder: "Preset Author",
+        type: "text",
+      },
+    ],
+    fileUploads: [],
+    dropdownSelectors: [
+      {
+        key: "synths",
+        dataFields: ["name", "id"],
+        label: "Synth",
+        placeholder: "Search for synth...",
+        type: "text",
+        apiFunction: async (query, limit) => {
+          try {
+            const response = await fetch(
+              `/admin/manage-db/field-data/synths?query=${encodeURIComponent(
+                query
+              )}&limit=${limit}`,
+              {
+                method: "GET",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+              }
+            );
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error);
+            }
+
+            return await response.json();
+          } catch (err) {
+            throw new Error(`Failed to fetch autofill results: ${err.message}`);
+          }
+        },
+      },
+    ],
+    lists: [],
+  },
+  synths: {
+    id: "synth_id",
+    label: "Synth",
+    apiEndpoint: "/admin/manage-db/synth-data/",
+    title: "Edit Synth",
+    hasEntryPage: true,
+    fields: [
+      {
+        key: "synth_id",
+        label: "Synth ID:",
+        type: "text",
+      },
+      {
+        key: "synth_timestamp",
+        label: "Added:",
+        type: "text",
+      },
+      {
+        key: "synth_id",
+        label: "View synth page",
+        type: "link",
+        href: "/synth/",
+      },
+    ],
+    inputs: [
+      {
+        key: "synth_name",
+        label: "Synth Name",
+        placeholder: "Synth Name",
+        type: "text",
+      },
+      {
+        key: "synth_manufacturer",
+        label: "Synth Manufacturer",
+        placeholder: "Synth Manufacturer",
+        type: "text",
+      },
+      {
+        key: "synth_type",
+        label: "Synth Type",
+        placeholder: "Synth Type",
+        type: "text",
+      },
+      {
+        key: "synth_release_year",
+        label: "Release Year",
+        placeholder: "Release Year",
+        type: "text",
+      },
+    ],
+    fileUploads: [
+      {
+        type: "image",
+        key: "synth_image",
+        label: "Synth Image",
+      },
+    ],
+    dropdownSelectors: [],
+    lists: [
+      {
+        key: "presets",
+        label: "Presets",
+        dataFields: {
+          id: "id",
+          primary: "name",
+          numColumns: 1,
         },
         placeholder: "Search for preset...",
         apiFunction: async (query, limit) => {
@@ -581,6 +925,7 @@ const SLIDEOUT_CONFIG = {
 
 class DBSlideoutManager {
   #hintTimeout;
+
   async #fetchEntryData() {
     const { apiEndpoint } = this.slideoutConfig[this.entryType];
     try {
@@ -655,7 +1000,6 @@ class DBSlideoutManager {
 
   close() {
     this.#scrollToTop();
-
     document.documentElement.classList.remove("scroll-lock");
     this.slideout.classList.add("hidden");
     this.backdrop.classList.add("hidden");
@@ -697,12 +1041,6 @@ class DBSlideoutManager {
     this.inputs.forEach((input) =>
       input.classList.remove("slideout-input--error")
     );
-  }
-
-  #showInputError(input) {
-    if (!input) return;
-    this.#clearInputErrors();
-    input.classList.add("slideout-input--error");
   }
 
   #disableApplyBtn() {
@@ -928,7 +1266,9 @@ class DBSlideoutManager {
     );
 
     for (const container of listContainers) {
-      const entries = container.querySelectorAll(".slideout-list-entry--2");
+      const entries = container.querySelectorAll(
+        ".slideout-list-entry--1, .slideout-list-entry--2"
+      );
       if (entries.length === 0) return false;
     }
 
@@ -938,9 +1278,15 @@ class DBSlideoutManager {
   async #renderLists() {
     const lists = this.slideoutConfig[this.entryType].lists || [];
 
-    const createListEntry = (primary, secondary, id, secondaryPlaceholder) => {
+    const createListEntry = (
+      primary,
+      secondary,
+      id,
+      secondaryPlaceholder,
+      numColumns
+    ) => {
       const entry = document.createElement("div");
-      entry.className = "slideout-list-entry--2";
+      entry.className = `slideout-list-entry--${numColumns}`;
       entry.id = `slideout-list-entry-${id}`;
 
       const primaryWrapper = document.createElement("div");
@@ -950,15 +1296,19 @@ class DBSlideoutManager {
       primaryText.textContent = primary;
       primaryWrapper.appendChild(primaryText);
 
-      const secondaryWrapper = document.createElement("div");
-      secondaryWrapper.className = "slideout-list-entry-text-wrapper";
-      const secondaryInput = document.createElement("input");
-      secondaryInput.className = "slideout-list-entry-input";
-      secondaryInput.type = "text";
-      secondaryInput.value = secondary;
-      secondaryInput.placeholder = secondaryPlaceholder;
-      secondaryInput.addEventListener("input", this.handleInput);
-      secondaryWrapper.appendChild(secondaryInput);
+      let secondaryWrapper = null;
+      let secondaryInput = null;
+      if (numColumns > 1) {
+        secondaryWrapper = document.createElement("div");
+        secondaryWrapper.className = "slideout-list-entry-text-wrapper";
+        secondaryInput = document.createElement("input");
+        secondaryInput.className = "slideout-list-entry-input";
+        secondaryInput.type = "text";
+        secondaryInput.value = secondary;
+        secondaryInput.placeholder = secondaryPlaceholder;
+        secondaryInput.addEventListener("input", this.handleInput);
+        secondaryWrapper.appendChild(secondaryInput);
+      }
 
       const removeBtn = document.createElement("button");
       removeBtn.className = "hidden-btn slideout-list-remove-btn";
@@ -968,7 +1318,9 @@ class DBSlideoutManager {
         this.handleInput();
       });
 
-      entry.append(primaryWrapper, secondaryWrapper, removeBtn);
+      entry.append(primaryWrapper);
+      if (secondaryWrapper) entry.append(secondaryWrapper);
+      entry.append(removeBtn);
       return entry;
     };
 
@@ -987,6 +1339,7 @@ class DBSlideoutManager {
         id: idField,
         primary: primaryField,
         secondary: secondaryField,
+        numColumns: numColumns,
       } = list.dataFields;
 
       items.forEach((item) => {
@@ -997,7 +1350,8 @@ class DBSlideoutManager {
           primary,
           secondary,
           id,
-          this.#normalizeText(secondaryField)
+          this.#normalizeText(secondaryField),
+          numColumns
         );
         listContainer.appendChild(entry);
       });
@@ -1041,7 +1395,8 @@ class DBSlideoutManager {
             label,
             "",
             id,
-            this.#normalizeText(secondaryField)
+            this.#normalizeText(secondaryField),
+            numColumns
           );
           listContainer.insertBefore(newEntry, addBtnWrap);
           this.#toggleDropdownContainer(listContainer, dropdown);
@@ -1105,7 +1460,9 @@ class DBSlideoutManager {
         ?.closest(".slideout-list-wrapper");
       if (!container) return;
 
-      const entries = container.querySelectorAll(".slideout-list-entry--2");
+      const entries = container.querySelectorAll(
+        ".slideout-list-entry--1, .slideout-list-entry--2"
+      );
       const result = [];
 
       entries.forEach((entry) => {

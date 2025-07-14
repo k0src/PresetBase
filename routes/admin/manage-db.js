@@ -84,71 +84,6 @@ router.get("/table-data/:table", isAdmin, async (req, res) => {
   }
 });
 
-// Data endpoint for slideout
-router.get("/song-data/:songId", isAdmin, async (req, res) => {
-  const songId = req.params.songId;
-
-  const query = `
-    SELECT
-      songs.id AS song_id,
-      songs.title AS song_title,
-      songs.song_url AS song_url,
-      songs.image_url AS song_image,
-      songs.timestamp AS song_timestamp,
-      songs.genre AS song_genre,
-      songs.release_year AS song_year,
-      json_object('id', albums.id, 'title', albums.title) AS albums,
-      
-      json_group_array(
-        DISTINCT json_object(
-          'id', artists.id,
-          'name', artists.name,
-          'role', song_artists.role
-        )
-      ) AS artists,
-
-      json_group_array(
-        DISTINCT json_object(
-          'id', presets.id,
-          'name', presets.preset_name,
-          'usage_type', song_presets.usage_type
-        )
-      ) AS presets
-
-    FROM songs
-    LEFT JOIN album_songs ON songs.id = album_songs.song_id
-    LEFT JOIN albums ON album_songs.album_id = albums.id
-    LEFT JOIN song_artists ON songs.id = song_artists.song_id
-    LEFT JOIN artists ON song_artists.artist_id = artists.id
-    LEFT JOIN song_presets ON songs.id = song_presets.song_id
-    LEFT JOIN presets ON song_presets.preset_id = presets.id
-    LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
-    LEFT JOIN synths ON preset_synths.synth_id = synths.id
-    WHERE songs.id = ?
-    GROUP BY songs.id`;
-
-  try {
-    const song = await dbGet(query, [songId]);
-
-    if (!song) {
-      return res.status(404).json({
-        error: "Song not found.",
-      });
-    }
-
-    song.artists = song.artists ? JSON.parse(song.artists) : [];
-    song.presets = song.presets ? JSON.parse(song.presets) : [];
-    song.albums = song.albums ? JSON.parse(song.albums) : null;
-
-    res.json(song);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({
-      error: "An error occurred while fetching song data.",
-    });
-  }
-});
-
 // For autofill dropdown inputs
 router.get("/field-data/:table", isAdmin, async (req, res) => {
   const table = req.params.table;
@@ -210,6 +145,71 @@ router.get("/field-data/:table", isAdmin, async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: `An error occurred while fetching ${table} data.`,
+    });
+  }
+});
+
+// Data endpoint for slideout
+router.get("/song-data/:songId", isAdmin, async (req, res) => {
+  const songId = req.params.songId;
+
+  const query = `
+    SELECT
+      songs.id AS song_id,
+      songs.title AS song_title,
+      songs.song_url AS song_url,
+      songs.image_url AS song_image,
+      songs.timestamp AS song_timestamp,
+      songs.genre AS song_genre,
+      songs.release_year AS song_year,
+      json_object('id', albums.id, 'title', albums.title) AS albums,
+      
+      json_group_array(
+        DISTINCT json_object(
+          'id', artists.id,
+          'name', artists.name,
+          'role', song_artists.role
+        )
+      ) AS artists,
+
+      json_group_array(
+        DISTINCT json_object(
+          'id', presets.id,
+          'name', presets.preset_name,
+          'usage_type', song_presets.usage_type
+        )
+      ) AS presets
+
+    FROM songs
+    LEFT JOIN album_songs ON songs.id = album_songs.song_id
+    LEFT JOIN albums ON album_songs.album_id = albums.id
+    LEFT JOIN song_artists ON songs.id = song_artists.song_id
+    LEFT JOIN artists ON song_artists.artist_id = artists.id
+    LEFT JOIN song_presets ON songs.id = song_presets.song_id
+    LEFT JOIN presets ON song_presets.preset_id = presets.id
+    LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+    LEFT JOIN synths ON preset_synths.synth_id = synths.id
+    WHERE songs.id = ?
+    GROUP BY songs.id`;
+
+  try {
+    const song = await dbGet(query, [songId]);
+
+    if (!song) {
+      return res.status(404).json({
+        error: "Song not found.",
+      });
+    }
+
+    song.artists = song.artists ? JSON.parse(song.artists) : [];
+    song.presets = song.presets ? JSON.parse(song.presets) : [];
+    song.albums = song.albums ? JSON.parse(song.albums) : null;
+
+    res.json(song);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching song data.",
     });
   }
 });
@@ -286,6 +286,188 @@ router.put("/song-data", isAdmin, multer, async (req, res) => {
     });
   }
 });
+
+router.get("/album-data/:albumId", isAdmin, async (req, res) => {
+  const albumId = req.params.albumId;
+
+  const query = `
+    SELECT
+      albums.id AS album_id,
+      albums.title AS album_title,
+      albums.image_url AS album_image,
+      albums.timestamp AS album_timestamp,
+      albums.genre AS album_genre,
+      albums.release_year AS album_year,
+      
+      json_group_array(
+        DISTINCT json_object(
+          'id', songs.id,
+          'title', songs.title
+        )
+      ) AS songs
+
+    FROM albums
+    LEFT JOIN album_songs ON albums.id = album_songs.album_id
+    LEFT JOIN songs ON album_songs.song_id = songs.id
+    WHERE albums.id = ?
+    GROUP BY albums.id`;
+
+  try {
+    const album = await dbGet(query, [albumId]);
+
+    if (!album) {
+      return res.status(404).json({
+        error: "Album not found.",
+      });
+    }
+
+    album.songs = album.songs ? JSON.parse(album.songs) : [];
+
+    res.json(album);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching album data.",
+    });
+  }
+});
+
+router.put("/album-data/:albumId", isAdmin, async (req, res) => {}); // add album data put
+
+router.get("/artist-data/:artistId", isAdmin, async (req, res) => {
+  const artistId = req.params.artistId;
+
+  const query = `
+    SELECT
+      artists.id AS artist_id,
+      artists.name AS artist_name,
+      artists.country AS artist_country,
+      artists.image_url AS artist_image,
+      artists.timestamp AS artist_timestamp,
+      
+      json_group_array(
+        DISTINCT json_object(
+          'id', songs.id,
+          'title', songs.title,
+          'role', song_artists.role
+        )
+      ) AS songs
+
+    FROM artists
+    LEFT JOIN song_artists ON artists.id = song_artists.artist_id
+    LEFT JOIN songs ON song_artists.song_id = songs.id
+    WHERE artists.id = ?
+    GROUP BY artists.id`;
+
+  try {
+    const artist = await dbGet(query, [artistId]);
+
+    if (!artist) {
+      return res.status(404).json({
+        error: "Artist not found.",
+      });
+    }
+
+    artist.songs = artist.songs ? JSON.parse(artist.songs) : [];
+
+    res.json(artist);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching artist data.",
+    });
+  }
+});
+
+router.put("/artist-data/:artistId", isAdmin, async (req, res) => {}); // add artist data put
+
+router.get("/preset-data/:presetId", isAdmin, async (req, res) => {
+  const presetId = req.params.presetId;
+
+  const query = `
+    SELECT
+      presets.id AS preset_id,
+      presets.preset_name AS preset_name,
+      presets.pack_name AS preset_pack_name,
+      presets.author AS preset_author,
+      presets.timestamp AS preset_timestamp,
+      json_object('id', synths.id, 'name', synths.synth_name) AS synths
+
+    FROM presets
+    LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+    LEFT JOIN synths ON preset_synths.synth_id = synths.id
+    WHERE presets.id = ?
+    GROUP BY presets.id`;
+
+  try {
+    const preset = await dbGet(query, [presetId]);
+
+    if (!preset) {
+      return res.status(404).json({
+        error: "Preset not found.",
+      });
+    }
+
+    preset.synths = preset.synths ? JSON.parse(preset.synths) : null;
+
+    res.json(preset);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching preset data.",
+    });
+  }
+});
+
+router.put("/preset-data/:presetId", isAdmin, async (req, res) => {}); // add preset data put
+
+router.get("/synth-data/:synthId", isAdmin, async (req, res) => {
+  const synthId = req.params.synthId;
+
+  const query = `
+    SELECT
+      synths.id AS synth_id,
+      synths.synth_name AS synth_name,
+      synths.manufacturer AS synth_manufacturer,
+      synths.synth_type AS synth_type,
+      synths.release_year AS synth_release_year,
+      synths.image_url AS synth_image,
+      synths.timestamp AS synth_timestamp,
+      
+      json_group_array(
+        DISTINCT json_object(
+          'id', presets.id,
+          'name', presets.preset_name
+        )
+      ) AS presets
+
+    FROM synths
+    LEFT JOIN preset_synths ON synths.id = preset_synths.synth_id
+    LEFT JOIN presets ON preset_synths.preset_id = presets.id
+    WHERE synths.id = ?
+    GROUP BY synths.id`;
+
+  try {
+    const synth = await dbGet(query, [synthId]);
+
+    if (!synth) {
+      return res.status(404).json({
+        error: "Synth not found.",
+      });
+    }
+
+    synth.presets = synth.presets ? JSON.parse(synth.presets) : null;
+
+    res.json(synth);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching synth data.",
+    });
+  }
+});
+
+router.put("/synth-data/:synthId", isAdmin, async (req, res) => {}); // add synth data put
 
 router.get("/", isAdmin, renderPage);
 router.get("/:table", isAdmin, renderPage);
