@@ -205,6 +205,10 @@ class UserManagerSlideout {
     }
   }
 
+  #scrollToTop() {
+    this.slideout.scrollTop = 0;
+  }
+
   #hintTimeout;
   static adminId = null;
 
@@ -704,11 +708,14 @@ class UserManagerSlideout {
   }
 
   show() {
+    document.documentElement.classList.add("scroll-lock");
     this.slideout.classList.remove("hidden");
     this.slideoutBackdrop.classList.remove("hidden");
   }
 
   close() {
+    this.#scrollToTop();
+    document.documentElement.classList.remove("scroll-lock");
     this.slideout.classList.add("hidden");
     this.slideoutBackdrop.classList.add("hidden");
     this.disableApplyChangesBtn();
