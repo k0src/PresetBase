@@ -731,7 +731,8 @@ body {
   min-width: 0;
 }
 
-.slideout-filter-input {
+.slideout-list-filter-input,
+.slideout-selector-filter-input {
   font-family: "Geist", sans-serif;
   color: #e3e5e4;
   width: 100%;

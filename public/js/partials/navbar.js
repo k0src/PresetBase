@@ -34,6 +34,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let selectedIndex = -1;
   let debounceTimeout;
+
   handleKeyboardNavigation(
     input,
     dropdown,

@@ -583,135 +583,554 @@ const SLIDEOUT_CONFIG = {
 };
 
 class DBSlideoutManager {
-  // API Methods
-  async #getEntryData() {
+  #hintTimeout;
+  async #fetchEntryData() {
+    const { apiEndpoint } = this.slideoutConfig[this.entryType];
     try {
-      const response = await fetch(
-        `${this.slideoutConfig[this.entryType].apiEndpoint}${this.entryId}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-
-      return await response.json();
+      const response = await fetch(`${apiEndpoint}${this.entryId}`, {
+        method: "GET",
+        headers: { "Content-Type": "application/json" },
+      });
+      if (!response.ok) throw new Error((await response.json()).error);
+      return response.json();
     } catch (err) {
       throw new Error(
-        `Failed to get data. Type: ${this.entryType} Error: ${err.message}`
+        `Fetch failed for type ${this.entryType}: ${err.message}`
       );
     }
   }
 
-  #hintTimeout;
   constructor(config, entryType) {
+    this.slideoutConfig = config;
     this.entryType = entryType;
     this.entryId = null;
     this.entryData = null;
     this.eventListenersBound = false;
-    this.slideoutConfig = config;
 
-    this.handleClose = this.handleClose.bind(this);
-    this.handleInput = this.handleInput.bind(this);
-    this.handleApplyChanges = this.handleApplyChanges.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
+    this.handleClose = this.#handleClose.bind(this);
+    this.handleInput = this.#handleInput.bind(this);
+    this.handleApplyChanges = this.#handleApplyChanges.bind(this);
+    this.handleDelete = this.#handleDelete.bind(this);
   }
 
   async init(entryId) {
     try {
-      await this.loadEntry(entryId);
-      await this.initDOMReferences();
-
-      await this.renderSlideoutTitle();
-      await this.renderSlideoutContent();
-      await this.initDynamicDOMReferences();
-      await this.handleImgInputs();
-
-      await this.bindEvents();
-    } catch (err) {
-      console.error(`Failed to initialize DBSlideoutManager: ${err.message}`);
-      throw err;
-    }
-  }
-
-  async loadEntry(entryId) {
-    try {
       this.entryId = entryId;
-      this.entryData = await this.#getEntryData();
+      this.entryData = await this.#fetchEntryData();
+      this.#initStaticDOM();
+      await this.#renderUI();
+      this.#initDynamicDOM();
+      this.#bindEvents();
     } catch (err) {
+      console.error(`Failed to initialize slideout: ${err.message}`);
       throw err;
     }
   }
 
-  async initDOMReferences() {
-    // Slideout Elements
-    this.slideout = document.getElementById("slideout-panel");
-    this.slideoutBackdrop = document.getElementById("slideout-backdrop");
-    this.slideoutTitle = document.getElementById("slideout-title");
-    this.slideoutCloseBtn = document.getElementById("slideout-close-btn");
+  #initStaticDOM() {
+    const $ = (sel) => document.getElementById(sel);
 
-    // Sections
-    this.slideoutContentSection = document.getElementById("slideout-content");
-    this.entryInfoContainer = document.querySelector(
-      ".slideout-entry-info-container"
+    this.slideout = $("slideout-panel");
+    this.backdrop = $("slideout-backdrop");
+    this.titleEl = $("slideout-title");
+    this.closeBtn = $("slideout-close-btn");
+    this.content = $("slideout-content");
+    this.topContainer = $("slideout-entry-info-top-container");
+    this.inputContainer = $("slideout-entry-info-input-container");
+    this.actions = $("slideout-actions");
+    this.actionBtns = $("slideout-actions-btns");
+  }
+
+  #initDynamicDOM() {
+    const qsa = (sel) => this.content.querySelectorAll(sel);
+    const qs = (sel) => this.content.querySelector(sel);
+
+    this.inputs = qsa(".slideout-entry-info-input, .slideout-list-entry-input");
+    this.applyBtn = qs(".slideout-apply-changes-btn");
+    this.deleteBtn = qs(".slideout-delete-btn");
+    this.removeBtns = qsa(".slideout-list-remove-btn");
+    this.addBtns = qsa(".slideout-list-add-btn, .slideout-selector-add-btn");
+    this.dropdownSelectors = qsa(".slideout-selector-container");
+    this.dropdownContainers = qsa(".slideout-dropdown-container");
+    this.imageInputs = qsa(".slideout-img-input");
+    this.hint = qs(".slideout-hint");
+    this.imageInputs = qsa(".slideout-img-input");
+  }
+
+  close() {
+    this.slideout.classList.add("hidden");
+    this.backdrop.classList.add("hidden");
+    this.#disableApplyBtn();
+    this.#clearHint();
+    this.#clearInputErrors();
+    this.destroy();
+  }
+
+  show() {
+    this.slideout.classList.remove("hidden");
+    this.backdrop.classList.remove("hidden");
+  }
+
+  #showHint(msg, type) {
+    this.#clearHint();
+    this.hint.classList.remove("hidden");
+    this.hint.textContent = msg;
+    this.hint.classList.add(
+      type === "success" ? "slideout-hint--success" : "slideout-hint--error"
     );
-    this.entryInfoTopContainer = document.querySelector(
-      ".slideout-entry-info-top-container"
-    );
-    this.entryInfoInputContainer = document.querySelector(
-      ".slideout-entry-info-input-container"
-    );
-    this.actionsContainer = document.getElementById("slideout-actions");
-    this.actionsBtnsContainer = document.getElementById(
-      "slideout-actions-btns"
+
+    if (this.#hintTimeout) clearTimeout(this.#hintTimeout);
+    this.#hintTimeout = setTimeout(() => this.#clearHint(), 5000);
+  }
+
+  #clearHint() {
+    this.hint.classList.add("hidden");
+    this.hint.textContent = "";
+    this.hint.classList.remove(
+      "slideout-hint--error",
+      "slideout-hint--success"
     );
   }
 
-  async initDynamicDOMReferences() {
-    // Inputs
-    this.inputELs = this.slideoutContentSection.querySelectorAll(
-      ".slideout-entry-info-input, .slideout-list-entry-input"
+  #clearInputErrors() {
+    this.inputs.forEach((input) =>
+      input.classList.remove("slideout-input--error")
     );
-
-    // Buttons
-    this.applyChangesBtn = this.slideoutContentSection.querySelector(
-      ".slideout-apply-changes-btn"
-    );
-    this.deleteBtn = this.slideoutContentSection.querySelector(
-      ".slideout-delete-btn"
-    );
-
-    this.removeBtns = this.slideoutContentSection.querySelectorAll(
-      ".slideout-list-remove-btn"
-    );
-    this.addBtns = this.slideoutContentSection.querySelectorAll(
-      ".slideout-list-add-btn",
-      ".slideout-selector-add-btn"
-    );
-
-    // Dropdown Selectors
-    this.dropdownSelectors = this.slideoutContentSection.querySelectorAll(
-      ".slideout-selector-container"
-    );
-    this.dropdownContainers = this.slideoutContentSection.querySelectorAll(
-      ".slideout-dropdown-container"
-    );
-
-    // Image Inputs
-    this.imageInputs = this.slideoutContentSection.querySelectorAll(
-      ".slideout-img-input"
-    );
-
-    this.hintEl = this.slideoutContentSection.querySelector(".slideout-hint");
   }
 
-  async handleImgInputs() {
+  #showInputError(input) {
+    if (!input) return;
+    this.#clearInputErrors();
+    input.classList.add("slideout-input--error");
+  }
+
+  #showHintError(msg) {
+    this.#showHint(msg, "error");
+  }
+
+  #showHintSuccess(msg) {
+    this.#showHint(msg, "success");
+  }
+
+  #disableApplyBtn() {
+    if (this.applyBtn) this.applyBtn.disabled = true;
+  }
+
+  #normalizeText(str) {
+    return str
+      ? str
+          .replace(/_/g, " ")
+          .toLowerCase()
+          .replace(/\b\w/g, (c) => c.toUpperCase())
+      : "";
+  }
+
+  async #renderUI() {
+    this.#renderTitle();
+    await this.#renderTopInfo();
+    await this.#renderInputs();
+    await this.#renderFileUploads();
+    await this.#renderDropdownSelectors();
+    await this.#renderLists();
+    this.#renderApplyButton();
+    this.#renderDeleteButton();
+  }
+
+  #renderTitle() {
+    const { title } = this.slideoutConfig[this.entryType];
+    this.titleEl.textContent = title;
+  }
+
+  async #renderTopInfo() {
+    this.topContainer.innerHTML = "";
+    const fields = this.slideoutConfig[this.entryType].fields;
+
+    fields.forEach((field, i) => {
+      const wrapper = document.createElement("div");
+      wrapper.className = "slideout-entry-info-top-entry";
+
+      if (field.type === "link") {
+        const link = document.createElement("a");
+        link.className = "slideout-entry-info-top-link";
+        link.href = `${field.href}${this.entryData[field.key]}`;
+        link.textContent = field.label;
+
+        const icon = document.createElement("i");
+        icon.className =
+          "fa-solid fa-arrow-up-right-from-square slideout-entry-info-open-icon";
+
+        wrapper.append(link, icon);
+      } else {
+        const label = document.createElement("span");
+        label.className = "slideout-entry-info-top-text";
+        label.innerHTML = `<strong>${field.label}</strong>`;
+
+        const value = document.createElement("span");
+        value.className = "slideout-entry-info-top-text";
+        value.textContent = this.entryData[field.key];
+
+        wrapper.append(label, value);
+      }
+
+      this.topContainer.appendChild(wrapper);
+
+      if (i < fields.length - 1) {
+        const bullet = document.createElement("div");
+        bullet.className = "slideout-entry-info-top-entry";
+        bullet.innerHTML = `
+          <span class="slideout-entry-info-top-text">
+            <strong>&bull;</strong>
+          </span>`;
+        this.topContainer.appendChild(bullet);
+      }
+    });
+  }
+
+  async #renderInputs() {
+    const inputDefs = this.slideoutConfig[this.entryType].inputs;
+    inputDefs.forEach((def) => {
+      const label = document.createElement("span");
+      label.className = "slideout-entry-info-text";
+      label.textContent = def.label;
+
+      const input = document.createElement("input");
+      input.className = "slideout-entry-info-input";
+      input.type = def.type;
+      input.placeholder = def.placeholder;
+      input.name = def.key;
+      input.value = this.entryData[def.key];
+
+      this.inputContainer.append(label, input);
+    });
+  }
+
+  async #renderFileUploads() {
+    const uploads = this.slideoutConfig[this.entryType].fileUploads || [];
+
+    uploads.forEach((def) => {
+      const label = document.createElement("span");
+      label.className = "slideout-entry-info-text";
+      label.textContent = def.label;
+
+      if (def.type === "image") {
+        const container = document.createElement("div");
+        container.className = "slideout-img-container";
+
+        const img = document.createElement("img");
+        img.className = "slideout-img";
+        img.alt = `${this.entryType} image`;
+        img.src = this.entryData[def.key]
+          ? `/uploads/images/approved/${this.entryData[def.key]}`
+          : "/assets/images/image-upload-placeholder.webp";
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "slideout-file-input-wrapper";
+        wrapper.innerHTML = `
+          <div class="slideout-custom-file-input">
+            <button type="button" class="slideout-browse-button">Browse...</button>
+            <span class="slideout-file-name">
+              ${this.entryData[def.key] || "No file selected"}
+            </span>
+            <input 
+              type="file" 
+              class="slideout-img-input" 
+              accept="image/*" 
+              name="${def.key}" 
+            />
+          </div>`;
+
+        container.append(img, wrapper);
+        this.inputContainer.append(label, container);
+      }
+    });
+  }
+
+  async #renderDropdownSelectors() {
+    const defs = this.slideoutConfig[this.entryType].dropdownSelectors || [];
+
+    defs.forEach((def) => {
+      const label = document.createElement("span");
+      label.className = "slideout-entry-info-text";
+      label.textContent = def.label;
+
+      const container = document.createElement("div");
+      container.className = "slideout-selector-container";
+
+      const textContainer = document.createElement("div");
+      textContainer.className = "slideout-selector-text-container";
+
+      const value = this.entryData[def.key] || {};
+      const primary = value[def.dataFields[0]] || "None";
+      const secondary = value[def.dataFields[1]] || "None";
+
+      const text = document.createElement("span");
+      text.className = "slideout-selector-text";
+      text.setAttribute("data-id", secondary);
+      text.textContent = primary;
+
+      const icon = document.createElement("i");
+      icon.className = "fa-solid fa-caret-down slideout-selector-icon";
+
+      textContainer.append(text, icon);
+
+      const dropdownContainer = document.createElement("div");
+      dropdownContainer.className = "slideout-dropdown-container hidden";
+
+      const input = document.createElement("input");
+      input.className = "slideout-selector-filter-input";
+      input.type = "text";
+      input.placeholder = def.placeholder;
+      input.name = def.key;
+
+      const ul = document.createElement("ul");
+      ul.className = "slideout-dropdown hidden";
+      ul.id = `slideout-dropdown-${def.key}`;
+
+      new AutofillDropdownManager({
+        table: def.key,
+        inputElement: input,
+        dropdownElement: ul,
+        resultsLimit: 7,
+        shouldAutofillInput: false,
+        onSelectCallback: ({ label, id }) => {
+          text.textContent = label;
+          text.setAttribute("data-id", id);
+          this.#toggleDropdownContainer(textContainer, dropdownContainer);
+        },
+        fetchResults: def.apiFunction,
+        hideDropdownOnClickOff: false,
+      });
+
+      textContainer.addEventListener("click", () => {
+        input.value = text.textContent;
+        input.dispatchEvent(new Event("input"));
+        this.#toggleDropdownContainer(textContainer, dropdownContainer);
+        input.focus();
+      });
+
+      const addWrap = document.createElement("div");
+      addWrap.className = "slideout-dropdown-add-container";
+
+      const addBtn = document.createElement("button");
+      addBtn.className = "hidden-btn slideout-dropdown-add-btn";
+      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
+      addBtn.addEventListener("click", () => {
+        window.location.href = `/admin/manage-db/${def.key}`;
+      });
+
+      addWrap.appendChild(addBtn);
+      const divider = document.createElement("div");
+      divider.className = "slideout-dropdown-divider";
+
+      dropdownContainer.append(input, ul, divider, addWrap);
+      container.append(textContainer, dropdownContainer);
+
+      this.inputContainer.append(label, container);
+    });
+  }
+
+  async #renderLists() {
+    const lists = this.slideoutConfig[this.entryType].lists || [];
+
+    const createListEntry = (primary, secondary, id, secondaryPlaceholder) => {
+      const entry = document.createElement("div");
+      entry.className = "slideout-list-entry--2";
+      entry.id = `slideout-list-entry-${id}`;
+
+      const primaryWrapper = document.createElement("div");
+      primaryWrapper.className = "slideout-list-entry-text-wrapper";
+      const primaryText = document.createElement("span");
+      primaryText.className = "slideout-list-entry-text";
+      primaryText.textContent = primary;
+      primaryWrapper.appendChild(primaryText);
+
+      const secondaryWrapper = document.createElement("div");
+      secondaryWrapper.className = "slideout-list-entry-text-wrapper";
+      const secondaryInput = document.createElement("input");
+      secondaryInput.className = "slideout-list-entry-input";
+      secondaryInput.type = "text";
+      secondaryInput.value = secondary;
+      secondaryInput.placeholder = secondaryPlaceholder;
+      secondaryInput.addEventListener("input", this.handleInput);
+      secondaryWrapper.appendChild(secondaryInput);
+
+      const removeBtn = document.createElement("button");
+      removeBtn.className = "hidden-btn slideout-list-remove-btn";
+      removeBtn.innerHTML = `<i class="fa-solid fa-xmark slideout-remove-icon"></i>`;
+      removeBtn.addEventListener("click", () => {
+        entry.remove();
+        this.handleInput();
+      });
+
+      entry.append(primaryWrapper, secondaryWrapper, removeBtn);
+      return entry;
+    };
+
+    lists.forEach((list) => {
+      const label = document.createElement("span");
+      label.className = "slideout-entry-info-text";
+      label.textContent = list.label;
+
+      const listWrapper = document.createElement("div");
+      listWrapper.className = "slideout-list-wrapper";
+      const listContainer = document.createElement("div");
+      listContainer.className = "slideout-list-container";
+
+      const items = this.entryData[list.key] || [];
+      const {
+        id: idField,
+        primary: primaryField,
+        secondary: secondaryField,
+      } = list.dataFields;
+
+      items.forEach((item) => {
+        const id = item[idField];
+        const primary = item[primaryField];
+        const secondary = item[secondaryField];
+        const entry = createListEntry(
+          primary,
+          secondary,
+          id,
+          this.#normalizeText(secondaryField)
+        );
+        listContainer.appendChild(entry);
+      });
+
+      const addBtnWrap = document.createElement("div");
+      addBtnWrap.className = "slideout-list-add-container";
+
+      const addBtn = document.createElement("button");
+      addBtn.className = "hidden-btn slideout-list-add-btn";
+      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
+      addBtn.addEventListener("click", () => {
+        input.value = "";
+        input.dispatchEvent(new Event("input"));
+        this.#toggleDropdownContainer(listContainer, dropdown);
+        input.focus();
+      });
+
+      addBtnWrap.appendChild(addBtn);
+
+      const dropdown = document.createElement("div");
+      dropdown.className = "slideout-dropdown-container hidden";
+
+      const input = document.createElement("input");
+      input.className = "slideout-list-filter-input";
+      input.type = "text";
+      input.placeholder = list.placeholder;
+      input.name = list.key;
+
+      const ul = document.createElement("ul");
+      ul.className = "slideout-dropdown hidden";
+      ul.id = `slideout-dropdown-${list.key}`;
+
+      new AutofillDropdownManager({
+        table: list.key,
+        inputElement: input,
+        dropdownElement: ul,
+        resultsLimit: 7,
+        shouldAutofillInput: false,
+        onSelectCallback: ({ label, id }) => {
+          const newEntry = createListEntry(
+            label,
+            "",
+            id,
+            this.#normalizeText(secondaryField)
+          );
+          listContainer.insertBefore(newEntry, addBtnWrap);
+          this.#toggleDropdownContainer(listContainer, dropdown);
+        },
+        fetchResults: list.apiFunction,
+        hideDropdownOnClickOff: false,
+      });
+
+      dropdown.append(input, ul);
+      listContainer.appendChild(addBtnWrap);
+      listWrapper.appendChild(listContainer);
+      listWrapper.appendChild(dropdown);
+      this.inputContainer.append(label, listWrapper);
+    });
+  }
+
+  #renderApplyButton() {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "slideout-apply-changes-btn";
+    btn.disabled = true;
+    btn.textContent = "Apply Changes";
+
+    const hint = document.createElement("div");
+    hint.className = "slideout-hint hidden";
+
+    this.inputContainer.append(btn, hint);
+  }
+
+  #renderDeleteButton() {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "slideout-delete-btn";
+    btn.textContent = `Delete ${this.slideoutConfig[this.entryType].label}`;
+    this.actionBtns.appendChild(btn);
+  }
+
+  getInputValues() {
+    const data = {};
+
+    this.inputs.forEach((input) => {
+      if (input.classList.contains("slideout-list-entry-input")) return;
+      data[input.name] = input.value.trim();
+    });
+
+    this.dropdownSelectors.forEach((selector) => {
+      const key = selector.querySelector(
+        ".slideout-selector-filter-input"
+      ).name;
+      const id = selector
+        .querySelector(".slideout-selector-text")
+        .getAttribute("data-id");
+      data[key] = id ? parseInt(id) : null;
+    });
+
+    const lists = this.slideoutConfig[this.entryType].lists || [];
+    lists.forEach((list) => {
+      const container = this.content
+        .querySelector(`#slideout-dropdown-${list.key}`)
+        ?.closest(".slideout-list-wrapper");
+      if (!container) return;
+
+      const entries = container.querySelectorAll(".slideout-list-entry--2");
+      const result = [];
+
+      entries.forEach((entry) => {
+        const id = parseInt(entry.id.replace("slideout-list-entry-", ""));
+        const value = entry
+          .querySelector(".slideout-list-entry-input")
+          .value.trim();
+        result.push({
+          [list.dataFields.id]: id,
+          [list.dataFields.secondary]: value,
+        });
+      });
+
+      data[list.key] = result;
+    });
+
+    this.imageInputs.forEach((input) => {
+      if (input.files.length > 0) {
+        data[input.name] = input.files[0];
+      }
+    });
+
+    return data;
+  }
+
+  #handleImgInputs() {
+    const dispatchInputEvent = () => {
+      this.inputs.forEach((input) => {
+        input.dispatchEvent(new Event("input"));
+      });
+    };
+
     this.imageInputs.forEach((imageInput) => {
       imageInput.addEventListener("change", function () {
         const file = this.files[0];
@@ -724,7 +1143,7 @@ class DBSlideoutManager {
           alert("Invalid image file.");
         };
 
-        img.onload = function () {
+        img.onload = () => {
           if (img.width < 1000 || img.height < 1000) {
             alert("Image must be at least 1000x1000 pixels.");
           } else {
@@ -739,6 +1158,8 @@ class DBSlideoutManager {
               .querySelector(".slideout-img");
 
             imgDisplay.src = img.src;
+
+            dispatchInputEvent();
           }
 
           URL.revokeObjectURL(img.src);
@@ -747,594 +1168,96 @@ class DBSlideoutManager {
     });
   }
 
-  showInputError(input) {
-    if (!input) return;
+  #bindEvents() {
+    this.closeBtn.addEventListener("click", this.handleClose);
+    this.backdrop.addEventListener("click", this.handleClose);
+    this.applyBtn?.addEventListener("click", this.handleApplyChanges);
+    this.deleteBtn?.addEventListener("click", this.handleDelete);
 
-    this.clearInputErrors();
-    input.classList.add("slideout-input--error");
-  }
-
-  showHintError(msg) {
-    this.clearHint();
-    this.hintEl.classList.remove("hidden");
-    this.hintEl.textContent = msg;
-    this.hintEl.classList.remove("slideout-hint--success");
-    this.hintEl.classList.add("slideout-hint--error");
-
-    if (this.#hintTimeout) {
-      clearTimeout(this.#hintTimeout);
-    }
-    this.#hintTimeout = setTimeout(() => {
-      this.clearHint();
-      this.#hintTimeout = null;
-    }, 5000);
-  }
-
-  showHintSuccess(msg) {
-    this.clearHint();
-    this.hintEl.classList.remove("hidden");
-    this.hintEl.textContent = msg;
-    this.hintEl.classList.remove("slideout-hint--error");
-    this.hintEl.classList.add("slideout-hint--success");
-
-    if (this.#hintTimeout) {
-      clearTimeout(this.#hintTimeout);
-    }
-    this.#hintTimeout = setTimeout(() => {
-      this.clearHint();
-      this.#hintTimeout = null;
-    }, 5000);
-  }
-
-  clearHint() {
-    this.hintEl.classList.add("hidden");
-    this.hintEl.textContent = "";
-    this.hintEl.classList.remove(
-      "slideout-hint--error",
-      "slideout-hint--success"
+    this.inputs.forEach((input) =>
+      input.addEventListener("input", this.handleInput)
     );
-  }
-
-  clearInputErrors() {
-    this.inputELs.forEach((input) => {
-      input.classList.remove("slideout-input--error");
-    });
-  }
-
-  async resetSlideoutSections() {
-    this.entryInfoTopContainer.innerHTML = "";
-    this.entryInfoInputContainer.innerHTML = "";
-    this.actionsBtnsContainer.innerHTML = "";
-  }
-
-  toggleDropdownContainer(openBtn, dropdownContainer) {
-    openBtn.classList.toggle("show");
-    dropdownContainer.classList.toggle("hidden");
-  }
-
-  closeAllDropdownContainers() {
-    const openBtns = this.dropdownSelectors; // [...this.dropdownSelectors, ...this.listAddBtns];
-    const dropdownContainers = this.dropdownContainers;
-
-    openBtns.forEach((btn) => btn.classList.remove("show"));
-    dropdownContainers.forEach((container) =>
-      container.classList.add("hidden")
-    );
-  }
-
-  normalizeText(text) {
-    if (!text) return "";
-    return text
-      .replace(/_/g, " ")
-      .toLowerCase()
-      .replace(/\b\w/g, (char) => char.toUpperCase());
-  }
-
-  async renderSlideoutTitle() {
-    this.slideoutTitle.textContent = this.slideoutConfig[this.entryType].title;
-  }
-
-  async renderSlideoutContent() {
-    // Reset sections
-    await this.resetSlideoutSections();
-
-    // Top Section
-    const fields = this.slideoutConfig[this.entryType].fields;
-
-    fields.forEach((field, i) => {
-      const fieldIsLink = field.type === "link";
-
-      const fieldEntry = document.createElement("div");
-      fieldEntry.className = "slideout-entry-info-top-entry";
-
-      if (fieldIsLink) {
-        const fieldLink = document.createElement("a");
-        fieldLink.className = "slideout-entry-info-top-link";
-        fieldLink.href = `${field.href}${this.entryData[field.key]}`;
-        fieldLink.textContent = field.label;
-
-        const fieldLinkIcon = document.createElement("i");
-        fieldLinkIcon.className =
-          "fa-solid fa-arrow-up-right-from-square slideout-entry-info-open-icon";
-
-        fieldEntry.appendChild(fieldLink);
-        fieldEntry.appendChild(fieldLinkIcon);
-      } else {
-        const fieldLabel = document.createElement("span");
-        fieldLabel.className = "slideout-entry-info-top-text";
-        fieldLabel.innerHTML = `<strong>${field.label}</strong>`;
-
-        const fieldValue = document.createElement("span");
-        fieldValue.className = "slideout-entry-info-top-text";
-        fieldValue.textContent = this.entryData[field.key];
-
-        fieldEntry.appendChild(fieldLabel);
-        fieldEntry.appendChild(fieldValue);
-      }
-
-      this.entryInfoTopContainer.appendChild(fieldEntry);
-
-      if (i < fields.length - 1) {
-        const bulletEntry = document.createElement("div");
-        bulletEntry.className = "slideout-entry-info-top-entry";
-
-        bulletEntry.innerHTML = `
-        <span class="slideout-entry-info-top-text">
-          <strong>&bull;</strong>
-        </span>`;
-
-        this.entryInfoTopContainer.appendChild(bulletEntry);
-      }
-    });
-
-    // Input Section
-    const inputs = this.slideoutConfig[this.entryType].inputs;
-
-    inputs.forEach((input) => {
-      const inputLabel = document.createElement("span");
-      inputLabel.className = "slideout-entry-info-text";
-      inputLabel.textContent = input.label;
-
-      const inputEl = document.createElement("input");
-      inputEl.className = "slideout-entry-info-input";
-      inputEl.type = input.type;
-      inputEl.placeholder = input.placeholder;
-      inputEl.name = input.key;
-      inputEl.value = this.entryData[input.key];
-
-      this.entryInfoInputContainer.appendChild(inputLabel);
-      this.entryInfoInputContainer.appendChild(inputEl);
-    });
-
-    // File Upload Section
-    const filesUploads = this.slideoutConfig[this.entryType].fileUploads;
-
-    filesUploads.forEach((fileUpload) => {
-      const inputLabel = document.createElement("span");
-      inputLabel.className = "slideout-entry-info-text";
-      inputLabel.textContent = fileUpload.label;
-
-      if (fileUpload.type === "image") {
-        const imgContainer = document.createElement("div");
-        imgContainer.className = "slideout-img-container";
-
-        const img = document.createElement("img");
-        img.className = "slideout-img";
-        img.alt = `${this.entryType} image`;
-        img.src = this.entryData[fileUpload.key]
-          ? `/uploads/images/approved/${this.entryData[fileUpload.key]}`
-          : "/assets/images/image-upload-placeholder.webp";
-
-        const inputWrapper = document.createElement("div");
-        inputWrapper.className = "slideout-file-input-wrapper";
-        inputWrapper.innerHTML = `
-          <div class="slideout-custom-file-input">
-            <button type="button" class="slideout-browse-button">
-              Browse...
-            </button>
-            <span class="slideout-file-name">
-              ${this.entryData[fileUpload.key] || "No file selected"}
-            </span>
-            <input
-              type="file"
-              class="slideout-img-input"
-              accept="image/*"
-              name="${fileUpload.key}"
-            />
-          </div>`;
-
-        imgContainer.appendChild(img);
-        imgContainer.appendChild(inputWrapper);
-        this.entryInfoInputContainer.appendChild(inputLabel);
-        this.entryInfoInputContainer.appendChild(imgContainer);
-      } else {
-        // ...
-      }
-    });
-
-    // Dropdowns Selectors Section
-    const dropdownSelectors =
-      this.slideoutConfig[this.entryType].dropdownSelectors;
-
-    dropdownSelectors.forEach((selector) => {
-      const fieldPrimary = this.entryData[selector.key][selector.dataFields[0]]
-        ? this.entryData[selector.key][selector.dataFields[0]]
-        : "None";
-      const fieldSecondary = this.entryData[selector.key][
-        selector.dataFields[1]
-      ]
-        ? this.entryData[selector.key][selector.dataFields[1]]
-        : "None";
-
-      const selectorLabel = document.createElement("span");
-      selectorLabel.className = "slideout-entry-info-text";
-      selectorLabel.textContent = selector.label;
-
-      const selectorContainer = document.createElement("div");
-      selectorContainer.className = "slideout-selector-container";
-
-      const selectorTextContainer = document.createElement("div");
-      selectorTextContainer.className = "slideout-selector-text-container";
-
-      const selectorText = document.createElement("span");
-      selectorText.className = "slideout-selector-text";
-      selectorText.setAttribute("data-id", fieldSecondary);
-      selectorText.textContent = fieldPrimary;
-
-      const selectorIcon = document.createElement("i");
-      selectorIcon.className = "fa-solid fa-caret-down slideout-selector-icon";
-
-      selectorTextContainer.appendChild(selectorText);
-      selectorTextContainer.appendChild(selectorIcon);
-
-      const dropdownContainer = document.createElement("div");
-      dropdownContainer.className = "slideout-dropdown-container hidden";
-
-      const selectorFilterInput = document.createElement("input");
-      selectorFilterInput.className = "slideout-filter-input";
-      selectorFilterInput.type = "text";
-      selectorFilterInput.placeholder = selector.placeholder;
-      selectorFilterInput.name = selector.key; // maybe remove
-
-      const dropdownList = document.createElement("ul");
-      dropdownList.className = "slideout-dropdown hidden";
-      dropdownList.id = `slideout-dropdown-${selector.key}`;
-
-      const setValueOfAndToggleSelector = (value, id) => {
-        selectorText.textContent = value;
-        selectorText.setAttribute("data-id", id);
-        this.toggleDropdownContainer(selectorTextContainer, dropdownContainer);
-      };
-
-      new AutofillDropdownManager({
-        table: selector.key,
-        inputElement: selectorFilterInput,
-        dropdownElement: dropdownList,
-        resultsLimit: 7,
-        shouldAutofillInput: false,
-        onSelectCallback: (selectedValue) => {
-          setValueOfAndToggleSelector(selectedValue.label, selectedValue.id);
-        },
-        fetchResults: selector.apiFunction,
-        hideDropdownOnClickOff: false,
-      });
-
-      selectorTextContainer.addEventListener("click", () => {
-        selectorFilterInput.value = "";
-        selectorFilterInput.value = selectorText.textContent;
-        selectorFilterInput.dispatchEvent(new Event("input"));
-        this.toggleDropdownContainer(selectorTextContainer, dropdownContainer);
-        selectorFilterInput.focus();
-      });
-
-      const addContainer = document.createElement("div");
-      addContainer.className = "slideout-dropdown-add-container";
-
-      const addBtn = document.createElement("button");
-      addBtn.className = "hidden-btn slideout-dropdown-add-btn";
-      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
-
-      addBtn.addEventListener("click", () => {
-        window.location.href = `/admin/manage-db/${selector.key}`;
-      });
-
-      addContainer.appendChild(addBtn);
-
-      const divider = document.createElement("div");
-      divider.className = "slideout-dropdown-divider";
-
-      dropdownContainer.appendChild(selectorFilterInput);
-      dropdownContainer.appendChild(dropdownList);
-      dropdownContainer.appendChild(divider);
-      dropdownContainer.appendChild(addContainer);
-
-      selectorContainer.appendChild(selectorTextContainer);
-      selectorContainer.appendChild(dropdownContainer);
-
-      this.entryInfoInputContainer.appendChild(selectorLabel);
-      this.entryInfoInputContainer.appendChild(selectorContainer);
-    });
-
-    // Lists Section
-    const createListEntry = (fields, entryId) => {
-      const entry = document.createElement("div");
-      entry.className = "slideout-list-entry--2";
-      entry.id = `slideout-list-entry-${entryId}`;
-
-      fields.forEach((field) => {
-        const textContent = field.text;
-        const placeholder = field.placeholder;
-        const isEditable = field.editable || false;
-
-        const textWrapper = document.createElement("div");
-        textWrapper.className = "slideout-list-entry-text-wrapper";
-
-        if (isEditable) {
-          const input = document.createElement("input");
-          input.className = "slideout-list-entry-input";
-          input.type = "text";
-          input.value = textContent;
-          input.placeholder = placeholder;
-          textWrapper.appendChild(input);
-
-          input.addEventListener("input", (e) => {
-            this.handleInput();
-          });
-        } else {
-          const text = document.createElement("span");
-          text.className = "slideout-list-entry-text";
-          text.textContent = textContent;
-          textWrapper.appendChild(text);
-        }
-
-        entry.appendChild(textWrapper);
-      });
-
-      const removeBtn = document.createElement("button");
-      removeBtn.className = "hidden-btn slideout-list-remove-btn";
-      removeBtn.innerHTML = `<i class="fa-solid fa-xmark slideout-remove-icon"></i>`;
-      removeBtn.addEventListener("click", () => {
-        entry.remove();
-        this.handleInput();
-      });
-
-      entry.appendChild(removeBtn);
-      return entry;
-    };
-
-    const listElements = this.slideoutConfig[this.entryType].lists;
-
-    listElements.forEach((list) => {
-      // Data for this list (array of objects for each artist/synth/preset...)
-      const listData = this.entryData[list.key];
-
-      // Label for the list
-      const label = document.createElement("span");
-      label.className = "slideout-entry-info-text";
-      label.textContent = list.label;
-
-      const listWrapper = document.createElement("div");
-      listWrapper.className = "slideout-list-wrapper";
-      const listContainer = document.createElement("div");
-      listContainer.className = "slideout-list-container";
-
-      // Populate with each field
-      const {
-        id: idField,
-        primary: primaryField,
-        secondary: secondaryField,
-      } = list.dataFields;
-
-      listData.forEach(async (item) => {
-        const id = item[idField];
-        const primary = item[primaryField];
-        const secondary = item[secondaryField];
-
-        listContainer.appendChild(
-          createListEntry(
-            [
-              { text: primary, placeholder: "", editable: false },
-              {
-                text: secondary,
-                placeholder: this.normalizeText(secondaryField),
-                editable: true,
-              },
-            ],
-            id
-          )
-        );
-      });
-
-      const addBtnContainer = document.createElement("div");
-      addBtnContainer.className = "slideout-list-add-container";
-
-      const addEntryBtn = document.createElement("button");
-      addEntryBtn.className = "hidden-btn slideout-list-add-btn";
-      addEntryBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
-
-      const dropdownContainer = document.createElement("div");
-      dropdownContainer.className = "slideout-dropdown-container hidden";
-
-      const filterInput = document.createElement("input");
-      filterInput.className = "slideout-filter-input";
-      filterInput.type = "text";
-      filterInput.placeholder = list.placeholder;
-      filterInput.name = list.key;
-
-      const dropdownList = document.createElement("ul");
-      dropdownList.className = "slideout-dropdown hidden";
-      dropdownList.id = `slideout-dropdown-${list.key}`;
-
-      new AutofillDropdownManager({
-        table: list.key,
-        inputElement: filterInput,
-        dropdownElement: dropdownList,
-        resultsLimit: 7,
-        shouldAutofillInput: false,
-        onSelectCallback: (selectedValue) => {
-          const newEntry = createListEntry(
-            [
-              { text: selectedValue.label, placeholder: "", editable: false },
-              {
-                text: "",
-                placeholder: this.normalizeText(secondaryField),
-                editable: true,
-              },
-            ],
-            selectedValue.id
-          );
-          listContainer.insertBefore(newEntry, addBtnContainer);
-          this.toggleDropdownContainer(listContainer, dropdownContainer);
-        },
-        fetchResults: list.apiFunction,
-        hideDropdownOnClickOff: false,
-      });
-
-      addBtnContainer.addEventListener("click", () => {
-        filterInput.value = "";
-        filterInput.dispatchEvent(new Event("input"));
-        this.toggleDropdownContainer(listContainer, dropdownContainer);
-        filterInput.focus();
-      });
-
-      addBtnContainer.appendChild(addEntryBtn);
-
-      const addContainer = document.createElement("div");
-      addContainer.className = "slideout-dropdown-add-container";
-
-      const addBtn = document.createElement("button");
-      addBtn.className = "hidden-btn slideout-dropdown-add-btn";
-      addBtn.innerHTML = `<i class="fa-solid fa-plus slideout-add-icon"></i>`;
-      addBtn.addEventListener("click", () => {
-        window.location.href = `/admin/manage-db/${list.key}`;
-      });
-      addContainer.appendChild(addBtn);
-
-      const divider = document.createElement("div");
-      divider.className = "slideout-dropdown-divider";
-
-      dropdownContainer.appendChild(filterInput);
-      dropdownContainer.appendChild(dropdownList);
-      dropdownContainer.appendChild(divider);
-      dropdownContainer.appendChild(addContainer);
-
-      listContainer.appendChild(addBtnContainer);
-      listWrapper.appendChild(listContainer);
-      listWrapper.appendChild(dropdownContainer);
-
-      this.entryInfoInputContainer.appendChild(label);
-      this.entryInfoInputContainer.appendChild(listWrapper);
-    });
-
-    // Apply Changes Btn
-    const applyChangesBtnEl = document.createElement("button");
-    applyChangesBtnEl.type = "button";
-    applyChangesBtnEl.className = "slideout-apply-changes-btn";
-    applyChangesBtnEl.disabled = true;
-    applyChangesBtnEl.textContent = "Apply Changes";
-
-    const hintEl = document.createElement("div");
-    hintEl.className = "slideout-hint hidden";
-
-    this.entryInfoInputContainer.appendChild(applyChangesBtnEl);
-    this.entryInfoInputContainer.appendChild(hintEl);
-
-    // Delete Btn
-    const deleteBtnEl = document.createElement("button");
-    deleteBtnEl.type = "button";
-    deleteBtnEl.className = "slideout-delete-btn";
-    deleteBtnEl.textContent = `Delete ${
-      this.slideoutConfig[this.entryType].label
-    }`;
-
-    this.actionsBtnsContainer.appendChild(deleteBtnEl);
-  }
-
-  // Event Listeners
-  async handleClose() {
-    this.close();
-  }
-
-  async handleInput() {
-    this.inputELs = this.slideoutContentSection.querySelectorAll(
-      ".slideout-entry-info-input, .slideout-list-entry-input"
-    );
-    let inputsFilled = true;
-    for (const input of this.inputELs) {
-      if (input.value.trim().length === 0) {
-        inputsFilled = false;
-        break;
-      }
-    }
-
-    this.applyChangesBtn.disabled = !inputsFilled;
-  }
-
-  async handleApplyChanges() {
-    try {
-      this.showHintSuccess("Changes applied successfully.");
-    } catch (err) {
-      this.showHintError(`Failed to apply changes: ${err.message}`);
-      console.error(err);
-    }
-  }
-
-  async handleDelete() {
-    console.log(this.entryId);
-  }
-
-  async bindEvents() {
-    this.slideoutCloseBtn.addEventListener("click", this.handleClose);
-    this.slideoutBackdrop.addEventListener("click", this.handleClose);
-    this.applyChangesBtn.addEventListener("click", this.handleApplyChanges);
-    this.deleteBtn.addEventListener("click", this.handleDelete);
-
-    // Close all dropdown containers when slideout is clicked or esc is pressed
-    this.slideout.addEventListener("click", (event) => {
-      const excludedElements = [
-        ...this.dropdownSelectors,
-        ...this.dropdownContainers,
-        ...this.addBtns,
-      ];
-
-      const clickedInsideAllowed = excludedElements.some((el) =>
-        el.contains(event.target)
-      );
-
-      if (!clickedInsideAllowed) {
-        this.closeAllDropdownContainers();
-      }
-    });
 
     document.addEventListener("keydown", (e) => {
       if (e.key === "Escape") {
-        this.closeAllDropdownContainers();
+        this.#closeAllDropdownContainers();
         this.close();
       }
     });
 
-    this.inputELs.forEach((inputEl) => {
-      inputEl.addEventListener("input", (e) => {
-        this.handleInput();
-      });
+    this.slideout.addEventListener("click", (event) => {
+      const ignore = [
+        ...this.dropdownSelectors,
+        ...this.dropdownContainers,
+        ...this.addBtns,
+      ];
+      if (!ignore.some((el) => el.contains(event.target))) {
+        this.#closeAllDropdownContainers();
+      }
     });
+
+    this.#handleImgInputs();
   }
 
-  disableApplyChangesBtn() {
-    this.applyChangesBtn.disabled = true;
+  #unbindEvents() {
+    this.closeBtn.removeEventListener("click", this.handleClose);
+    this.applyBtn.removeEventListener("click", this.handleApplyChanges);
+    this.deleteBtn.removeEventListener("click", this.handleDelete);
+    this.inputs.forEach((input) =>
+      input.removeEventListener("input", this.handleInput)
+    );
+    this.eventListenersBound = false;
   }
 
-  show() {
-    this.slideout.classList.remove("hidden");
-    this.slideoutBackdrop.classList.remove("hidden");
+  destroy() {
+    this.#unbindEvents();
+    this.#clearHint();
+    this.#clearInputErrors();
+    this.entryId = null;
+    this.entryData = null;
+    this.topContainer.innerHTML = "";
+    this.inputContainer.innerHTML = "";
+    this.actionBtns.innerHTML = "";
   }
 
-  close() {
-    this.slideout.classList.add("hidden");
-    this.slideoutBackdrop.classList.add("hidden");
-    this.disableApplyChangesBtn();
-    this.clearHint();
-    this.clearInputErrors();
+  #closeAllDropdownContainers() {
+    this.dropdownSelectors.forEach((btn) => btn.classList.remove("show"));
+    this.dropdownContainers.forEach((c) => c.classList.add("hidden"));
+  }
+
+  #toggleDropdownContainer(btn, container) {
+    btn.classList.toggle("show");
+    container.classList.toggle("hidden");
+  }
+
+  #handleInput() {
+    this.inputs = this.content.querySelectorAll(
+      ".slideout-entry-info-input, .slideout-list-entry-input"
+    );
+    const allFilled = [...this.inputs].every((i) => i.value.trim().length > 0);
+    this.applyBtn.disabled = !allFilled;
+  }
+
+  async #handleApplyChanges() {
+    const values = this.getInputValues();
+    console.log(values);
+    // const { updateFunction } = this.slideoutConfig[this.entryType];
+    try {
+      // await updateFunction(this.entryId, values);
+      this.#showHint("Changes saved successfully.", "success");
+      this.#disableApplyBtn();
+    } catch (err) {
+      console.error(err);
+      this.#showHint("Failed to save changes.", "error");
+    }
+  }
+
+  async #handleClose() {
+    this.close();
+  }
+
+  async #handleDelete() {
+    console.log("Delete", this.entryId);
   }
 }
 

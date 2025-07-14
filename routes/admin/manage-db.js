@@ -1,5 +1,6 @@
 const express = require("express");
 const router = express.Router();
+const multer = require("../../middleware/multer.js");
 const isAdmin = require("../../middleware/is-admin.js");
 const { dbAll, dbGet } = require("../../util/UTIL.js");
 

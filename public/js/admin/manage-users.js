@@ -533,7 +533,6 @@ class UserManagerSlideout {
       this.userData.username = response.username;
       this.usernameListEntryField.textContent = response.username;
 
-      this.showInputSuccess("username");
       this.showHintSuccess("Username changed successfully.", "username");
       this.disableApplyChangesBtn();
     } catch (err) {
@@ -647,15 +646,6 @@ class UserManagerSlideout {
 
     this.clearInputErrors();
     inputEl.classList.add("user-info-input--error");
-  }
-
-  showInputSuccess(fieldType) {
-    const inputEl = this[`${fieldType}Input`];
-
-    if (!inputEl) return;
-
-    this.clearInputErrors();
-    inputEl.classList.remove("user-info-input--error");
   }
 
   showHintError(msg, fieldType) {
