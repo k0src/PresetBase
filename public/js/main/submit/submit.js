@@ -896,6 +896,8 @@ const validateForm = function () {
 
     if (!autofilled) {
       const albumImgUploaded = albumImg.files.length > 0;
+      const songImgUploaded =
+        form.querySelector('input[name="songImg"]').files.length > 0;
       const synthImgsUploaded = Array.from(synthImgs).every(
         (img) => img.files.length > 0
       );

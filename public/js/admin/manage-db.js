@@ -20,9 +20,6 @@ class AutofillDropdownManager {
   #classes;
   #selectedIndex;
   #debounceTimeout;
-  #boundHandleInput;
-  #boundHandleOutsideClicks;
-  #boundHandleKeydown;
   #loopNavigation;
 
   constructor(options) {
@@ -237,25 +234,25 @@ class AutofillDropdownManager {
   }
 
   #bindEvents() {
-    this.#boundHandleInput = this.#handleInput.bind(this);
-    this.#boundHandleOutsideClicks = this.#handleOutsideClicks.bind(this);
-    this.#boundHandleKeydown = (e) => this.#handleKeyboardNavigation(e);
+    this.handleInput = this.#handleInput.bind(this);
+    this.handleOutsideClicks = this.#handleOutsideClicks.bind(this);
+    this.handleKeydown = (e) => this.#handleKeyboardNavigation(e);
 
     if (this.#hideDropdownOnClickOff) {
-      document.addEventListener("click", this.#boundHandleOutsideClicks);
+      document.addEventListener("click", this.handleOutsideClicks);
     }
 
-    this.#input.addEventListener("keydown", this.#boundHandleKeydown);
-    this.#input.addEventListener("input", this.#boundHandleInput);
+    this.#input.addEventListener("keydown", this.handleKeydown);
+    this.#input.addEventListener("input", this.handleInput);
   }
 
   #unbindEvents() {
     if (this.#hideDropdownOnClickOff) {
-      document.removeEventListener("click", this.#boundHandleOutsideClicks);
+      document.removeEventListener("click", this.handleOutsideClicks);
     }
 
-    this.#input.removeEventListener("keydown", this.#boundHandleKeydown);
-    this.#input.removeEventListener("input", this.#boundHandleInput);
+    this.#input.removeEventListener("keydown", this.handleKeydown);
+    this.#input.removeEventListener("input", this.handleInput);
   }
 }
 
@@ -654,7 +651,6 @@ class DBSlideoutManager {
     this.dropdownContainers = qsa(".slideout-dropdown-container");
     this.imageInputs = qsa(".slideout-img-input");
     this.hint = qs(".slideout-hint");
-    this.imageInputs = qsa(".slideout-img-input");
   }
 
   close() {
@@ -902,7 +898,7 @@ class DBSlideoutManager {
       });
 
       textContainer.addEventListener("click", () => {
-        input.value = text.textContent;
+        input.value = "";
         input.dispatchEvent(new Event("input"));
         this.#toggleDropdownContainer(textContainer, dropdownContainer);
         input.focus();
@@ -927,6 +923,19 @@ class DBSlideoutManager {
 
       this.inputContainer.append(label, container);
     });
+  }
+
+  #validateListsHaveItems() {
+    const listContainers = this.content.querySelectorAll(
+      ".slideout-list-container"
+    );
+
+    for (const container of listContainers) {
+      const entries = container.querySelectorAll(".slideout-list-entry--2");
+      if (entries.length === 0) return false;
+    }
+
+    return true;
   }
 
   async #renderLists() {
@@ -1157,12 +1166,14 @@ class DBSlideoutManager {
               .closest(".slideout-img-container")
               .querySelector(".slideout-img");
 
+            imgDisplay.onload = function () {
+              URL.revokeObjectURL(img.src);
+            };
+
             imgDisplay.src = img.src;
 
             dispatchInputEvent();
           }
-
-          URL.revokeObjectURL(img.src);
         };
       });
     });
@@ -1234,8 +1245,13 @@ class DBSlideoutManager {
     this.inputs = this.content.querySelectorAll(
       ".slideout-entry-info-input, .slideout-list-entry-input"
     );
-    const allFilled = [...this.inputs].every((i) => i.value.trim().length > 0);
-    this.applyBtn.disabled = !allFilled;
+
+    const inputsFilled = [...this.inputs].every(
+      (i) => i.value.trim().length > 0
+    );
+    const listsValid = this.#validateListsHaveItems();
+
+    this.applyBtn.disabled = !(inputsFilled && listsValid);
   }
 
   async #handleApplyChanges() {
