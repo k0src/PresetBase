@@ -2,7 +2,14 @@ const express = require("express");
 const router = express.Router();
 const multer = require("../../middleware/multer.js");
 const isAdmin = require("../../middleware/is-admin.js");
-const { dbAll, dbGet } = require("../../util/UTIL.js");
+const {
+  dbAll,
+  dbGet,
+  dbRun,
+  attachFilesToBody,
+  approveFile,
+  deleteEntryImage,
+} = require("../../util/UTIL.js");
 
 const tableKeys = ["songs", "artists", "albums", "synths", "presets"];
 
@@ -20,7 +27,7 @@ const renderPage = async (req, res) => {
   const isAuth = req.isAuthenticated();
   const userIsAdmin = req.user && req.user.is_admin;
 
-  // Load songs table initally - most important
+  // Load songs table initally
   const query = `
       SELECT COUNT(*) AS total_tables
       FROM sqlite_master
@@ -46,6 +53,7 @@ const renderPage = async (req, res) => {
   }
 };
 
+// Data endpoint for tables
 router.get("/table-data/:table", isAdmin, async (req, res) => {
   const tables = ["songs", "artists", "albums", "synths", "presets"];
 
@@ -76,6 +84,7 @@ router.get("/table-data/:table", isAdmin, async (req, res) => {
   }
 });
 
+// Data endpoint for slideout
 router.get("/song-data/:songId", isAdmin, async (req, res) => {
   const songId = req.params.songId;
 
@@ -201,6 +210,79 @@ router.get("/field-data/:table", isAdmin, async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: `An error occurred while fetching ${table} data.`,
+    });
+  }
+});
+
+router.put("/song-data", isAdmin, multer, async (req, res) => {
+  try {
+    let {
+      id,
+      song_title,
+      song_genre,
+      song_year,
+      song_url,
+      song_image,
+      albums: album_id,
+    } = attachFilesToBody(req.body, req.files);
+
+    if (!song_image || song_image.trim() === "") {
+      const dbSongImg = await dbGet(
+        `SELECT image_url FROM songs WHERE id = ?`,
+        [id]
+      );
+      song_image = dbSongImg.image_url;
+    } else {
+      await deleteEntryImage("songs", id);
+      await approveFile(song_image, "images");
+    }
+
+    const artists = JSON.parse(req.body.artists || "[]");
+    const presets = JSON.parse(req.body.presets || "[]");
+
+    await dbRun(
+      `
+      UPDATE songs
+      SET title = ?, genre = ?, release_year = ?, song_url = ?, image_url = ?
+      WHERE id = ?`,
+      [song_title, song_genre, song_year, song_url, song_image, id]
+    );
+
+    await Promise.all([
+      dbRun(`DELETE FROM song_artists WHERE song_id = ?`, [id]),
+      dbRun(`DELETE FROM song_presets WHERE song_id = ?`, [id]),
+      dbRun(`DELETE FROM album_songs WHERE song_id = ?`, [id]),
+      dbRun(`INSERT INTO album_songs (song_id, album_id) VALUES (?, ?)`, [
+        id,
+        album_id,
+      ]),
+    ]);
+
+    await Promise.all(
+      artists.map((artist) =>
+        dbRun(
+          `INSERT INTO song_artists (song_id, artist_id, role)
+       VALUES (?, ?, ?)`,
+          [id, artist.id, artist.role]
+        )
+      )
+    );
+
+    await Promise.all(
+      presets.map((preset) =>
+        dbRun(
+          `INSERT INTO song_presets (song_id, preset_id, usage_type, verified, timestamp)
+       VALUES (?, ?, ?, 't', datetime())`,
+          [id, preset.id, preset.usage_type]
+        )
+      )
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while updating song data.",
     });
   }
 });

@@ -700,14 +700,6 @@ class DBSlideoutManager {
     input.classList.add("slideout-input--error");
   }
 
-  #showHintError(msg) {
-    this.#showHint(msg, "error");
-  }
-
-  #showHintSuccess(msg) {
-    this.#showHint(msg, "success");
-  }
-
   #disableApplyBtn() {
     if (this.applyBtn) this.applyBtn.disabled = true;
   }
@@ -1083,11 +1075,12 @@ class DBSlideoutManager {
   }
 
   getInputValues() {
-    const data = {};
+    const formData = new FormData();
+    formData.append("id", this.entryId);
 
     this.inputs.forEach((input) => {
       if (input.classList.contains("slideout-list-entry-input")) return;
-      data[input.name] = input.value.trim();
+      formData.append(input.name, input.value.trim());
     });
 
     this.dropdownSelectors.forEach((selector) => {
@@ -1097,7 +1090,7 @@ class DBSlideoutManager {
       const id = selector
         .querySelector(".slideout-selector-text")
         .getAttribute("data-id");
-      data[key] = id ? parseInt(id) : null;
+      formData.append(key, id ? parseInt(id) : "");
     });
 
     const lists = this.slideoutConfig[this.entryType].lists || [];
@@ -1121,16 +1114,16 @@ class DBSlideoutManager {
         });
       });
 
-      data[list.key] = result;
+      formData.append(list.key, JSON.stringify(result));
     });
 
     this.imageInputs.forEach((input) => {
       if (input.files.length > 0) {
-        data[input.name] = input.files[0];
+        formData.append(input.name, input.files[0]);
       }
     });
 
-    return data;
+    return formData;
   }
 
   #handleImgInputs() {
@@ -1254,14 +1247,40 @@ class DBSlideoutManager {
     this.applyBtn.disabled = !(inputsFilled && listsValid);
   }
 
-  async #handleApplyChanges() {
-    const values = this.getInputValues();
-    console.log(values);
-    // const { updateFunction } = this.slideoutConfig[this.entryType];
+  async #updateEntry(apiEndpoint, formData) {
     try {
-      // await updateFunction(this.entryId, values);
+      const response = await fetch(apiEndpoint, {
+        method: "PUT",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      return await response.json();
+    } catch (err) {
+      throw new Error(`Failed to update entry: ${err.message}`);
+    }
+  }
+
+  async #handleApplyChanges() {
+    const formData = this.getInputValues();
+    const { apiEndpoint } = this.slideoutConfig[this.entryType];
+
+    try {
+      const response = await this.#updateEntry(apiEndpoint, formData);
+
+      if (!response) {
+        this.#showHint("No response from server.", "error");
+        return;
+      }
+
       this.#showHint("Changes saved successfully.", "success");
       this.#disableApplyBtn();
+      // this.entryData = response;
+      // this.#renderUI();
     } catch (err) {
       console.error(err);
       this.#showHint("Failed to save changes.", "error");

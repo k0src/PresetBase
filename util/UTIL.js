@@ -418,6 +418,37 @@ const deleteAllPendingFiles = async function (data) {
   }
 };
 
+/* ----------------------- Delete Approved Image By ID ---------------------- */
+const deleteEntryImage = async function (table, id) {
+  try {
+    const entry = await dbGet(`SELECT image_url FROM ${table} WHERE id = ?`, [
+      id,
+    ]);
+
+    if (!entry || !entry.image_url) {
+      throw new Error(`No image found for ${table} with ID: ${id}`);
+    }
+
+    const imagePath = path.join(
+      __dirname,
+      "..",
+      "public",
+      "uploads",
+      "images",
+      "approved",
+      entry.image_url
+    );
+
+    await fs.unlink(imagePath);
+  } catch (err) {
+    if (err.code !== "ENOENT") {
+      throw new Error(
+        `Failed to delete approved file for: ${table}, ID: ${id} - ${err.message}`
+      );
+    }
+  }
+};
+
 /* ------------------------------- Genre Tags ------------------------------- */
 const getGenreStyles = async function () {
   try {
@@ -573,4 +604,5 @@ module.exports = {
   buildPresetChain,
   formatDate,
   titleCase,
+  deleteEntryImage,
 };
