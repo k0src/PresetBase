@@ -942,12 +942,13 @@ class DBSlideoutManager {
     }
   }
 
-  constructor(config, entryType) {
+  constructor(config, entryType, onSaveCallback) {
     this.slideoutConfig = config;
     this.entryType = entryType;
     this.entryId = null;
     this.entryData = null;
     this.eventListenersBound = false;
+    this.onSaveCallback = onSaveCallback;
 
     this.handleClose = this.#handleClose.bind(this);
     this.handleInput = this.#handleInput.bind(this);
@@ -1650,9 +1651,8 @@ class DBSlideoutManager {
       }
 
       this.#showHint("Changes saved successfully.", "success");
+      this.onSaveCallback?.();
       this.#disableApplyBtn();
-      // this.entryData = response;
-      // this.#renderUI();
     } catch (err) {
       console.error(err);
       this.#showHint("Failed to save changes.", "error");
@@ -1798,7 +1798,9 @@ class DBViewManager {
       editBtn.className = "hidden-btn";
       editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square edit--icon"></i>`;
       editBtn.addEventListener("click", async () => {
-        const slideout = new DBSlideoutManager(SLIDEOUT_CONFIG, table);
+        const slideout = new DBSlideoutManager(SLIDEOUT_CONFIG, table, () =>
+          this.loadTable(table)
+        );
         try {
           await slideout.init(row[tableConfig.id]);
           slideout.show();
