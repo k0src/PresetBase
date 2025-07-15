@@ -216,6 +216,8 @@ router.get("/song-data/:songId", isAdmin, async (req, res) => {
 
 router.put("/song-data", isAdmin, multer, async (req, res) => {
   try {
+    const finalData = attachFilesToBody(req.body, req.files);
+
     let {
       id,
       song_title,
@@ -224,7 +226,10 @@ router.put("/song-data", isAdmin, multer, async (req, res) => {
       song_url,
       song_image,
       albums: album_id,
-    } = attachFilesToBody(req.body, req.files);
+    } = finalData;
+
+    const artists = JSON.parse(finalData.artists || "[]");
+    const presets = JSON.parse(finalData.presets || "[]");
 
     if (!song_image || song_image.trim() === "") {
       const dbSongImg = await dbGet(
@@ -236,9 +241,6 @@ router.put("/song-data", isAdmin, multer, async (req, res) => {
       await deleteEntryImage("songs", id);
       await approveFile(song_image, "images");
     }
-
-    const artists = JSON.parse(req.body.artists || "[]");
-    const presets = JSON.parse(req.body.presets || "[]");
 
     await dbRun(
       `
@@ -332,7 +334,53 @@ router.get("/album-data/:albumId", isAdmin, async (req, res) => {
   }
 });
 
-router.put("/album-data/:albumId", isAdmin, async (req, res) => {}); // add album data put
+router.put("/album-data", isAdmin, multer, async (req, res) => {
+  try {
+    const finalData = attachFilesToBody(req.body, req.files);
+
+    let { id, album_title, album_genre, album_year, album_image } = finalData;
+
+    const songs = JSON.parse(finalData.songs || "[]");
+
+    if (!album_image || album_image.trim() === "") {
+      const dbAlbumImg = await dbGet(
+        `SELECT image_url FROM albums WHERE id = ?`,
+        [id]
+      );
+      album_image = dbAlbumImg.image_url;
+    } else {
+      await deleteEntryImage("albums", id);
+      await approveFile(album_image, "images");
+    }
+
+    await dbRun(
+      `
+      UPDATE albums
+      SET title = ?, genre = ?, release_year = ?, image_url = ?
+      WHERE id = ?`,
+      [album_title, album_genre, album_year, album_image, id]
+    );
+
+    await dbRun(`DELETE FROM album_songs WHERE album_id = ?`, [id]);
+
+    await Promise.all([
+      songs.map((songId) =>
+        dbRun(
+          `INSERT INTO album_songs (song_id, album_id)
+           VALUES (?, ?)`,
+          [songId, id]
+        )
+      ),
+    ]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while updating album data.",
+    });
+  }
+});
 
 router.get("/artist-data/:artistId", isAdmin, async (req, res) => {
   const artistId = req.params.artistId;
@@ -379,7 +427,53 @@ router.get("/artist-data/:artistId", isAdmin, async (req, res) => {
   }
 });
 
-router.put("/artist-data/:artistId", isAdmin, async (req, res) => {}); // add artist data put
+router.put("/artist-data", isAdmin, multer, async (req, res) => {
+  try {
+    const finalData = attachFilesToBody(req.body, req.files);
+
+    let { id, artist_name, artist_country, artist_image } = finalData;
+
+    const songs = JSON.parse(finalData.songs || "[]");
+
+    if (!artist_image || artist_image.trim() === "") {
+      const dbArtistImage = await dbGet(
+        `SELECT image_url FROM artists WHERE id = ?`,
+        [id]
+      );
+      artist_image = dbArtistImage.image_url;
+    } else {
+      await deleteEntryImage("artists", id);
+      await approveFile(artist_image, "images");
+    }
+
+    await dbRun(
+      `
+      UPDATE artists
+      SET name = ?, country = ?, image_url = ?
+      WHERE id = ?`,
+      [artist_name, artist_country, artist_image, id]
+    );
+
+    await dbRun(`DELETE FROM song_artists WHERE artist_id = ?`, [id]);
+
+    await Promise.all([
+      songs.map((song) =>
+        dbRun(
+          `INSERT INTO song_artists (song_id, artist_id, role)
+           VALUES (?, ?, ?)`,
+          [song.id, id, song.role]
+        )
+      ),
+    ]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while updating artist data.",
+    });
+  }
+});
 
 router.get("/preset-data/:presetId", isAdmin, async (req, res) => {
   const presetId = req.params.presetId;
@@ -419,7 +513,42 @@ router.get("/preset-data/:presetId", isAdmin, async (req, res) => {
   }
 });
 
-router.put("/preset-data/:presetId", isAdmin, async (req, res) => {}); // add preset data put
+router.put("/preset-data", isAdmin, multer, async (req, res) => {
+  try {
+    const finalData = attachFilesToBody(req.body, req.files);
+
+    let {
+      id,
+      preset_name,
+      preset_pack_name,
+      preset_author,
+      synths: synth_id,
+    } = finalData;
+
+    await dbRun(
+      `
+      UPDATE presets
+      SET preset_name = ?, pack_name = ?, author = ?
+      WHERE id = ?`,
+      [preset_name, preset_pack_name, preset_author, id]
+    );
+
+    await Promise.all([
+      dbRun(`DELETE FROM preset_synths WHERE preset_id = ?`, [id]),
+      dbRun(`INSERT INTO preset_synths (preset_id, synth_id) VALUES (?, ?)`, [
+        id,
+        synth_id,
+      ]),
+    ]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while updating preset data.",
+    });
+  }
+});
 
 router.get("/synth-data/:synthId", isAdmin, async (req, res) => {
   const synthId = req.params.synthId;
@@ -467,7 +596,67 @@ router.get("/synth-data/:synthId", isAdmin, async (req, res) => {
   }
 });
 
-router.put("/synth-data/:synthId", isAdmin, async (req, res) => {}); // add synth data put
+router.put("/synth-data", isAdmin, multer, async (req, res) => {
+  try {
+    const finalData = attachFilesToBody(req.body, req.files);
+
+    let {
+      id,
+      synth_name,
+      synth_manufacturer,
+      synth_type,
+      synth_release_year,
+      synth_image,
+    } = finalData;
+
+    const presets = JSON.parse(finalData.presets || "[]");
+
+    if (!synth_image || synth_image.trim() === "") {
+      const dbSynthImg = await dbGet(
+        `SELECT image_url FROM synths WHERE id = ?`,
+        [id]
+      );
+      synth_image = dbSynthImg.image_url;
+    } else {
+      await deleteEntryImage("synths", id);
+      await approveFile(synth_image, "images");
+    }
+
+    await dbRun(
+      `
+      UPDATE synths
+      SET synth_name = ?, manufacturer = ?, synth_type = ?, release_year = ?, image_url = ?
+      WHERE id = ?`,
+      [
+        synth_name,
+        synth_manufacturer,
+        synth_type,
+        synth_release_year,
+        synth_image,
+        id,
+      ]
+    );
+
+    await dbRun(`DELETE FROM preset_synths WHERE synth_id = ?`, [id]);
+
+    await Promise.all([
+      presets.map((presetId) =>
+        dbRun(
+          `INSERT INTO preset_synths (preset_id, synth_id)
+           VALUES (?, ?)`,
+          [presetId, id]
+        )
+      ),
+    ]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while updating synth data.",
+    });
+  }
+});
 
 router.get("/", isAdmin, renderPage);
 router.get("/:table", isAdmin, renderPage);

@@ -1460,20 +1460,26 @@ class DBSlideoutManager {
         ?.closest(".slideout-list-wrapper");
       if (!container) return;
 
+      const numColumns = list.dataFields.numColumns;
+
       const entries = container.querySelectorAll(
-        ".slideout-list-entry--1, .slideout-list-entry--2"
+        `.slideout-list-entry--${numColumns}`
       );
       const result = [];
 
       entries.forEach((entry) => {
         const id = parseInt(entry.id.replace("slideout-list-entry-", ""));
-        const value = entry
-          .querySelector(".slideout-list-entry-input")
-          .value.trim();
-        result.push({
-          [list.dataFields.id]: id,
-          [list.dataFields.secondary]: value,
-        });
+        if (numColumns === 1) {
+          result.push(id);
+        } else {
+          const value = entry
+            .querySelector(".slideout-list-entry-input")
+            .value.trim();
+          result.push({
+            [list.dataFields.id]: id,
+            [list.dataFields.secondary]: value,
+          });
+        }
       });
 
       formData.append(list.key, JSON.stringify(result));
