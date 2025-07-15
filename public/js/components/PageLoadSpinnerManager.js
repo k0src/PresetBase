@@ -32,6 +32,46 @@ export class PageLoadSpinnerManager {
         100% { transform: rotate(360deg); }
       }
     `,
+      animationTween: "linear",
+    },
+    ringOpen: {
+      classStyles: {
+        width: "var(--spinner-width)",
+        height: "var(--spinner-height)",
+        border: "var(--spinner-stroke-size) solid var(--spinner-primary-color)",
+        borderBottomColor: "transparent",
+        borderRadius: "50%",
+        boxSizing: "border-box",
+        animation: "var(--spinner-animation)",
+      },
+      keyframesName: "page-spinner-rotate",
+      keyframes: `
+      @keyframes page-spinner-rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+    `,
+      animationTween: "linear",
+    },
+    trailThin: {
+      classStyles: {
+        width: "var(--spinner-width)",
+        height: "var(--spinner-height)",
+        borderTop:
+          "var(--spinner-stroke-size) solid var(--spinner-primary-color)",
+        borderRight: "var(--spinner-stroke-size) solid transparent",
+        borderRadius: "50%",
+        boxSizing: "border-box",
+        animation: "var(--spinner-animation)",
+      },
+      keyframesName: "page-spinner-rotate",
+      keyframes: `
+      @keyframes page-spinner-rotate {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+        }
+        `,
+      animationTween: "linear",
     },
   };
 
@@ -122,7 +162,9 @@ export class PageLoadSpinnerManager {
     );
     this.#spinner.style.setProperty(
       "--spinner-animation",
-      `${styleTemplate.keyframesName} ${this.#spinnerSpeed}s linear infinite`
+      `${styleTemplate.keyframesName} ${this.#spinnerSpeed}s ${
+        styleTemplate.animationTween
+      } infinite`
     );
 
     Object.entries(styleTemplate.classStyles).forEach(([prop, value]) => {

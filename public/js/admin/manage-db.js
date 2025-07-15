@@ -1867,14 +1867,17 @@ document.addEventListener("DOMContentLoaded", async () => {
   await loadSelectedTable();
 });
 
+// Loading spinner
 const container = document.querySelector(".content-wrapper");
 const pageContent = document.querySelector(".container");
 
 new PageLoadSpinnerManager({
   container: container,
   pageContent: pageContent,
+  spinnerStyle: "trailThin",
   primaryColor: "#5A7F71",
   secondaryColor: "#e3e5e4",
   spinnerStrokeSize: "0.6rem",
   spinnerSpeed: 1.5,
+  loadDelay: 5000,
 });
