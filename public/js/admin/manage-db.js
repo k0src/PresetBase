@@ -1048,6 +1048,11 @@ class DBSlideoutManager {
     if (this.applyBtn) this.applyBtn.disabled = true;
   }
 
+  #enableApplyBtn() {
+    console.log("here");
+    if (this.applyBtn) this.applyBtn.disabled = false;
+  }
+
   #normalizeText(str) {
     return str
       ? str
@@ -1228,6 +1233,7 @@ class DBSlideoutManager {
           text.textContent = label;
           text.setAttribute("data-id", id);
           this.#toggleDropdownContainer(textContainer, dropdownContainer);
+          this.#enableApplyBtn();
         },
         fetchResults: def.apiFunction,
         hideDropdownOnClickOff: false,
@@ -1299,6 +1305,7 @@ class DBSlideoutManager {
 
       let secondaryWrapper = null;
       let secondaryInput = null;
+
       if (numColumns > 1) {
         secondaryWrapper = document.createElement("div");
         secondaryWrapper.className = "slideout-list-entry-text-wrapper";
@@ -1401,6 +1408,7 @@ class DBSlideoutManager {
           );
           listContainer.insertBefore(newEntry, addBtnWrap);
           this.#toggleDropdownContainer(listContainer, dropdown);
+          if (numColumns === 1) this.#enableApplyBtn();
         },
         fetchResults: list.apiFunction,
         hideDropdownOnClickOff: false,
