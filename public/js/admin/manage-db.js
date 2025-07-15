@@ -1,4 +1,5 @@
 import { PageLoadSpinnerManager } from "../components/PageLoadSpinnerManager.js";
+import { DBViewSortSelectManager } from "../components/DBViewSortSelectManager.js";
 
 const tableSelect = document.querySelector(".manage-db--table-select");
 
@@ -35,7 +36,6 @@ class AutofillDropdownManager {
       hideDropdownOnClickOff = true,
       loopNavigation = true,
       debounceDelay = 150,
-      classes = {},
     } = options;
     if (!(inputElement instanceof HTMLInputElement)) {
       throw new Error("Input must be an HTMLInputElement.");
@@ -49,16 +49,12 @@ class AutofillDropdownManager {
       throw new Error("Invalid fetchResults function.");
     }
 
-    const defaultClasses = {
+    this.#classes = {
       show: "show",
       hidden: "hidden",
       selected: "selected",
     };
 
-    this.#classes = {
-      ...defaultClasses,
-      ...classes,
-    };
     this.#input = inputElement;
     this.#dropdown = dropdownElement;
     this.#onSelectCallback = onSelectCallback;
@@ -295,7 +291,12 @@ const TABLE_CONFIG = {
         classname: "db-entry--date song-added-date",
       },
     ],
-    // sort keys
+    sortKeys: [
+      { label: "Title", value: "songs.title" },
+      { label: "Genre", value: "songs.genre" },
+      { label: "Year", value: "songs.release_year" },
+      { label: "Date Added", value: "songs.timestamp" },
+    ],
   },
 
   artists: {
@@ -322,6 +323,11 @@ const TABLE_CONFIG = {
         label: "Added Date",
         classname: "db-entry--date artist-added-date",
       },
+    ],
+    sortKeys: [
+      { label: "Name", value: "artists.name" },
+      { label: "Country", value: "artists.country" },
+      { label: "Date Added", value: "artists.timestamp" },
     ],
   },
 
@@ -355,6 +361,12 @@ const TABLE_CONFIG = {
         classname: "db-entry--date album-added-date",
       },
     ],
+    sortKeys: [
+      { label: "Title", value: "albums.title" },
+      { label: "Genre", value: "albums.genre" },
+      { label: "Year", value: "albums.release_year" },
+      { label: "Date Added", value: "albums.timestamp" },
+    ],
   },
 
   synths: {
@@ -387,6 +399,12 @@ const TABLE_CONFIG = {
         classname: "db-entry--date synth-added-date",
       },
     ],
+    sortKeys: [
+      { label: "Synth Name", value: "synths.synth_name" },
+      { label: "Manufacturer", value: "synths.manufacturer" },
+      { label: "Year", value: "synths.release_year" },
+      { label: "Date Added", value: "synths.timestamp" },
+    ],
   },
 
   presets: {
@@ -413,6 +431,12 @@ const TABLE_CONFIG = {
         label: "Added Date",
         classname: "db-entry--date preset-added-date",
       },
+    ],
+    sortKeys: [
+      { label: "Preset Name", value: "presets.preset_name" },
+      { label: "Pack Name", value: "presets.pack_name" },
+      { label: "Author", value: "presets.author" },
+      { label: "Date Added", value: "presets.timestamp" },
     ],
   },
 };
@@ -1677,12 +1701,17 @@ class DBSlideoutManager {
   }
 }
 
+// REFACTOR!!!
 class DBViewManager {
   // API Methods
-  async #getTableData(table) {
+  async #getTableData(table, sortKey = "", sortDirection = "") {
     try {
       const response = await fetch(
-        `/admin/manage-db/table-data/${encodeURIComponent(table)}`,
+        `/admin/manage-db/table-data/${encodeURIComponent(
+          table
+        )}?sortKey=${encodeURIComponent(
+          sortKey
+        )}&sortDirection=${encodeURIComponent(sortDirection)}`,
         {
           method: "GET",
           headers: {
@@ -1750,14 +1779,14 @@ class DBViewManager {
     });
   }
 
-  async loadTable(table) {
+  async loadTable(table, sortKey = "", sortDirection = "") {
     try {
       const tableConfig = this.config[table];
       if (!tableConfig) {
         throw new Error(`Unknown table: ${table}`);
       }
 
-      const tableData = await this.#getTableData(table);
+      const tableData = await this.#getTableData(table, sortKey, sortDirection);
 
       this.listContainer.innerHTML = "";
       await this.renderTableHeader(table, tableConfig.columns);
@@ -1807,8 +1836,10 @@ class DBViewManager {
       editBtn.className = "hidden-btn";
       editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square edit--icon"></i>`;
       editBtn.addEventListener("click", async () => {
-        const slideout = new DBSlideoutManager(SLIDEOUT_CONFIG, table, () =>
-          this.loadTable(table)
+        const slideout = new DBSlideoutManager(
+          SLIDEOUT_CONFIG,
+          table,
+          async () => await this.loadTable(table)
         );
         try {
           await slideout.init(row[tableConfig.id]);
@@ -1826,6 +1857,10 @@ class DBViewManager {
 
 document.addEventListener("DOMContentLoaded", async () => {
   setTableSelect();
+  let sortManager = null;
+
+  const sortSelect = document.querySelector(".manage-db--sort-select");
+  const sortToggleBtn = document.querySelector(".sort-icon");
 
   const loadSelectedTable = async (updateURL = true) => {
     const selectedTable = tableSelect.value;
@@ -1837,7 +1872,32 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
+      if (sortManager) {
+        sortManager.destroy();
+        sortManager = null;
+      }
+
       await dbViewManager.loadTable(selectedTable);
+
+      sortManager = new DBViewSortSelectManager({
+        selectElement: sortSelect,
+        sortDirectionButton: sortToggleBtn,
+        sortKeys: TABLE_CONFIG[selectedTable].sortKeys || [],
+        defaultOption: {
+          label: "Sort",
+          value: "",
+          disabled: true,
+          selected: true,
+          hidden: true,
+        },
+        onSelectCallback: async (selectedValue, sortDirection) => {
+          await dbViewManager.loadTable(
+            selectedTable,
+            selectedValue,
+            sortDirection
+          );
+        },
+      });
     } catch (err) {
       console.error(`Error loading table: ${err.message}`);
     }
@@ -1874,10 +1934,8 @@ const pageContent = document.querySelector(".container");
 new PageLoadSpinnerManager({
   container: container,
   pageContent: pageContent,
-  spinnerStyle: "trailThin",
   primaryColor: "#5A7F71",
   secondaryColor: "#e3e5e4",
-  spinnerStrokeSize: "0.6rem",
+  spinnerStrokeSize: "0.4rem",
   spinnerSpeed: 1.5,
-  loadDelay: 5000,
 });

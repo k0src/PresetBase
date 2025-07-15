@@ -57,11 +57,58 @@ const renderPage = async (req, res) => {
 router.get("/table-data/:table", isAdmin, async (req, res) => {
   const tables = ["songs", "artists", "albums", "synths", "presets"];
 
+  const sortKeys = {
+    songs: [
+      "id",
+      "songs.title",
+      "songs.genre",
+      "songs.release_year",
+      "songs.timestamp",
+    ],
+    artists: ["id", "artists.name", "artists.country", "artists.timestamp"],
+    albums: [
+      "id",
+      "albums.title",
+      "albums.genre",
+      "albums.release_year",
+      "albums.timestamp",
+    ],
+    synths: [
+      "id",
+      "synths.synth_name",
+      "synths.manufacturer",
+      "synths.synth_type",
+      "synths.release_year",
+      "synths.timestamp",
+    ],
+    presets: [
+      "id",
+      "presets.preset_name",
+      "presets.pack_name",
+      "presets.author",
+      "presets.timestamp",
+    ],
+  };
+
   const table = req.params.table;
+  const sortKey = req.query.sortKey || "id";
+  const sortDirection = req.query.sortDirection || "ASC";
 
   if (!tables.includes(table)) {
     return res.status(404).json({
       error: "Table not found.",
+    });
+  }
+
+  if (!sortKeys[table].includes(sortKey)) {
+    return res.status(400).json({
+      error: "Invalid sort key.",
+    });
+  }
+
+  if (sortDirection !== "ASC" && sortDirection !== "DESC") {
+    return res.status(400).json({
+      error: "Invalid sort direction.",
     });
   }
 
@@ -72,7 +119,7 @@ router.get("/table-data/:table", isAdmin, async (req, res) => {
       SELECT *
       FROM ${table}
       ${where}
-      ORDER BY id ASC
+      ORDER BY ${sortKey} ${sortDirection}
     `);
 
     res.json(tableData);
