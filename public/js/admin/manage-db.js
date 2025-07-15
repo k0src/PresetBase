@@ -1,3 +1,5 @@
+import { PageLoadSpinnerManager } from "../components/PageLoadSpinnerManager.js";
+
 const tableSelect = document.querySelector(".manage-db--table-select");
 
 /* ------------------------- Setting values on load ------------------------- */
@@ -1049,7 +1051,6 @@ class DBSlideoutManager {
   }
 
   #enableApplyBtn() {
-    console.log("here");
     if (this.applyBtn) this.applyBtn.disabled = false;
   }
 
@@ -1323,7 +1324,7 @@ class DBSlideoutManager {
       removeBtn.innerHTML = `<i class="fa-solid fa-xmark slideout-remove-icon"></i>`;
       removeBtn.addEventListener("click", () => {
         entry.remove();
-        this.handleInput();
+        this.#enableApplyBtn();
       });
 
       entry.append(primaryWrapper);
@@ -1864,4 +1865,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   await loadSelectedTable();
+});
+
+const container = document.querySelector(".content-wrapper");
+const pageContent = document.querySelector(".container");
+
+new PageLoadSpinnerManager({
+  container: container,
+  pageContent: pageContent,
+  primaryColor: "#5A7F71",
+  secondaryColor: "#e3e5e4",
+  spinnerStrokeSize: "0.6rem",
+  spinnerSpeed: 1.5,
 });

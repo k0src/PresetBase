@@ -41,6 +41,11 @@ a:active {
   min-height: 100vh;
 }
 
+.page-load-spinner {
+  align-self: center;
+  margin-top: 30vh;
+}
+
 .content-wrapper {
   flex: 1;
   display: flex;
