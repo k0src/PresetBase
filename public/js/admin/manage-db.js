@@ -1,294 +1,49 @@
+import { DBMultiTableResultsManager } from "../components/DBMultiTableResultsManager.js";
 import { PageLoadSpinnerManager } from "../components/PageLoadSpinnerManager.js";
-import { DBViewSortSelectManager } from "../components/DBViewSortSelectManager.js";
-
-const tableSelect = document.querySelector(".manage-db--table-select");
-
-/* ------------------------- Setting values on load ------------------------- */
-const setTableSelect = function () {
-  const selectedTable =
-    sessionStorage.getItem(`manageDBTableSelected`) || "songs";
-  tableSelect.value = selectedTable;
-};
+import { DBViewManager } from "../components/DBViewManager.js";
+import { DBPageStateManager } from "../components/DBPageStateManager.js";
+import { AutofillDropdownManager } from "../components/AutofillDropdownManager.js";
 
 /* -------------------------------- Dropdown -------------------------------- */
-class AutofillDropdownManager {
-  #input;
-  #dropdown;
-  #onSelectCallback;
-  #limit;
-  #shouldAutofillInput;
-  #fetchResults;
-  #hideDropdownOnClickOff;
-  #debounceDelay;
-  #classes;
-  #selectedIndex;
-  #debounceTimeout;
-  #loopNavigation;
-
-  constructor(options) {
-    const {
-      fetchResults,
-      inputElement,
-      dropdownElement,
-      onSelectCallback = null,
-      resultsLimit = null,
-      shouldAutofillInput = true,
-      hideDropdownOnClickOff = true,
-      loopNavigation = true,
-      debounceDelay = 150,
-    } = options;
-    if (!(inputElement instanceof HTMLInputElement)) {
-      throw new Error("Input must be an HTMLInputElement.");
-    }
-
-    if (!(dropdownElement instanceof HTMLElement)) {
-      throw new Error("Dropdown must be an HTMLElement.");
-    }
-
-    if (typeof fetchResults !== "function") {
-      throw new Error("Invalid fetchResults function.");
-    }
-
-    this.#classes = {
-      show: "show",
-      hidden: "hidden",
-      selected: "selected",
-    };
-
-    this.#input = inputElement;
-    this.#dropdown = dropdownElement;
-    this.#onSelectCallback = onSelectCallback;
-    this.#limit = resultsLimit;
-    this.#shouldAutofillInput = shouldAutofillInput;
-    this.#fetchResults = fetchResults;
-    this.#hideDropdownOnClickOff = hideDropdownOnClickOff;
-    this.#loopNavigation = loopNavigation;
-    this.#debounceDelay = debounceDelay;
-    this.#selectedIndex = -1;
-    this.#debounceTimeout = null;
-
-    this.#bindEvents();
-  }
-
-  get dropdownElement() {
-    return this.#dropdown;
-  }
-
-  destroy() {
-    this.#unbindEvents();
-  }
-
-  async #fetchAutofillResults(query) {
-    try {
-      return await this.#fetchResults(query, this.#limit);
-    } catch (err) {
-      throw new Error(`Failed to fetch autofill results: ${err.message}`);
-    }
-  }
-
-  async #handleKeyboardNavigation(e) {
-    const dropdownItems = this.#dropdown.querySelectorAll("li");
-
-    if (!dropdownItems.length) return;
-
-    switch (e.key) {
-      case "ArrowDown":
-        e.preventDefault();
-        if (this.#selectedIndex < dropdownItems.length - 1) {
-          this.#selectedIndex++;
-        } else {
-          this.#selectedIndex = this.#loopNavigation
-            ? 0
-            : dropdownItems.length - 1;
-        }
-        this.#updateDropdownSelection(dropdownItems);
-        break;
-
-      case "ArrowUp":
-        e.preventDefault();
-        if (this.#selectedIndex > 0) {
-          this.#selectedIndex--;
-        } else {
-          this.#selectedIndex = this.#loopNavigation
-            ? dropdownItems.length - 1
-            : 0;
-        }
-        this.#updateDropdownSelection(dropdownItems);
-        break;
-
-      case "Enter":
-        e.preventDefault();
-        if (this.#selectedIndex >= 0 && dropdownItems[this.#selectedIndex]) {
-          const selectedValue = dropdownItems[this.#selectedIndex].textContent;
-          const selectedValueID =
-            dropdownItems[this.#selectedIndex].getAttribute("data-id");
-          this.#hideDropdown();
-          this.#setInputValue(selectedValue);
-          this.#selectedIndex = -1;
-          if (this.#onSelectCallback) {
-            await this.#onSelectCallback?.({
-              label: selectedValue,
-              id: selectedValueID,
-            });
-          }
-        }
-        break;
-
-      case "Escape":
-        this.#hideDropdown();
-        this.#selectedIndex = -1;
-        break;
-    }
-  }
-
-  #updateDropdownSelection(dropdownItems) {
-    dropdownItems.forEach((item) => {
-      item.classList.remove(this.#classes.selected);
-    });
-
-    if (this.#selectedIndex >= 0 && dropdownItems[this.#selectedIndex]) {
-      const selectedItem = dropdownItems[this.#selectedIndex];
-      selectedItem.classList.add(this.#classes.selected);
-      selectedItem.scrollIntoView({
-        block: "nearest",
-        behavior: "smooth",
-      });
-    }
-  }
-
-  #handleInput() {
-    clearTimeout(this.#debounceTimeout);
-    this.#debounceTimeout = setTimeout(async () => {
-      try {
-        const query = this.#input.value.trim();
-
-        if (!query.length) {
-          this.#hideDropdown();
-          return;
-        }
-
-        const results = await this.#fetchAutofillResults(query);
-        this.#renderDropdown(results);
-      } catch (err) {
-        console.error("Error fetching autofill suggestions: ", err);
-        throw err;
-      }
-    }, this.#debounceDelay);
-  }
-
-  #createDropdownItem({ label, id }) {
-    const li = document.createElement("li");
-    li.textContent = label;
-    li.setAttribute("data-id", id);
-    li.addEventListener("click", () => {
-      this.#hideDropdown();
-      this.#setInputValue(label);
-      this.#onSelectCallback?.({ label, id });
-    });
-    return li;
-  }
-
-  #renderDropdown(dropdownItems) {
-    if (!Array.isArray(dropdownItems)) {
-      console.warn("Expected dropdownItems to be an array.");
-      return;
-    }
-
-    this.#dropdown.innerHTML = "";
-    if (!dropdownItems.length) {
-      this.#hideDropdown();
-      return;
-    }
-
-    const fragment = document.createDocumentFragment();
-    dropdownItems.forEach((item) => {
-      fragment.appendChild(this.#createDropdownItem(item));
-    });
-
-    this.#dropdown.appendChild(fragment);
-    this.#showDropdown();
-  }
-
-  #hideDropdown() {
-    this.#dropdown.classList.remove(this.#classes.show);
-    this.#dropdown.classList.add(this.#classes.hidden);
-  }
-
-  #showDropdown() {
-    this.#dropdown.classList.add(this.#classes.show);
-    this.#dropdown.classList.remove(this.#classes.hidden);
-  }
-
-  #setInputValue(value) {
-    if (!this.#shouldAutofillInput) return;
-    this.#input.value = value;
-    this.#input.dispatchEvent(new Event("input"));
-  }
-
-  #handleOutsideClicks(e) {
-    if (!this.#input.contains(e.target) && !this.#dropdown.contains(e.target)) {
-      this.#hideDropdown();
-    }
-  }
-
-  #bindEvents() {
-    this.handleInput = this.#handleInput.bind(this);
-    this.handleOutsideClicks = this.#handleOutsideClicks.bind(this);
-    this.handleKeydown = (e) => this.#handleKeyboardNavigation(e);
-
-    if (this.#hideDropdownOnClickOff) {
-      document.addEventListener("click", this.handleOutsideClicks);
-    }
-
-    this.#input.addEventListener("keydown", this.handleKeydown);
-    this.#input.addEventListener("input", this.handleInput);
-  }
-
-  #unbindEvents() {
-    if (this.#hideDropdownOnClickOff) {
-      document.removeEventListener("click", this.handleOutsideClicks);
-    }
-
-    this.#input.removeEventListener("keydown", this.handleKeydown);
-    this.#input.removeEventListener("input", this.handleInput);
-  }
-}
 
 /* ------------------------------ Table Config ------------------------------ */
 const TABLE_CONFIG = {
   songs: {
     title: "Song",
     id: "id",
+    headerClassName: "result-columns grid-layout--songs",
+    entryClassName: "grid-layout--songs db-entry",
+    rowNumberClassName: "db-entry--number",
     columns: [
       {
         key: "title",
         label: "Title",
-        classname: "db-entry--primary song-title",
+        className: "db-entry--primary song-title",
       },
       {
         key: "genre",
         label: "Genre",
-        classname: "db-entry--primary song-genre",
+        className: "db-entry--primary song-genre",
       },
       {
         key: "release_year",
         label: "Release Year",
-        classname: "db-entry--secondary song-year",
+        className: "db-entry--secondary song-year",
       },
       {
         key: "song_url",
         label: "Song URL",
-        classname: "db-entry--secondary song-url",
+        className: "db-entry--secondary song-url",
       },
       {
         key: "image_url",
         label: "Image URL",
-        classname: "db-entry--secondary song-image-url",
+        className: "db-entry--secondary song-image-url",
       },
       {
         key: "timestamp",
         label: "Added Date",
-        classname: "db-entry--date song-added-date",
+        className: "db-entry--date song-added-date",
       },
     ],
     sortKeys: [
@@ -297,31 +52,53 @@ const TABLE_CONFIG = {
       { label: "Year", value: "songs.release_year" },
       { label: "Date Added", value: "songs.timestamp" },
     ],
+    actions: [
+      {
+        type: "button",
+        className: "hidden-btn",
+        content: `<i class="fa-solid fa-pen-to-square edit--icon"></i>`,
+        callback: async (row, table) => {
+          const slideout = new DBSlideoutManager(
+            SLIDEOUT_CONFIG,
+            table,
+            async () => await this.loadTable(table)
+          );
+          try {
+            await slideout.init(row.id);
+            slideout.show();
+          } catch (err) {
+            console.error(`Failed to initialize slideout: ${err.message}`);
+          }
+        },
+      },
+    ],
   },
 
   artists: {
     title: "Artist",
     id: "id",
+    headerClassName: "result-columns grid-layout--artists",
+    entryClassName: "grid-layout--artists db-entry",
     columns: [
       {
         key: "name",
         label: "Name",
-        classname: "db-entry--primary artist-name",
+        className: "db-entry--primary artist-name",
       },
       {
         key: "country",
         label: "Country",
-        classname: "db-entry--secondary artist-country",
+        className: "db-entry--secondary artist-country",
       },
       {
         key: "image_url",
         label: "Image URL",
-        classname: "db-entry--secondary artist-image-url",
+        className: "db-entry--secondary artist-image-url",
       },
       {
         key: "timestamp",
         label: "Added Date",
-        classname: "db-entry--date artist-added-date",
+        className: "db-entry--date artist-added-date",
       },
     ],
     sortKeys: [
@@ -329,36 +106,58 @@ const TABLE_CONFIG = {
       { label: "Country", value: "artists.country" },
       { label: "Date Added", value: "artists.timestamp" },
     ],
+    actions: [
+      {
+        type: "button",
+        className: "hidden-btn",
+        content: `<i class="fa-solid fa-pen-to-square edit--icon"></i>`,
+        callback: async (row, table) => {
+          const slideout = new DBSlideoutManager(
+            SLIDEOUT_CONFIG,
+            table,
+            async () => await this.loadTable(table)
+          );
+          try {
+            await slideout.init(row.id);
+            slideout.show();
+          } catch (err) {
+            console.error(`Failed to initialize slideout: ${err.message}`);
+          }
+        },
+      },
+    ],
   },
 
   albums: {
     title: "Album",
     id: "id",
+    headerClassName: "result-columns grid-layout--albums",
+    entryClassName: "grid-layout--albums db-entry",
     columns: [
       {
         key: "title",
         label: "Title",
-        classname: "db-entry--primary album-title",
+        className: "db-entry--primary album-title",
       },
       {
         key: "genre",
         label: "Genre",
-        classname: "db-entry--primary album-genre",
+        className: "db-entry--primary album-genre",
       },
       {
         key: "release_year",
         label: "Release Year",
-        classname: "db-entry--secondary album-year",
+        className: "db-entry--secondary album-year",
       },
       {
         key: "image_url",
         label: "Image URL",
-        classname: "db-entry--secondary album-image-url",
+        className: "db-entry--secondary album-image-url",
       },
       {
         key: "timestamp",
         label: "Added Date",
-        classname: "db-entry--date album-added-date",
+        className: "db-entry--date album-added-date",
       },
     ],
     sortKeys: [
@@ -367,76 +166,140 @@ const TABLE_CONFIG = {
       { label: "Year", value: "albums.release_year" },
       { label: "Date Added", value: "albums.timestamp" },
     ],
+    actions: [
+      {
+        type: "button",
+        className: "hidden-btn",
+        content: `<i class="fa-solid fa-pen-to-square edit--icon"></i>`,
+        callback: async (row, table) => {
+          const slideout = new DBSlideoutManager(
+            SLIDEOUT_CONFIG,
+            table,
+            async () => await this.loadTable(table)
+          );
+          try {
+            await slideout.init(row.id);
+            slideout.show();
+          } catch (err) {
+            console.error(`Failed to initialize slideout: ${err.message}`);
+          }
+        },
+      },
+    ],
   },
 
   synths: {
     title: "Synth",
     id: "id",
+    headerClassName: "result-columns grid-layout--synths",
+    entryClassName: "grid-layout--synths db-entry",
     columns: [
       {
         key: "synth_name",
         label: "Synth Name",
-        classname: "db-entry--primary synth-name",
+        className: "db-entry--primary synth-name",
       },
       {
         key: "manufacturer",
         label: "Manufacturer",
-        classname: "db-entry--primary synth-manufacturer",
+        className: "db-entry--primary synth-manufacturer",
       },
       {
         key: "release_year",
         label: "Release Year",
-        classname: "db-entry--secondary synth-year",
+        className: "db-entry--secondary synth-year",
       },
       {
         key: "image_url",
         label: "Image URL",
-        classname: "db-entry--secondary synth-image-url",
+        className: "db-entry--secondary synth-image-url",
       },
       {
         key: "timestamp",
         label: "Added Date",
-        classname: "db-entry--date synth-added-date",
+        className: "db-entry--date synth-added-date",
       },
     ],
     sortKeys: [
-      { label: "Synth Name", value: "synths.synth_name" },
+      { label: "Name", value: "synths.synth_name" },
       { label: "Manufacturer", value: "synths.manufacturer" },
       { label: "Year", value: "synths.release_year" },
       { label: "Date Added", value: "synths.timestamp" },
+    ],
+    actions: [
+      {
+        type: "button",
+        className: "hidden-btn",
+        content: `<i class="fa-solid fa-pen-to-square edit--icon"></i>`,
+        callback: async (row, table) => {
+          const slideout = new DBSlideoutManager(
+            SLIDEOUT_CONFIG,
+            table,
+            async () => await this.loadTable(table)
+          );
+          try {
+            await slideout.init(row.id);
+            slideout.show();
+          } catch (err) {
+            console.error(`Failed to initialize slideout: ${err.message}`);
+          }
+        },
+      },
     ],
   },
 
   presets: {
     title: "Preset",
     id: "id",
+    headerClassName: "result-columns grid-layout--presets",
+    entryClassName: "grid-layout--presets db-entry",
     columns: [
       {
         key: "preset_name",
         label: "Preset Name",
-        classname: "db-entry--primary preset-name",
+        className: "db-entry--primary preset-name",
       },
       {
         key: "pack_name",
         label: "Pack Name",
-        classname: "db-entry--secondary preset-pack-name",
+        className: "db-entry--secondary preset-pack-name",
       },
       {
         key: "author",
         label: "Author",
-        classname: "db-entry--secondary preset-author",
+        className: "db-entry--secondary preset-author",
       },
       {
         key: "timestamp",
         label: "Added Date",
-        classname: "db-entry--date preset-added-date",
+        className: "db-entry--date preset-added-date",
       },
     ],
     sortKeys: [
-      { label: "Preset Name", value: "presets.preset_name" },
+      { label: "Name", value: "presets.preset_name" },
       { label: "Pack Name", value: "presets.pack_name" },
       { label: "Author", value: "presets.author" },
       { label: "Date Added", value: "presets.timestamp" },
+    ],
+    actions: [
+      {
+        type: "button",
+        className: "hidden-btn",
+        content: `<i class="fa-solid fa-pen-to-square edit--icon"></i>`,
+        callback: async (row, table) => {
+          const slideout = new DBSlideoutManager(
+            SLIDEOUT_CONFIG,
+            table,
+            async () => await this.loadTable(table)
+          );
+          try {
+            await slideout.init(row.id);
+            slideout.show();
+          } catch (err) {
+            console.error(`Failed to initialize slideout: ${err.message}`);
+          }
+        },
+      },
     ],
   },
 };
@@ -1697,245 +1560,115 @@ class DBSlideoutManager {
   }
 
   async #handleDelete() {
-    console.log("Delete", this.entryId);
-  }
-}
+    const confirmed = confirm(
+      `Are you sure you want to delete this ${
+        this.slideoutConfig[this.entryType].label
+      }?`
+    );
 
-// REFACTOR!!!
-class DBViewManager {
-  // API Methods
-  async #getTableData(table, sortKey = "", sortDirection = "") {
+    if (!confirmed) return;
+
+    const { apiEndpoint } = this.slideoutConfig[this.entryType];
     try {
-      const response = await fetch(
-        `/admin/manage-db/table-data/${encodeURIComponent(
-          table
-        )}?sortKey=${encodeURIComponent(
-          sortKey
-        )}&sortDirection=${encodeURIComponent(sortDirection)}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      const response = await fetch(`${apiEndpoint}${this.entryId}`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+      });
 
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error);
       }
 
-      return await response.json();
+      this.onSaveCallback?.();
+      this.close();
     } catch (err) {
-      throw new Error(`Failed to get table data: ${err.message}`);
+      console.error(err);
+      this.#showHint("Failed to delete entry.", "error");
     }
-  }
-
-  #generateCSV(tableData) {
-    const headers =
-      Array.from(tableData[0].querySelectorAll("span"))
-        .map((el) => el.textContent.trim())
-        .join(",") + "\n";
-    const rows = Array.from(tableData)
-      .map((row) => {
-        return Array.from(row.querySelectorAll("span"))
-          .map((el) => `"${el.textContent.trim()}"`)
-          .join(",");
-      })
-      .join("\n");
-    return headers + rows;
-  }
-
-  #downloadCSV(content, filename) {
-    const blob = new Blob([content], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  constructor(config) {
-    this.config = config;
-    this.currentTable = null;
-    this.listContainer = document.querySelector(".entry-list--container");
-    this.exportBtn = document.querySelector(".download-icon");
-
-    this.exportBtn.addEventListener("click", () => {
-      if (!this.currentTable) {
-        console.error("No table loaded.");
-        return;
-      }
-
-      const tableData = this.listContainer.querySelectorAll(".db-entry");
-      if (tableData.length === 0) {
-        console.warn("No data to export.");
-        return;
-      }
-
-      const csvContent = this.#generateCSV(tableData);
-      this.#downloadCSV(csvContent, `${this.currentTable}.csv`);
-    });
-  }
-
-  async loadTable(table, sortKey = "", sortDirection = "") {
-    try {
-      const tableConfig = this.config[table];
-      if (!tableConfig) {
-        throw new Error(`Unknown table: ${table}`);
-      }
-
-      const tableData = await this.#getTableData(table, sortKey, sortDirection);
-
-      this.listContainer.innerHTML = "";
-      await this.renderTableHeader(table, tableConfig.columns);
-      await this.renderTableRows(table, tableData, tableConfig);
-      this.currentTable = table;
-    } catch (err) {
-      console.error(`Failed to load table: ${err.message}`);
-      throw err;
-    }
-  }
-
-  async renderTableHeader(table, columns) {
-    const header = document.createElement("div");
-    header.className = `result-columns grid-layout--${table}`;
-
-    const numberColumn = document.createElement("span");
-    numberColumn.textContent = "#";
-    header.appendChild(numberColumn);
-
-    for (const col of columns) {
-      const column = document.createElement("span");
-      column.textContent = col.label;
-      header.appendChild(column);
-    }
-    this.listContainer.appendChild(header);
-  }
-
-  async renderTableRows(table, tableData, tableConfig) {
-    tableData.forEach((row, i) => {
-      const rowEl = document.createElement("div");
-      rowEl.className = `grid-layout--${table} db-entry`;
-
-      const numberColumn = document.createElement("span");
-      numberColumn.className = "db-entry--number";
-      numberColumn.textContent = i + 1;
-      rowEl.appendChild(numberColumn);
-
-      tableConfig.columns.forEach((column) => {
-        const columnEl = document.createElement("span");
-        columnEl.className = column.classname;
-        columnEl.textContent = row[column.key];
-        rowEl.appendChild(columnEl);
-      });
-
-      const editBtn = document.createElement("button");
-      editBtn.type = "button";
-      editBtn.className = "hidden-btn";
-      editBtn.innerHTML = `<i class="fa-solid fa-pen-to-square edit--icon"></i>`;
-      editBtn.addEventListener("click", async () => {
-        const slideout = new DBSlideoutManager(
-          SLIDEOUT_CONFIG,
-          table,
-          async () => await this.loadTable(table)
-        );
-        try {
-          await slideout.init(row[tableConfig.id]);
-          slideout.show();
-        } catch (err) {
-          console.error(`Failed to open slideout: ${err.message}`);
-        }
-      });
-      rowEl.appendChild(editBtn);
-
-      this.listContainer.appendChild(rowEl);
-    });
   }
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
-  setTableSelect();
-  let sortManager = null;
+  const container = document.querySelector(".content-wrapper");
+  const pageContent = document.querySelector(".container");
 
+  const listContainer = document.querySelector(".entry-list--container");
+
+  const tableSelect = document.querySelector(".manage-db--table-select");
   const sortSelect = document.querySelector(".manage-db--sort-select");
   const sortToggleBtn = document.querySelector(".sort-icon");
 
-  const loadSelectedTable = async (updateURL = true) => {
-    const selectedTable = tableSelect.value;
-    sessionStorage.setItem("manageDBTableSelected", selectedTable);
+  const dbViewManager = new DBViewManager({
+    config: TABLE_CONFIG,
+    fetchTableData: async (table, sortKey = "", sortDirection = "") => {
+      try {
+        const response = await fetch(
+          `/admin/manage-db/table-data/${encodeURIComponent(
+            table
+          )}?sortKey=${encodeURIComponent(
+            sortKey
+          )}&sortDirection=${encodeURIComponent(sortDirection)}`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-    if (updateURL) {
-      const newUrl = `/admin/manage-db/${selectedTable}`;
-      history.pushState({ table: selectedTable }, "", newUrl);
-    }
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
+        }
 
-    try {
-      if (sortManager) {
-        sortManager.destroy();
-        sortManager = null;
+        return await response.json();
+      } catch (err) {
+        throw new Error(`Failed to get table data: ${err.message}`);
       }
-
-      await dbViewManager.loadTable(selectedTable);
-
-      sortManager = new DBViewSortSelectManager({
-        selectElement: sortSelect,
-        sortDirectionButton: sortToggleBtn,
-        sortKeys: TABLE_CONFIG[selectedTable].sortKeys || [],
-        defaultOption: {
-          label: "Sort",
-          value: "",
-          disabled: true,
-          selected: true,
-          hidden: true,
-        },
-        onSelectCallback: async (selectedValue, sortDirection) => {
-          await dbViewManager.loadTable(
-            selectedTable,
-            selectedValue,
-            sortDirection
-          );
-        },
-      });
-    } catch (err) {
-      console.error(`Error loading table: ${err.message}`);
-    }
-  };
-
-  const dbViewManager = new DBViewManager(TABLE_CONFIG);
-
-  const defaultTable = "songs";
-  const initialTable =
-    window.location.pathname.split("/")[3] ||
-    sessionStorage.getItem("manageDBTableSelected") ||
-    defaultTable;
-
-  tableSelect.value = initialTable;
-
-  await dbViewManager.loadTable(initialTable);
-
-  tableSelect.addEventListener("change", () => loadSelectedTable(true));
-
-  window.addEventListener("popstate", async (e) => {
-    const pathTable = window.location.pathname.split("/")[3] || defaultTable;
-
-    tableSelect.value = pathTable;
-    await dbViewManager.loadTable(pathTable);
+    },
+    listContainer: listContainer,
+    csvExportEnabled: true,
+    csvExportOptions: {
+      csvExportBtn: document.querySelector(".download-icon"),
+      dbEntryClassName: ".db-entry",
+      dbRowClassName: "span",
+    },
+    tableOptions: {
+      renderHeaderNumberColumn: true,
+      headerNumberColumnTextContent: "#",
+      renderRowNumber: true,
+    },
   });
 
-  await loadSelectedTable();
-});
+  const dbPageStateManager = new DBPageStateManager({
+    defaultTable: "songs",
+    tableURLIndex: 3,
+    baseURL: "/admin/manage-db",
+    saveTableInSession: true,
+    sessionStorageKey: "db_current_table",
+  });
 
-// Loading spinner
-const container = document.querySelector(".content-wrapper");
-const pageContent = document.querySelector(".container");
+  new DBMultiTableResultsManager({
+    tableSelectElement: tableSelect,
+    updateURL: true,
+    saveTableInSession: true,
+    tableConfig: TABLE_CONFIG,
+    dbViewManager: dbViewManager,
+    pageStateManager: dbPageStateManager,
+    sortingEnabled: true,
+    sortOptions: {
+      sortSelectElement: sortSelect,
+      sortToggleBtnElement: sortToggleBtn,
+    },
+  });
 
-new PageLoadSpinnerManager({
-  container: container,
-  pageContent: pageContent,
-  primaryColor: "#5A7F71",
-  secondaryColor: "#e3e5e4",
-  spinnerStrokeSize: "0.4rem",
-  spinnerSpeed: 1.5,
+  new PageLoadSpinnerManager({
+    container: container,
+    pageContent: pageContent,
+    primaryColor: "#5A7F71",
+    secondaryColor: "#e3e5e4",
+    spinnerStrokeSize: "0.4rem",
+    spinnerSpeed: 1.5,
+  });
 });

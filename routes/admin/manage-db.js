@@ -336,6 +336,22 @@ router.put("/song-data", isAdmin, multer, async (req, res) => {
   }
 });
 
+router.delete("/song-data/:songId", isAdmin, async (req, res) => {
+  const songId = req.params.songId;
+  const query = `DELETE FROM songs WHERE id = ?`;
+
+  try {
+    await dbGet(query, [songId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while deleting song.",
+    });
+  }
+});
+
 router.get("/album-data/:albumId", isAdmin, async (req, res) => {
   const albumId = req.params.albumId;
 
@@ -425,6 +441,22 @@ router.put("/album-data", isAdmin, multer, async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "An error occurred while updating album data.",
+    });
+  }
+});
+
+router.delete("/album-data/:albumId", isAdmin, async (req, res) => {
+  const albumId = req.params.albumId;
+  const query = `DELETE FROM albums WHERE id = ?`;
+
+  try {
+    await dbGet(query, [albumId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while deleting album.",
     });
   }
 });
@@ -522,6 +554,22 @@ router.put("/artist-data", isAdmin, multer, async (req, res) => {
   }
 });
 
+router.delete("/artist-data/:artistId", isAdmin, async (req, res) => {
+  const artistId = req.params.artistId;
+  const query = `DELETE FROM artists WHERE id = ?`;
+
+  try {
+    await dbGet(query, [artistId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while deleting artist.",
+    });
+  }
+});
+
 router.get("/preset-data/:presetId", isAdmin, async (req, res) => {
   const presetId = req.params.presetId;
 
@@ -593,6 +641,22 @@ router.put("/preset-data", isAdmin, multer, async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "An error occurred while updating preset data.",
+    });
+  }
+});
+
+router.delete("/preset-data/:presetId", isAdmin, async (req, res) => {
+  const presetId = req.params.presetId;
+  const query = `DELETE FROM presets WHERE id = ?`;
+
+  try {
+    await dbGet(query, [presetId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while deleting preset.",
     });
   }
 });
@@ -701,6 +765,22 @@ router.put("/synth-data", isAdmin, multer, async (req, res) => {
     console.error(err);
     res.status(500).json({
       error: "An error occurred while updating synth data.",
+    });
+  }
+});
+
+router.delete("/synth-data/:synthId", isAdmin, async (req, res) => {
+  const synthId = req.params.synthId;
+  const query = `DELETE FROM synths WHERE id = ?`;
+
+  try {
+    await dbGet(query, [synthId]);
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while deleting synth.",
     });
   }
 });
