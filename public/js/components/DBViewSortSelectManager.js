@@ -1,5 +1,5 @@
-import { DBEventBinder } from "./componets.js";
-import { ValidateOptions } from "./componets.js";
+import { EventBinder } from "./Components.js";
+import { ValidateOptions } from "./Components.js";
 
 export class DBViewSortSelectManager {
   #select;
@@ -42,29 +42,13 @@ export class DBViewSortSelectManager {
     this.#defaultOption = defaultOption;
     this.#sortDirection = "ASC";
     this.#onSelectCallback = onSelectCallback;
-    this.#eventBinder = new DBEventBinder();
-
-    this.#boundHandleSelectChange = this.#handleSelectChange.bind(this);
-    this.#boundHandleSortDirectionToggle =
-      this.#handleSortDirectionToggle.bind(this);
+    this.#eventBinder = new EventBinder();
 
     this.#init();
   }
 
   destroy() {
-    this.#eventBinder.unbind(
-      this.#select,
-      "change",
-      this.#boundHandleSelectChange
-    );
-    if (this.#sortDirectionButton) {
-      this.#eventBinder.unbind(
-        this.#sortDirectionButton,
-        "click",
-        this.#boundHandleSortDirectionToggle
-      );
-    }
-
+    this.#eventBinder.unbindAll();
     this.#select.value = "";
   }
 
@@ -104,33 +88,29 @@ export class DBViewSortSelectManager {
     });
   }
 
-  #handleSelectChange() {
+  #handleSelectChange = () => {
     const selectedValue = this.#select.value;
 
     if (this.#onSelectCallback) {
       this.#onSelectCallback(selectedValue, this.#sortDirection);
     }
-  }
+  };
 
-  #handleSortDirectionToggle() {
+  #handleSortDirectionToggle = () => {
     if (!this.#sortDirectionButton) return;
 
     this.#sortDirection = this.#sortDirection === "ASC" ? "DESC" : "ASC";
     this.#handleSelectChange();
-  }
+  };
 
   #bindEvents() {
-    this.#eventBinder.bind(
-      this.#select,
-      "change",
-      this.#boundHandleSelectChange
-    );
+    this.#eventBinder.bind(this.#select, "change", this.#handleSelectChange);
 
     if (this.#sortDirectionButton) {
       this.#eventBinder.bind(
         this.#sortDirectionButton,
         "click",
-        this.#boundHandleSortDirectionToggle
+        this.#handleSortDirectionToggle
       );
     }
   }

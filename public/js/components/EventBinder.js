@@ -1,4 +1,4 @@
-export class DBEventBinder {
+export class EventBinder {
   #events = [];
 
   bind(element, event, handler) {

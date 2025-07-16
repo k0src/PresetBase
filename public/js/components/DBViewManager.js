@@ -1,4 +1,4 @@
-import { ValidateOptions } from "./componets.js";
+import { ValidateOptions } from "./Components.js";
 
 // View manager for dynamically created EJS table views
 export class DBViewManager {

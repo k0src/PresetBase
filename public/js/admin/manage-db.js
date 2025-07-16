@@ -1,4 +1,4 @@
-import * as Components from "../components/componets.js";
+import * as Components from "../components/Components.js";
 
 /* ------------------------------ Table Config ------------------------------ */
 const TABLE_CONFIG = {

@@ -1,4 +1,5 @@
-import { ValidateOptions } from "./componets.js";
+import { ValidateOptions } from "./Components.js";
+import { EventBinder } from "./Components.js";
 
 export class PageLoadSpinnerManager {
   #container;
@@ -15,6 +16,7 @@ export class PageLoadSpinnerManager {
   #loadDelay;
   #onLoadCallback;
   #spinner;
+  #eventBinder;
 
   static #spinnerStyles = {
     default: {
@@ -112,6 +114,8 @@ export class PageLoadSpinnerManager {
     this.#loadDelay = loadDelay;
     this.#onLoadCallback = onLoadCallback;
 
+    this.#eventBinder = new EventBinder();
+
     this.#initSpinner();
   }
 
@@ -181,7 +185,7 @@ export class PageLoadSpinnerManager {
     this.#pageContent.classList.remove(this.#hiddenClass);
   }
 
-  #handleWindowLoad() {
+  #handleWindowLoad = () => {
     if (this.#loadDelay > 0) {
       setTimeout(() => {
         this.#hideSpinner();
@@ -191,9 +195,9 @@ export class PageLoadSpinnerManager {
       this.#hideSpinner();
       this.#onLoadCallback?.();
     }
-  }
+  };
 
   #bindEvents() {
-    window.addEventListener("load", this.#handleWindowLoad.bind(this));
+    window.addEventListener("load", this.#handleWindowLoad);
   }
 }

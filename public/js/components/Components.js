@@ -1,5 +1,5 @@
 export { AutofillDropdownManager } from "./AutofillDropdownManager.js";
-export { DBEventBinder } from "./DBEventBinder.js";
+export { EventBinder } from "./EventBinder.js";
 export { DBMultiTableResultsManager } from "./DBMultiTableResultsManager.js";
 export { DBPageDOMManager } from "./DBPageDOMManager.js";
 export { DBPageStateManager } from "./DBPageStateManager.js";

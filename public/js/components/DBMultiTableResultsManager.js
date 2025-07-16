@@ -1,8 +1,8 @@
-import { DBViewSortSelectManager } from "./componets.js";
-import { DBEventBinder } from "./componets.js";
-import { ValidateOptions } from "./componets.js";
-import { DBViewManager } from "./componets.js";
-import { DBPageStateManager } from "./componets.js";
+import { DBViewSortSelectManager } from "./Components.js";
+import { EventBinder } from "./Components.js";
+import { ValidateOptions } from "./Components.js";
+import { DBViewManager } from "./Components.js";
+import { DBPageStateManager } from "./Components.js";
 
 // Delegates management of multi table results, delegates selecting
 // tables, sorting, filtering, view table, and page state
@@ -58,7 +58,7 @@ export class DBMultiTableResultsManager {
     this.#viewManager = viewManager;
     this.#pageStateManager = pageStateManager;
     this.#tableSelectElement = tableSelectElement;
-    this.#eventBinder = new DBEventBinder();
+    this.#eventBinder = new EventBinder();
     this.#tableConfig = tableConfig;
     this.#sortingEnabled = sortingEnabled;
     this.#saveTableInSession = saveTableInSession;
