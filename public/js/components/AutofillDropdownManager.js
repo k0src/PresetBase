@@ -1,3 +1,5 @@
+import { ValidateOptions } from "./componets.js";
+
 export class AutofillDropdownManager {
   #input;
   #dropdown;
@@ -24,17 +26,14 @@ export class AutofillDropdownManager {
       loopNavigation = true,
       debounceDelay = 150,
     } = options;
-    if (!(inputElement instanceof HTMLInputElement)) {
-      throw new Error("Input must be an HTMLInputElement.");
-    }
 
-    if (!(dropdownElement instanceof HTMLElement)) {
-      throw new Error("Dropdown must be an HTMLElement.");
-    }
+    const validator = new ValidateOptions();
 
-    if (typeof fetchResults !== "function") {
-      throw new Error("Invalid fetchResults function.");
-    }
+    validator.validateAll([
+      { value: inputElement, type: "instance", instance: HTMLInputElement },
+      { value: dropdownElement, type: "instance", instance: HTMLElement },
+      { value: fetchResults, type: "function" },
+    ]);
 
     this.#classes = {
       show: "show",

@@ -1,123 +1,87 @@
-import { DBPageStateManager } from "./DBPageStateManager.js";
-import { DBViewManager } from "./DBViewManager.js";
-import { DBViewSortSelectManager } from "./DBViewSortSelectManager.js";
+import { DBViewSortSelectManager } from "./componets.js";
+import { DBEventBinder } from "./componets.js";
+import { ValidateOptions } from "./componets.js";
+import { DBViewManager } from "./componets.js";
+import { DBPageStateManager } from "./componets.js";
 
 // Delegates management of multi table results, delegates selecting
 // tables, sorting, filtering, view table, and page state
 export class DBMultiTableResultsManager {
+  #viewManager;
+  #pageStateManager;
   #tableSelectElement;
-  #updateURL;
-  #saveTableInSession;
+  #sortManager = null;
+  #eventBinder;
   #tableConfig;
   #sortingEnabled;
+  #saveTableInSession;
+  #updateURL;
   #sortOptions;
-  #pageStateManager;
-  #dbViewManager;
-  #sortManager;
 
-  #boundHandleSelectChange;
-  #boundHandlePopState;
-
-  #validateOptions({
-    tableSelectElement,
-    sortSelectElement,
-    sortToggleBtnElement,
-    tableConfig,
+  constructor({
+    viewManager,
     pageStateManager,
-    dbViewManager,
-  }) {
-    if (!(tableSelectElement instanceof HTMLSelectElement)) {
-      throw new Error("Table Select Element must be an HTMLSelectElement.");
-    }
-
-    if (!(sortSelectElement instanceof HTMLSelectElement)) {
-      throw new Error("Sort Select Element must be an HTMLSelectElement.");
-    }
-
-    if (!(sortToggleBtnElement instanceof HTMLElement)) {
-      throw new Error("Sort Toggle Button Element must be an HTMLElement.");
-    }
-
-    if (!tableConfig || typeof tableConfig !== "object") {
-      throw new Error("Table Config must be a valid object.");
-    }
-
-    if (!(pageStateManager instanceof DBPageStateManager)) {
-      throw new Error(
-        "Page State Manager must be an instance of DBPageStateManager."
-      );
-    }
-
-    if (!(dbViewManager instanceof DBViewManager)) {
-      throw new Error("DB View Manager must be an instance of DBViewManager.");
-    }
-  }
-
-  constructor(options) {
-    const {
-      tableSelectElement,
-      updateURL = false,
-      saveTableInSession = false,
-      tableConfig,
-      dbViewManager,
-      pageStateManager,
-      sortingEnabled = false,
-      sortOptions = {},
-    } = options;
-
-    const {
-      sortSelectElement = null,
-      sortToggleBtnElement = null,
-      defaultOption = {
+    tableSelectElement,
+    tableConfig,
+    saveTableInSession = false,
+    updateURL = false,
+    sortingEnabled = false,
+    sortOptions = {
+      selectElement: null,
+      toggleButton: null,
+      defaultOption: {
         label: "Sort",
         value: "",
         disabled: true,
         selected: true,
         hidden: true,
       },
-    } = sortOptions;
+    },
+  }) {
+    const validator = new ValidateOptions();
 
-    this.#validateOptions({
-      tableSelectElement,
-      sortSelectElement,
-      sortToggleBtnElement,
-      tableConfig,
-      pageStateManager,
-      dbViewManager,
-    });
+    validator.validateAll([
+      { value: viewManager, type: "instance", instance: DBViewManager },
+      {
+        value: pageStateManager,
+        type: "instance",
+        instance: DBPageStateManager,
+      },
+      {
+        value: tableSelectElement,
+        type: "instance",
+        instance: HTMLSelectElement,
+      },
+      { value: tableConfig, type: "object" },
+    ]);
 
+    this.#viewManager = viewManager;
+    this.#pageStateManager = pageStateManager;
     this.#tableSelectElement = tableSelectElement;
-    this.#updateURL = updateURL;
-    this.#saveTableInSession = saveTableInSession;
+    this.#eventBinder = new DBEventBinder();
     this.#tableConfig = tableConfig;
     this.#sortingEnabled = sortingEnabled;
+    this.#saveTableInSession = saveTableInSession;
+    this.#updateURL = updateURL;
     this.#sortOptions = {
-      sortSelectElement,
-      sortToggleBtnElement,
-      defaultOption,
+      selectElement: sortOptions.selectElement,
+      toggleButton: sortOptions.toggleButton,
+      defaultOption: sortOptions.defaultOption,
     };
-    this.#pageStateManager = pageStateManager;
-    this.#dbViewManager = dbViewManager;
-    this.#sortManager = null;
-
-    this.#boundHandleSelectChange = this.#handleSelectChange.bind(this);
-    this.#boundHandlePopState = this.#handlePopState.bind(this);
-
-    this.#init();
   }
 
-  async #init() {
+  async init() {
     const initialTable = this.#pageStateManager.getInitialTable();
     this.#tableSelectElement.value = initialTable;
 
-    await this.loadTable(initialTable, this.#updateURL);
+    await this.loadTable(initialTable);
 
     this.#bindEvents();
   }
 
-  async loadTable(tableName) {
+  async loadTable(tableName, sortKey = "", sortDir = "") {
     if (!this.#tableConfig[tableName]) {
-      throw new Error(`Table ${tableName} does not exist in the config.`);
+      throw new Error(`Unknown table: ${tableName}`);
     }
 
     if (this.#saveTableInSession) {
@@ -128,54 +92,39 @@ export class DBMultiTableResultsManager {
       this.#pageStateManager.updateURL(tableName);
     }
 
-    try {
-      if (this.#sortingEnabled) {
-        if (this.#sortManager) {
-          this.#sortManager.destroy();
-          this.#sortManager = null;
-        }
+    await this.#viewManager.loadTable(tableName, sortKey, sortDir);
 
-        await this.#dbViewManager.loadTable(tableName);
-
-        const sortKeys = this.#tableConfig[tableName]?.sortKeys || [];
-
-        this.#sortManager = new DBViewSortSelectManager({
-          selectElement: this.#sortOptions.sortSelectElement,
-          sortDirectionButton: this.#sortOptions.sortToggleBtnElement,
-          sortKeys: sortKeys,
-          defaultOption: this.#sortOptions.defaultOption,
-          onSelectCallback: async (selectedValue, sortDirection) => {
-            await this.#dbViewManager.loadTable(
-              tableName,
-              selectedValue,
-              sortDirection
-            );
-          },
-        });
+    if (this.#sortingEnabled) {
+      if (this.#sortManager) {
+        this.#sortManager.destroy();
+        this.#sortManager = null;
       }
-    } catch (err) {
-      console.error(`Error loading table: ${err.message}`);
+
+      const sortKeys = this.#tableConfig[tableName]?.sortKeys || [];
+
+      this.#sortManager = new DBViewSortSelectManager({
+        selectElement: this.#sortOptions.selectElement,
+        sortDirectionButton: this.#sortOptions.toggleButton,
+        sortKeys,
+        defaultOption: this.#sortOptions.defaultOption,
+        onSelectCallback: async (key, dir) => {
+          await this.#viewManager.loadTable(tableName, key, dir);
+        },
+      });
     }
-
-    this.#dbViewManager.currentTable = tableName;
-  }
-
-  #handleSelectChange() {
-    this.loadTable(this.#tableSelectElement.value, this.#updateURL);
   }
 
   async #handlePopState() {
-    const pathTable = this.#pageStateManager.getCurrentTableFromURL();
-
-    this.#tableSelectElement.value = pathTable;
-    await this.loadTable(pathTable, this.#updateURL);
+    const table = this.#pageStateManager.getCurrentTableFromURL();
+    this.#tableSelectElement.value = table;
+    await this.loadTable(table);
   }
 
   #bindEvents() {
-    this.#tableSelectElement.addEventListener(
-      "change",
-      this.#boundHandleSelectChange
+    this.#eventBinder.bind(this.#tableSelectElement, "change", () =>
+      this.loadTable(this.#tableSelectElement.value)
     );
-    window.addEventListener("popstate", this.#boundHandlePopState);
+
+    this.#eventBinder.bind(window, "popstate", () => this.#handlePopState());
   }
 }

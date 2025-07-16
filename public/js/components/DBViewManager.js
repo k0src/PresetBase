@@ -1,3 +1,5 @@
+import { ValidateOptions } from "./componets.js";
+
 // View manager for dynamically created EJS table views
 export class DBViewManager {
   #config;
@@ -5,92 +7,34 @@ export class DBViewManager {
   #tableOptions;
   #fetchTableData;
   #listContainer;
-  #csvExportEnabled;
-  #csvExportOptions;
 
-  #boundHandleCSVExport;
-
-  #validateOptions({
-    listContainer,
-    csvExportEnabled,
-    csvExportBtn,
+  constructor({
     config,
+    tableOptions = {
+      renderHeaderNumberColumn: false,
+      headerNumberColumnTextContent: "",
+      renderRowNumber: false,
+    },
+    currentTable = null,
     fetchTableData,
+    listContainer,
   }) {
-    if (!(listContainer instanceof HTMLElement)) {
-      throw new Error("listContainer must be a valid HTMLElement.");
-    }
-
-    if (csvExportEnabled && !(csvExportBtn instanceof HTMLElement)) {
-      throw new Error("CSV Export Button must be a valid HTMLElement.");
-    }
-
-    if (typeof config !== "object") {
-      throw new Error("config must be a valid object.");
-    }
-
-    if (typeof fetchTableData !== "function") {
-      throw new Error("fetchTableData must be a valid function.");
-    }
-  }
-
-  constructor(options) {
-    const {
-      config,
-      tableOptions = {},
-      currentTable = null,
-      fetchTableData,
-      listContainer,
-      csvExportEnabled = false,
-      csvExportOptions = {},
-    } = options;
-
-    const {
-      csvExportBtn,
-      dbEntryClassName,
-      dbRowClassName,
-      useCustomCSVExportFilename = false,
-      csvExportFilename = "",
-      csvExportDelimiter = ",",
-      csvExportQuote = '"',
-    } = csvExportOptions;
-
-    const {
-      renderHeaderNumberColumn = false,
-      headerNumberColumnTextContent = "",
-      renderRowNumber = false,
-    } = tableOptions;
-
-    this.#validateOptions({
-      listContainer,
-      csvExportEnabled,
-      csvExportBtn,
-      config,
-      fetchTableData,
-    });
+    const validator = new ValidateOptions();
+    validator.validateAll([
+      { value: listContainer, type: "instance", instance: HTMLElement },
+      { value: config, type: "object" },
+      { value: fetchTableData, type: "function" },
+    ]);
 
     this.#config = config;
     this.#currentTable = currentTable;
     this.#tableOptions = {
-      renderHeaderNumberColumn,
-      headerNumberColumnTextContent,
-      renderRowNumber,
+      renderHeaderNumberColumn: tableOptions.renderHeaderNumberColumn,
+      headerNumberColumnTextContent: tableOptions.headerNumberColumnTextContent,
+      renderRowNumber: tableOptions.renderRowNumber,
     };
     this.#fetchTableData = fetchTableData;
     this.#listContainer = listContainer;
-    this.#csvExportEnabled = csvExportEnabled;
-    this.#csvExportOptions = {
-      csvExportBtn,
-      dbEntryClassName,
-      dbRowClassName,
-      useCustomCSVExportFilename,
-      csvExportFilename,
-      csvExportDelimiter,
-      csvExportQuote,
-    };
-
-    this.#boundHandleCSVExport = this.#handleCSVExport.bind(this);
-    this.#bindEvents();
   }
 
   async loadTable(tableName, sortKey = "", sortDirection = "") {
@@ -113,6 +57,14 @@ export class DBViewManager {
     } catch (err) {
       throw new Error(`Failed to load table ${tableName}: ${err.message}`);
     }
+  }
+
+  get currentTable() {
+    return this.#currentTable;
+  }
+
+  get listContainer() {
+    return this.#listContainer;
   }
 
   async #renderTableHeader(tableColumns, tableConfig) {
@@ -185,60 +137,5 @@ export class DBViewManager {
       });
       this.#listContainer.appendChild(rowEl);
     });
-  }
-
-  #generateCSVData(tableData) {
-    const rows = Array.from(tableData).map((row) => {
-      const cells = row.querySelectorAll(this.#csvExportOptions.dbRowClassName);
-      return Array.from(cells)
-        .map((cell) => {
-          const cellText = cell.textContent || "";
-          return `${this.#csvExportOptions.csvExportQuote}${cellText}${
-            this.#csvExportOptions.csvExportQuote
-          }`;
-        })
-        .join(this.#csvExportOptions.csvExportDelimiter);
-    });
-    return rows.join("\n");
-  }
-
-  #downloadCSVData(data, fileName) {
-    const blob = new Blob([data], { type: "text/csv;charset=utf-8;" });
-    const link = document.createElement("a");
-    link.href = URL.createObjectURL(blob);
-    link.setAttribute("download", fileName);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-  }
-
-  #handleCSVExport() {
-    if (!this.#currentTable) {
-      throw new Error("Cannot export CSV data. No table loaded.");
-    }
-
-    const tableData = this.#listContainer.querySelectorAll(
-      this.#csvExportOptions.dbEntryClassName
-    );
-
-    if (tableData.length === 0) {
-      console.warn("No data to export.");
-      return;
-    }
-
-    const csvData = this.#generateCSVData(tableData);
-    const fileName = this.#csvExportOptions.useCustomCSVExportFilename
-      ? this.#csvExportOptions.csvExportFilename
-      : `${this.#currentTable}.csv`;
-    this.#downloadCSVData(csvData, fileName);
-  }
-
-  #bindEvents() {
-    if (this.#csvExportEnabled) {
-      this.#csvExportOptions.csvExportBtn.addEventListener(
-        "click",
-        this.#boundHandleCSVExport
-      );
-    }
   }
 }

@@ -1,10 +1,4 @@
-import { DBMultiTableResultsManager } from "../components/DBMultiTableResultsManager.js";
-import { PageLoadSpinnerManager } from "../components/PageLoadSpinnerManager.js";
-import { DBViewManager } from "../components/DBViewManager.js";
-import { DBPageStateManager } from "../components/DBPageStateManager.js";
-import { AutofillDropdownManager } from "../components/AutofillDropdownManager.js";
-
-/* -------------------------------- Dropdown -------------------------------- */
+import * as Components from "../components/componets.js";
 
 /* ------------------------------ Table Config ------------------------------ */
 const TABLE_CONFIG = {
@@ -1111,7 +1105,7 @@ class DBSlideoutManager {
       ul.className = "slideout-dropdown hidden";
       ul.id = `slideout-dropdown-${def.key}`;
 
-      new AutofillDropdownManager({
+      new Components.AutofillDropdownManager({
         table: def.key,
         inputElement: input,
         dropdownElement: ul,
@@ -1280,7 +1274,7 @@ class DBSlideoutManager {
       ul.className = "slideout-dropdown hidden";
       ul.id = `slideout-dropdown-${list.key}`;
 
-      new AutofillDropdownManager({
+      new Components.AutofillDropdownManager({
         table: list.key,
         inputElement: input,
         dropdownElement: ul,
@@ -1589,59 +1583,80 @@ class DBSlideoutManager {
   }
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const container = document.querySelector(".content-wrapper");
-  const pageContent = document.querySelector(".container");
-
-  const listContainer = document.querySelector(".entry-list--container");
-
-  const tableSelect = document.querySelector(".manage-db--table-select");
-  const sortSelect = document.querySelector(".manage-db--sort-select");
-  const sortToggleBtn = document.querySelector(".sort-icon");
-
-  const dbViewManager = new DBViewManager({
-    config: TABLE_CONFIG,
-    fetchTableData: async (table, sortKey = "", sortDirection = "") => {
-      try {
-        const response = await fetch(
-          `/admin/manage-db/table-data/${encodeURIComponent(
-            table
-          )}?sortKey=${encodeURIComponent(
-            sortKey
-          )}&sortDirection=${encodeURIComponent(sortDirection)}`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.error);
-        }
-
-        return await response.json();
-      } catch (err) {
-        throw new Error(`Failed to get table data: ${err.message}`);
+const fetchTableData = async function (
+  table,
+  sortKey = "",
+  sortDirection = ""
+) {
+  try {
+    const response = await fetch(
+      `/admin/manage-db/table-data/${encodeURIComponent(
+        table
+      )}?sortKey=${encodeURIComponent(
+        sortKey
+      )}&sortDirection=${encodeURIComponent(sortDirection)}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    },
-    listContainer: listContainer,
-    csvExportEnabled: true,
-    csvExportOptions: {
-      csvExportBtn: document.querySelector(".download-icon"),
-      dbEntryClassName: ".db-entry",
-      dbRowClassName: "span",
-    },
-    tableOptions: {
-      renderHeaderNumberColumn: true,
-      headerNumberColumnTextContent: "#",
-      renderRowNumber: true,
-    },
+    );
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.error);
+    }
+
+    return await response.json();
+  } catch (err) {
+    throw new Error(`Failed to get table data: ${err.message}`);
+  }
+};
+
+const bindCSVExportButton = function ({
+  buttonElement,
+  viewManager,
+  rowSelector = "span",
+  entrySelector = ".db-entry",
+  delimiter = ",",
+  quote = '"',
+}) {
+  const csvManager = new Components.DBTableCSVDownloadManager(delimiter, quote);
+
+  buttonElement.addEventListener("click", () => {
+    const currentTable = viewManager.currentTable;
+    const listContainer = viewManager.listContainer;
+
+    if (!currentTable) {
+      console.warn("No table selected to export.");
+      return;
+    }
+
+    const tableRows = listContainer.querySelectorAll(entrySelector);
+    if (tableRows.length === 0) {
+      console.warn("No data to export.");
+      return;
+    }
+
+    const csvData = csvManager.generateCSVData(tableRows, rowSelector);
+    const fileName = `${currentTable}.csv`;
+    csvManager.downloadCSVData(csvData, fileName);
+  });
+};
+
+document.addEventListener("DOMContentLoaded", async () => {
+  const domManager = new Components.DBPageDOMManager({
+    container: ".content-wrapper",
+    pageContent: ".container",
+    listContainer: ".entry-list--container",
+    tableSelect: ".manage-db--table-select",
+    sortSelect: ".manage-db--sort-select",
+    sortToggleBtn: ".sort-icon",
+    csvExportBtn: ".download-icon",
   });
 
-  const dbPageStateManager = new DBPageStateManager({
+  const dbPageStateManager = new Components.DBPageStateManager({
     defaultTable: "songs",
     tableURLIndex: 3,
     baseURL: "/admin/manage-db",
@@ -1649,26 +1664,50 @@ document.addEventListener("DOMContentLoaded", async () => {
     sessionStorageKey: "db_current_table",
   });
 
-  new DBMultiTableResultsManager({
-    tableSelectElement: tableSelect,
-    updateURL: true,
-    saveTableInSession: true,
-    tableConfig: TABLE_CONFIG,
-    dbViewManager: dbViewManager,
-    pageStateManager: dbPageStateManager,
-    sortingEnabled: true,
-    sortOptions: {
-      sortSelectElement: sortSelect,
-      sortToggleBtnElement: sortToggleBtn,
+  const dbViewManager = new Components.DBViewManager({
+    config: TABLE_CONFIG,
+    fetchTableData: fetchTableData,
+    listContainer: domManager.getElement("listContainer"),
+    tableOptions: {
+      renderHeaderNumberColumn: true,
+      headerNumberColumnTextContent: "#",
+      renderRowNumber: true,
     },
   });
 
-  new PageLoadSpinnerManager({
-    container: container,
-    pageContent: pageContent,
+  const dbManager = new Components.DBMultiTableResultsManager({
+    domManager: domManager,
+    viewManager: dbViewManager,
+    pageStateManager: dbPageStateManager,
+    tableSelectElement: domManager.getElement("tableSelect"),
+    updateURL: true,
+    saveTableInSession: true,
+    tableConfig: TABLE_CONFIG,
+    sortingEnabled: true,
+    sortOptions: {
+      selectElement: domManager.getElement("sortSelect"),
+      toggleButton: domManager.getElement("sortToggleBtn"),
+    },
+  });
+
+  dbManager.init();
+
+  bindCSVExportButton({
+    buttonElement: domManager.getElement("csvExportBtn"),
+    viewManager: dbViewManager,
+    rowSelector: "span",
+    entrySelector: ".db-entry",
+    delimiter: ",",
+    quote: '"',
+  });
+
+  new Components.PageLoadSpinnerManager({
+    container: domManager.getElement("container"),
+    pageContent: domManager.getElement("pageContent"),
     primaryColor: "#5A7F71",
     secondaryColor: "#e3e5e4",
     spinnerStrokeSize: "0.4rem",
     spinnerSpeed: 1.5,
+    loadDelay: 100,
   });
 });

@@ -1,3 +1,5 @@
+import { ValidateOptions } from "./componets.js";
+
 export class PageLoadSpinnerManager {
   #container;
   #pageContent;
@@ -75,30 +77,26 @@ export class PageLoadSpinnerManager {
     },
   };
 
-  constructor(options) {
-    const {
-      container,
-      pageContent,
-      hiddenClass = "hidden",
-      spinnerStyle = "default",
-      primaryColor = "#ffffff",
-      secondaryColor = "#000000",
-      spinnerWidth = "4.8rem",
-      spinnerHeight = "4.8rem",
-      spinnerStrokeSize = "0.4rem",
-      spinnerSpeed = 2,
-      className = "page-load-spinner",
-      loadDelay = 0,
-      onLoadCallback = null,
-    } = options;
-
-    if (!(container instanceof HTMLElement)) {
-      throw new Error("Container must be an HTMLElement.");
-    }
-
-    if (!(pageContent instanceof HTMLElement)) {
-      throw new Error("Page Content must be an HTMLElement.");
-    }
+  constructor({
+    container,
+    pageContent,
+    hiddenClass = "hidden",
+    spinnerStyle = "default",
+    primaryColor = "#ffffff",
+    secondaryColor = "#000000",
+    spinnerWidth = "4.8rem",
+    spinnerHeight = "4.8rem",
+    spinnerStrokeSize = "0.4rem",
+    spinnerSpeed = 2,
+    className = "page-load-spinner",
+    loadDelay = 0,
+    onLoadCallback = null,
+  }) {
+    const validator = new ValidateOptions();
+    validator.validateAll([
+      { value: container, type: "instance", instance: HTMLElement },
+      { value: pageContent, type: "instance", instance: HTMLElement },
+    ]);
 
     this.#container = container;
     this.#pageContent = pageContent;

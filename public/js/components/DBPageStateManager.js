@@ -5,14 +5,13 @@ export class DBPageStateManager {
   #sessionStorageKey;
   #baseURL;
 
-  constructor(options) {
-    const {
-      defaultTable = "songs",
-      tableURLIndex = 1,
-      baseURL,
-      saveTableInSession = false,
-      sessionStorageKey = "db_current_table",
-    } = options;
+  constructor({
+    defaultTable = "songs",
+    tableURLIndex = 1,
+    baseURL,
+    saveTableInSession = false,
+    sessionStorageKey = "db_current_table",
+  }) {
     this.#defaultTable = defaultTable;
     this.#tableURLIndex = tableURLIndex;
     this.#baseURL = baseURL;

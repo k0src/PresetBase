@@ -1,3 +1,6 @@
+import { DBEventBinder } from "./componets.js";
+import { ValidateOptions } from "./componets.js";
+
 export class DBViewSortSelectManager {
   #select;
   #sortDirectionButton;
@@ -5,32 +8,33 @@ export class DBViewSortSelectManager {
   #defaultOption;
   #sortDirection;
   #onSelectCallback;
+  #eventBinder;
 
   #boundHandleSelectChange;
   #boundHandleSortDirectionToggle;
 
-  constructor(options) {
-    const {
-      selectElement,
-      sortDirectionButton = null,
-      sortKeys,
-      defaultOption = {
-        label: "Sort",
-        value: "",
-        disabled: true,
-        selected: true,
-        hidden: true,
+  constructor({
+    selectElement,
+    sortDirectionButton = null,
+    sortKeys,
+    defaultOption = {
+      label: "Sort",
+      value: "",
+      disabled: true,
+      selected: true,
+      hidden: true,
+    },
+    onSelectCallback = null,
+  }) {
+    const validator = new ValidateOptions();
+    validator.validateAll([
+      { value: selectElement, type: "instance", instance: HTMLSelectElement },
+      {
+        value: sortDirectionButton,
+        type: "instance",
+        instance: HTMLElement,
       },
-      onSelectCallback = null,
-    } = options;
-
-    if (!(selectElement instanceof HTMLSelectElement)) {
-      throw new Error("Select Element must be an HTMLSelectElement.");
-    }
-
-    if (!Array.isArray(sortKeys)) {
-      throw new Error("sortKeys must be an array.");
-    }
+    ]);
 
     this.#select = selectElement;
     this.#sortDirectionButton = sortDirectionButton;
@@ -38,6 +42,7 @@ export class DBViewSortSelectManager {
     this.#defaultOption = defaultOption;
     this.#sortDirection = "ASC";
     this.#onSelectCallback = onSelectCallback;
+    this.#eventBinder = new DBEventBinder();
 
     this.#boundHandleSelectChange = this.#handleSelectChange.bind(this);
     this.#boundHandleSortDirectionToggle =
@@ -47,15 +52,28 @@ export class DBViewSortSelectManager {
   }
 
   destroy() {
-    this.#select.removeEventListener("change", this.#boundHandleSelectChange);
+    this.#eventBinder.unbind(
+      this.#select,
+      "change",
+      this.#boundHandleSelectChange
+    );
     if (this.#sortDirectionButton) {
-      this.#sortDirectionButton.removeEventListener(
+      this.#eventBinder.unbind(
+        this.#sortDirectionButton,
         "click",
         this.#boundHandleSortDirectionToggle
       );
     }
 
     this.#select.value = "";
+  }
+
+  get currentSortKey() {
+    return this.#select.value;
+  }
+
+  get currentSortDirection() {
+    return this.#sortDirection;
   }
 
   #init() {
@@ -102,10 +120,15 @@ export class DBViewSortSelectManager {
   }
 
   #bindEvents() {
-    this.#select.addEventListener("change", this.#boundHandleSelectChange);
+    this.#eventBinder.bind(
+      this.#select,
+      "change",
+      this.#boundHandleSelectChange
+    );
 
     if (this.#sortDirectionButton) {
-      this.#sortDirectionButton.addEventListener(
+      this.#eventBinder.bind(
+        this.#sortDirectionButton,
         "click",
         this.#boundHandleSortDirectionToggle
       );
