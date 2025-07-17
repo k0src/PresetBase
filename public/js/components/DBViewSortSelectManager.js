@@ -10,9 +10,6 @@ export class DBViewSortSelectManager {
   #onSelectCallback;
   #eventBinder;
 
-  #boundHandleSelectChange;
-  #boundHandleSortDirectionToggle;
-
   constructor({
     selectElement,
     sortDirectionButton = null,

@@ -8,3 +8,4 @@ export { DBViewManager } from "./DBViewManager.js";
 export { DBViewSortSelectManager } from "./DBViewSortSelectManager.js";
 export { PageLoadSpinnerManager } from "./PageLoadSpinnerManager.js";
 export { ValidateOptions } from "./ValidateOptions.js";
+export { DBViewFilterManager } from "./DBViewFilterManager.js";

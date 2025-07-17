@@ -46,6 +46,8 @@ const TABLE_CONFIG = {
       { label: "Year", value: "songs.release_year" },
       { label: "Date Added", value: "songs.timestamp" },
     ],
+    filterForKeys: ["title", "genre"],
+    filterSelector: "db-entry",
     actions: [
       {
         type: "button",
@@ -73,6 +75,7 @@ const TABLE_CONFIG = {
     id: "id",
     headerClassName: "result-columns grid-layout--artists",
     entryClassName: "grid-layout--artists db-entry",
+    rowNumberClassName: "db-entry--number",
     columns: [
       {
         key: "name",
@@ -100,6 +103,8 @@ const TABLE_CONFIG = {
       { label: "Country", value: "artists.country" },
       { label: "Date Added", value: "artists.timestamp" },
     ],
+    filterForKeys: ["name", "country"],
+    filterSelector: "db-entry",
     actions: [
       {
         type: "button",
@@ -127,6 +132,7 @@ const TABLE_CONFIG = {
     id: "id",
     headerClassName: "result-columns grid-layout--albums",
     entryClassName: "grid-layout--albums db-entry",
+    rowNumberClassName: "db-entry--number",
     columns: [
       {
         key: "title",
@@ -160,6 +166,8 @@ const TABLE_CONFIG = {
       { label: "Year", value: "albums.release_year" },
       { label: "Date Added", value: "albums.timestamp" },
     ],
+    filterForKeys: ["title", "genre"],
+    filterSelector: "db-entry",
     actions: [
       {
         type: "button",
@@ -187,6 +195,7 @@ const TABLE_CONFIG = {
     id: "id",
     headerClassName: "result-columns grid-layout--synths",
     entryClassName: "grid-layout--synths db-entry",
+    rowNumberClassName: "db-entry--number",
     columns: [
       {
         key: "synth_name",
@@ -220,6 +229,8 @@ const TABLE_CONFIG = {
       { label: "Year", value: "synths.release_year" },
       { label: "Date Added", value: "synths.timestamp" },
     ],
+    filterForKeys: ["synth_name", "manufacturer"],
+    filterSelector: "db-entry",
     actions: [
       {
         type: "button",
@@ -247,6 +258,7 @@ const TABLE_CONFIG = {
     id: "id",
     headerClassName: "result-columns grid-layout--presets",
     entryClassName: "grid-layout--presets db-entry",
+    rowNumberClassName: "db-entry--number",
     columns: [
       {
         key: "preset_name",
@@ -275,6 +287,8 @@ const TABLE_CONFIG = {
       { label: "Author", value: "presets.author" },
       { label: "Date Added", value: "presets.timestamp" },
     ],
+    filterForKeys: ["preset_name", "pack_name", "author"],
+    filterSelector: "db-entry",
     actions: [
       {
         type: "button",
@@ -1583,6 +1597,7 @@ class DBSlideoutManager {
   }
 }
 
+// make class
 const fetchTableData = async function (
   table,
   sortKey = "",
@@ -1646,12 +1661,14 @@ const bindCSVExportButton = function ({
 };
 
 document.addEventListener("DOMContentLoaded", async () => {
-  const domManager = new Components.DBPageDOMManager({
+  const staticDomManager = new Components.DBPageDOMManager({
     container: ".content-wrapper",
     pageContent: ".container",
     listContainer: ".entry-list--container",
     tableSelect: ".manage-db--table-select",
     sortSelect: ".manage-db--sort-select",
+    filterInput: ".manage-db-filter--input",
+    filterClearBtn: ".result-filter--clear",
     sortToggleBtn: ".sort-icon",
     csvExportBtn: ".download-icon",
   });
@@ -1667,7 +1684,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const dbViewManager = new Components.DBViewManager({
     config: TABLE_CONFIG,
     fetchTableData: fetchTableData,
-    listContainer: domManager.getElement("listContainer"),
+    listContainer: staticDomManager.getElement("listContainer"),
     tableOptions: {
       renderHeaderNumberColumn: true,
       headerNumberColumnTextContent: "#",
@@ -1676,24 +1693,29 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   const dbManager = new Components.DBMultiTableResultsManager({
-    domManager: domManager,
+    staticDomManager: staticDomManager,
     viewManager: dbViewManager,
     pageStateManager: dbPageStateManager,
-    tableSelectElement: domManager.getElement("tableSelect"),
+    tableSelectElement: staticDomManager.getElement("tableSelect"),
     updateURL: true,
     saveTableInSession: true,
     tableConfig: TABLE_CONFIG,
     sortingEnabled: true,
     sortOptions: {
-      selectElement: domManager.getElement("sortSelect"),
-      toggleButton: domManager.getElement("sortToggleBtn"),
+      selectElement: staticDomManager.getElement("sortSelect"),
+      toggleButton: staticDomManager.getElement("sortToggleBtn"),
+    },
+    filterEnabled: true,
+    filterOptions: {
+      filterInputElement: staticDomManager.getElement("filterInput"),
+      filterClearBtnElement: staticDomManager.getElement("filterClearBtn"),
     },
   });
 
   dbManager.init();
 
   bindCSVExportButton({
-    buttonElement: domManager.getElement("csvExportBtn"),
+    buttonElement: staticDomManager.getElement("csvExportBtn"),
     viewManager: dbViewManager,
     rowSelector: "span",
     entrySelector: ".db-entry",
@@ -1702,8 +1724,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
 
   new Components.PageLoadSpinnerManager({
-    container: domManager.getElement("container"),
-    pageContent: domManager.getElement("pageContent"),
+    container: staticDomManager.getElement("container"),
+    pageContent: staticDomManager.getElement("pageContent"),
     primaryColor: "#5A7F71",
     secondaryColor: "#e3e5e4",
     spinnerStrokeSize: "0.4rem",

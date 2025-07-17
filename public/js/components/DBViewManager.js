@@ -1,6 +1,5 @@
 import { ValidateOptions } from "./Components.js";
 
-// View manager for dynamically created EJS table views
 export class DBViewManager {
   #config;
   #currentTable;
@@ -103,6 +102,7 @@ export class DBViewManager {
         const columnEl = document.createElement("span");
         columnEl.className = column.className;
         columnEl.textContent = row[column.key];
+        columnEl.dataset.filterkey = column.key;
         rowEl.appendChild(columnEl);
       });
 

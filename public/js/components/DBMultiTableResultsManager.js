@@ -3,6 +3,8 @@ import { EventBinder } from "./Components.js";
 import { ValidateOptions } from "./Components.js";
 import { DBViewManager } from "./Components.js";
 import { DBPageStateManager } from "./Components.js";
+import { DBPageDOMManager } from "./Components.js";
+import { DBViewFilterManager } from "./DBViewFilterManager.js";
 
 // Delegates management of multi table results, delegates selecting
 // tables, sorting, filtering, view table, and page state
@@ -10,13 +12,16 @@ export class DBMultiTableResultsManager {
   #viewManager;
   #pageStateManager;
   #tableSelectElement;
-  #sortManager = null;
   #eventBinder;
   #tableConfig;
-  #sortingEnabled;
   #saveTableInSession;
   #updateURL;
+  #sortingEnabled;
   #sortOptions;
+  #sortManager = null;
+  #filterEnabled;
+  #filterOptions;
+  #filterManager = null;
 
   constructor({
     viewManager,
@@ -36,6 +41,11 @@ export class DBMultiTableResultsManager {
         selected: true,
         hidden: true,
       },
+    },
+    filterEnabled = false,
+    filterOptions = {
+      filterInputElement: null,
+      filterClearBtnElement: null,
     },
   }) {
     const validator = new ValidateOptions();
@@ -60,13 +70,18 @@ export class DBMultiTableResultsManager {
     this.#tableSelectElement = tableSelectElement;
     this.#eventBinder = new EventBinder();
     this.#tableConfig = tableConfig;
-    this.#sortingEnabled = sortingEnabled;
     this.#saveTableInSession = saveTableInSession;
     this.#updateURL = updateURL;
+    this.#sortingEnabled = sortingEnabled;
     this.#sortOptions = {
       selectElement: sortOptions.selectElement,
       toggleButton: sortOptions.toggleButton,
       defaultOption: sortOptions.defaultOption,
+    };
+    this.#filterEnabled = filterEnabled;
+    this.#filterOptions = {
+      filterInputElement: filterOptions.filterInputElement,
+      filterClearBtnElement: filterOptions.filterClearBtnElement,
     };
   }
 
@@ -77,6 +92,12 @@ export class DBMultiTableResultsManager {
     await this.loadTable(initialTable);
 
     this.#bindEvents();
+  }
+
+  #clearFilterInput() {
+    if (this.#filterEnabled && this.#filterOptions.filterInputElement) {
+      this.#filterOptions.filterInputElement.value = "";
+    }
   }
 
   async loadTable(tableName, sortKey = "", sortDir = "") {
@@ -94,6 +115,8 @@ export class DBMultiTableResultsManager {
 
     await this.#viewManager.loadTable(tableName, sortKey, sortDir);
 
+    this.#clearFilterInput();
+
     if (this.#sortingEnabled) {
       if (this.#sortManager) {
         this.#sortManager.destroy();
@@ -108,7 +131,27 @@ export class DBMultiTableResultsManager {
         sortKeys,
         defaultOption: this.#sortOptions.defaultOption,
         onSelectCallback: async (key, dir) => {
-          await this.#viewManager.loadTable(tableName, key, dir);
+          await this.loadTable(tableName, key, dir);
+        },
+      });
+    }
+
+    if (this.#filterEnabled) {
+      if (this.#filterManager) {
+        this.#filterManager.destroy();
+        this.#filterManager = null;
+      }
+
+      const filterForKeys = this.#tableConfig[tableName].filterForKeys || [];
+      const filterSelector = this.#tableConfig[tableName].filterSelector || "";
+
+      this.#filterManager = new DBViewFilterManager({
+        filterInputElement: this.#filterOptions.filterInputElement,
+        filterSelector: `.${filterSelector}`,
+        filterForKeys,
+        filterClearBtnElement: this.#filterOptions.filterClearBtnElement,
+        onFilterCallback: (entry, matchFound) => {
+          DBPageDOMManager.toggleElementVisibility(entry, matchFound);
         },
       });
     }
