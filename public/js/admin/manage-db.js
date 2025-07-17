@@ -1597,68 +1597,93 @@ class DBSlideoutManager {
   }
 }
 
-// make class
-const fetchTableData = async function (
-  table,
-  sortKey = "",
-  sortDirection = ""
-) {
-  try {
-    const response = await fetch(
-      `/admin/manage-db/table-data/${encodeURIComponent(
-        table
-      )}?sortKey=${encodeURIComponent(
-        sortKey
-      )}&sortDirection=${encodeURIComponent(sortDirection)}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
+/**
+ * Handles API operations for database table data
+ */
+class DBTableDataService {
+  /**
+   * Fetches table data from the server with optional sorting
+   * @param {string} table - The table name to fetch data from
+   * @param {string} sortKey - Optional sort key
+   * @param {string} sortDirection - Optional sort direction (asc/desc)
+   * @returns {Promise<Object>} The table data response
+   */
+  static async fetchTableData(table, sortKey = "", sortDirection = "") {
+    try {
+      const response = await fetch(
+        `/admin/manage-db/table-data/${encodeURIComponent(
+          table
+        )}?sortKey=${encodeURIComponent(
+          sortKey
+        )}&sortDirection=${encodeURIComponent(sortDirection)}`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
       }
+
+      return await response.json();
+    } catch (err) {
+      throw new Error(`Failed to get table data: ${err.message}`);
+    }
+  }
+}
+
+/**
+ * Handles CSV export functionality for database tables
+ */
+class DBCSVExportService {
+  /**
+   * Binds CSV export functionality to a button element
+   * @param {Object} options - Configuration options
+   * @param {HTMLElement} options.buttonElement - The button to bind the export to
+   * @param {Object} options.viewManager - The view manager instance
+   * @param {string} options.rowSelector - CSS selector for table rows
+   * @param {string} options.entrySelector - CSS selector for table entries
+   * @param {string} options.delimiter - CSV delimiter character
+   * @param {string} options.quote - CSV quote character
+   */
+  static bindCSVExportButton({
+    buttonElement,
+    viewManager,
+    rowSelector = "span",
+    entrySelector = ".db-entry",
+    delimiter = ",",
+    quote = '"',
+  }) {
+    const csvManager = new Components.DBTableCSVDownloadManager(
+      delimiter,
+      quote
     );
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error);
-    }
+    buttonElement.addEventListener("click", () => {
+      const currentTable = viewManager.currentTable;
+      const listContainer = viewManager.listContainer;
 
-    return await response.json();
-  } catch (err) {
-    throw new Error(`Failed to get table data: ${err.message}`);
+      if (!currentTable) {
+        console.warn("No table selected to export.");
+        return;
+      }
+
+      const tableRows = listContainer.querySelectorAll(entrySelector);
+      if (tableRows.length === 0) {
+        console.warn("No data to export.");
+        return;
+      }
+
+      const csvData = csvManager.generateCSVData(tableRows, rowSelector);
+      const fileName = `${currentTable}.csv`;
+      csvManager.downloadCSVData(csvData, fileName);
+    });
   }
-};
-
-const bindCSVExportButton = function ({
-  buttonElement,
-  viewManager,
-  rowSelector = "span",
-  entrySelector = ".db-entry",
-  delimiter = ",",
-  quote = '"',
-}) {
-  const csvManager = new Components.DBTableCSVDownloadManager(delimiter, quote);
-
-  buttonElement.addEventListener("click", () => {
-    const currentTable = viewManager.currentTable;
-    const listContainer = viewManager.listContainer;
-
-    if (!currentTable) {
-      console.warn("No table selected to export.");
-      return;
-    }
-
-    const tableRows = listContainer.querySelectorAll(entrySelector);
-    if (tableRows.length === 0) {
-      console.warn("No data to export.");
-      return;
-    }
-
-    const csvData = csvManager.generateCSVData(tableRows, rowSelector);
-    const fileName = `${currentTable}.csv`;
-    csvManager.downloadCSVData(csvData, fileName);
-  });
-};
+}
 
 document.addEventListener("DOMContentLoaded", async () => {
   const staticDomManager = new Components.DBPageDOMManager({
@@ -1683,7 +1708,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const dbViewManager = new Components.DBViewManager({
     config: TABLE_CONFIG,
-    fetchTableData: fetchTableData,
+    fetchTableData: DBTableDataService.fetchTableData,
     listContainer: staticDomManager.getElement("listContainer"),
     tableOptions: {
       renderHeaderNumberColumn: true,
@@ -1714,7 +1739,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   dbManager.init();
 
-  bindCSVExportButton({
+  DBCSVExportService.bindCSVExportButton({
     buttonElement: staticDomManager.getElement("csvExportBtn"),
     viewManager: dbViewManager,
     rowSelector: "span",
