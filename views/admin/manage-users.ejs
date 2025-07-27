@@ -2,7 +2,7 @@
 <html>
   <head>
     <title>Manage Users</title>
-    <script src="/js/admin/manage-users.js" defer></script>
+    <script type="module" src="/js/admin/manage-users.js"></script>
     <link rel="stylesheet" href="/styles/admin/manage-users.css" />
     <%- include('../partials/html-head') %>
   </head>
@@ -38,14 +38,7 @@
                 </div>
               </div>
               <div class="manage-users--select-container">
-                <select name="sort" class="manage-users--sort-select">
-                  <option value="" selected disabled hidden>Sort</option>
-                  <option value="username">Username</option>
-                  <option value="email">Email</option>
-                  <option value="joined">Join Date</option>
-                  <option value="auth">Authentication Provider</option>
-                  <option value="role">Role</option>
-                </select>
+                <select name="sort" class="manage-users--sort-select"></select>
                 <i class="fa-solid fa-sort sort-icon"></i>
               </div>
             </div>
@@ -196,47 +189,7 @@
             </div>
           </aside>
 
-          <section class="users-list--container">
-            <div class="result-columns grid-layout--users">
-              <span>#</span>
-              <span>Username</span>
-              <span>Email</span>
-              <span>Join Date</span>
-              <span>Authentication Provider</span>
-              <span>Role</span>
-            </div>
-            <% Object.entries(userData).forEach(([i, user]) => { %>
-            <div
-              data-userid="<%= user.id %>"
-              data-banned="<%= user.banned === 't'%>"
-              class="grid-layout--users user-entry"
-            >
-              <span class="user-entry--number"><%= +i + 1 %></span>
-              <span class="user-entry--primary user--username"
-                ><%= user.username %></span
-              >
-              <span class="user-entry--primary user--email"
-                ><%= user.email %></span
-              >
-              <span class="user-entry--date user--timestamp"
-                ><%= user.timestamp %></span
-              >
-              <span class="user-entry--auth user--auth"
-                ><%= user.authenticated_with %></span
-              >
-              <span class="user-entry--role user--role"
-                ><%= user.is_admin === "t" ? "Admin" : "User" %></span
-              >
-              <button
-                class="hidden-btn"
-                type="button"
-                onclick="showSlideOut(this)"
-              >
-                <i class="fa-solid fa-pen-to-square edit--icon"></i>
-              </button>
-            </div>
-            <% }) %>
-          </section>
+          <section class="users-list--container"></section>
           <% } %>
         </main>
       </div>

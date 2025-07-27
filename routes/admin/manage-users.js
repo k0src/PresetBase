@@ -49,6 +49,33 @@ router.get("/", isAdmin, async (req, res) => {
   }
 });
 
+router.get("/user-data", isAdmin, async (req, res) => {
+  const sortKeys = [
+    "users.username",
+    "users.email",
+    "users.timestamp",
+    "users.authenticated_with",
+    "users.is_admin",
+  ];
+
+  const sortKey = req.query.sortKey || "users.timestamp";
+  const sortDirection = req.query.sortDirection || "ASC";
+
+  if (!sortKeys.includes(sortKey) || !["ASC", "DESC"].includes(sortDirection)) {
+    return res.status(400).json({ error: "Invalid sort parameters." });
+  }
+
+  try {
+    const userData = await User.getAllUsersData(sortKey, sortDirection);
+    res.json(userData);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({
+      error: "An error occurred while fetching user data.",
+    });
+  }
+});
+
 router.put("/update-username", isAdmin, async (req, res) => {
   const { newUsername, userId } = req.body;
 

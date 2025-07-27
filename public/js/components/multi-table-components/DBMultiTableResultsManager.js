@@ -1,10 +1,10 @@
-import { DBViewSortSelectManager } from "./Components.js";
-import { EventBinder } from "./Components.js";
-import { ValidateOptions } from "./Components.js";
-import { DBViewManager } from "./Components.js";
-import { DBPageStateManager } from "./Components.js";
-import { DBPageDOMManager } from "./Components.js";
-import { DBViewFilterManager } from "./DBViewFilterManager.js";
+import { DBViewSortSelectManager } from "../Components.js";
+import { EventBinder } from "../Components.js";
+import { ValidateOptions } from "../Components.js";
+import { DBMultiViewManager } from "../Components.js";
+import { DBMultiStateManager } from "../Components.js";
+import { DBPageDOMManager } from "../Components.js";
+import { DBViewFilterManager } from "../DBViewFilterManager.js";
 
 // Delegates management of multi table results, delegates selecting
 // tables, sorting, filtering, view table, and page state
@@ -51,11 +51,11 @@ export class DBMultiTableResultsManager {
     const validator = new ValidateOptions();
 
     validator.validateAll([
-      { value: viewManager, type: "instance", instance: DBViewManager },
+      { value: viewManager, type: "instance", instance: DBMultiViewManager },
       {
         value: pageStateManager,
         type: "instance",
-        instance: DBPageStateManager,
+        instance: DBMultiStateManager,
       },
       {
         value: tableSelectElement,

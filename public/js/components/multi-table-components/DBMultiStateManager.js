@@ -1,4 +1,4 @@
-export class DBPageStateManager {
+export class DBMultiStateManager {
   #defaultTable;
   #tableURLIndex;
   #saveTableInSession;
@@ -10,13 +10,12 @@ export class DBPageStateManager {
     tableURLIndex = 1,
     baseURL,
     saveTableInSession = false,
-    sessionStorageKey = "db_current_table",
   }) {
     this.#defaultTable = defaultTable;
     this.#tableURLIndex = tableURLIndex;
     this.#baseURL = baseURL;
     this.#saveTableInSession = saveTableInSession;
-    this.#sessionStorageKey = sessionStorageKey;
+    this.#sessionStorageKey = "db_current_table";
   }
 
   getCurrentTableFromURL() {

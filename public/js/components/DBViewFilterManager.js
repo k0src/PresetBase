@@ -60,7 +60,6 @@ export class DBViewFilterManager {
     const lowerQuery = query.trim().toLowerCase();
 
     document.querySelectorAll(this.#filterSelector).forEach((entry) => {
-      console.log(this.#filterSelector);
       const matchFound = this.#filterForKeys.some((key) => {
         const el = entry.querySelector(`[data-filterkey="${key}"]`);
         return el && el.textContent.toLowerCase().includes(lowerQuery);

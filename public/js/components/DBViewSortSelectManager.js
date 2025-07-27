@@ -13,7 +13,7 @@ export class DBViewSortSelectManager {
   constructor({
     selectElement,
     sortDirectionButton = null,
-    sortKeys,
+    sortKeys = [],
     defaultOption = {
       label: "Sort",
       value: "",
@@ -26,11 +26,6 @@ export class DBViewSortSelectManager {
     const validator = new ValidateOptions();
     validator.validateAll([
       { value: selectElement, type: "instance", instance: HTMLSelectElement },
-      {
-        value: sortDirectionButton,
-        type: "instance",
-        instance: HTMLElement,
-      },
     ]);
 
     this.#select = selectElement;
