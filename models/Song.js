@@ -1,7 +1,8 @@
 // Song DB entry model for PresetBase
-const { dbGet, dbRun, dbAll } = require("./UTIL");
+const DB = require("./DB.js");
+const Entry = require("./Entry.js");
 
-class Song {
+class Song extends Entry {
   #id;
   #title;
   #genre;
@@ -24,7 +25,7 @@ class Song {
   async save() {
     try {
       if (this.#id) {
-        return dbRun(
+        return DB.dbRun(
           `UPDATE songs SET title = ?, genre = ?, release_year = ?, song_url = ?, image_url = ? WHERE id = ?`,
           [
             this.#title,
@@ -36,7 +37,7 @@ class Song {
           ]
         );
       } else {
-        return dbRun(
+        return DB.dbRun(
           `INSERT INTO songs (title, genre, release_year, song_url, image_url) VALUES (?, ?, ?, ?, ?)`,
           [
             this.#title,
@@ -98,7 +99,7 @@ class Song {
         WHERE songs.id = ?
         GROUP BY songs.id`;
 
-      const songData = await dbGet(query, [this.#id]);
+      const songData = await DB.dbGet(query, [this.#id]);
 
       if (songData) {
         songData.album = JSON.parse(songData.album || "{}");
@@ -134,7 +135,7 @@ class Song {
         ORDER BY COALESCE(song_clicks.clicks, 0) DESC
         LIMIT ?`;
 
-      return await dbAll(query, [this.#id, this.#id, limit]);
+      return await DB.dbAll(query, [this.#id, this.#id, limit]);
     } catch (err) {
       throw new Error(`Error fetching more songs: ${err.message}`);
     }
@@ -213,7 +214,7 @@ class Song {
   static async create({ title, genre, releaseYear, songUrl, imageUrl }) {
     try {
       const now = new Date().toISOString();
-      const lastId = await dbRun(
+      const lastId = await DB.dbRun(
         `INSERT INTO songs (title, genre, release_year, song_url, image_url, timestamp)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [title, genre, releaseYear, songUrl, imageUrl, now]
@@ -249,7 +250,7 @@ class Song {
   // Get song by ID
   static async getById(id) {
     try {
-      const row = await dbGet(`SELECT * FROM songs WHERE id = ?`, [id]);
+      const row = await DB.dbGet(`SELECT * FROM songs WHERE id = ?`, [id]);
       return row ? Song.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching song by ID: ${err.message}`);
@@ -260,11 +261,11 @@ class Song {
   static async deleteById(id) {
     try {
       await Promise.all([
-        dbRun(`DELETE FROM song_artists WHERE song_id = ?`, [id]),
-        dbRun(`DELETE FROM song_presets WHERE song_id = ?`, [id]),
-        dbRun(`DELETE FROM song_clicks WHERE song_id = ?`, [id]),
-        dbRun(`DELETE FROM album_songs WHERE song_id = ?`, [id]),
-        dbRun(`DELETE FROM songs WHERE id = ?`, [id]),
+        DB.dbRun(`DELETE FROM song_artists WHERE song_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM song_presets WHERE song_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM song_clicks WHERE song_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM album_songs WHERE song_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM songs WHERE id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting song by ID: ${err.message}`);
@@ -274,7 +275,7 @@ class Song {
   // Return whether song exists in DB by ID
   static async exists(id) {
     try {
-      const songId = await dbGet(`SELECT id FROM songs WHERE id = ?`, [id]);
+      const songId = await DB.dbGet(`SELECT id FROM songs WHERE id = ?`, [id]);
       return !!songId;
     } catch (err) {
       throw new Error(`Error checking song existence: ${err.message}`);
@@ -284,7 +285,7 @@ class Song {
   // Get total number of songs in DB
   static async totalEntries() {
     try {
-      const totalResults = await dbGet(
+      const totalResults = await DB.dbGet(
         `SELECT COUNT(*) AS total_results FROM songs`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -317,7 +318,7 @@ class Song {
         GROUP BY songs.id
         ORDER BY ${sort || "songs.timestamp"} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching all songs: ${err.message}`);
     }
@@ -363,7 +364,7 @@ class Song {
         SELECT * FROM hot_songs
         ORDER BY ${sort} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching hot songs: ${err.message}`);
     }
@@ -401,7 +402,7 @@ class Song {
         SELECT * FROM popular_songs
         ORDER BY ${sort} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching popular songs: ${err.message}`);
     }
@@ -441,7 +442,7 @@ class Song {
         SELECT * FROM recent_songs
         ORDER BY ${sort} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching recent songs: ${err.message}`);
     }

@@ -1,7 +1,8 @@
 // Genre (tag) DB entry model for PresetBase
-const { dbGet, dbRun, dbAll } = require("./UTIL");
+const DB = require("./DB.js");
+const Entry = require("./Entry.js");
 
-class Genre {
+class Genre extends Entry {
   #id;
   #name;
   #slug;
@@ -29,7 +30,7 @@ class Genre {
   async save() {
     try {
       if (this.#id) {
-        return dbRun(
+        return DB.dbRun(
           `UPDATE genres SET name = ?, slug = ?, text_color = ?, border_color = ?, background_color = ? WHERE id = ?`,
           [
             this.#name,
@@ -41,7 +42,7 @@ class Genre {
           ]
         );
       } else {
-        return dbRun(
+        return DB.dbRun(
           `INSERT INTO genres (name, slug, text_color, border_color, background_color) VALUES (?, ?, ?, ?, ?)`,
           [
             this.#name,
@@ -76,7 +77,7 @@ class Genre {
         GROUP BY genres.id, genres.name, genres.slug, genres.text_color, 
                  genres.border_color, genres.background_color, s.image_url`;
 
-      return await dbGet(query, [this.#id]);
+      return await DB.dbGet(query, [this.#id]);
     } catch (err) {
       throw new Error(`Error fetching genre data: ${err.message}`);
     }
@@ -214,7 +215,7 @@ class Genre {
         backgroundColor = colors.backgroundColor;
       }
 
-      const lastId = await dbRun(
+      const lastId = await DB.dbRun(
         `INSERT INTO genres (name, slug, text_color, border_color, background_color) 
          VALUES (?, ?, ?, ?, ?)`,
         [name, slug, textColor, borderColor, backgroundColor]
@@ -248,7 +249,7 @@ class Genre {
   // Get genre by ID
   static async getById(id) {
     try {
-      const row = await dbGet(`SELECT * FROM genres WHERE id = ?`, [id]);
+      const row = await DB.dbGet(`SELECT * FROM genres WHERE id = ?`, [id]);
       return row ? Genre.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching genre by ID: ${err.message}`);
@@ -258,7 +259,7 @@ class Genre {
   // Delete genre by ID
   static async deleteById(id) {
     try {
-      await dbRun(`DELETE FROM genres WHERE id = ?`, [id]);
+      await DB.dbRun(`DELETE FROM genres WHERE id = ?`, [id]);
     } catch (err) {
       throw new Error(`Error deleting genre by ID: ${err.message}`);
     }
@@ -267,7 +268,9 @@ class Genre {
   // Return whether genre exists in DB by ID
   static async exists(id) {
     try {
-      const genreId = await dbGet(`SELECT id FROM genres WHERE id = ?`, [id]);
+      const genreId = await DB.dbGet(`SELECT id FROM genres WHERE id = ?`, [
+        id,
+      ]);
       return !!genreId;
     } catch (err) {
       throw new Error(`Error checking genre existence: ${err.message}`);
@@ -277,7 +280,7 @@ class Genre {
   // Get total number of genre in DB
   static async totalEntries() {
     try {
-      const totalResults = await dbGet(
+      const totalResults = await DB.dbGet(
         `SELECT COUNT(*) AS total_results FROM genres`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -304,7 +307,7 @@ class Genre {
         GROUP BY genres.id, genres.name, genres.slug, genres.text_color, genres.border_color, genres.background_color
         ORDER BY ${sort || "genres.id"} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching all genres: ${err.message}`);
     }

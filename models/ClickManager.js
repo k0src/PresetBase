@@ -1,5 +1,5 @@
 // Click Manager for PresetBase
-const { dbRun } = require("./UTIL");
+const DB = require("./DB.js");
 
 class ClickManager {
   static #tables = {
@@ -27,7 +27,7 @@ class ClickManager {
         recent_click = excluded.recent_click
     `;
 
-    await dbRun(query, [entryId, now]);
+    await DB.dbRun(query, [entryId, now]);
   }
 }
 

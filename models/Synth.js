@@ -1,7 +1,8 @@
 // Synth DB entry model for PresetBase
-const { dbGet, dbRun, dbAll } = require("./UTIL");
+const DB = require("./DB.js");
+const Entry = require("./Entry.js");
 
-class Synth {
+class Synth extends Entry {
   #id;
   #synthName;
   #manufacturer;
@@ -31,7 +32,7 @@ class Synth {
   async save() {
     try {
       if (this.#id) {
-        return dbRun(
+        return DB.dbRun(
           `UPDATE synths SET synth_name = ?, manufacturer = ?, synth_type = ?, release_year = ?, image_url = ?, timestamp = ? WHERE id = ?`,
           [
             this.#synthName,
@@ -44,7 +45,7 @@ class Synth {
           ]
         );
       } else {
-        return dbRun(
+        return DB.dbRun(
           `INSERT INTO synths (synth_name, manufacturer, synth_type, release_year, image_url, timestamp) VALUES (?, ?, ?, ?, ?, ?)`,
           [
             this.#synthName,
@@ -90,7 +91,7 @@ class Synth {
         WHERE synths.id = ?
         GROUP BY synths.id`;
 
-      const synthData = await dbGet(query, [this.#id]);
+      const synthData = await DB.dbGet(query, [this.#id]);
 
       if (synthData) {
         synthData.presets = JSON.parse(synthData.presets || "[]");
@@ -121,7 +122,7 @@ class Synth {
         ORDER BY clicks DESC
         LIMIT ?`;
 
-      return await dbAll(query, [this.#id, this.#id, limit]);
+      return await DB.dbAll(query, [this.#id, this.#id, limit]);
     } catch (err) {
       throw new Error(`Error fetching more synths: ${err.message}`);
     }
@@ -205,7 +206,7 @@ class Synth {
   }) {
     try {
       const now = new Date().toISOString();
-      const lastId = await dbRun(
+      const lastId = await DB.dbRun(
         `INSERT INTO synths (synth_name, manufacturer, synth_type, release_year, image_url, timestamp) VALUES (?, ?, ?, ?, ?, ?)`,
         [synthName, manufacturer, synthType, releaseYear, imageUrl, now]
       );
@@ -240,7 +241,7 @@ class Synth {
   // Get synth by ID
   static async getById(id) {
     try {
-      const row = await dbGet(`SELECT * FROM synths WHERE id = ?`, [id]);
+      const row = await DB.dbGet(`SELECT * FROM synths WHERE id = ?`, [id]);
       return row ? Synth.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching Synth by ID: ${err.message}`);
@@ -251,9 +252,9 @@ class Synth {
   static async deleteById(id) {
     try {
       await Promise.all([
-        dbRun(`DELETE FROM synths WHERE id = ?`, [id]),
-        dbRun(`DELETE FROM synth_clicks WHERE synth_id = ?`, [id]),
-        dbRun(`DELETE FROM preset_synths WHERE synth_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM synths WHERE id = ?`, [id]),
+        DB.dbRun(`DELETE FROM synth_clicks WHERE synth_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM preset_synths WHERE synth_id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting synth by ID: ${err.message}`);
@@ -263,7 +264,9 @@ class Synth {
   // Return whether synth exists in DB by ID
   static async exists(id) {
     try {
-      const synthId = await dbGet(`SELECT id FROM synths WHERE id = ?`, [id]);
+      const synthId = await DB.dbGet(`SELECT id FROM synths WHERE id = ?`, [
+        id,
+      ]);
       return !!synthId;
     } catch (err) {
       throw new Error(`Error checking synth existence: ${err.message}`);
@@ -273,7 +276,7 @@ class Synth {
   // Get total number of synths in DB
   static async totalEntries() {
     try {
-      const totalResults = await dbGet(
+      const totalResults = await DB.dbGet(
         `SELECT COUNT(*) AS total_results FROM synths`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -299,7 +302,7 @@ class Synth {
         LEFT JOIN synth_clicks ON synth_clicks.synth_id = synths.id
         ORDER BY ${sort || "synths.timestamp"} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching all synths: ${err.message}`);
     }

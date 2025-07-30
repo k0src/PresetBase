@@ -1,7 +1,8 @@
 // Preset DB entry model for PresetBase
-const { dbGet, dbRun, dbAll } = require("./UTIL");
+const DB = require("./DB.js");
+const Entry = require("./Entry.js");
 
-class Preset {
+class Preset extends Entry {
   #id;
   #presetName;
   #packName;
@@ -20,7 +21,7 @@ class Preset {
   async save() {
     try {
       if (this.#id) {
-        return dbRun(
+        return DB.dbRun(
           `UPDATE presets SET preset_name = ?, pack_name = ?, author = ?, timestamp = ? WHERE id = ?`,
           [
             this.#presetName,
@@ -31,7 +32,7 @@ class Preset {
           ]
         );
       } else {
-        return dbRun(
+        return DB.dbRun(
           `INSERT INTO presets (preset_name, pack_name, author, timestamp) VALUES (?, ?, ?, ?)`,
           [this.#presetName, this.#packName, this.#author, this.#timestamp]
         );
@@ -65,7 +66,7 @@ class Preset {
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
         WHERE presets.id = ?`;
 
-      const presetData = await dbGet(query, [this.#id]);
+      const presetData = await DB.dbGet(query, [this.#id]);
 
       if (presetData) {
         presetData.synth = JSON.parse(presetData.synth || "{}");
@@ -131,7 +132,7 @@ class Preset {
   static async create({ presetName, packName, author }) {
     try {
       const now = new Date().toISOString();
-      const result = await dbRun(
+      const result = await DB.dbRun(
         `INSERT INTO presets (preset_name, pack_name, author, timestamp) VALUES (?, ?, ?, ?)`,
         [presetName, packName, author, now]
       );
@@ -162,7 +163,7 @@ class Preset {
   // Get preset by ID
   static async getById(id) {
     try {
-      const row = await dbGet(`SELECT * FROM presets WHERE id = ?`, [id]);
+      const row = await DB.dbGet(`SELECT * FROM presets WHERE id = ?`, [id]);
       return row ? Preset.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching preset by ID: ${err.message}`);
@@ -173,9 +174,9 @@ class Preset {
   static async deleteById(id) {
     try {
       await Promise.all([
-        dbRun(`DELETE FROM presets WHERE id = ?`, [id]),
-        dbRun(`DELETE FROM preset_synths WHERE preset_id = ?`, [id]),
-        dbRun(`DELETE FROM song_presets WHERE preset_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM presets WHERE id = ?`, [id]),
+        DB.dbRun(`DELETE FROM preset_synths WHERE preset_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM song_presets WHERE preset_id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting preset by ID: ${err.message}`);
@@ -185,7 +186,9 @@ class Preset {
   // Return whether preset in DB by ID
   static async exists(id) {
     try {
-      const presetId = await dbGet(`SELECT id FROM presets WHERE id = ?`, [id]);
+      const presetId = await DB.dbGet(`SELECT id FROM presets WHERE id = ?`, [
+        id,
+      ]);
       return !!presetId;
     } catch (err) {
       throw new Error(`Error checking preset existence: ${err.message}`);
@@ -195,7 +198,7 @@ class Preset {
   // Get total number of presets in DB
   static async totalEntries() {
     try {
-      const totalResults = await dbGet(
+      const totalResults = await DB.dbGet(
         `SELECT COUNT(*) AS total_results FROM presets`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -229,7 +232,7 @@ class Preset {
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
         ORDER BY ${sort || "presets.timestamp"} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching all presets: ${err.message}`);
     }

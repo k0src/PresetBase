@@ -1,7 +1,8 @@
 // Artist DB entry model for PresetBase
-const { dbGet, dbRun, dbAll } = require("./UTIL");
+const DB = require("./DB.js");
+const Entry = require("./Entry.js");
 
-class Artist {
+class Artist extends Entry {
   #id;
   #name;
   #country;
@@ -20,12 +21,12 @@ class Artist {
   async save() {
     try {
       if (this.#id) {
-        return dbRun(
+        return DB.dbRun(
           `UPDATE artists SET name = ?, country = ?, image_url = ?, timestamp = ? WHERE id = ?`,
           [this.#name, this.#country, this.#imageUrl, this.#timestamp, this.#id]
         );
       } else {
-        return dbRun(
+        return DB.dbRun(
           `INSERT INTO artists (name, country, image_url, timestamp) VALUES (?, ?, ?, ?)`,
           [this.#name, this.#country, this.#imageUrl, this.#timestamp]
         );
@@ -63,7 +64,7 @@ class Artist {
         WHERE artists.id = ?
         GROUP BY artists.id`;
 
-      const artistData = await dbGet(query, [this.#id]);
+      const artistData = await DB.dbGet(query, [this.#id]);
 
       if (artistData) {
         artistData.songs = JSON.parse(artistData.songs || "[]");
@@ -93,7 +94,7 @@ class Artist {
           AND song_artists.role = 'Main'
         GROUP BY albums.id`;
 
-      return await dbAll(query, [this.#id]);
+      return await DB.dbAll(query, [this.#id]);
     } catch (err) {
       throw new Error(`Error fetching artist albums: ${err.message}`);
     }
@@ -108,7 +109,7 @@ class Artist {
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         WHERE song_artists.artist_id = ?`;
 
-      const totalSongs = await dbGet(query, [this.#id]);
+      const totalSongs = await DB.dbGet(query, [this.#id]);
       return totalSongs.total_songs;
     } catch (err) {
       throw new Error(`Error fetching total songs: ${err.message}`);
@@ -135,7 +136,7 @@ class Artist {
         ORDER BY usage_count DESC
         LIMIT 1`;
 
-      return await dbGet(query, [this.#id]);
+      return await DB.dbGet(query, [this.#id]);
     } catch (err) {
       throw new Error(`Error fetching favorite synth: ${err.message}`);
     }
@@ -195,7 +196,7 @@ class Artist {
   static async create({ name, country, imageUrl }) {
     try {
       const now = new Date().toISOString();
-      const lastId = await dbRun(
+      const lastId = await DB.dbRun(
         `INSERT INTO artists (name, country, image_url, timestamp) VALUES (?, ?, ?, ?)`,
         [name, country, imageUrl, now]
       );
@@ -226,7 +227,7 @@ class Artist {
   // Get artist by ID
   static async getById(id) {
     try {
-      const row = await dbGet(`SELECT * FROM artists WHERE id = ?`, [id]);
+      const row = await DB.dbGet(`SELECT * FROM artists WHERE id = ?`, [id]);
       return row ? Artist.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching artist by ID: ${err.message}`);
@@ -237,9 +238,9 @@ class Artist {
   static async deleteById(id) {
     try {
       await Promise.all([
-        dbRun(`DELETE FROM artists WHERE id = ?`, [id]),
-        dbRun(`DELETE FROM song_artists WHERE artist_id = ?`, [id]),
-        dbRun(`DELETE FROM artist_clicks WHERE artist_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM artists WHERE id = ?`, [id]),
+        DB.dbRun(`DELETE FROM song_artists WHERE artist_id = ?`, [id]),
+        DB.dbRun(`DELETE FROM artist_clicks WHERE artist_id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting artist by ID: ${err.message}`);
@@ -249,7 +250,9 @@ class Artist {
   // Return whether artist exists in DB by ID
   static async exists(id) {
     try {
-      const artistId = await dbGet(`SELECT id FROM artists WHERE id = ?`, [id]);
+      const artistId = await DB.dbGet(`SELECT id FROM artists WHERE id = ?`, [
+        id,
+      ]);
       return !!artistId;
     } catch (err) {
       throw new Error(`Error checking artist existence: ${err.message}`);
@@ -259,7 +262,7 @@ class Artist {
   // Get total number of artists in DB
   static async totalEntries() {
     try {
-      const totalResults = await dbGet(
+      const totalResults = await DB.dbGet(
         `SELECT COUNT(*) AS total_results FROM artists`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -283,7 +286,7 @@ class Artist {
         LEFT JOIN artist_clicks ON artist_clicks.artist_id = artists.id
         ORDER BY ${sort || "artists.timestamp"} ${direction}`;
 
-      return await dbAll(query);
+      return await DB.dbAll(query);
     } catch (err) {
       throw new Error(`Error fetching all artists: ${err.message}`);
     }
