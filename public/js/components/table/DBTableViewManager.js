@@ -1,5 +1,3 @@
-import { EventBinder } from "../EventBinder.js";
-
 export class DBTableViewManager {
   constructor(listContainer, dataManager) {
     this.fetchTableData = dataManager.fetchTableData;
