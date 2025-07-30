@@ -2,15 +2,15 @@
 const { dbRun } = require("./UTIL");
 
 class ClickManager {
-  _tables = {
+  static #tables = {
     albums: { tableName: "album_clicks", idColumn: "album_id" },
     artists: { tableName: "artist_clicks", idColumn: "artist_id" },
     songs: { tableName: "song_clicks", idColumn: "song_id" },
     synths: { tableName: "synth_clicks", idColumn: "synth_id" },
   };
 
-  static async update({ table, entryId }) {
-    const tableInfo = this._tables[table];
+  static async update(table, entryId) {
+    const tableInfo = this.#tables[table];
     if (!tableInfo) {
       throw new Error(`Invalid table: ${table}`);
     }
