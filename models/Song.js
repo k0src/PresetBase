@@ -63,6 +63,7 @@ class Song {
           songs.image_url,
           songs.genre AS song_genre,
           songs.release_year AS song_year,
+          songs.timestamp AS song_added_timestamp,
           json_object('id', albums.id, 'title', albums.title) AS album,
 
           json_group_array(
@@ -140,7 +141,7 @@ class Song {
   }
 
   // Returns instance as an object
-  async toJSON() {
+  toJSON() {
     return {
       id: this.#id,
       title: this.#title,
@@ -217,6 +218,7 @@ class Song {
          VALUES (?, ?, ?, ?, ?, ?)`,
         [title, genre, releaseYear, songUrl, imageUrl, now]
       );
+
       return new Song({
         id: lastId,
         title,
@@ -224,6 +226,7 @@ class Song {
         releaseYear,
         songUrl,
         imageUrl,
+        timestamp: now,
       });
     } catch (err) {
       throw new Error(`Error creating Song: ${err.message}`);
@@ -239,6 +242,7 @@ class Song {
       releaseYear: row.release_year,
       songUrl: row.song_url,
       imageUrl: row.image_url,
+      timestamp: row.timestamp,
     });
   }
 
@@ -273,7 +277,173 @@ class Song {
       const songId = await dbGet(`SELECT id FROM songs WHERE id = ?`, [id]);
       return !!songId;
     } catch (err) {
-      throw new Error(`Error checking if song exists: ${err.message}`);
+      throw new Error(`Error checking song existence: ${err.message}`);
+    }
+  }
+
+  // Get total number of songs in DB
+  static async totalEntries() {
+    try {
+      const totalResults = await dbGet(
+        `SELECT COUNT(*) AS total_results FROM songs`
+      );
+      return totalResults ? totalResults.total_results : 0;
+    } catch (err) {
+      throw new Error(`Error fetching total entries: ${err.message}`);
+    }
+  }
+
+  // Get all songs
+  static async getAll(sort = null, direction = "ASC") {
+    try {
+      const query = `
+        SELECT
+          songs.id AS song_id,
+          songs.title AS song_title,
+          songs.genre AS song_genre,
+          songs.release_year AS song_release_year,
+          songs.image_url AS song_image,
+          artists.name AS artist_name,
+          artists.id AS artist_id,
+          albums.title AS album_title,
+          albums.id AS album_id,
+          songs.timestamp AS song_added_timestamp
+        FROM songs
+        LEFT JOIN song_artists ON songs.id = song_artists.song_id
+        LEFT JOIN artists ON song_artists.artist_id = artists.id
+        LEFT JOIN album_songs ON songs.id = album_songs.song_id
+        LEFT JOIN albums ON album_songs.album_id = albums.id
+        WHERE song_artists.role = 'Main'
+        GROUP BY songs.id
+        ORDER BY ${sort || "songs.timestamp"} ${direction}`;
+
+      return await dbAll(query);
+    } catch (err) {
+      throw new Error(`Error fetching all songs: ${err.message}`);
+    }
+  }
+
+  // Get hot songs
+  static async getHotSongs(sort = "hot_score", direction = "DESC") {
+    try {
+      const query = `
+        WITH hot_songs AS (
+          SELECT
+              songs.id AS song_id,
+              songs.title AS song_title,
+              songs.genre AS song_genre,
+              songs.release_year AS song_release_year,
+              songs.image_url AS song_image,
+              MAX(artists.name) AS artist_name,
+              MAX(artists.id) AS artist_id,
+              MAX(albums.title) AS album_title,
+              MAX(albums.id) AS album_id,
+              songs.timestamp AS song_added_timestamp,
+              COALESCE(MAX(song_clicks.clicks), 0) AS total_clicks,
+              COALESCE(MAX(song_clicks.recent_click), 0) AS recent_clicks,
+              (
+                0.6 * COALESCE(MAX(song_clicks.recent_click), 0) +
+                0.3 * COALESCE(MAX(song_clicks.clicks), 0) +
+                0.1 * (
+                  1.0 / NULLIF((julianday('now') - julianday(songs.timestamp)) + 1, 0)
+                )
+              ) AS hot_score
+          FROM songs
+          LEFT JOIN song_artists ON songs.id = song_artists.song_id
+          LEFT JOIN artists ON song_artists.artist_id = artists.id
+          LEFT JOIN album_songs ON songs.id = album_songs.song_id
+          LEFT JOIN albums ON album_songs.album_id = albums.id
+          LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
+          WHERE song_artists.role = 'Main'
+          GROUP BY songs.id, songs.title, songs.genre, songs.release_year,
+                  songs.image_url, songs.timestamp
+          ORDER BY hot_score DESC
+          LIMIT 10
+        )
+        SELECT * FROM hot_songs
+        ORDER BY ${sort} ${direction}`;
+
+      return await dbAll(query);
+    } catch (err) {
+      throw new Error(`Error fetching hot songs: ${err.message}`);
+    }
+  }
+
+  // Get popular songs
+  static async getPopularSongs(sort = "song_clicks", direction = "DESC") {
+    try {
+      const query = `
+        WITH popular_songs AS (
+          SELECT
+              songs.id AS song_id,
+              songs.title AS song_title,
+              songs.genre AS song_genre,
+              songs.release_year AS song_release_year,
+              songs.image_url AS song_image,
+              MAX(artists.name) AS artist_name,
+              MAX(artists.id) AS artist_id,
+              MAX(albums.title) AS album_title,
+              MAX(albums.id) AS album_id,
+              songs.timestamp AS song_added_timestamp,
+              COALESCE(MAX(song_clicks.clicks), 0) AS song_clicks
+          FROM songs
+          LEFT JOIN song_artists ON songs.id = song_artists.song_id
+          LEFT JOIN artists ON song_artists.artist_id = artists.id
+          LEFT JOIN album_songs ON songs.id = album_songs.song_id
+          LEFT JOIN albums ON album_songs.album_id = albums.id
+          LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
+          WHERE song_artists.role = 'Main'
+          GROUP BY songs.id, songs.title, songs.genre, songs.release_year,
+                    songs.image_url, songs.timestamp
+          ORDER BY song_clicks.clicks DESC
+          LIMIT 10
+        )
+        SELECT * FROM popular_songs
+        ORDER BY ${sort} ${direction}`;
+
+      return await dbAll(query);
+    } catch (err) {
+      throw new Error(`Error fetching popular songs: ${err.message}`);
+    }
+  }
+
+  // Get recently added songs
+  static async getRecentSongs(
+    sort = "song_added_timestamp",
+    direction = "DESC"
+  ) {
+    try {
+      const query = `
+        WITH recent_songs AS (
+          SELECT
+              songs.id AS song_id,
+              songs.title AS song_title,
+              songs.genre AS song_genre,
+              songs.release_year AS song_release_year,
+              songs.image_url AS song_image,
+              MAX(artists.name) AS artist_name,
+              MAX(artists.id) AS artist_id,
+              MAX(albums.title) AS album_title,
+              MAX(albums.id) AS album_id,
+              songs.timestamp AS song_added_timestamp
+          FROM songs
+          LEFT JOIN song_artists ON songs.id = song_artists.song_id
+          LEFT JOIN artists ON song_artists.artist_id = artists.id
+          LEFT JOIN album_songs ON songs.id = album_songs.song_id
+          LEFT JOIN albums ON album_songs.album_id = albums.id
+          LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
+          WHERE song_artists.role = 'Main'
+          GROUP BY songs.id, songs.title, songs.genre, songs.release_year,
+                    songs.image_url, songs.timestamp
+          ORDER BY songs.timestamp DESC
+          LIMIT 10
+        )
+        SELECT * FROM recent_songs
+        ORDER BY ${sort} ${direction}`;
+
+      return await dbAll(query);
+    } catch (err) {
+      throw new Error(`Error fetching recent songs: ${err.message}`);
     }
   }
 }

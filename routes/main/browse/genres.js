@@ -33,7 +33,6 @@ router.get("/", async (req, res) => {
             MAX(songs.image_url) AS song_image,
             COUNT(*) AS num_songs
         FROM songs
-        LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
         GROUP BY genre
         ORDER BY ${sortKey} ${sortDirection}`,
   };
