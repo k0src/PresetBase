@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"nodemon server.js\" \"node bs-config.js\""
+    "dev": "concurrently \"nodemon server.js\" \"npm run dev --prefix client\""
   },
   "keywords": [],
   "author": "",
@@ -19,7 +19,6 @@
     "express-session": "^1.18.1",
     "express-validator": "^7.2.1",
     "fs-extra": "^11.3.0",
-    "fuse.js": "^7.1.0",
     "multer": "^2.0.1",
     "nanoid": "^5.1.5",
     "passport": "^0.7.0",

@@ -6,9 +6,12 @@ const passport = require("passport");
 const SQLiteStore = require("connect-sqlite3")(session);
 require("dotenv").config();
 
-require("./config/passport");
-
 const PORT = process.env.PORT || 3000;
+const isProd = process.env.NODE_ENV === "production";
+
+/* ----------------------------- Passport Config ---------------------------- */
+// require("./config/passport");
+// This needs to be set up later - consume via context api or redux, context api is prob fine
 
 /* -------------------------------- Sessions -------------------------------- */
 app.use(
@@ -22,22 +25,24 @@ app.use(
     saveUninitialized: false,
     cookie: {
       maxAge: 1000 * 60 * 60 * 24 * 7,
-      secure: process.env.NODE_ENV === "production",
+      secure: isProd,
       httpOnly: true,
       sameSite: "strict",
     },
   })
 );
 
-app.use(passport.initialize());
-app.use(passport.session());
-
 /* ------------------------------- Middleware ------------------------------- */
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public")));
+// Enable when Google OAuth integration is added via API
+// app.use(passport.initialize());
+// app.use(passport.session());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+
+/* ----------------------------------- API ---------------------------------- */
+const apiRoutes = require("./routes/api/api");
+app.use("/api", apiRoutes);
 
 /* ------------------------------ Auth/Account ------------------------------ */
 const authRoutes = require("./routes/auth/auth");
@@ -47,13 +52,14 @@ app.use("/login", loginRoutes);
 const accountInfoRoutes = require("./routes/auth/account-info");
 app.use("/account-info", accountInfoRoutes);
 
-/* ----------------------------------- API ---------------------------------- */
-const apiRoutes = require("./routes/api/api");
-app.use("/api", apiRoutes);
+/* --------------------------- Static Asset Routes -------------------------- */
+if (isProd) {
+  app.use(express.static(path.join(__dirname, "client", "dist")));
 
-/* ------------------------------- Static routes ------------------------------ */
-const indexRoutes = require("./routes/static/index");
-app.use("/", indexRoutes);
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
+  });
+}
 
 const aboutRoutes = require("./routes/static/about");
 app.use("/about-us", aboutRoutes);
@@ -70,7 +76,7 @@ app.get("/upload-tos", (req, res) => {
   res.render("static/upload-tos", { PATH_URL: "upload-tos" });
 });
 
-/* ------------------------------- Main routes ------------------------------ */
+/* ---------------------------- API Domain Routes --------------------------- */
 const statsRoutes = require("./routes/main/stats");
 app.use("/stats", statsRoutes);
 const searchRoutes = require("./routes/main/search");
@@ -78,7 +84,6 @@ app.use("/search", searchRoutes);
 const submitRoute = require("./routes/main/submit");
 app.use("/submit", submitRoute);
 
-/* ------------------------------ Entry routes ------------------------------ */
 const songRoutes = require("./routes/entries/song");
 app.use("/song", songRoutes);
 const synthRoutes = require("./routes/entries/synth");
@@ -88,7 +93,6 @@ app.use("/artist", artistsRoutes);
 const albumsRoutes = require("./routes/entries/album");
 app.use("/album", albumsRoutes);
 
-/* ------------------------------ Browse Routes ----------------------------- */
 const browseRoute = require("./routes/main/browse");
 app.use("/browse", browseRoute);
 const browseSongsRoute = require("./routes/main/browse/songs");
@@ -101,10 +105,8 @@ const browseSynthsRoute = require("./routes/main/browse/synths");
 app.use("/browse/synths", browseSynthsRoute);
 const browsePresetsRoute = require("./routes/main/browse/presets");
 app.use("/browse/presets", browsePresetsRoute);
-
 const browseGenresRoutes = require("./routes/main/browse/genres");
 app.use("/browse/genres", browseGenresRoutes);
-
 const popularRoute = require("./routes/main/browse/popular");
 app.use("/browse/popular", popularRoute);
 const hotRoute = require("./routes/main/browse/hot");
@@ -112,7 +114,6 @@ app.use("/browse/hot", hotRoute);
 const recentlyAddedRoute = require("./routes/main/browse/recent");
 app.use("/browse/recent", recentlyAddedRoute);
 
-/* ------------------------------ Admin routes ------------------------------ */
 const adminRoute = require("./routes/admin/admin");
 app.use("/admin", adminRoute);
 const adminApprovalsRoute = require("./routes/admin/approvals");
@@ -128,12 +129,12 @@ app.use("/admin/manage-users", adminManageUsers);
 const adminManageDb = require("./routes/admin/manage-db");
 app.use("/admin/manage-db", adminManageDb);
 
-/* ----------------------------------- 404 ---------------------------------- */
+/* ---------------------------- 404 API Fallback ---------------------------- */
 app.use((req, res) => {
-  return res.status(404).render("static/404", {
-    isAuth: req.isAuthenticated(),
-    userIsAdmin: req.isAuthenticated() && req?.user && req.user?.is_admin,
-    PATH_URL: "404",
+  return res.status(404).json({
+    error: "Not Found",
+    status: 404,
+    message: "This route is not defined.",
   });
 });
 
