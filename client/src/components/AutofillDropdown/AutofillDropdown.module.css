@@ -1,0 +1,46 @@
+.autocompleteDropdown {
+  position: absolute;
+  left: 0;
+  top: 120%;
+  transform-origin: top;
+  list-style: none;
+  background-color: #171b1f;
+  border: 1px solid #2d343a;
+  border-radius: 0.8rem;
+  max-height: 30rem;
+  overflow-y: auto;
+  opacity: 0;
+  transform: scaleY(0);
+  transition: all 0.3s ease;
+  z-index: 10000;
+  padding: 0.4rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.autocompleteDropdown.show {
+  opacity: 1;
+  transform: scaleY(1);
+}
+
+.autocompleteDropdown li {
+  padding: 1.2rem;
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #899096;
+  cursor: pointer;
+  border-radius: 0.4rem;
+  transition: background-color 0.1s ease;
+}
+
+.autocompleteDropdown li:hover {
+  background-color: #2d343a;
+}
+
+.autocompleteDropdown li.selected {
+  background-color: #2d343a;
+}

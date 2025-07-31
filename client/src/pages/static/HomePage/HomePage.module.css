@@ -1,0 +1,39 @@
+body {
+  background-color: #202429;
+}
+
+.splashContainer {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding-top: 20vh;
+  padding-inline: 1.2rem;
+  gap: 2.4rem;
+}
+
+.splashLogo {
+  width: 6.2rem;
+}
+
+.splashText {
+  font-family: "Sora", sans-serif;
+  font-weight: 800;
+  font-size: 4rem;
+  line-height: 1.1;
+  text-align: center;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 59em) {
+  .splashText {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .splashText {
+    font-size: 1.6rem;
+  }
+}

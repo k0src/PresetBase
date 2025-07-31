@@ -43,6 +43,7 @@ class Entry {
           (SELECT COUNT(*) FROM synths) +
           (SELECT COUNT(*) FROM presets) 
         AS total_results`;
+
       const totalResults = await DB.dbGet(query);
       return totalResults ? totalResults.total_results : 0;
     } catch (err) {

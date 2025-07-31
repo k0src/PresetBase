@@ -270,13 +270,11 @@ router.get("/checktags", async (req, res) => {
     const result = await dbAll(q, [name, slug]);
     return res.json(result[0]);
   } catch (err) {
-    return res
-      .status(500)
-      .render("static/db-error", {
-        err,
-        isAuth: req.isAuthenticated(),
-        PATH_URL: "db-error",
-      });
+    return res.status(500).render("static/db-error", {
+      err,
+      isAuth: req.isAuthenticated(),
+      PATH_URL: "db-error",
+    });
   }
 });
 

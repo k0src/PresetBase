@@ -1,0 +1,140 @@
+.navbar {
+  font-family: "Geist", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  color: #e3e5e4;
+  background-color: #171b1f;
+  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
+  padding: 1.2rem 3.2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.2rem;
+  position: relative;
+}
+
+.navbarLeft {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.navbarLogo {
+  user-select: none;
+  width: 4rem;
+}
+
+.navbarLinkContainer {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.navbarLinkContainer li {
+  list-style: none;
+}
+
+.navbarLink,
+.navbarLink:link,
+.navbarLink:visited {
+  color: #899096;
+  font-size: 1.4rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.navbarLink:hover {
+  color: #e3e5e4;
+}
+
+.navbarLinkActive {
+  background-color: #202429;
+  outline: 1rem solid #202429;
+  outline-offset: 0;
+  border-radius: 0.008rem;
+}
+
+.navbarRight {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3rem;
+}
+
+.navbarIcon {
+  cursor: pointer;
+  color: #899096;
+  font-size: 2.4rem;
+  transition: color 0.2s ease;
+}
+
+.navbarIcon:hover {
+  color: #e3e5e4;
+}
+
+/* ------------------------------- Mobile Nav ------------------------------- */
+.buttonMobileNav {
+  border: none;
+  background: none;
+  display: none;
+}
+
+.mobileNav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 998;
+  width: 100%;
+  height: 100vh;
+  background-color: rgba(23, 27, 31, 0.8);
+  backdrop-filter: blur(12px);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 3rem;
+  transition: all 0.3s ease;
+  transform: translateX(100%);
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+}
+
+.navOpen {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+  transform: translateX(0);
+}
+
+.mobileNavLink,
+.mobileNavLink:link,
+.mobileNavLink:visited {
+  color: #e3e5e4;
+  font-size: 2.4rem;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 62em) {
+  .navbarLeft,
+  .navbarRight,
+  .navbarLinkContainer {
+    gap: 2rem;
+  }
+}
+
+@media (max-width: 53em) {
+  .navbarLinkContainer,
+  .navbarRight {
+    display: none;
+  }
+
+  .buttonMobileNav {
+    display: block;
+    z-index: 999;
+  }
+}

@@ -27,7 +27,6 @@ const renderPage = async (req, res) => {
   const isAuth = req.isAuthenticated();
   const userIsAdmin = req.user && req.user.is_admin;
 
-  // Load songs table initally
   const query = `
       SELECT COUNT(*) AS total_tables
       FROM sqlite_master

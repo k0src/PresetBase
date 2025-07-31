@@ -1,0 +1,27 @@
+.mobileSearchInput {
+  font-family: "Geist", sans-serif;
+  font-size: 1.8rem;
+  color: #e3e5e4;
+  background-color: transparent;
+  border: 0.2rem solid #e3e5e4;
+  border-radius: 0.8rem;
+  padding: 1.2rem 1.2rem;
+  width: 24rem;
+  max-width: 100%;
+}
+
+.mobileSearchInput:focus {
+  outline: none;
+}
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 24em) {
+  .mobileSearchInput {
+    width: 16rem;
+  }
+}
+
+@media (max-width: 15em) {
+  .mobileSearchInput {
+    width: 12rem;
+  }
+}
