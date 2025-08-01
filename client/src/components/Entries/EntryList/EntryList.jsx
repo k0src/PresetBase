@@ -88,7 +88,8 @@ function useAudioPlayer(entries, hasAudio) {
     };
   }, []);
 
-  const handleAudioToggle = (audioUrl) => {
+  const handleAudioToggle = async (audioUrl) => {
+    // Stop all other audio
     Object.values(audioRefs.current).forEach((audio) => {
       if (audio && !audio.paused) {
         audio.pause();
@@ -106,18 +107,16 @@ function useAudioPlayer(entries, hasAudio) {
       setPlayingAudio(null);
     } else {
       if (audioElement) {
-        audioElement
-          .play()
-          .then(() => {
-            setPlayingAudio(audioUrl);
+        try {
+          await audioElement.play();
+          setPlayingAudio(audioUrl);
 
-            audioElement.onended = () => {
-              setPlayingAudio(null);
-            };
-          })
-          .catch((error) => {
-            console.error("Audio play failed:", error);
-          });
+          audioElement.onended = () => {
+            setPlayingAudio(null);
+          };
+        } catch (error) {
+          console.error("Audio play failed:", error);
+        }
       }
     }
   };
