@@ -2,7 +2,7 @@ const express = require("express");
 const app = express();
 const path = require("path");
 const session = require("express-session");
-const passport = require("passport");
+// const passport = require("passport");
 const SQLiteStore = require("connect-sqlite3")(session);
 require("dotenv").config();
 
@@ -37,10 +37,16 @@ app.use(
 // app.use(passport.initialize());
 // app.use(passport.session());
 
+// FOR TESTING - DELETE ME
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 /* ----------------------------------- API ---------------------------------- */
+// CHANGE ME
 const apiRoutes = require("./routes/api/api");
 app.use("/api", apiRoutes);
 
@@ -73,8 +79,8 @@ if (isProd) {
 // const submitRoute = require("./routes/main/submit");
 // app.use("/submit", submitRoute);
 
-// const songRoutes = require("./routes/entries/song");
-// app.use("/song", songRoutes);
+const songRoutes = require("./routes/entries/song");
+app.use("/api/song", songRoutes);
 // const synthRoutes = require("./routes/entries/synth");
 // app.use("/synth", synthRoutes);
 // const artistsRoutes = require("./routes/entries/artist");

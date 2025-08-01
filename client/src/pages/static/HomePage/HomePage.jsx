@@ -1,4 +1,5 @@
-import { Helmet, HelmetProvider } from "react-helmet-async";
+import { Helmet } from "react-helmet-async";
+
 import Navbar from "../../../components/Navbar/Navbar";
 import SearchBoxLarge from "../../../components/SearchBox/SearchBoxLarge/SearchBoxLarge";
 import styles from "./HomePage.module.css";
@@ -7,11 +8,12 @@ import PbLogo from "../../../assets/images/logo-stroke.webp";
 
 export default function HomePage() {
   return (
-    <HelmetProvider>
+    <>
       <Helmet>
         <title>PresetBase</title>
       </Helmet>
 
+      {/* FIX ME! */}
       <Navbar isAuth={true} userIsAdmin={true} pathUrl={"/"} />
       <main className={styles.container}>
         <div className={styles.splashContainer}>
@@ -30,6 +32,6 @@ export default function HomePage() {
           <SearchBoxLarge limit={7} />
         </div>
       </main>
-    </HelmetProvider>
+    </>
   );
 }

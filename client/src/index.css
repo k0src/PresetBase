@@ -35,34 +35,6 @@ a:active {
   color: inherit;
 }
 
-.page-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.page-load-spinner {
-  align-self: center;
-  margin-top: 30vh;
-}
-
-.content-wrapper {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.container {
-  max-width: 120rem;
-  width: 100%;
-  margin: 0 auto;
-  padding: 2rem 4rem 6.4rem 4rem;
-}
-
-.hidden {
-  display: none !important;
-}
-
-.no-scroll {
-  overflow: hidden;
+input:focus {
+  outline: none;
 }

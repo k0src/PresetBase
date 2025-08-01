@@ -1,0 +1,129 @@
+/* ----------------------------- Title Container ---------------------------- */
+.entryTitleContainer {
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+  border-radius: 0.8rem;
+  background-color: #2d343a;
+  padding: 1.4rem;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+  min-width: 0;
+}
+
+.entryImageContainer {
+  align-self: center;
+  position: relative;
+}
+
+.entryImg {
+  width: 32rem;
+  height: 32rem;
+  border-radius: 0.8rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.entryTitleBottom {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.entryTitlePrimary {
+  font-family: "Sora", sans-serif;
+  font-size: 2.4rem;
+  font-weight: 600;
+  line-height: 1.1;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.entryTitleSecondary {
+  line-height: 1.1;
+  font-size: 1.6rem;
+  color: #899096 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: color 0.2s ease;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.entryTitleSecondary:hover {
+  color: #e3e5e4 !important;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 68em) {
+  .entryImg {
+    width: 28rem;
+    height: 28rem;
+  }
+}
+
+@media (max-width: 52em) {
+  .entryImg {
+    width: 26rem;
+    height: 26rem;
+  }
+
+  .entryTitlePrimary {
+    font-size: 2.2rem;
+  }
+
+  .entryTitleSecondary {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 45em) {
+  .entryImg {
+    width: 32rem;
+    height: 32rem;
+  }
+
+  .entryTitlePrimary {
+    font-size: 2.4rem;
+  }
+
+  .entryTitleSecondary {
+    font-size: 1.6rem;
+  }
+
+  .entryTitleContainer {
+    order: 1;
+  }
+}
+
+@media (max-width: 30em) {
+  .entryImg {
+    width: 28rem;
+    height: 28rem;
+  }
+
+  .entryTitlePrimary {
+    font-size: 2.2rem;
+  }
+
+  .entryTitleSecondary {
+    font-size: 1.4rem;
+  }
+}
+
+@media (max-width: 24em) {
+  .entryImg {
+    width: 24rem;
+    height: 24rem;
+  }
+}

@@ -12,6 +12,7 @@ class Song extends Entry {
   #timestamp;
 
   constructor({ id = null, title, genre, releaseYear, songUrl, imageUrl }) {
+    super();
     this.#id = id;
     this.#title = title;
     this.#genre = genre;
@@ -58,13 +59,13 @@ class Song extends Entry {
     try {
       const query = `
         SELECT
-          songs.id AS song_id,
-          songs.title AS song_title,
-          songs.song_url,
-          songs.image_url,
-          songs.genre AS song_genre,
-          songs.release_year AS song_year,
-          songs.timestamp AS song_added_timestamp,
+          songs.id AS id,
+          songs.title AS title,
+          songs.song_url AS songUrl,
+          songs.image_url AS imageUrl,
+          songs.genre AS genre,
+          songs.release_year AS year,
+          songs.timestamp AS timestamp,
           json_object('id', albums.id, 'title', albums.title) AS album,
 
           json_group_array(
@@ -77,13 +78,15 @@ class Song extends Entry {
 
           json_group_array(
             DISTINCT json_object(
-              'preset_id', presets.id,
+              'id', presets.id,
               'name', presets.preset_name,
-              'usage_type', song_presets.usage_type,
-              'audio_url', song_presets.audio_url,
-              'synth_id', synths.id,
-              'synth_name', synths.synth_name,
-              'synth_image', synths.image_url
+              'usageType', song_presets.usage_type,
+              'audioUrl', song_presets.audio_url,
+              'synth', json_object(
+                'id', synths.id,
+                'name', synths.synth_name,
+                'imageUrl', synths.image_url
+              )
             )
           ) AS presets
 
@@ -118,9 +121,9 @@ class Song extends Entry {
     try {
       const query = `
         SELECT
-          songs.id AS song_id,
-          songs.title AS song_title,
-          songs.image_url
+          songs.id AS id,
+          songs.title AS title,
+          songs.image_url AS imageUrl
         FROM songs
         JOIN song_artists ON songs.id = song_artists.song_id
         JOIN (

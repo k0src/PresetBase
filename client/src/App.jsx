@@ -9,7 +9,7 @@ import HomePage from "./pages/static/HomePage/HomePage";
 // import SearchPage from "./pages/static/SearchPage/SearchPage";
 // import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
 
-// import SongPage from "./pages/entries/SongPage/SongPage";
+import SongPage from "./pages/entries/SongPage/SongPage";
 // import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
 // import ArtistPage from "./pages/entries/ArtistPage/ArtistPage";
 // import SynthPage from "./pages/entries/SynthPage/SynthPage";
@@ -38,7 +38,6 @@ import HomePage from "./pages/static/HomePage/HomePage";
 // import AdminManageDb from "./pages/admin/AdminManageDb/AdminManageDb";
 
 // import NotFound from "./pages/static/NotFound/NotFound";
-// import DbError from "./pages/static/DbError/DbError";
 
 function App() {
   return (
@@ -55,7 +54,7 @@ function App() {
         {/* <Route path="/submit" element={<SubmitPage />} /> */}
 
         {/* Entry routes */}
-        {/* <Route path="/song/:id" element={<SongPage />} /> */}
+        <Route path="/song/:id" element={<SongPage />} />
         {/* <Route path="/album/:id" element={<AlbumPage />} /> */}
         {/* <Route path="/artist/:id" element={<ArtistPage />} /> */}
         {/* <Route path="/synth/:id" element={<SynthPage />} /> */}
@@ -86,10 +85,6 @@ function App() {
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
 
-        {/* Errors */}
-        {/* <Route path="*" element={<NotFound />} /> */}
-        {/* <Route path="/db-error" element={<DbError />} /> */}
-
         {/* Admin routes */}
         {/* <Route path="/admin" element={<AdminDashboard />} /> */}
         {/* <Route path="/admin/approvals" element={<AdminApprovals />} /> */}
@@ -99,9 +94,7 @@ function App() {
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
 
-        {/* Errors */}
         {/* <Route path="*" element={<NotFound />} /> */}
-        {/* <Route path="/db-error" element={<DbError />} /> */}
       </Routes>
     </Router>
   );

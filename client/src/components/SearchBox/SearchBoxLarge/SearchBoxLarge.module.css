@@ -39,28 +39,6 @@
   outline: none;
 }
 
-.searchBoxButton {
-  background-color: #5a7f71;
-  border: none;
-  cursor: pointer;
-  font-family: "Geist", sans-serif;
-  font-size: 1.6rem;
-  color: #e3e5e4;
-  padding: 1.2rem;
-  border-radius: 0.8rem;
-  transition: background-color 0.2s ease;
-  box-shadow: 0 1.2rem 2.4rem rgba(0, 0, 0, 0.075);
-}
-
-.searchBoxButton:hover {
-  background-color: #73988a;
-}
-
-.searchBoxButton:active {
-  transform: scale(0.95);
-  transition: transform 0.1s ease;
-}
-
 /* --------------------------------- Queries -------------------------------- */
 @media (max-width: 30em) {
   .searchBoxContainer {

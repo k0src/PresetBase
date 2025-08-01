@@ -2,6 +2,13 @@ body {
   background-color: #202429;
 }
 
+.container {
+  max-width: 120rem;
+  width: 100%;
+  margin: 0 auto;
+  padding: 2rem 4rem 6.4rem 4rem;
+}
+
 .splashContainer {
   min-height: 80vh;
   display: flex;

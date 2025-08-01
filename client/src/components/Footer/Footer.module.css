@@ -1,0 +1,123 @@
+.footer {
+  max-height: 25.6rem;
+  font-family: "Geist", sans-serif;
+  line-height: 1;
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: #899096;
+  overflow-x: hidden;
+  background-color: #171b1f;
+  padding: 3.2rem;
+  flex-shrink: 0;
+}
+
+.footerContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+}
+
+.footerLeft {
+  max-width: 42rem;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1.2rem;
+}
+
+.footerLogo {
+  cursor: pointer;
+  width: 4.8rem;
+}
+
+.footerName {
+  font-family: "Sora", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 600;
+}
+
+.footerDesc {
+  line-height: 1.2;
+}
+
+.footerIcons {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.footerIcon {
+  font-size: 2.4rem;
+  transition: color 0.2s ease;
+}
+
+.footerIcon:hover {
+  color: #e3e5e4;
+}
+
+.footerBottom {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1rem;
+  border-top: 1px solid #2d343a;
+  padding-top: 1.8rem;
+}
+
+.footerPolicyLinks {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.2rem;
+  transition: color 0.2s ease;
+}
+
+.footerPolicyLink {
+  transition: color 0.2s ease;
+}
+
+.footerPolicyLink:hover {
+  color: #e3e5e4;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 60em) {
+  .footer {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .footerContainer {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footerLeft {
+    max-width: 100%;
+  }
+
+  .footerLogo {
+    width: 3.2rem;
+  }
+
+  .footerName {
+    font-size: 1.4rem;
+  }
+
+  .footerIcon {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 30em) {
+  .footerBottom {
+    flex-direction: column;
+    gap: 1rem;
+    padding-top: 1.4rem;
+  }
+
+  .footer {
+    padding-top: 2.4rem;
+  }
+}

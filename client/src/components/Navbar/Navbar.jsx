@@ -4,16 +4,13 @@ import { Link } from "react-router-dom";
 import SearchBoxSmall from "../../components/SearchBox/SearchBoxSmall/SearchBoxSmall";
 import SearchBoxMobile from "../../components/SearchBox/SearchBoxMobile/SearchBoxMobile";
 import styles from "./Navbar.module.css";
-import classNames from "classnames";
 
 import { FaCircleUser, FaGithub, FaBars, FaXmark } from "react-icons/fa6";
 import NavbarLogo from "../../assets/images/logo-app.webp";
 
-export default function Navbar({ isAuth, userIsAdmin, pathUrl }) {
+export default function Navbar({ isAuth, userIsAdmin }) {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const toggleMobileNav = () => setMobileNavOpen((prevState) => !prevState);
-
-  const pathActive = (route) => pathUrl === route;
 
   return (
     <>
@@ -29,52 +26,27 @@ export default function Navbar({ isAuth, userIsAdmin, pathUrl }) {
 
           <ul className={styles.navbarLinkContainer}>
             <li>
-              <Link
-                to="/browse"
-                className={classNames(styles.navbarLink, {
-                  [styles.navbarLinkActive]: pathActive("browse"),
-                })}
-              >
+              <Link to="/browse" className={styles.navbarLink}>
                 Browse
               </Link>
             </li>
             <li>
-              <Link
-                to="/stats"
-                className={classNames(styles.navbarLink, {
-                  [styles.navbarLinkActive]: pathActive("stats"),
-                })}
-              >
+              <Link to="/stats" className={styles.navbarLink}>
                 Stats
               </Link>
             </li>
             <li>
-              <Link
-                to="/about-us"
-                className={classNames(styles.navbarLink, {
-                  [styles.navbarLinkActive]: pathActive("about"),
-                })}
-              >
+              <Link to="/about-us" className={styles.navbarLink}>
                 About
               </Link>
             </li>
             <li>
-              <Link
-                to="/submit"
-                className={classNames(styles.navbarLink, {
-                  [styles.navbarLinkActive]: pathActive("submit"),
-                })}
-              >
+              <Link to="/submit" className={styles.navbarLink}>
                 Submit
               </Link>
             </li>
             <li>
-              <Link
-                to="/admin"
-                className={classNames(styles.navbarLink, {
-                  [styles.navbarLinkActive]: pathActive("admin"),
-                })}
-              >
+              <Link to="/admin" className={styles.navbarLink}>
                 Admin
               </Link>
             </li>

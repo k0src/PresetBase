@@ -1,0 +1,274 @@
+/* ---------------------------------- Right --------------------------------- */
+.entryRight {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.entryTitleSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}
+
+/* --------------------------------- Filter --------------------------------- */
+.filterContainer {
+  display: flex;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  background-color: #171b1f;
+  border: 2px solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 0 1.2rem;
+  min-width: 2.4rem;
+  position: relative;
+}
+
+.filterInput {
+  font-family: "Geist", sans-serif;
+  font-size: 1.3rem;
+  color: #899096;
+  background-color: transparent;
+  border: none;
+  flex: 1;
+  padding: 0.8rem 0;
+}
+
+.filterClearIcon {
+  cursor: pointer;
+  font-size: 1.4rem;
+  color: #899096;
+  transition: color 0.2s ease;
+}
+
+.filterClearIcon:hover {
+  color: #e3e5e4;
+}
+
+/* ------------------------------ Presets Grid ------------------------------ */
+.entryTable {
+  padding-top: 2rem;
+}
+
+.entryTableCols {
+  color: #899096;
+  font-size: 1.3rem;
+  border-top: 0.1rem solid #2d343a;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.4rem;
+}
+
+.entryTableRow {
+  padding: 1.2rem;
+  border-bottom: 0.1rem solid #2d343a;
+  transition: background-color 0.2s ease;
+}
+
+.entryTableRow:nth-child(odd) {
+  background-color: #1e2227 !important;
+}
+
+.gridLayoutPresets {
+  display: grid;
+  grid-template-columns: 2rem 4fr 2.5fr 2fr 1.5fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutPresetsSynth {
+  display: grid;
+  grid-template-columns: 2rem 4fr 2.5fr 2fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutSongs {
+  display: grid;
+  grid-template-columns: 2rem 4fr 2.5fr 2fr 1.5fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.rowNumber,
+.rowTextPrimary,
+.rowTextSecondary,
+.rowTextTertiary,
+.rowTextQuaternary {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.4rem;
+}
+
+.rowTitleContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  min-width: 0;
+}
+
+.rowImg {
+  width: 7.2rem;
+  height: 7.2rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+}
+
+.rowTextPrimary {
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.rowTextSecondary {
+  color: #899096 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+  transition: color 0.2s ease;
+}
+
+.rowTextSecondary:hover {
+  color: #e3e5e4 !important;
+}
+
+.rowTextTertiary {
+  color: #899096;
+  font-size: 1.4rem;
+}
+
+.rowTextQuaternary {
+  color: #899096;
+  font-size: 1.4rem;
+}
+
+.tag {
+  color: #899096;
+  font-size: 1.4rem;
+}
+
+/* Audio Player */
+.rowPresetAudioContainer {
+  justify-self: center;
+}
+
+.rowPresetPlayBtn {
+  cursor: pointer;
+  color: #899096;
+  font-size: 2.4rem;
+  transition: color 0.2s ease;
+}
+
+.rowPresetPlayBtn:hover {
+  color: #e3e5e4;
+}
+
+.rowPresetAudio {
+  display: none;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Header Labels */
+.headerLabelPreview {
+  justify-self: center;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 52em) {
+  .rowTextPrimary {
+    font-size: 1.6rem;
+  }
+
+  .rowTextSecondary {
+    font-size: 1.2rem;
+  }
+
+  .rowTextTertiary {
+    font-size: 1.2rem;
+  }
+
+  .rowImg {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+
+  .gridLayoutPresets {
+    grid-template-columns: 2rem 4.5fr 1.5fr 1.5fr;
+  }
+
+  .gridLayoutPresetsSynth {
+    grid-template-columns: 2rem 4.5fr 1.5fr 1.5fr;
+  }
+
+  .gridLayoutSongs {
+    grid-template-columns: 2rem 4.5fr 1.5fr 1.5fr;
+  }
+}
+
+@media (max-width: 45em) {
+  .rowTextPrimary {
+    font-size: 1.8rem;
+  }
+
+  .rowTextSecondary {
+    font-size: 1.4rem;
+  }
+
+  .rowTextTertiary {
+    font-size: 1.4rem;
+  }
+
+  .rowImg {
+    width: 7.2rem;
+    height: 7.2rem;
+  }
+
+  .entryTable {
+    width: 100%;
+  }
+
+  .entryRight {
+    order: 2;
+    width: 100%;
+  }
+}
+
+@media (max-width: 30em) {
+  .rowTextPrimary {
+    font-size: 1.6rem;
+  }
+
+  .rowTextSecondary {
+    font-size: 1.2rem;
+  }
+
+  .rowTextTertiary {
+    font-size: 1.2rem;
+  }
+
+  .rowImg {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+
+  .gridLayoutPresets {
+    grid-template-columns: 2rem 4.5fr 1.5fr;
+  }
+
+  .gridLayoutPresetsSynth {
+    grid-template-columns: 2rem 4.5fr 1.5fr;
+  }
+
+  .gridLayoutSongs {
+    grid-template-columns: 2rem 4.5fr 1.5fr;
+  }
+}

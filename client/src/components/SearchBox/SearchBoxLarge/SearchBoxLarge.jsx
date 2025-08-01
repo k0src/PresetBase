@@ -1,17 +1,19 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 
+import AutofillDropdown from "../../../components/AutofillDropdown/AutofillDropdown";
+import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
+import styles from "./SearchBoxLarge.module.css";
+
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import { PulseLoader } from "react-spinners";
-import AutofillDropdown from "../../../components/AutofillDropdown/AutofillDropdown";
-import styles from "./SearchBoxLarge.module.css";
 
 export default function SearchBoxLarge({ limit }) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
@@ -50,7 +52,7 @@ export default function SearchBoxLarge({ limit }) {
       )}&limit=${limit}`;
 
       try {
-        setIsLoading(true);
+        setLoading(true);
         const res = await fetch(url, {
           signal: abortController.current.signal,
         });
@@ -69,7 +71,7 @@ export default function SearchBoxLarge({ limit }) {
           setShowDropdown(false);
         }
       } finally {
-        setIsLoading(false);
+        setLoading(false);
       }
     },
     [limit]
@@ -92,7 +94,7 @@ export default function SearchBoxLarge({ limit }) {
         } else {
           setSuggestions([]);
           setShowDropdown(false);
-          setIsLoading(false);
+          setLoading(false);
         }
       }, 150);
     },
@@ -198,15 +200,13 @@ export default function SearchBoxLarge({ limit }) {
         {dropdown}
 
         <PulseLoader
-          loading={isLoading}
+          loading={loading}
           cssOverride={override}
-          color={"#e3e5e4"}
+          color="#e3e5e4"
           size={6}
         />
       </div>
-      <button className={styles.searchBoxButton} onClick={() => handleSearch()}>
-        Search
-      </button>
+      <ButtonMain onClick={() => handleSearch()}>Search</ButtonMain>
     </div>
   );
 }
