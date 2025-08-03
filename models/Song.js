@@ -119,7 +119,7 @@ class Song extends Entry {
   // Returns more songs by the same artist, ordered by clicks
   async getMoreSongs(limit = null) {
     try {
-      const query = `
+      let query = `
         SELECT
           songs.id AS id,
           songs.title AS title,
@@ -135,10 +135,15 @@ class Song extends Entry {
         LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
         WHERE songs.id != ?
         GROUP BY songs.id
-        ORDER BY COALESCE(song_clicks.clicks, 0) DESC
-        LIMIT ?`;
+        ORDER BY COALESCE(song_clicks.clicks, 0) DESC`;
 
-      return await DB.dbAll(query, [this.#id, this.#id, limit]);
+      let params = [this.#id, this.#id];
+      if (typeof limit === "number" && limit > 0) {
+        query += ` LIMIT ?`;
+        params.push(limit);
+      }
+
+      return await DB.dbAll(query, params);
     } catch (err) {
       throw new Error(`Error fetching more songs: ${err.message}`);
     }

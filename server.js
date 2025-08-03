@@ -83,8 +83,8 @@ const songRoutes = require("./routes/entries/song");
 app.use("/api/song", songRoutes);
 // const synthRoutes = require("./routes/entries/synth");
 // app.use("/synth", synthRoutes);
-// const artistsRoutes = require("./routes/entries/artist");
-// app.use("/artist", artistsRoutes);
+const artistsRoutes = require("./routes/entries/artist");
+app.use("/api/artist", artistsRoutes);
 // const albumsRoutes = require("./routes/entries/album");
 // app.use("/album", albumsRoutes);
 

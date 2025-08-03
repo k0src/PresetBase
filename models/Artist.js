@@ -10,6 +10,7 @@ class Artist extends Entry {
   #timestamp;
 
   constructor({ id = null, name, country, imageUrl, timestamp }) {
+    super();
     this.#id = id;
     this.#name = name;
     this.#country = country;
@@ -41,19 +42,19 @@ class Artist extends Entry {
     try {
       const query = `
         SELECT
-          artists.id AS artist_id,
-          artists.name AS artist_name,
-          artists.image_url,
-          artists.country AS artist_country,
-          artists.timestamp AS artist_added_timestamp,
+          artists.id AS id,
+          artists.name AS name,
+          artists.image_url AS imageUrl,
+          artists.country AS country,
+          artists.timestamp AS timestamp,
           json_group_array(
             DISTINCT json_object(
               'id', songs.id,
               'title', songs.title,
-              'image_url', songs.image_url,
-              'song_genre', songs.genre,
-              'song_year', songs.release_year,
-              'album_title', albums.title
+              'imageUrl', songs.image_url,
+              'genre', songs.genre,
+              'year', songs.release_year,
+              'album', albums.title
             )
           ) AS songs
         FROM artists
@@ -77,15 +78,15 @@ class Artist extends Entry {
   }
 
   // Get albums by artist
-  async getAlbums() {
+  async getAlbums(limit = null) {
     try {
-      const query = `
+      let query = `
         SELECT
-          albums.id AS album_id,
-          albums.title AS album_title,
-          albums.image_url,
-          albums.genre AS album_genre,
-          albums.release_year AS album_year
+          albums.id AS id,
+          albums.title AS title,
+          albums.image_url AS imageUrl,
+          albums.genre AS genre,
+          albums.release_year AS year
         FROM albums
         LEFT JOIN album_songs ON albums.id = album_songs.album_id
         LEFT JOIN song_artists ON album_songs.song_id = song_artists.song_id
@@ -94,7 +95,13 @@ class Artist extends Entry {
           AND song_artists.role = 'Main'
         GROUP BY albums.id`;
 
-      return await DB.dbAll(query, [this.#id]);
+      let params = [this.#id];
+      if (typeof limit === "number" && limit > 0) {
+        query += ` LIMIT ?`;
+        params.push(limit);
+      }
+
+      return await DB.dbAll(query, params);
     } catch (err) {
       throw new Error(`Error fetching artist albums: ${err.message}`);
     }
@@ -121,9 +128,9 @@ class Artist extends Entry {
     try {
       const query = `
         SELECT
-          synths.id AS synth_id,
-          synths.synth_name,
-          COUNT(*) AS usage_count
+          synths.id AS id,
+          synths.synth_name AS name,
+          COUNT(*) AS usageCount
         FROM artists
         JOIN song_artists ON artists.id = song_artists.artist_id
         JOIN songs ON song_artists.song_id = songs.id
@@ -133,7 +140,7 @@ class Artist extends Entry {
         JOIN synths ON preset_synths.synth_id = synths.id
         WHERE artists.id = ?
         GROUP BY synths.id, synths.synth_name
-        ORDER BY usage_count DESC
+        ORDER BY usageCount DESC
         LIMIT 1`;
 
       return await DB.dbGet(query, [this.#id]);
