@@ -11,7 +11,7 @@ import HomePage from "./pages/static/HomePage/HomePage";
 
 import SongPage from "./pages/entries/SongPage/SongPage";
 // import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
-// import ArtistPage from "./pages/entries/ArtistPage/ArtistPage";
+import ArtistPage from "./pages/entries/ArtistPage/ArtistPage";
 // import SynthPage from "./pages/entries/SynthPage/SynthPage";
 
 // import BrowsePage from "./pages/browse/BrowsePage/BrowsePage";
@@ -56,7 +56,7 @@ function App() {
         {/* Entry routes */}
         <Route path="/song/:id" element={<SongPage />} />
         {/* <Route path="/album/:id" element={<AlbumPage />} /> */}
-        {/* <Route path="/artist/:id" element={<ArtistPage />} /> */}
+        <Route path="/artist/:id" element={<ArtistPage />} />
         {/* <Route path="/synth/:id" element={<SynthPage />} /> */}
 
         {/* Browse routes */}

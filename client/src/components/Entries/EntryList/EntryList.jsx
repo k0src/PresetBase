@@ -244,7 +244,7 @@ function EntryRow({
               <span className={styles.rowTextPrimary}>{entry.title}</span>
             </div>
             <span className={styles.rowTextTertiary}>
-              {entry.album_title === "[SINGLE]" ? "Single" : entry.album.title}
+              {entry.album_title === "[SINGLE]" ? "Single" : entry.album}
             </span>
             <span className={styles.tag}>{entry.genre}</span>
             <span className={styles.rowTextQuaternary}>{entry.year}</span>

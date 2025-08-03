@@ -1,4 +1,44 @@
-/* Styles for ArtistPage component */
-.artistpage {
-  /* Add your styles here */
+.entryContainer {
+  padding: 3.2rem 0 2rem 0;
+  overflow: hidden;
+  min-width: 0;
+}
+
+.entryColumns {
+  display: grid;
+  grid-template-columns: 34rem 1fr;
+  align-items: flex-start;
+  gap: 1.8rem;
+}
+
+.entryLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 1.8rem;
+  min-width: 0;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 68em) {
+  .entryColumns {
+    grid-template-columns: 30rem 1fr;
+  }
+}
+
+@media (max-width: 52em) {
+  .entryColumns {
+    grid-template-columns: 28rem 1fr;
+  }
+}
+
+@media (max-width: 45em) {
+  .entryColumns {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .entryLeft {
+    display: contents;
+  }
 }

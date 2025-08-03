@@ -88,9 +88,9 @@ export default function SongPage() {
 
               {moreSongs.length > 0 && (
                 <MoreEntries
+                  entryType="songs"
                   title={`More songs by ${mainArtist?.name}`}
                   entries={moreSongs}
-                  entryType="songs"
                   linkPrefix="song"
                 />
               )}
@@ -111,10 +111,10 @@ export default function SongPage() {
             </div>
 
             <EntryList
+              entryType="presets"
               title="Presets"
               entries={Object.values(song.presets || {})}
-              entryType="presets"
-              filterPlaceholder="Filter presets"
+              filterPlaceholder="Filter presets..."
             />
           </div>
         </section>
