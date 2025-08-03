@@ -81,12 +81,12 @@ if (isProd) {
 
 const songRoutes = require("./routes/entries/song");
 app.use("/api/song", songRoutes);
-// const synthRoutes = require("./routes/entries/synth");
-// app.use("/synth", synthRoutes);
+const synthRoutes = require("./routes/entries/synth");
+app.use("/api/synth", synthRoutes);
 const artistsRoutes = require("./routes/entries/artist");
 app.use("/api/artist", artistsRoutes);
-// const albumsRoutes = require("./routes/entries/album");
-// app.use("/album", albumsRoutes);
+const albumsRoutes = require("./routes/entries/album");
+app.use("/api/album", albumsRoutes);
 
 // const browseRoute = require("./routes/main/browse");
 // app.use("/browse", browseRoute);

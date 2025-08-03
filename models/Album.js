@@ -11,6 +11,7 @@ class Album extends Entry {
   #timestamp;
 
   constructor({ id = null, title, genre, releaseYear, imageUrl, timestamp }) {
+    super();
     this.#id = id;
     this.#title = title;
     this.#genre = genre;
@@ -56,12 +57,12 @@ class Album extends Entry {
     try {
       const query = `
         SELECT
-          albums.id AS album_id,
-          albums.title AS album_title,
-          albums.genre AS album_genre,
-          albums.release_year AS album_year,
-          albums.image_url,
-          albums.timestamp AS album_added_timestamp,
+          albums.id AS id,
+          albums.title AS title,
+          albums.genre AS genre,
+          albums.release_year AS year,
+          albums.image_url AS imageUrl,
+          albums.timestamp AS timestamp,
       
           (
           SELECT json_object(
@@ -80,10 +81,11 @@ class Album extends Entry {
           DISTINCT json_object(
             'id', songs.id,
             'title', songs.title,
-            'song_url', songs.song_url,
-            'image_url', songs.image_url,
-            'song_genre', songs.genre,
-            'song_year', songs.release_year
+            'songUrl', songs.song_url,
+            'imageUrl', songs.image_url,
+            'genre', songs.genre,
+            'year', songs.release_year,
+            'album', albums.title
           )
         ) AS songs
         
@@ -109,11 +111,11 @@ class Album extends Entry {
   // Returns more albums by the same artist, ordered by clicks
   async getMoreAlbums(limit = null) {
     try {
-      const query = `
+      let query = `
         SELECT
-          albums.id AS album_id,
-          albums.title AS album_title,
-          albums.image_url,
+          albums.id AS id,
+          albums.title AS title,
+          albums.image_url AS imageUrl,
           COALESCE(album_clicks.clicks, 0) AS clicks
         FROM albums
         LEFT JOIN album_songs ON albums.id = album_songs.album_id
@@ -132,10 +134,15 @@ class Album extends Entry {
         AND albums.title != '[SINGLE]'
         AND albums.id != ?
         GROUP BY albums.id
-        ORDER BY clicks DESC
-        LIMIT ?`;
+        ORDER BY clicks DESC`;
 
-      return await DB.dbAll(query, [this.#id, this.#id, limit]);
+      const params = [this.#id, this.#id];
+      if (limit) {
+        query += ` LIMIT ?`;
+        params.push(limit);
+      }
+
+      return await DB.dbAll(query, params);
     } catch (err) {
       throw new Error(`Error fetching more albums: ${err.message}`);
     }

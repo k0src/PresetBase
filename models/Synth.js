@@ -19,6 +19,7 @@ class Synth extends Entry {
     releaseYear,
     imageUrl,
   }) {
+    super();
     this.#id = id;
     this.#synthName = synthName;
     this.#manufacturer = manufacturer;
@@ -67,21 +68,22 @@ class Synth extends Entry {
     try {
       const query = `
         SELECT
-          synths.id AS synth_id,
-          synths.synth_name,
+          synths.id AS id,
+          synths.synth_name AS name,
           synths.manufacturer,
-          synths.synth_type,
-          synths.image_url,
-          synths.release_year AS synth_year,
-          synths.timestamp AS synth_added_timestamp,
+          synths.synth_type AS type,
+          synths.image_url AS imageUrl,
+          synths.release_year AS year,
+          synths.timestamp AS timestamp,
 
           json_group_array(
             DISTINCT json_object(
-              'preset_id', presets.id,
+              'id', presets.id,
               'name', presets.preset_name,
-              'pack_name', presets.pack_name,
-              'preset_author', presets.author,
-              'synth_id', synths.id
+              'packName', presets.pack_name,
+              'author', presets.author,
+              'synthId', synths.id,
+              'imageUrl', synths.image_url
             )
           ) AS presets
 
@@ -106,11 +108,11 @@ class Synth extends Entry {
   // Returns more synths by the same manufacturer
   async getMoreSynths(limit = null) {
     try {
-      const query = `
+      let query = `
         SELECT
-          synths.id AS synth_id,
-          synths.synth_name,
-          synths.image_url
+          synths.id AS id,
+          synths.synth_name AS name,
+          synths.image_url AS imageUrl
         FROM synths
         LEFT JOIN synth_clicks ON synths.id = synth_clicks.synth_id
         WHERE synths.manufacturer = (
@@ -119,10 +121,15 @@ class Synth extends Entry {
             WHERE synths.id = ?
         )
           AND synths.id != ?
-        ORDER BY clicks DESC
-        LIMIT ?`;
+        ORDER BY clicks DESC`;
 
-      return await DB.dbAll(query, [this.#id, this.#id, limit]);
+      const params = [this.#id, this.#id];
+      if (limit) {
+        query += ` LIMIT ?`;
+        params.push(limit);
+      }
+
+      return await DB.dbAll(query, params);
     } catch (err) {
       throw new Error(`Error fetching more synths: ${err.message}`);
     }
@@ -228,11 +235,11 @@ class Synth extends Entry {
   // Returns new Synth instance from a DB row
   static #fromRow(row) {
     return new Synth({
-      id: row.synth_id,
+      id: row.id,
       synthName: row.synth_name,
       manufacturer: row.manufacturer,
       synthType: row.synth_type,
-      releaseYear: row.synth_year,
+      releaseYear: row.release_year,
       imageUrl: row.image_url,
       timestamp: row.timestamp,
     });

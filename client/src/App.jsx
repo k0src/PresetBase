@@ -10,9 +10,9 @@ import HomePage from "./pages/static/HomePage/HomePage";
 // import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
 
 import SongPage from "./pages/entries/SongPage/SongPage";
-// import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
+import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
 import ArtistPage from "./pages/entries/ArtistPage/ArtistPage";
-// import SynthPage from "./pages/entries/SynthPage/SynthPage";
+import SynthPage from "./pages/entries/SynthPage/SynthPage";
 
 // import BrowsePage from "./pages/browse/BrowsePage/BrowsePage";
 // import BrowseSongs from "./pages/browse/BrowseSongs/BrowseSongs";
@@ -55,9 +55,9 @@ function App() {
 
         {/* Entry routes */}
         <Route path="/song/:id" element={<SongPage />} />
-        {/* <Route path="/album/:id" element={<AlbumPage />} /> */}
+        <Route path="/album/:id" element={<AlbumPage />} />
         <Route path="/artist/:id" element={<ArtistPage />} />
-        {/* <Route path="/synth/:id" element={<SynthPage />} /> */}
+        <Route path="/synth/:id" element={<SynthPage />} />
 
         {/* Browse routes */}
         {/* <Route path="/browse" element={<BrowsePage />} /> */}
