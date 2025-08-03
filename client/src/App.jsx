@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import HomePage from "./pages/static/HomePage/HomePage";
-// import AboutPage from "./pages/static/AboutPage/AboutPage";
+import AboutPage from "./pages/static/AboutPage/AboutPage";
 // import PrivacyPolicy from "./pages/static/PrivacyPolicy/PrivacyPolicy";
 // import Copyright from "./pages/static/Copyright/Copyright";
 // import UploadTos from "./pages/static/UploadTos/UploadTos";
@@ -45,7 +45,7 @@ function App() {
       <Routes>
         {/* Static routes */}
         <Route path="/" element={<HomePage />} />
-        {/* <Route path="/about-us" element={<AboutPage />} /> */}
+        <Route path="/about-us" element={<AboutPage />} />
         {/* <Route path="/privacy-policy" element={<PrivacyPolicy />} /> */}
         {/* <Route path="/copyright" element={<Copyright />} /> */}
         {/* <Route path="/upload-tos" element={<UploadTos />} /> */}

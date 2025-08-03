@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { dbAll } = require("../../util/UTIL.js");
+const { dbAll, dbGet } = require("../../util/UTIL.js");
 
 router.get("/loadcomplete/:type", async (req, res) => {
   const types = [
@@ -275,6 +275,25 @@ router.get("/checktags", async (req, res) => {
       isAuth: req.isAuthenticated(),
       PATH_URL: "db-error",
     });
+  }
+});
+
+router.get("/total-entries", async (req, res) => {
+  const query = `
+      SELECT
+        (SELECT COUNT(*) FROM songs) AS songs,
+        (SELECT COUNT(*) FROM albums) AS albums,
+        (SELECT COUNT(*) FROM artists) AS artists,
+        (SELECT COUNT(*) FROM synths) AS synths,
+        (SELECT COUNT(*) FROM presets) AS presets`;
+  try {
+    const dbStats = await dbGet(query);
+    return res.json(dbStats);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
   }
 });
 

@@ -35,6 +35,7 @@ const langColors = {
   CSS: "#563d7c",
   TypeScript: "#3178c6",
   EJS: "#a91e50",
+  JSX: "#61dafb",
 };
 
 loadRepoCard("k0src", "presetbase");
