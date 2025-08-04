@@ -6,7 +6,7 @@ import PrivacyPolicy from "./pages/static/PrivacyPolicy/PrivacyPolicy";
 import Copyright from "./pages/static/Copyright/Copyright";
 import UploadTos from "./pages/static/UploadTos/UploadTos";
 // import StatsPage from "./pages/static/StatsPage/StatsPage";
-// import SearchPage from "./pages/static/SearchPage/SearchPage";
+import SearchPage from "./pages/static/SearchPage/SearchPage";
 // import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
 
 import SongPage from "./pages/entries/SongPage/SongPage";
@@ -37,7 +37,7 @@ import SynthPage from "./pages/entries/SynthPage/SynthPage";
 // import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
 // import AdminManageDb from "./pages/admin/AdminManageDb/AdminManageDb";
 
-// import NotFound from "./pages/static/NotFound/NotFound";
+import NotFound from "./pages/static/NotFound/NotFound";
 
 function App() {
   return (
@@ -50,7 +50,7 @@ function App() {
         <Route path="/copyright" element={<Copyright />} />
         <Route path="/upload-tos" element={<UploadTos />} />
         {/* <Route path="/stats" element={<StatsPage />} /> */}
-        {/* <Route path="/search" element={<SearchPage />} /> */}
+        <Route path="/search" element={<SearchPage />} />
         {/* <Route path="/submit" element={<SubmitPage />} /> */}
 
         {/* Entry routes */}
@@ -94,7 +94,7 @@ function App() {
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
 
-        {/* <Route path="*" element={<NotFound />} /> */}
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );

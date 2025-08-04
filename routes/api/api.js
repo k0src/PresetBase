@@ -297,4 +297,46 @@ router.get("/total-entries", async (req, res) => {
   }
 });
 
+router.get("/number-entries", async (req, res) => {
+  const query = `
+    SELECT
+    (
+      (SELECT COUNT(*) FROM songs) +
+      (SELECT COUNT(*) FROM albums) +
+      (SELECT COUNT(*) FROM artists) +
+      (SELECT COUNT(*) FROM synths) +
+      (SELECT COUNT(*) FROM presets)
+    ) AS total_count`;
+
+  try {
+    const totalCount = await dbGet(query);
+    return res.json(totalCount.total_count);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/submissions-per-day", async (req, res) => {
+  const query = `
+    SELECT
+      ROUND(CAST(COUNT(*) AS FLOAT) / 
+      COUNT(DISTINCT DATE(timestamp)), 2) 
+      AS avg_submissions_per_day
+    FROM song_presets
+    WHERE timestamp IS NOT NULL`;
+
+  try {
+    const avgSubmissions = await dbGet(query);
+    return res.json(avgSubmissions.avg_submissions_per_day);
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
 module.exports = router;
