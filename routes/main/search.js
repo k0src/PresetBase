@@ -108,8 +108,6 @@ router.get("/", async (req, res) => {
         dbAll(queries.presets, [`%${searchQuery}%`]),
       ]);
 
-    const genreStyles = await getGenreStyles();
-
     res.render("main/search", {
       isAuth,
       userIsAdmin,
@@ -120,7 +118,6 @@ router.get("/", async (req, res) => {
       synths: synths || [],
       presets: presets || [],
       searchQuery: searchQuery,
-      genreStyles: genreStyles,
       PATH_URL: "search",
     });
   } catch (err) {
