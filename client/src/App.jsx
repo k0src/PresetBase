@@ -26,7 +26,7 @@ import SynthPage from "./pages/entries/SynthPage/SynthPage";
 // import BrowseRecent from "./pages/browse/BrowseRecent/BrowseRecent";
 
 // import Auth from "./pages/auth/Auth";
-// import LoginPage from "./pages/auth/LoginPage/LoginPage";
+import LoginPage from "./pages/auth/LoginPage/LoginPage";
 // import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
 
 // import AdminDashboard from "./pages/admin/AdminDashboard/AdminDashboard";
@@ -73,7 +73,7 @@ function App() {
 
         {/* Auth routes */}
         {/* <Route path="/auth" element={<Auth />} /> */}
-        {/* <Route path="/login" element={<LoginPage />} /> */}
+        <Route path="/login" element={<LoginPage />} />
         {/* <Route path="/account-info" element={<AccountInfoPage />} /> */}
 
         {/* Admin routes */}

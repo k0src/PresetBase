@@ -60,11 +60,7 @@ app.use("/api", apiRoutes);
 
 /* --------------------------- Static Asset Routes -------------------------- */
 if (isProd) {
-  app.use(express.static(path.join(__dirname, "client", "dist")));
-
-  app.get("*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
-  });
+  app.use(express.static(path.join(__dirname, "client/dist")));
 }
 
 /* ---------------------------- API Domain Routes --------------------------- */
@@ -124,14 +120,11 @@ app.use("/api/album", albumsRoutes);
 // const adminManageDb = require("./routes/admin/manage-db");
 // app.use("/admin/manage-db", adminManageDb);
 
-/* ---------------------------- 404 API Fallback ---------------------------- */
-app.use((req, res) => {
-  return res.status(404).json({
-    error: "Not Found",
-    status: 404,
-    message: "This route is not defined.",
+if (isProd) {
+  app.get("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "client/dist/index.html"));
   });
-});
+}
 
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
