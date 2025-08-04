@@ -1,4 +1,49 @@
-/* Styles for UploadTos component */
-.uploadtos {
-  /* Add your styles here */
+.copyrightHeader {
+  padding: 3.2rem 0 2.4rem 0;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding: 3.2rem 0 0 0;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding: 3.2rem 0 0 0;
+  padding-bottom: 1rem;
+}
+
+.copyrightListItem,
+.bodyText {
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
+.bodyText a {
+  text-decoration: underline !important;
+}
+
+.copyrightListOrdered,
+.copyrightList {
+  list-style-type: disc;
+  padding: 1rem 2rem;
+}
+
+.copyrightListItem {
+  padding: 0.4rem 0;
+}
+
+.addressContainer {
+  padding: 1.2rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
 }

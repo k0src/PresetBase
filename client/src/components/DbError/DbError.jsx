@@ -7,7 +7,6 @@ import styles from "./DbError.module.css";
 
 export default function DbError({ errorMessage }) {
   const navigate = useNavigate();
-
   const handleGoHome = () => navigate("/");
 
   return (

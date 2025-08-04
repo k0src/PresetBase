@@ -1,4 +1,43 @@
-/* Styles for PrivacyPolicy component */
-.privacypolicy {
-  /* Add your styles here */
+.ppHeader {
+  padding: 3.2rem 0 2.4rem 0;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding: 3.2rem 0 0 0;
+}
+
+.headingTertiary {
+  font-size: 1.8rem;
+  padding: 2.4rem 0 1.2rem 0;
+}
+
+.headingQuaternary {
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #899096;
+  font-size: 1.6rem;
+  padding: 1.8rem 0 1.2rem 0;
+}
+
+.ppListItem,
+.bodyText {
+  font-size: 1.4rem;
+  line-height: 1.8;
+}
+
+.ppList {
+  list-style-type: disc;
+  padding: 1rem 2rem;
+}
+
+.ppListItem {
+  padding: 0.4rem 0;
 }
