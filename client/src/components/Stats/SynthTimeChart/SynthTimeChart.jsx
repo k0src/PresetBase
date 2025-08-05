@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,10 +9,6 @@ import {
   Tooltip,
   Legend,
 } from "chart.js";
-
-import { getSynthTimeData } from "../../../api/stats";
-import PageLoader from "../../PageLoader/PageLoader";
-import DbError from "../../DbError/DbError";
 import styles from "./SynthTimeChart.module.css";
 
 ChartJS.register(
@@ -26,59 +21,39 @@ ChartJS.register(
   Legend
 );
 
-export default function SynthTimeChart() {
-  const [chartData, setChartData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function SynthTimeChart({ data }) {
+  if (!data) return null;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const { chartData: rawData } = await getSynthTimeData();
+  const { chartData: rawData } = data;
 
-        const labels = [...new Set(rawData.map((row) => row.month))];
+  const labels = [...new Set(rawData.map((row) => row.month))];
 
-        const synthMap = {};
-        rawData.forEach((row) => {
-          if (!synthMap[row.synth_name]) {
-            synthMap[row.synth_name] = {};
-          }
-          synthMap[row.synth_name][row.month] = parseInt(row.total_clicks) || 0;
-        });
+  const synthMap = {};
+  rawData.forEach((row) => {
+    if (!synthMap[row.synth_name]) {
+      synthMap[row.synth_name] = {};
+    }
+    synthMap[row.synth_name][row.month] = parseInt(row.total_clicks) || 0;
+  });
 
-        const synthColors = [
-          "#7B61FF",
-          "#1FB2A6",
-          "#FFD166",
-          "#EF476F",
-          "#118AB2",
-        ];
-        const datasets = Object.entries(synthMap).map(([synth, clicks], i) => ({
-          label: synth,
-          data: labels.map((month) => clicks[month] || 0),
-          fill: false,
-          tension: 0.4,
-          borderColor: synthColors[i % synthColors.length],
-          backgroundColor: synthColors[i % synthColors.length],
-          borderWidth: 2,
-          pointRadius: 4,
-          pointHoverRadius: 6,
-        }));
+  const synthColors = ["#7B61FF", "#1FB2A6", "#FFD166", "#EF476F", "#118AB2"];
 
-        setChartData({
-          labels: labels,
-          datasets: datasets,
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const datasets = Object.entries(synthMap).map(([synth, clicks], i) => ({
+    label: synth,
+    data: labels.map((month) => clicks[month] || 0),
+    fill: false,
+    tension: 0.4,
+    borderColor: synthColors[i % synthColors.length],
+    backgroundColor: synthColors[i % synthColors.length],
+    borderWidth: 2,
+    pointRadius: 4,
+    pointHoverRadius: 6,
+  }));
 
-    fetchData();
-  }, []);
+  const chartData = {
+    labels: labels,
+    datasets: datasets,
+  };
 
   const options = {
     responsive: true,
@@ -142,9 +117,6 @@ export default function SynthTimeChart() {
       },
     },
   };
-
-  if (loading) return <PageLoader />;
-  if (error) return <DbError errorMessage={error} />;
 
   return (
     <div className={styles.chartContainer}>

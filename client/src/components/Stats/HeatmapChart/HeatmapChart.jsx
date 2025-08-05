@@ -1,60 +1,34 @@
-import { useEffect, useState } from "react";
 import HeatMap from "@uiw/react-heat-map";
-import { getHeatmapData } from "../../../api/stats";
-import DbError from "../../DbError/DbError";
 import styles from "./HeatmapChart.module.css";
 
-export default function HeatmapChart() {
-  const [heatmapData, setHeatmapData] = useState([]);
-  const [error, setError] = useState(null);
-  const [currentYear, setCurrentYear] = useState(2025);
+export default function HeatmapChart({ data, currentYear, onYearChange }) {
+  if (!data) return null;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await getHeatmapData();
+  const { chartData } = data;
 
-        if (!response.chartData || !Array.isArray(response.chartData)) {
-          console.error("Invalid data structure:", response);
-          setHeatmapData([]);
-          return;
-        }
+  const heatmapData = [];
+  for (const { date, count } of chartData) {
+    if (!date || count === undefined) {
+      console.warn("Invalid data entry:", { date, count });
+      continue;
+    }
 
-        const dataArray = [];
-        for (const { date, count } of response.chartData) {
-          if (!date || count === undefined) {
-            console.warn("Invalid data entry:", { date, count });
-            continue;
-          }
-
-          dataArray.push({
-            date: date,
-            count: count,
-          });
-        }
-
-        setHeatmapData(dataArray);
-      } catch (err) {
-        console.error("Error fetching heatmap data:", err);
-        setError(err.message);
-      }
-    };
-
-    fetchData();
-  }, [currentYear]);
+    heatmapData.push({
+      date: date,
+      count: count,
+    });
+  }
 
   const handlePreviousYear = () => {
-    setCurrentYear((prev) => prev - 1);
+    onYearChange(currentYear - 1);
   };
 
   const handleNextYear = () => {
     const maxYear = new Date().getFullYear();
     if (currentYear < maxYear) {
-      setCurrentYear((prev) => prev + 1);
+      onYearChange(currentYear + 1);
     }
   };
-
-  if (error) return <DbError errorMessage={error} />;
 
   if (!heatmapData || heatmapData.length === 0) {
     return (

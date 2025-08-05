@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -10,10 +9,6 @@ import {
   Legend,
 } from "chart.js";
 
-import { getTopPresetsData } from "../../../api/stats";
-import PageLoader from "../../PageLoader/PageLoader";
-import DbError from "../../DbError/DbError";
-
 ChartJS.register(
   CategoryScale,
   LinearScale,
@@ -23,43 +18,27 @@ ChartJS.register(
   Legend
 );
 
-export default function TopPresetsChart() {
-  const [chartData, setChartData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function TopPresetsChart({ data }) {
+  if (!data) return null;
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        const data = await getTopPresetsData();
-        setChartData({
-          labels: data.labels,
-          datasets: [
-            {
-              label: "",
-              data: data.values,
-              backgroundColor: [
-                "#7B61FF",
-                "#1FB2A6",
-                "#FFD166",
-                "#EF476F",
-                "#118AB2",
-              ],
-              borderColor: "#171B1F",
-              borderWidth: 1,
-            },
-          ],
-        });
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
+  const chartData = {
+    labels: data.labels,
+    datasets: [
+      {
+        label: "",
+        data: data.values,
+        backgroundColor: [
+          "#7B61FF",
+          "#1FB2A6",
+          "#FFD166",
+          "#EF476F",
+          "#118AB2",
+        ],
+        borderColor: "#171B1F",
+        borderWidth: 1,
+      },
+    ],
+  };
 
   const options = {
     responsive: true,
@@ -118,9 +97,6 @@ export default function TopPresetsChart() {
       },
     },
   };
-
-  if (loading) return <PageLoader />;
-  if (error) return <DbError errorMessage={error} />;
 
   return <Bar data={chartData} options={options} />;
 }

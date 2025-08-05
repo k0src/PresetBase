@@ -1,13 +1,42 @@
 import { Helmet } from "react-helmet-async";
+import { useState, useEffect } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import GitHubRepoCard from "../../../components/GitHubRepoCard/GitHubRepoCard";
 import DbStatsCards from "../../../components/Stats/DbStatsCards/DbStatsCards";
+import PageLoader from "../../../components/PageLoader/PageLoader";
+import DbError from "../../../components/DbError/DbError";
+import { getTotalEntries } from "../../../api/api";
 import styles from "./AboutPage.module.css";
 
 import SplashImg from "../../../assets/images/about-us-hero.webp";
 
 export default function AboutPage() {
+  const [totalEntries, setTotalEntries] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const fetchTotalEntries = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await getTotalEntries();
+        setTotalEntries(data);
+      } catch (err) {
+        console.error("Error fetching total entries:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalEntries();
+  }, []);
+
+  if (loading) return <PageLoader />;
+  if (error) return <DbError errorMessage={error} />;
+
   return (
     <>
       <Helmet>
@@ -61,7 +90,7 @@ export default function AboutPage() {
           </p>
 
           <h2 className={styles.headingSecondary}>Current Database Stats</h2>
-          <DbStatsCards />
+          <DbStatsCards data={totalEntries} />
 
           <h2 className={styles.headingSecondary}>View on GitHub</h2>
           <GitHubRepoCard username="k0src" repo="presetbase" />
