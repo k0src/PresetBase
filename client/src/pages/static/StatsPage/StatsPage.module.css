@@ -1,4 +1,18 @@
-/* Styles for StatsPage component */
-.statspage {
-  /* Add your styles here */
+.statsHeader {
+  padding: 3.2rem 0 2.4rem 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
 }

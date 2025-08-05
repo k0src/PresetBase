@@ -5,7 +5,7 @@ import AboutPage from "./pages/static/AboutPage/AboutPage";
 import PrivacyPolicy from "./pages/static/PrivacyPolicy/PrivacyPolicy";
 import Copyright from "./pages/static/Copyright/Copyright";
 import UploadTos from "./pages/static/UploadTos/UploadTos";
-// import StatsPage from "./pages/static/StatsPage/StatsPage";
+import StatsPage from "./pages/static/StatsPage/StatsPage";
 import SearchPage from "./pages/static/SearchPage/SearchPage";
 // import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
 
@@ -49,7 +49,7 @@ function App() {
         <Route path="/privacy-policy" element={<PrivacyPolicy />} />
         <Route path="/copyright" element={<Copyright />} />
         <Route path="/upload-tos" element={<UploadTos />} />
-        {/* <Route path="/stats" element={<StatsPage />} /> */}
+        <Route path="/stats" element={<StatsPage />} />
         <Route path="/search" element={<SearchPage />} />
         {/* <Route path="/submit" element={<SubmitPage />} /> */}
 
@@ -75,15 +75,6 @@ function App() {
         {/* <Route path="/auth" element={<Auth />} /> */}
         <Route path="/login" element={<LoginPage />} />
         {/* <Route path="/account-info" element={<AccountInfoPage />} /> */}
-
-        {/* Admin routes */}
-        {/* <Route path="/admin" element={<AdminDashboard />} /> */}
-        {/* <Route path="/admin/approvals" element={<AdminApprovals />} /> */}
-        {/* <Route path="/admin/upload" element={<AdminUpload />} /> */}
-        {/* <Route path="/admin/tag-editor" element={<AdminTagEditor />} /> */}
-        {/* <Route path="/admin/announcements" element={<AdminAnnouncements />} /> */}
-        {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
-        {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
 
         {/* Admin routes */}
         {/* <Route path="/admin" element={<AdminDashboard />} /> */}

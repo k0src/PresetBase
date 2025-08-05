@@ -1,49 +1,13 @@
-import { getTotalEntries } from "../../../api/api";
-
-import { useState, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
-import DbError from "../../../components/DbError/DbError";
-import PageLoader from "../../../components/PageLoader/PageLoader";
 import GitHubRepoCard from "../../../components/GitHubRepoCard/GitHubRepoCard";
+import DbStatsCards from "../../../components/Stats/DbStatsCards/DbStatsCards";
 import styles from "./AboutPage.module.css";
 
 import SplashImg from "../../../assets/images/about-us-hero.webp";
 
 export default function AboutPage() {
-  const [totalEntries, setTotalEntries] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchTotalEntries = async () => {
-      try {
-        setLoading(true);
-        const data = await getTotalEntries();
-        setTotalEntries(data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchTotalEntries();
-  }, []);
-
-  if (loading) return <PageLoader />;
-
-  if (error || totalEntries === null) {
-    return (
-      <>
-        <Helmet>
-          <title>Internal Server Error</title>
-        </Helmet>
-        <DbError errorMessage={error} />
-      </>
-    );
-  }
-
   return (
     <>
       <Helmet>
@@ -97,36 +61,7 @@ export default function AboutPage() {
           </p>
 
           <h2 className={styles.headingSecondary}>Current Database Stats</h2>
-          <div className={styles.dbStats}>
-            <div className={styles.dbStatsCard}>
-              <span className={styles.dbStatsNumber}>{totalEntries.songs}</span>
-              <span className={styles.dbStatsText}>Songs</span>
-            </div>
-            <div className={styles.dbStatsCard}>
-              <span className={styles.dbStatsNumber}>
-                {totalEntries.artists}
-              </span>
-              <span className={styles.dbStatsText}>Artists</span>
-            </div>
-            <div className={styles.dbStatsCard}>
-              <span className={styles.dbStatsNumber}>
-                {totalEntries.albums}
-              </span>
-              <span className={styles.dbStatsText}>Album</span>
-            </div>
-            <div className={styles.dbStatsCard}>
-              <span className={styles.dbStatsNumber}>
-                {totalEntries.synths}
-              </span>
-              <span className={styles.dbStatsText}>Synths</span>
-            </div>
-            <div className={styles.dbStatsCard}>
-              <span className={styles.dbStatsNumber}>
-                {totalEntries.presets}
-              </span>
-              <span className={styles.dbStatsText}>Presets</span>
-            </div>
-          </div>
+          <DbStatsCards />
 
           <h2 className={styles.headingSecondary}>View on GitHub</h2>
           <GitHubRepoCard username="k0src" repo="presetbase" />

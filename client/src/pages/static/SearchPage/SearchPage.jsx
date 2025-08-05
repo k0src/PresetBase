@@ -5,6 +5,7 @@ import PageLoader from "../../../components/PageLoader/PageLoader";
 import SearchResults from "../../../components/Search/SearchResults";
 import { searchDatabase } from "../../../api/api";
 import styles from "./SearchPage.module.css";
+import { Helmet } from "react-helmet-async";
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
@@ -38,12 +39,6 @@ export default function SearchPage() {
     performSearch();
   }, [query]);
 
-  useEffect(() => {
-    if (searchData?.searchQuery) {
-      document.title = `Search results for "${searchData.searchQuery}"`;
-    }
-  }, [searchData]);
-
   if (loading) {
     return <PageLoader />;
   }
@@ -74,11 +69,17 @@ export default function SearchPage() {
   }
 
   return (
-    <ContentContainer isAuth={false} userIsAdmin={false}>
-      <SearchResults
-        searchData={searchData}
-        searchQuery={searchData?.searchQuery || query}
-      />
-    </ContentContainer>
+    <>
+      <Helmet>
+        <title>{`Search results for "${searchData.searchQuery}"`}</title>
+      </Helmet>
+
+      <ContentContainer isAuth={false} userIsAdmin={false}>
+        <SearchResults
+          searchData={searchData}
+          searchQuery={searchData?.searchQuery || query}
+        />
+      </ContentContainer>
+    </>
   );
 }

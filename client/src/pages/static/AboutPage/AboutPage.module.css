@@ -40,37 +40,3 @@
   flex-shrink: 0;
   border-radius: 0.8rem;
 }
-
-.dbStats {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1.8rem;
-  justify-content: center;
-  padding-bottom: 2.4rem;
-}
-
-.dbStatsCard {
-  background-color: #171b1f;
-  border: 0.2rem solid #2d343a;
-  border-radius: 0.4rem;
-  width: 16rem;
-  padding: 2.4rem 1.2rem;
-  text-align: center;
-  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
-}
-
-.dbStatsNumber {
-  display: block;
-  font-size: 3.2rem;
-  font-weight: 600;
-  color: #e3e5e4;
-  padding-bottom: 0.8rem;
-}
-
-.dbStatsText {
-  display: block;
-  font-size: 14px;
-  color: #899096;
-  text-transform: uppercase;
-  letter-spacing: 0.06rem;
-}
