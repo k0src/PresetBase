@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import HeatMap from "@uiw/react-heat-map";
-import { getHeatmapData } from "../../../api/api";
+import { getHeatmapData } from "../../../api/stats";
 import DbError from "../../DbError/DbError";
 import styles from "./HeatmapChart.module.css";
 

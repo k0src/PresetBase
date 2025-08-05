@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getCommunityStats } from "../../../api/api";
+import { getCommunityStats } from "../../../api/stats";
 import PageLoader from "../../PageLoader/PageLoader";
 import DbError from "../../DbError/DbError";
 import styles from "./CommunityStats.module.css";

@@ -11,7 +11,7 @@ import {
   Legend,
 } from "chart.js";
 
-import { getSynthTimeData } from "../../../api/api";
+import { getSynthTimeData } from "../../../api/stats";
 import PageLoader from "../../PageLoader/PageLoader";
 import DbError from "../../DbError/DbError";
 import styles from "./SynthTimeChart.module.css";

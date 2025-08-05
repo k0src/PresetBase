@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Doughnut } from "react-chartjs-2";
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 
-import { getTopSynthsData } from "../../../api/api";
+import { getTopSynthsData } from "../../../api/stats";
 import PageLoader from "../../PageLoader/PageLoader";
 import DbError from "../../DbError/DbError";
 

@@ -10,7 +10,7 @@ import {
   Legend,
 } from "chart.js";
 
-import { getTopPresetsData } from "../../../api/api";
+import { getTopPresetsData } from "../../../api/stats";
 import PageLoader from "../../PageLoader/PageLoader";
 import DbError from "../../DbError/DbError";
 

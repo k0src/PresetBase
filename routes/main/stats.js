@@ -1,66 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const { dbAll, dbGet, buildPresetChain } = require("../../util/UTIL.js");
+const { dbAll, dbGet } = require("../../util/UTIL.js");
 
-router.get("/", async (req, res) => {
-  const queries = {
-    dbStats: `
-      SELECT
-        (SELECT COUNT(*) FROM songs) AS total_songs,
-        (SELECT COUNT(*) FROM albums) AS total_albums,
-        (SELECT COUNT(*) FROM artists) AS total_artists,
-        (SELECT COUNT(*) FROM synths) AS total_synths,
-        (SELECT COUNT(*) FROM presets) AS total_presets`,
-
-    totalDbStats: `
-      SELECT
-        (
-          (SELECT COUNT(*) FROM songs) +
-          (SELECT COUNT(*) FROM albums) +
-          (SELECT COUNT(*) FROM artists) +
-          (SELECT COUNT(*) FROM synths) +
-          (SELECT COUNT(*) FROM presets)
-        ) AS total_count`,
-
-    submissionsPerDay: `
-      SELECT
-        ROUND(CAST(COUNT(*) AS FLOAT) / 
-        COUNT(DISTINCT DATE(timestamp)), 2) 
-        AS avg_submissions_per_day
-      FROM song_presets
-      WHERE timestamp IS NOT NULL
-    `,
-  };
-
-  const isAuth = req.isAuthenticated();
-  const userIsAdmin = isAuth && req.user && req.user.is_admin;
-
-  try {
-    const [dbStats, totalDbStats, submissionsPerDay] = await Promise.all([
-      dbGet(queries.dbStats),
-      dbGet(queries.totalDbStats),
-      dbGet(queries.submissionsPerDay),
-    ]);
-
-    res.render("main/stats", {
-      isAuth,
-      userIsAdmin,
-      dbStats,
-      totalDbStats,
-      submissionsPerDay,
-      PATH_URL: "stats",
-    });
-  } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth,
-      userIsAdmin,
-      PATH_URL: "db-error",
-    });
-  }
-});
-
-router.get("/top-presets-data", async (req, res) => {
+router.get("/top-presets", async (req, res) => {
   const query = `
     SELECT
       presets.preset_name,
@@ -75,26 +17,17 @@ router.get("/top-presets-data", async (req, res) => {
     LIMIT 20
   `;
 
-  const isAuth = req.isAuthenticated();
-  const userIsAdmin = isAuth && req.user && req.user.is_admin;
-
   try {
     const chartData = await dbAll(query);
     const labels = chartData.map((row) => row.preset_name);
     const values = chartData.map((row) => row.preset_usage_count);
-
     res.json({ labels, values });
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth,
-      userIsAdmin,
-      PATH_URL: "db-error",
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.get("/presets-per-synth-data", async (req, res) => {
+router.get("/presets-per-synth", async (req, res) => {
   const query = `
     SELECT
       synths.synth_name,
@@ -107,26 +40,17 @@ router.get("/presets-per-synth-data", async (req, res) => {
     LIMIT 20
   `;
 
-  const isAuth = req.isAuthenticated();
-  const userIsAdmin = isAuth && req.user && req.user.is_admin;
-
   try {
     const chartData = await dbAll(query);
     const labels = chartData.map((row) => row.synth_name);
     const values = chartData.map((row) => row.num_presets);
-
     res.json({ labels, values });
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth,
-      userIsAdmin,
-      PATH_URL: "db-error",
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
-router.get("/top-synths-data", async (req, res) => {
+router.get("/top-synths", async (req, res) => {
   const query = `
     SELECT
       synths.synth_name,
@@ -140,22 +64,13 @@ router.get("/top-synths-data", async (req, res) => {
     LIMIT 20
   `;
 
-  const isAuth = req.isAuthenticated();
-  const userIsAdmin = isAuth && req.user && req.user.is_admin;
-
   try {
     const chartData = await dbAll(query);
     const labels = chartData.map((row) => row.synth_name);
     const values = chartData.map((row) => row.song_usage_count);
-
     res.json({ labels, values });
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth,
-      userIsAdmin,
-      PATH_URL: "db-error",
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -172,19 +87,11 @@ router.get("/synth-time-data", async (req, res) => {
     ORDER BY month, synths.synth_name
   `;
 
-  const isAuth = req.isAuthenticated();
-  const userIsAdmin = isAuth && req.user && req.user.is_admin;
-
   try {
     const chartData = await dbAll(query);
     res.json({ chartData });
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth,
-      userIsAdmin,
-      PATH_URL: "db-error",
-    });
+    res.status(500).json({ error: err.message });
   }
 });
 
@@ -207,43 +114,40 @@ router.get("/heatmap-data", async (req, res) => {
   }
 });
 
-router.get("/preset-chain-data", async (req, res) => {
+router.get("/community-stats", async (req, res) => {
   const queries = {
-    artistPresetMap: `
-      SELECT DISTINCT 
-        sa.artist_id, 
-        a.name AS artist_name, 
-        sp.preset_id, 
-        p.preset_name
-      FROM song_artists sa
-      JOIN artists a ON sa.artist_id = a.id
-      JOIN song_presets sp ON sa.song_id = sp.song_id
-      JOIN presets p ON sp.preset_id = p.id`,
+    totalDbStats: `
+      SELECT
+        (
+          (SELECT COUNT(*) FROM songs) +
+          (SELECT COUNT(*) FROM albums) +
+          (SELECT COUNT(*) FROM artists) +
+          (SELECT COUNT(*) FROM synths) +
+          (SELECT COUNT(*) FROM presets)
+        ) AS total_count`,
 
-    artistCollabMap: `
-      SELECT DISTINCT 
-        sa1.artist_id AS artist1, 
-        a1.name AS name1,
-        sa2.artist_id AS artist2, 
-        a2.name AS name2
-      FROM song_artists sa1
-      JOIN artists a1 ON sa1.artist_id = a1.id
-      JOIN song_artists sa2 ON sa1.song_id = sa2.song_id
-      JOIN artists a2 ON sa2.artist_id = a2.id
-      WHERE sa1.artist_id != sa2.artist_id`,
+    submissionsPerDay: `
+      SELECT
+        ROUND(CAST(COUNT(*) AS FLOAT) / 
+        COUNT(DISTINCT DATE(timestamp)), 2) 
+        AS avg_submissions_per_day
+      FROM song_presets
+      WHERE timestamp IS NOT NULL
+    `,
   };
 
   try {
-    const [artistPresetMap, artistCollabMap] = await Promise.all([
-      dbAll(queries.artistPresetMap),
-      dbAll(queries.artistCollabMap),
+    const [totalDbStats, submissionsPerDay] = await Promise.all([
+      dbGet(queries.totalDbStats),
+      dbGet(queries.submissionsPerDay),
     ]);
 
-    const chartData = await buildPresetChain(artistPresetMap, artistCollabMap);
-    res.json({ chartData });
+    res.json({
+      totalCount: totalDbStats.total_count,
+      avgSubmissionsPerDay: submissionsPerDay.avg_submissions_per_day,
+    });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 });
-
 module.exports = router;
