@@ -1,0 +1,29 @@
+.communityStatsText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.8rem;
+  color: #e3e5e4;
+  line-height: 1.2;
+  font-size: 3.6rem;
+  background-color: #171b1f;
+  padding: 1.8rem;
+}
+
+.communityStatsTitle {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+}
+
+.communityStatsNumber {
+  font-family: "JetBrains Mono", monospace;
+  font-weight: 700;
+  background: linear-gradient(90deg, #0093a7, #c43436, #272727);
+  background-size: 200%;
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  display: inline-block;
+  transition: background-position 1s ease;
+}

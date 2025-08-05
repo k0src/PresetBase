@@ -44,7 +44,7 @@ export default function DbStatsCards() {
       </div>
       <div className={styles.dbStatsCard}>
         <span className={styles.dbStatsNumber}>{totalEntries.albums}</span>
-        <span className={styles.dbStatsText}>Album</span>
+        <span className={styles.dbStatsText}>Albums</span>
       </div>
       <div className={styles.dbStatsCard}>
         <span className={styles.dbStatsNumber}>{totalEntries.synths}</span>
