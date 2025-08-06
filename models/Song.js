@@ -343,10 +343,6 @@ class Song extends Entry {
 
       const songsData = await DB.dbAll(query);
 
-      console.log(sort);
-      console.log(direction);
-      console.log(songsData);
-
       if (songsData) {
         songsData.forEach((song) => {
           song.artist = JSON.parse(song.artist || "{}");

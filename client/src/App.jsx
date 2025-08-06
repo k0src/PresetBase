@@ -16,14 +16,14 @@ import SynthPage from "./pages/entries/SynthPage/SynthPage";
 
 // import BrowsePage from "./pages/browse/BrowsePage/BrowsePage";
 import BrowseSongs from "./pages/browse/BrowseSongs";
-// import BrowseArtists from "./pages/browse/BrowseArtists/BrowseArtists";
-// import BrowseAlbums from "./pages/browse/BrowseAlbums/BrowseAlbums";
-// import BrowseSynths from "./pages/browse/BrowseSynths/BrowseSynths";
-// import BrowsePresets from "./pages/browse/BrowsePresets/BrowsePresets";
-// import BrowseGenres from "./pages/browse/BrowseGenres/BrowseGenres";
-// import BrowsePopular from "./pages/browse/BrowsePopular/BrowsePopular";
-// import BrowseHot from "./pages/browse/BrowseHot/BrowseHot";
-// import BrowseRecent from "./pages/browse/BrowseRecent/BrowseRecent";
+import BrowseArtists from "./pages/browse/BrowseArtists";
+// import BrowseAlbums from "./pages/browse/BrowseAlbums";
+// import BrowseSynths from "./pages/browse/BrowseSynths";
+// import BrowsePresets from "./pages/browse/BrowsePresets";
+// import BrowseGenres from "./pages/browse/BrowseGenres";
+// import BrowsePopular from "./pages/browse/BrowsePopular";
+// import BrowseHot from "./pages/browse/BrowseHot";
+// import BrowseRecent from "./pages/browse/BrowseRecent";
 
 // import Auth from "./pages/auth/Auth";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
@@ -62,7 +62,7 @@ function App() {
         {/* Browse routes */}
         {/* <Route path="/browse" element={<BrowsePage />} /> */}
         <Route path="/browse/songs" element={<BrowseSongs />} />
-        {/* <Route path="/browse/artists" element={<BrowseArtists />} /> */}
+        <Route path="/browse/artists" element={<BrowseArtists />} />
         {/* <Route path="/browse/albums" element={<BrowseAlbums />} /> */}
         {/* <Route path="/browse/synths" element={<BrowseSynths />} /> */}
         {/* <Route path="/browse/presets" element={<BrowsePresets />} /> */}

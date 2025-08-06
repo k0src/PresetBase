@@ -279,19 +279,23 @@ class Artist extends Entry {
   }
 
   // Get all artists
-  static async getAll(sort = null, direction = "ASC") {
+  static async getAll(sort = "artists.timestamp", direction = "ASC") {
     try {
+      // For case-insensitive sorting
+      const textFields = ["artists.name", "artists.country"];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
+
       const query = `
         SELECT
-          artists.name AS artist_name,
-          artists.id AS artist_id,
-          artists.country AS artist_country,
-          artists.image_url AS artist_image,
-          artists.timestamp AS artist_added_timestamp,
-          COALESCE(artist_clicks.recent_click, 0) AS artist_recent_click
+          artists.id AS id,
+          artists.name AS name,
+          artists.country AS country,
+          artists.image_url AS imageUrl,
+          artists.timestamp AS timestamp
         FROM artists
-        LEFT JOIN artist_clicks ON artist_clicks.artist_id = artists.id
-        ORDER BY ${sort || "artists.timestamp"} ${direction}`;
+        ORDER BY ${sortClause}`;
 
       return await DB.dbAll(query);
     } catch (err) {

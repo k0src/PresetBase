@@ -13,6 +13,11 @@ const sortKeys = {
     album: "albums.title",
     added: "songs.timestamp",
   },
+  artists: {
+    name: "artists.name",
+    country: "artists.country",
+    added: "artists.timestamp",
+  },
 };
 
 const sortDirections = {

@@ -1,4 +1,4 @@
-import { getSongsData, getTotalSongEntries } from "../../api/browse.js";
+import { getArtistsData, getTotalArtistEntries } from "../../api/browse";
 import { entryConfigs } from "./entryConfigs.js";
 
 import { useState, useEffect } from "react";
@@ -10,8 +10,8 @@ import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
-export default function BrowseSongs() {
-  const [songsData, setSongsData] = useState(null);
+export default function BrowseArtists() {
+  const [artistsData, setArtistsData] = useState(null);
   const [totalEntries, setTotalEntries] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -20,15 +20,15 @@ export default function BrowseSongs() {
   const [filterText, setFilterText] = useState("");
 
   useEffect(() => {
-    const loadSongsData = async () => {
+    const loadArtistsData = async () => {
       try {
         setLoading(true);
-        const [songsDataRes, totalEntriesRes] = await Promise.all([
-          getSongsData(sortBy, sortDirection),
-          getTotalSongEntries(),
+        const [artistsDataRes, totalEntriesRes] = await Promise.all([
+          getArtistsData(sortBy, sortDirection),
+          getTotalArtistEntries(),
         ]);
 
-        setSongsData(songsDataRes.data);
+        setArtistsData(artistsDataRes.data);
         setTotalEntries(totalEntriesRes.data);
       } catch (err) {
         setError(err.message);
@@ -37,7 +37,7 @@ export default function BrowseSongs() {
       }
     };
 
-    loadSongsData();
+    loadArtistsData();
   }, [sortBy, sortDirection]);
 
   const handleSortChange = async (sort, direction) => {
@@ -62,16 +62,15 @@ export default function BrowseSongs() {
     );
   }
 
-  // No results
-  if (!songsData || !songsData.length) {
+  if (!artistsData || artistsData.length === 0) {
     return (
       <>
         <Helmet>
-          <title>Browse Songs</title>
+          <title>Browse Artists</title>
         </Helmet>
 
         <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="songs" />
+          <BrowseNoResults entryType="artists" />
         </ContentContainer>
       </>
     );
@@ -80,15 +79,15 @@ export default function BrowseSongs() {
   return (
     <>
       <Helmet>
-        <title>Browse Songs</title>
+        <title>Browse Artists</title>
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
         <BrowseResults
-          entryType="songs"
-          data={songsData}
+          entryType="artists"
+          data={artistsData}
           totalEntries={totalEntries}
-          config={entryConfigs.songs}
+          config={entryConfigs.artists}
           onSortChange={handleSortChange}
           onFilterChange={handleFilterChange}
           sortBy={sortBy}
