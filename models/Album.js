@@ -290,7 +290,7 @@ class Album extends Entry {
   }
 
   // Get all albums
-  static async getAll(sort = null, direction = "ASC") {
+  static async getAll(sort = "albums.timestamp", direction = "ASC") {
     try {
       // For case-insensitive sorting
       const textFields = ["albums.title", "albums.genre", "artists.name"];

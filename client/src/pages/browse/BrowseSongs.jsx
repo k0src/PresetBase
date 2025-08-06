@@ -96,6 +96,7 @@ export default function BrowseSongs() {
           sortBy={sortBy}
           sortDirection={sortDirection}
           filterText={filterText}
+          filterPlaceholder="Filter songs..."
         />
       </ContentContainer>
     </>

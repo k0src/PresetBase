@@ -12,13 +12,14 @@ const BrowseResults = memo(function BrowseResults({
   sortBy,
   sortDirection,
   filterText,
+  filterPlaceholder,
 }) {
   return (
     <>
       <BrowseHeader
         entryType="songs"
         totalEntries={totalEntries}
-        filterPlaceholder="Filter songs..."
+        filterPlaceholder={filterPlaceholder}
         sortOptions={config.sortOptions}
         onFilterChange={onFilterChange}
         onSortSelectChange={onSortChange}

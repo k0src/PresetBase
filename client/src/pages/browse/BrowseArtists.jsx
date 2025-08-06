@@ -96,6 +96,7 @@ export default function BrowseArtists() {
           sortBy={sortBy}
           sortDirection={sortDirection}
           filterText={filterText}
+          filterPlaceholder="Filter artists..."
         />
       </ContentContainer>
     </>

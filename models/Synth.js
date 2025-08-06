@@ -293,21 +293,29 @@ class Synth extends Entry {
   }
 
   // Get all synths
-  static async getAll(sort = null, direction = "ASC") {
+  static async getAll(sort = "synths.timestamp", direction = "ASC") {
     try {
+      // For case-insensitive sorting
+      const textFields = [
+        "synths.synth_name",
+        "synths.manufacturer",
+        "synths.synth_type",
+      ];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
+
       const query = `
         SELECT
-          synths.synth_name AS synth_name,
-          synths.id AS synth_id,
-          synths.manufacturer AS synth_manufacturer,
-          synths.release_year AS synth_release_year,
-          synths.image_url AS synth_image,
-          synths.synth_type AS synth_type,
-          synths.timestamp AS synth_added_timestamp,
-          COALESCE(synth_clicks.recent_click, 0) AS synth_recent_click
+          synths.synth_name AS name,
+          synths.id AS id,
+          synths.manufacturer AS manufacturer,
+          synths.release_year AS year,
+          synths.image_url AS imageUrl,
+          synths.synth_type AS type,
+          synths.timestamp AS timestamp
         FROM synths
-        LEFT JOIN synth_clicks ON synth_clicks.synth_id = synths.id
-        ORDER BY ${sort || "synths.timestamp"} ${direction}`;
+        ORDER BY ${sortClause}`;
 
       return await DB.dbAll(query);
     } catch (err) {

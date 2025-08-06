@@ -96,6 +96,7 @@ export default function BrowseAlbums() {
           sortBy={sortBy}
           sortDirection={sortDirection}
           filterText={filterText}
+          filterPlaceholder="Filter albums..."
         />
       </ContentContainer>
     </>

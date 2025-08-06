@@ -18,7 +18,7 @@ import SynthPage from "./pages/entries/SynthPage/SynthPage";
 import BrowseSongs from "./pages/browse/BrowseSongs";
 import BrowseArtists from "./pages/browse/BrowseArtists";
 import BrowseAlbums from "./pages/browse/BrowseAlbums";
-// import BrowseSynths from "./pages/browse/BrowseSynths";
+import BrowseSynths from "./pages/browse/BrowseSynths";
 // import BrowsePresets from "./pages/browse/BrowsePresets";
 // import BrowseGenres from "./pages/browse/BrowseGenres";
 // import BrowsePopular from "./pages/browse/BrowsePopular";
@@ -64,7 +64,7 @@ function App() {
         <Route path="/browse/songs" element={<BrowseSongs />} />
         <Route path="/browse/artists" element={<BrowseArtists />} />
         <Route path="/browse/albums" element={<BrowseAlbums />} />
-        {/* <Route path="/browse/synths" element={<BrowseSynths />} /> */}
+        <Route path="/browse/synths" element={<BrowseSynths />} />
         {/* <Route path="/browse/presets" element={<BrowsePresets />} /> */}
         {/* <Route path="/browse/genres" element={<BrowseGenres />} /> */}
         {/* <Route path="/browse/popular" element={<BrowsePopular />} /> */}
