@@ -4,6 +4,22 @@ const path = require("path");
 
 const NEW_DAYS_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 
+const sortKeys = {
+  songs: {
+    title: "songs.title",
+    genre: "songs.genre",
+    year: "songs.release_year",
+    artist: "artists.name",
+    album: "albums.title",
+    added: "songs.timestamp",
+  },
+};
+
+const sortDirections = {
+  asc: "ASC",
+  desc: "DESC",
+};
+
 /* -------------------------------- DATABASE -------------------------------- */
 const dbAll = function (query, params = []) {
   return new Promise((resolve, reject) => {
@@ -605,4 +621,6 @@ module.exports = {
   formatDate,
   titleCase,
   deleteEntryImage,
+  sortKeys,
+  sortDirections,
 };

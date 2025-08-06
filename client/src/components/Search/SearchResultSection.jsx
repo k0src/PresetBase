@@ -85,7 +85,6 @@ export default function SearchResultSection({ title, data, type, filter }) {
         {getColumnHeaders()}
       </div>
       {data.map((entry, index) => {
-        // Generate a unique key based on the entry type and ID
         const getId = () => {
           switch (type) {
             case "songs":

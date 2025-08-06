@@ -1,0 +1,41 @@
+.sortSelectContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
+.sortSelect {
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #899096;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  padding: 0.4rem 1.6rem;
+  flex: 1;
+}
+
+.sortIcon {
+  color: #899096;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.sortIcon:hover {
+  color: #e3e5e4 !important;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 48em) {
+  .sortSelect {
+    padding: 0.4rem 1rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .sortSelect {
+    display: none;
+  }
+}

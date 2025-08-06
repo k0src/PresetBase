@@ -1,0 +1,235 @@
+.gridLayoutSongs {
+  display: grid;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutArtists {
+  display: grid;
+  grid-template-columns: 2rem 1fr 1fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutAlbums {
+  display: grid;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutSynths {
+  display: grid;
+  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutPresets {
+  display: grid;
+  grid-template-columns: 2rem 400fr 300fr 300fr 200fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutGenres {
+  display: grid;
+  grid-template-columns: 2rem 1fr 1fr;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.tableRow {
+  padding: 1.4rem;
+  border-bottom: 0.1rem solid #2d343a;
+  transition: background-color 0.2s ease;
+}
+
+.tableRow:hover,
+.oddRow:hover {
+  background-color: #2d343a;
+}
+
+.oddRow {
+  background-color: #1e2227;
+}
+
+.rowTitleContainer {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  min-width: 0;
+}
+
+.rowImgContainer {
+  position: relative;
+}
+
+.rowImg {
+  width: 7.2rem;
+  height: 7.2rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.4rem;
+}
+
+.rowTitle {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.8rem;
+  min-width: 0;
+}
+
+.rowNumber,
+.rowTextPrimary,
+.rowTextSecondary,
+.rowTextTertiary,
+.rowTextQuaternary {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.4rem;
+}
+
+.rowTextSecondary {
+  color: #899096 !important;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.rowTextPrimary {
+  font-size: 1.8rem;
+  font-weight: 500;
+  line-height: 1.1;
+}
+
+.tableColumns {
+  color: #899096;
+  font-size: 1.3rem;
+  border-top: 0.1rem solid #2d343a;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.4rem;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 60em) {
+  .rowNumber,
+  .rowTextSecondary,
+  .rowTextTertiary,
+  .rowTextQuaternary {
+    font-size: 1.2rem;
+  }
+
+  .rowTextPrimary {
+    font-size: 1.6rem;
+  }
+
+  .heading-primary {
+    font-size: 2.4rem;
+  }
+}
+
+@media (max-width: 48em) {
+  .rowTitle {
+    gap: 0.6rem;
+  }
+
+  .gridLayoutSongs,
+  .gridLayoutArtists,
+  .gridLayoutAlbums,
+  .gridLayoutSynths,
+  .gridLayoutPresets,
+  .gridLayoutGenres {
+    gap: 1rem;
+  }
+
+  .tableColumns {
+    font-size: 1rem;
+    padding: 1rem;
+  }
+
+  .tableRow {
+    padding: 1rem;
+  }
+
+  .rowTitleContainer {
+    gap: 1.4rem;
+  }
+
+  .rowImg {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .rowTitle {
+    gap: 0.4rem;
+  }
+
+  .rowNumber {
+    font-size: 1.2rem;
+  }
+
+  .rowTextPrimary {
+    font-size: 1.4rem;
+  }
+
+  .heading-primary {
+    font-size: 2rem;
+  }
+
+  .heading-secondary {
+    font-size: 1.4rem;
+  }
+
+  .gridLayoutSongs,
+  .gridLayoutArtists,
+  .gridLayoutAlbums,
+  .gridLayoutSynths,
+  .gridLayoutPresets,
+  .gridLayoutGenres {
+    grid-template-columns: 1.6rem 1fr;
+  }
+
+  .gridLayoutGenres .rowTextTertiary,
+  .gridLayoutSongs .rowTextSecondary,
+  .gridLayoutSongs .rowTextTertiary,
+  .gridLayoutSongs .rowTextQuaternary,
+  .gridLayoutArtists .rowTextSecondary,
+  .gridLayoutArtists .rowTextTertiary,
+  .gridLayoutArtists .rowTextQuaternary,
+  .gridLayoutAlbums .rowTextSecondary,
+  .gridLayoutAlbums .rowTextTertiary,
+  .gridLayoutAlbums .rowTextQuaternary,
+  .gridLayoutSynths .rowTextSecondary,
+  .gridLayoutSynths .rowTextTertiary,
+  .gridLayoutSynths .rowTextQuaternary,
+  .gridLayoutPresets .rowTextSecondary,
+  .gridLayoutPresets .rowTextTertiary,
+  .gridLayoutPresets .rowTextQuaternary {
+    display: none;
+  }
+
+  .tableColumns {
+    display: none;
+  }
+
+  .tableRow {
+    padding: 1rem;
+  }
+
+  .rowTitleContainer {
+    gap: 1rem;
+  }
+
+  .rowImg {
+    width: 6.4rem;
+    height: 6.4rem;
+  }
+}

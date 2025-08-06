@@ -1,0 +1,28 @@
+.noResultsContainer {
+  min-height: 60vh;
+  color: #899096;
+  display: flex;
+  gap: 1.2rem;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.noResultsText {
+  font-size: 2.4rem;
+}
+
+.noResultsIcon {
+  font-size: 3.2rem;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 35em) {
+  .noResultsText {
+    font-size: 1.8rem;
+  }
+
+  .noResultsIcon {
+    font-size: 2.4rem;
+  }
+}

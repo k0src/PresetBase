@@ -86,8 +86,8 @@ app.use("/api/album", albumsRoutes);
 
 // const browseRoute = require("./routes/main/browse");
 // app.use("/browse", browseRoute);
-// const browseSongsRoute = require("./routes/main/browse/songs");
-// app.use("/browse/songs", browseSongsRoute);
+const browseSongsRoute = require("./routes/main/browse/songs");
+app.use("/api/browse/songs", browseSongsRoute);
 // const browseArtistsRoute = require("./routes/main/browse/artists");
 // app.use("/browse/artists", browseArtistsRoute);
 // const browseAlbumsRoute = require("./routes/main/browse/albums");

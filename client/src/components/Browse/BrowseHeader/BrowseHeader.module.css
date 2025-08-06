@@ -1,0 +1,67 @@
+.browseHeader {
+  padding: 3.2rem 0 2rem 0;
+  display: flex;
+  gap: 3.2rem;
+  flex-direction: column;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.browseHeaderTop {
+  width: 100%;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.resultsCount {
+  color: #899096;
+  font-size: 1.3rem;
+}
+
+.browseHeaderBottom {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.filterContainer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.4rem;
+}
+
+/* --------------------------------- Queries -------------------------------- */
+@media (max-width: 48em) {
+  .browseHeader {
+    gap: 1.4rem;
+  }
+
+  .resultsCount {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 35em) {
+  .filterContainer {
+    flex-direction: column;
+    gap: 0.8rem;
+    align-items: flex-start;
+  }
+
+  .browseHeaderBottom {
+    gap: 0;
+  }
+
+  .heading-primary {
+    font-size: 2rem;
+  }
+}

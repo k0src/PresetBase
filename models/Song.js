@@ -303,20 +303,35 @@ class Song extends Entry {
   }
 
   // Get all songs
-  static async getAll(sort = null, direction = "ASC") {
+  static async getAll(sort = "songs.timestamp", direction = "ASC") {
     try {
+      // For case-insensitive sorting
+      const textFields = [
+        "songs.title",
+        "songs.genre",
+        "artists.name",
+        "albums.title",
+      ];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
+
       const query = `
         SELECT
-          songs.id AS song_id,
-          songs.title AS song_title,
-          songs.genre AS song_genre,
-          songs.release_year AS song_release_year,
-          songs.image_url AS song_image,
-          artists.name AS artist_name,
-          artists.id AS artist_id,
-          albums.title AS album_title,
-          albums.id AS album_id,
-          songs.timestamp AS song_added_timestamp
+          songs.id AS id,
+          songs.title AS title,
+          songs.genre AS genre,
+          songs.release_year AS year,
+          songs.image_url AS imageUrl,
+          songs.timestamp AS timestamp,
+          json_object (
+            'id', artists.id,
+            'name', artists.name
+          ) AS artist,
+          json_object (
+            'id', albums.id,
+            'title', albums.title
+          ) AS album
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         LEFT JOIN artists ON song_artists.artist_id = artists.id
@@ -324,9 +339,22 @@ class Song extends Entry {
         LEFT JOIN albums ON album_songs.album_id = albums.id
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
-        ORDER BY ${sort || "songs.timestamp"} ${direction}`;
+        ORDER BY ${sortClause}`;
 
-      return await DB.dbAll(query);
+      const songsData = await DB.dbAll(query);
+
+      console.log(sort);
+      console.log(direction);
+      console.log(songsData);
+
+      if (songsData) {
+        songsData.forEach((song) => {
+          song.artist = JSON.parse(song.artist || "{}");
+          song.album = JSON.parse(song.album || "{}");
+        });
+      }
+
+      return songsData;
     } catch (err) {
       throw new Error(`Error fetching all songs: ${err.message}`);
     }
