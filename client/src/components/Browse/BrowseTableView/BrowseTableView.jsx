@@ -225,7 +225,7 @@ const BrowseTableView = memo(function BrowseTableView({
         </div>
         <span className={styles.rowTextPrimary}>{genre.name}</span>
       </div>
-      <span className={styles.rowTextSecondary}>{genre.songsCount}</span>
+      <span className={styles.rowTextSecondary}>{genre.songCount}</span>
     </div>
   );
 

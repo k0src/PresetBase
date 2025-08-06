@@ -20,7 +20,7 @@ import BrowseArtists from "./pages/browse/BrowseArtists";
 import BrowseAlbums from "./pages/browse/BrowseAlbums";
 import BrowseSynths from "./pages/browse/BrowseSynths";
 import BrowsePresets from "./pages/browse/BrowsePresets";
-// import BrowseGenres from "./pages/browse/BrowseGenres";
+import BrowseGenres from "./pages/browse/BrowseGenres";
 // import BrowsePopular from "./pages/browse/BrowsePopular";
 // import BrowseHot from "./pages/browse/BrowseHot";
 // import BrowseRecent from "./pages/browse/BrowseRecent";
@@ -66,7 +66,7 @@ function App() {
         <Route path="/browse/albums" element={<BrowseAlbums />} />
         <Route path="/browse/synths" element={<BrowseSynths />} />
         <Route path="/browse/presets" element={<BrowsePresets />} />
-        {/* <Route path="/browse/genres" element={<BrowseGenres />} /> */}
+        <Route path="/browse/genres" element={<BrowseGenres />} />
         {/* <Route path="/browse/popular" element={<BrowsePopular />} /> */}
         {/* <Route path="/browse/hot" element={<BrowseHot />} /> */}
         {/* <Route path="/browse/recent" element={<BrowseRecent />} /> */}

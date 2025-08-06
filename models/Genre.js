@@ -31,7 +31,7 @@ class Genre extends Entry {
     try {
       if (this.#id) {
         return DB.dbRun(
-          `UPDATE genres SET name = ?, slug = ?, text_color = ?, border_color = ?, background_color = ? WHERE id = ?`,
+          `UPDATE genre_tags SET name = ?, slug = ?, text_color = ?, border_color = ?, bg_color = ? WHERE id = ?`,
           [
             this.#name,
             this.#slug,
@@ -43,7 +43,7 @@ class Genre extends Entry {
         );
       } else {
         return DB.dbRun(
-          `INSERT INTO genres (name, slug, text_color, border_color, background_color) VALUES (?, ?, ?, ?, ?)`,
+          `INSERT INTO genre_tags (name, slug, text_color, border_color, bg_color) VALUES (?, ?, ?, ?, ?)`,
           [
             this.#name,
             this.#slug,
@@ -63,19 +63,19 @@ class Genre extends Entry {
     try {
       const query = `
         SELECT
-          genres.id AS genre_id,
-          genres.name AS genre_name,
-          genres.slug AS genre_slug,
-          genres.text_color AS genre_text_color,
-          genres.border_color AS genre_border_color,
-          genres.background_color AS genre_background_color,
-          s.image_url AS song_image,
-          COUNT(s.id) AS num_songs
-        FROM genres
-        LEFT JOIN songs ON songs.genre = genres.name
-        WHERE genres.id = ?
-        GROUP BY genres.id, genres.name, genres.slug, genres.text_color, 
-                 genres.border_color, genres.background_color, s.image_url`;
+          genre_tags.id AS id,
+          genre_tags.name AS name,
+          genre_tags.slug AS slug,
+          genre_tags.text_color AS textColor,
+          genre_tags.border_color AS borderColor,
+          genre_tags.bg_color AS backgroundColor,
+          songs.image_url AS imageUrl,
+          COUNT(songs.id) AS songCount
+        FROM genre_tags
+        LEFT JOIN songs ON songs.genre = genre_tags.name
+        WHERE genre_tags.id = ?
+        GROUP BY genre_tags.id, genre_tags.name, genre_tags.slug, genre_tags.text_color, 
+          genre_tags.border_color, genre_tags.bg_color, songs.image_url`;
 
       return await DB.dbGet(query, [this.#id]);
     } catch (err) {
@@ -216,7 +216,7 @@ class Genre extends Entry {
       }
 
       const lastId = await DB.dbRun(
-        `INSERT INTO genres (name, slug, text_color, border_color, background_color) 
+        `INSERT INTO genre_tags (name, slug, text_color, border_color, bg_color) 
          VALUES (?, ?, ?, ?, ?)`,
         [name, slug, textColor, borderColor, backgroundColor]
       );
@@ -242,14 +242,14 @@ class Genre extends Entry {
       slug: row.slug,
       textColor: row.text_color,
       borderColor: row.border_color,
-      backgroundColor: row.background_color,
+      backgroundColor: row.bg_color,
     });
   }
 
   // Get genre by ID
   static async getById(id) {
     try {
-      const row = await DB.dbGet(`SELECT * FROM genres WHERE id = ?`, [id]);
+      const row = await DB.dbGet(`SELECT * FROM genre_tags WHERE id = ?`, [id]);
       return row ? Genre.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching genre by ID: ${err.message}`);
@@ -259,7 +259,7 @@ class Genre extends Entry {
   // Delete genre by ID
   static async deleteById(id) {
     try {
-      await DB.dbRun(`DELETE FROM genres WHERE id = ?`, [id]);
+      await DB.dbRun(`DELETE FROM genre_tags WHERE id = ?`, [id]);
     } catch (err) {
       throw new Error(`Error deleting genre by ID: ${err.message}`);
     }
@@ -268,7 +268,7 @@ class Genre extends Entry {
   // Return whether genre exists in DB by ID
   static async exists(id) {
     try {
-      const genreId = await DB.dbGet(`SELECT id FROM genres WHERE id = ?`, [
+      const genreId = await DB.dbGet(`SELECT id FROM genre_tags WHERE id = ?`, [
         id,
       ]);
       return !!genreId;
@@ -281,7 +281,7 @@ class Genre extends Entry {
   static async totalEntries() {
     try {
       const totalResults = await DB.dbGet(
-        `SELECT COUNT(*) AS total_results FROM genres`
+        `SELECT COUNT(*) AS total_results FROM genre_tags`
       );
       return totalResults ? totalResults.total_results : 0;
     } catch (err) {
@@ -290,22 +290,36 @@ class Genre extends Entry {
   }
 
   // Get all genres
-  static async getAll(sort = null, direction = "ASC") {
+  static async getAll(sort = "genre_tags.id", direction = "ASC") {
     try {
+      // For case-insensitive sorting on text fields
+      const textFields = ["genre_tags.name"];
+
+      let sortClause;
+      if (sort === "songCount") {
+        sortClause = `songCount ${direction}`;
+      } else if (textFields.includes(sort)) {
+        sortClause = `${sort} COLLATE NOCASE ${direction}`;
+      } else {
+        sortClause = `${sort} ${direction}`;
+      }
+
       const query = `
         SELECT
-          genres.id AS genre_id,
-          genres.name AS genre_name,
-          genres.slug AS genre_slug,
-          genres.text_color AS genre_text_color,
-          genres.border_color AS genre_border_color,
-          genres.background_color AS genre_background_color,
-          COUNT(songs.id) AS num_songs,
-          MAX(songs.image_url) AS song_image
-        FROM genres
-        LEFT JOIN songs ON songs.genre = genres.name
-        GROUP BY genres.id, genres.name, genres.slug, genres.text_color, genres.border_color, genres.background_color
-        ORDER BY ${sort || "genres.id"} ${direction}`;
+          genre_tags.id AS id,
+          genre_tags.name AS name,
+          genre_tags.slug AS slug,
+          genre_tags.text_color AS textColor,
+          genre_tags.border_color AS borderColor,
+          genre_tags.bg_color AS backgroundColor,
+          COUNT(songs.id) AS songCount,
+          MAX(songs.image_url) AS imageUrl
+        FROM genre_tags
+        LEFT JOIN songs ON songs.genre = genre_tags.name
+        GROUP BY genre_tags.id, genre_tags.name, genre_tags.slug, 
+          genre_tags.text_color, genre_tags.border_color, genre_tags.bg_color
+        HAVING songCount > 0
+        ORDER BY ${sortClause}`;
 
       return await DB.dbAll(query);
     } catch (err) {

@@ -84,11 +84,11 @@ export const entryConfigs = {
     columns: [
       { key: "#", label: "#" },
       { key: "genre", label: "Genre" },
-      { key: "songsCount", label: "# Songs" },
+      { key: "songCount", label: "# Songs" },
     ],
     sortOptions: [
       { value: "genre", label: "Genre" },
-      { value: "songsCount", label: "# Songs" },
+      { value: "songCount", label: "# Songs" },
     ],
   },
 };

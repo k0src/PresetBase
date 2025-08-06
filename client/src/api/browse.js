@@ -74,3 +74,16 @@ export async function getTotalPresetEntries() {
 }
 
 /* --------------------------------- Genres --------------------------------- */
+export async function getGenresData(sort = null, direction = "ASC") {
+  const res = await fetch(
+    `/api/browse/genres?sort=${sort}&direction=${direction}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch genres data");
+  return res.json();
+}
+
+export async function getTotalGenreEntries() {
+  const res = await fetch("/api/browse/genres/total-entries");
+  if (!res.ok) throw new Error("Failed to fetch total genre entries");
+  return res.json();
+}

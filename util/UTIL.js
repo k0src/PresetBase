@@ -38,7 +38,7 @@ const sortKeys = {
     added: "presets.timestamp",
   },
   genres: {
-    genre: "genres_tags.name",
+    genre: "genre_tags.name",
     songsCount: "songsCount",
   },
 };
