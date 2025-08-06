@@ -1,7 +1,7 @@
 import { getSongsData, getTotalSongEntries } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -40,14 +40,16 @@ export default function BrowseSongs() {
     loadSongsData();
   }, [sortBy, sortDirection]);
 
-  const handleSortChange = async (sort, direction) => {
+  const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);
     setSortDirection(direction);
-  };
+  }, []);
 
-  const handleFilterChange = (filter) => {
+  const handleFilterChange = useCallback((filter) => {
     setFilterText(filter);
-  };
+  }, []);
+
+  const songsConfig = useMemo(() => entryConfigs.songs, []);
 
   if (loading) return <PageLoader />;
 
@@ -88,7 +90,7 @@ export default function BrowseSongs() {
           entryType="songs"
           data={songsData}
           totalEntries={totalEntries}
-          config={entryConfigs.songs}
+          config={songsConfig}
           onSortChange={handleSortChange}
           onFilterChange={handleFilterChange}
           sortBy={sortBy}

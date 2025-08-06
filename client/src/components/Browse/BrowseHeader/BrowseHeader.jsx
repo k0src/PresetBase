@@ -1,9 +1,10 @@
+import { memo, useMemo } from "react";
 import BrowseFilter from "../BrowseFilter/BrowseFilter";
 import BrowseSortSelect from "../BrowseSortSelect/BrowseSortSelect";
 
 import styles from "./BrowseHeader.module.css";
 
-export default function BrowseHeader({
+const BrowseHeader = memo(function BrowseHeader({
   entryType,
   totalEntries,
   filterPlaceholder,
@@ -13,7 +14,10 @@ export default function BrowseHeader({
   sortBy,
   sortDirection,
 }) {
-  const entryTitle = entryType.charAt(0).toUpperCase() + entryType.slice(1);
+  const entryTitle = useMemo(
+    () => entryType.charAt(0).toUpperCase() + entryType.slice(1),
+    [entryType]
+  );
 
   return (
     <section className={styles.browseHeader}>
@@ -38,4 +42,6 @@ export default function BrowseHeader({
       </div>
     </section>
   );
-}
+});
+
+export default BrowseHeader;

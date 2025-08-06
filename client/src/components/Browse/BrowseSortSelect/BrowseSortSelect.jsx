@@ -1,25 +1,29 @@
+import { memo, useCallback } from "react";
 import styles from "./BrowseSortSelect.module.css";
 import { FaSort } from "react-icons/fa6";
 
-export default function BrowseSortSelect({
+const BrowseSortSelect = memo(function BrowseSortSelect({
   sortOptions,
   onSortSelectChange,
   sortBy,
   sortDirection,
 }) {
-  const handleSortSelectChange = (e) => {
-    const newSort = e.target.value;
-    if (onSortSelectChange) {
-      onSortSelectChange(newSort, sortDirection);
-    }
-  };
+  const handleSortSelectChange = useCallback(
+    (e) => {
+      const newSort = e.target.value;
+      if (onSortSelectChange) {
+        onSortSelectChange(newSort, sortDirection);
+      }
+    },
+    [onSortSelectChange, sortDirection]
+  );
 
-  const handleSortDirectionChange = () => {
+  const handleSortDirectionChange = useCallback(() => {
     const newDirection = sortDirection === "asc" ? "desc" : "asc";
     if (onSortSelectChange) {
       onSortSelectChange(sortBy, newDirection);
     }
-  };
+  }, [onSortSelectChange, sortBy, sortDirection]);
 
   return (
     <div className={styles.sortSelectContainer}>
@@ -40,4 +44,6 @@ export default function BrowseSortSelect({
       <FaSort className={styles.sortIcon} onClick={handleSortDirectionChange} />
     </div>
   );
-}
+});
+
+export default BrowseSortSelect;

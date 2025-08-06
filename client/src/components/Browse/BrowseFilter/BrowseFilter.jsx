@@ -1,24 +1,31 @@
-import { useState } from "react";
+import { useState, useCallback, memo } from "react";
 
 import styles from "./BrowseFilter.module.css";
 import { FaXmark } from "react-icons/fa6";
 
-export default function BrowseFilter({ placeholder, onFilterChange }) {
+const BrowseFilter = memo(function BrowseFilter({
+  placeholder,
+  onFilterChange,
+}) {
   const [filterText, setFilterText] = useState("");
 
-  const clearFilter = () => {
+  const clearFilter = useCallback(() => {
     setFilterText("");
     if (onFilterChange) {
       onFilterChange("");
     }
-  };
+  }, [onFilterChange]);
 
-  const handleFilterChange = (e) => {
-    setFilterText(e.target.value);
-    if (onFilterChange) {
-      onFilterChange(e.target.value);
-    }
-  };
+  const handleFilterChange = useCallback(
+    (e) => {
+      const value = e.target.value;
+      setFilterText(value);
+      if (onFilterChange) {
+        onFilterChange(value);
+      }
+    },
+    [onFilterChange]
+  );
 
   return (
     <div className={styles.browseFilter}>
@@ -34,4 +41,6 @@ export default function BrowseFilter({ placeholder, onFilterChange }) {
       )}
     </div>
   );
-}
+});
+
+export default BrowseFilter;

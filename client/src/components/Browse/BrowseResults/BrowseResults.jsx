@@ -1,7 +1,8 @@
+import { memo } from "react";
 import BrowseHeader from "../BrowseHeader/BrowseHeader";
 import BrowseTableView from "../BrowseTableView/BrowseTableView";
 
-export default function BrowseResults({
+const BrowseResults = memo(function BrowseResults({
   entryType,
   data,
   totalEntries,
@@ -33,4 +34,6 @@ export default function BrowseResults({
       />
     </>
   );
-}
+});
+
+export default BrowseResults;

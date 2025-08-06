@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { memo, useMemo } from "react";
 
 import GenreTag from "../../GenreTag/GenreTag";
 import SynthTag from "../../SynthTag/SynthTag";
@@ -7,59 +8,62 @@ import classNames from "classnames";
 
 // import { FaFire, FaCircleExclamation } from "react-icons/fa6";
 
-export default function BrowseTableView({
+const BrowseTableView = memo(function BrowseTableView({
   data,
   config,
   entryType,
   filterText = "",
 }) {
-  const dataRowsWithIndex = data.map((item, originalIndex) => ({
-    ...item,
-    originalIndex,
-  }));
+  const filteredData = useMemo(() => {
+    const dataRowsWithIndex = data.map((item, originalIndex) => ({
+      ...item,
+      originalIndex,
+    }));
 
-  const filteredData = dataRowsWithIndex.filter((row) => {
-    if (!filterText) return true;
+    if (!filterText) return dataRowsWithIndex;
 
     const searchText = filterText.toLowerCase();
 
-    switch (entryType) {
-      case "songs":
-        return (
-          row.title.toLowerCase().includes(searchText) ||
-          row.artist.name.toLowerCase().includes(searchText) ||
-          row.album.title.toLowerCase().includes(searchText)
-        );
-      case "artists":
-        return (
-          row.name.toLowerCase().includes(searchText) ||
-          row.country.toLowerCase().includes(searchText)
-        );
-      case "albums":
-        return (
-          row.title.toLowerCase().includes(searchText) ||
-          row.artist.name.toLowerCase().includes(searchText)
-        );
-      case "synths":
-        return (
-          row.name.toLowerCase().includes(searchText) ||
-          row.manufacturer.toLowerCase().includes(searchText) ||
-          row.type.toLowerCase().includes(searchText)
-        );
-      case "presets":
-        return (
-          row.name.toLowerCase().includes(searchText) ||
-          row.synth.name.toLowerCase().includes(searchText) ||
-          row.packName.toLowerCase().includes(searchText) ||
-          row.author.toLowerCase().includes(searchText)
-        );
-      case "genres":
-        return row.name.toLowerCase().includes(searchText);
-      default:
-        return true;
-    }
-  });
-  const renderSongRow = (song) => (
+    return dataRowsWithIndex.filter((row) => {
+      switch (entryType) {
+        case "songs":
+          return (
+            row.title.toLowerCase().includes(searchText) ||
+            row.artist.name.toLowerCase().includes(searchText) ||
+            row.album.title.toLowerCase().includes(searchText)
+          );
+        case "artists":
+          return (
+            row.name.toLowerCase().includes(searchText) ||
+            row.country.toLowerCase().includes(searchText)
+          );
+        case "albums":
+          return (
+            row.title.toLowerCase().includes(searchText) ||
+            row.artist.name.toLowerCase().includes(searchText)
+          );
+        case "synths":
+          return (
+            row.name.toLowerCase().includes(searchText) ||
+            row.manufacturer.toLowerCase().includes(searchText) ||
+            row.type.toLowerCase().includes(searchText)
+          );
+        case "presets":
+          return (
+            row.name.toLowerCase().includes(searchText) ||
+            row.synth.name.toLowerCase().includes(searchText) ||
+            row.packName.toLowerCase().includes(searchText) ||
+            row.author.toLowerCase().includes(searchText)
+          );
+        case "genres":
+          return row.name.toLowerCase().includes(searchText);
+        default:
+          return true;
+      }
+    });
+  }, [data, filterText, entryType]);
+
+  const SongRow = memo(({ song }) => (
     <Link
       key={song.id}
       to={`/song/${song.id}`}
@@ -91,7 +95,9 @@ export default function BrowseTableView({
       <GenreTag genre={song.genre} />
       <span className={styles.rowTextQuaternary}>{song.year}</span>
     </Link>
-  );
+  ));
+
+  const renderSongRow = (song) => <SongRow key={song.id} song={song} />;
 
   const renderArtistRow = (artist) => (
     <Link
@@ -223,35 +229,43 @@ export default function BrowseTableView({
     </div>
   );
 
-  const renderRow = (row) => {
+  const renderRow = useMemo(() => {
     switch (entryType) {
       case "songs":
-        return renderSongRow(row);
+        return renderSongRow;
       case "artists":
-        return renderArtistRow(row);
+        return renderArtistRow;
       case "albums":
-        return renderAlbumRow(row);
+        return renderAlbumRow;
       case "synths":
-        return renderSynthRow(row);
+        return renderSynthRow;
       case "presets":
-        return renderPresetRow(row);
+        return renderPresetRow;
       case "genres":
-        return renderGenreRow(row);
+        return renderGenreRow;
       default:
-        return null;
+        return () => null;
     }
-  };
+  }, [entryType]);
+
+  const columnHeaders = useMemo(
+    () =>
+      config.columns.map((column) => (
+        <span key={column.key}>{column.label}</span>
+      )),
+    [config.columns]
+  );
 
   return (
     <section>
       <div
         className={classNames(styles[config.gridClass], styles.tableColumns)}
       >
-        {config.columns.map((column) => (
-          <span key={column.key}>{column.label}</span>
-        ))}
+        {columnHeaders}
       </div>
       {filteredData.map((row) => renderRow(row))}
     </section>
   );
-}
+});
+
+export default BrowseTableView;
