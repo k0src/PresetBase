@@ -7,7 +7,6 @@ const NEW_DAYS_MS = 3 * 24 * 60 * 60 * 1000; // 3 days
 const sortKeys = {
   songs: {
     title: "songs.title",
-    genre: "songs.genre",
     year: "songs.release_year",
     artist: "artists.name",
     album: "albums.title",
@@ -17,6 +16,30 @@ const sortKeys = {
     name: "artists.name",
     country: "artists.country",
     added: "artists.timestamp",
+  },
+  albums: {
+    title: "albums.title",
+    artist: "artists.name",
+    year: "albums.release_year",
+    added: "albums.timestamp",
+  },
+  synths: {
+    name: "synths.synth_name",
+    manufacturer: "synths.manufacturer",
+    type: "synths.synth_type",
+    year: "synths.release_year",
+    added: "synths.timestamp",
+  },
+  presets: {
+    name: "presets.preset_name",
+    synth: "synths.synth_name",
+    packName: "presets.pack_name",
+    author: "presets.author",
+    added: "presets.timestamp",
+  },
+  genres: {
+    genre: "genres_tags.name",
+    songsCount: "songsCount",
   },
 };
 

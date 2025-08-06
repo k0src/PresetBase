@@ -292,16 +292,24 @@ class Album extends Entry {
   // Get all albums
   static async getAll(sort = null, direction = "ASC") {
     try {
+      // For case-insensitive sorting
+      const textFields = ["albums.title", "albums.genre", "artists.name"];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
+
       const query = `
         SELECT
-          albums.id AS album_id,
-          albums.title AS album_title,
-          albums.genre AS album_genre,
-          albums.release_year AS album_release_year,
-          albums.image_url AS album_image,
-          artists.name AS artist_name,
-          artists.id AS artist_id,
-          albums.timestamp AS album_added_timestamp
+          albums.id AS id,
+          albums.title AS title,
+          albums.genre AS genre,
+          albums.release_year AS year,
+          albums.image_url AS imageUrl,
+          json_object (
+            'id', artists.id,
+            'name', artists.name
+          ) AS artist,
+          albums.timestamp AS timestamp
         FROM albums
         LEFT JOIN album_songs ON albums.id = album_songs.album_id
         LEFT JOIN songs ON album_songs.song_id = songs.id
@@ -310,9 +318,17 @@ class Album extends Entry {
         LEFT JOIN album_clicks ON album_clicks.album_id = albums.id
         WHERE song_artists.role = 'Main' AND albums.title NOT LIKE '[SINGLE]'
         GROUP BY albums.id
-        ORDER BY ${sort || "albums.timestamp"} ${direction}`;
+        ORDER BY ${sortClause}`;
 
-      return await DB.dbAll(query);
+      const albumsData = await DB.dbAll(query);
+
+      if (albumsData) {
+        albumsData.forEach((album) => {
+          album.artist = JSON.parse(album.artist || "{}");
+        });
+      }
+
+      return albumsData;
     } catch (err) {
       throw new Error(`Error fetching all albums: ${err.message}`);
     }

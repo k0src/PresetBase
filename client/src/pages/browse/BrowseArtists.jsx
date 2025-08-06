@@ -1,7 +1,7 @@
 import { getArtistsData, getTotalArtistEntries } from "../../api/browse";
 import { entryConfigs } from "./entryConfigs.js";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -40,14 +40,16 @@ export default function BrowseArtists() {
     loadArtistsData();
   }, [sortBy, sortDirection]);
 
-  const handleSortChange = async (sort, direction) => {
+  const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);
     setSortDirection(direction);
-  };
+  }, []);
 
-  const handleFilterChange = (filter) => {
+  const handleFilterChange = useCallback((filter) => {
     setFilterText(filter);
-  };
+  }, []);
+
+  const artistsConfig = useMemo(() => entryConfigs.artists, []);
 
   if (loading) return <PageLoader />;
 
@@ -62,6 +64,7 @@ export default function BrowseArtists() {
     );
   }
 
+  // No results
   if (!artistsData || artistsData.length === 0) {
     return (
       <>
@@ -87,7 +90,7 @@ export default function BrowseArtists() {
           entryType="artists"
           data={artistsData}
           totalEntries={totalEntries}
-          config={entryConfigs.artists}
+          config={artistsConfig}
           onSortChange={handleSortChange}
           onFilterChange={handleFilterChange}
           sortBy={sortBy}

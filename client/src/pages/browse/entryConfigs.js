@@ -12,7 +12,6 @@ export const entryConfigs = {
       { value: "title", label: "Title" },
       { value: "artist", label: "Artist" },
       { value: "album", label: "Album" },
-      { value: "genre", label: "Genre" },
       { value: "year", label: "Year" },
       { value: "added", label: "Date Added" },
     ],
@@ -42,7 +41,6 @@ export const entryConfigs = {
     sortOptions: [
       { value: "title", label: "Title" },
       { value: "artist", label: "Artist" },
-      { value: "genre", label: "Genre" },
       { value: "year", label: "Year" },
       { value: "added", label: "Date Added" },
     ],
