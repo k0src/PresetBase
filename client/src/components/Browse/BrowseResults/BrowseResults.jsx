@@ -17,7 +17,7 @@ const BrowseResults = memo(function BrowseResults({
   return (
     <>
       <BrowseHeader
-        entryType="songs"
+        entryType={entryType}
         totalEntries={totalEntries}
         filterPlaceholder={filterPlaceholder}
         sortOptions={config.sortOptions}

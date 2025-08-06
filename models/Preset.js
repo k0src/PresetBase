@@ -208,31 +208,45 @@ class Preset extends Entry {
   }
 
   // Get all presets
-  static async getAll(sort = null, direction = "ASC") {
+  static async getAll(sort = "presets.timestamp", direction = "ASC") {
     try {
+      // For case-insensitive sorting
+      const textFields = [
+        "presets.preset_name",
+        "presets.pack_name",
+        "presets.author",
+        "synths.synth_name",
+      ];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
+
       const query = `
         SELECT
-          presets.id AS preset_id,
-          presets.preset_name,
-          presets.pack_name,
-          presets.author,
-          presets.timestamp AS preset_added_timestamp,
-
-          json_object(
+          presets.id AS id,
+          presets.preset_name AS name,
+          presets.pack_name AS packName,
+          presets.author AS author,
+          presets.timestamp AS timestamp,
+          json_object (
             'id', synths.id,
-            'synth_name', synths.synth_name,
-            'manufacturer', synths.manufacturer,
-            'synth_type', synths.synth_type,
-            'image_url', synths.image_url,
-            'release_year', synths.release_year
+            'name', synths.synth_name,
+            'imageUrl', synths.image_url
           ) AS synth
-
         FROM presets
         LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
-        ORDER BY ${sort || "presets.timestamp"} ${direction}`;
+        ORDER BY ${sortClause}`;
 
-      return await DB.dbAll(query);
+      const presetsData = await DB.dbAll(query);
+
+      if (presetsData) {
+        presetsData.forEach((preset) => {
+          preset.synth = JSON.parse(preset.synth || "{}");
+        });
+      }
+
+      return presetsData;
     } catch (err) {
       throw new Error(`Error fetching all presets: ${err.message}`);
     }

@@ -23,7 +23,9 @@ const BrowseHeader = memo(function BrowseHeader({
     <section className={styles.browseHeader}>
       <div className={styles.browseHeaderTop}>
         <h1 className={styles.headingPrimary}>All {entryTitle}</h1>
-        <span className={styles.resultsCount}>{totalEntries} songs</span>
+        <span className={styles.resultsCount}>
+          {totalEntries} {entryType}
+        </span>
       </div>
 
       <div className={styles.browseHeaderBottom}>

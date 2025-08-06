@@ -36,9 +36,8 @@ const BrowseFilter = memo(function BrowseFilter({
         value={filterText}
         onChange={(e) => handleFilterChange(e)}
       />
-      {filterText && (
-        <FaXmark className={styles.filterClear} onClick={clearFilter} />
-      )}
+
+      <FaXmark className={styles.filterClear} onClick={clearFilter} />
     </div>
   );
 });
