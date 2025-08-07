@@ -3,6 +3,7 @@ import { getSynthById, getRelatedSynths } from "../../../api/entries/synths";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { memo, useMemo } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import DbError from "../../../components/DbError/DbError";
@@ -13,7 +14,7 @@ import MoreEntries from "../../../components/Entries/MoreEntries/MoreEntries";
 import EntryList from "../../../components/Entries/EntryList/EntryList";
 import styles from "./SynthPage.module.css";
 
-export default function SynthPage() {
+export default memo(function SynthPage() {
   const { id } = useParams();
 
   const { data, loading, error } = useAsyncData(
@@ -27,6 +28,24 @@ export default function SynthPage() {
 
   const synth = data.synth?.data || null;
   const moreSynths = data.moreSynths?.data || null;
+
+  const presetEntries = useMemo(() => {
+    if (!synth || !synth.presets) return [];
+    return Object.values(synth.presets || []);
+  });
+
+  const moreEntriesSection = useMemo(() => {
+    if (!moreSynths || moreSynths.length === 0 || !synth) return null;
+
+    return (
+      <MoreEntries
+        entryType="synths"
+        title={`More Synths by ${synth.manufacturer}`}
+        entries={moreSynths}
+        linkPrefix="synth"
+      />
+    );
+  });
 
   if (loading) return <PageLoader />;
 
@@ -55,24 +74,17 @@ export default function SynthPage() {
 
             <EntryMoreInfo entryType="synth" data={synth} />
 
-            {moreSynths.length > 0 && (
-              <MoreEntries
-                entryType="synths"
-                title={`More Synths by ${synth.manufacturer}`}
-                entries={moreSynths}
-                linkPrefix="synth"
-              />
-            )}
+            {moreEntriesSection}
           </div>
 
           <EntryList
             entryType="presets-synth"
             title="Presets"
-            entries={Object.values(synth.presets) || {}}
+            entries={presetEntries}
             filterPlaceholder="Filter presets..."
           />
         </div>
       </section>
     </ContentContainer>
   );
-}
+});

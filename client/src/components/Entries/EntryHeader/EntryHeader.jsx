@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./EntryHeader.module.css";
 
-export default function EntryHeader({
+const EntryHeader = memo(function EntryHeader({
   imageUrl,
   title,
   subtitle,
@@ -29,4 +30,6 @@ export default function EntryHeader({
       </div>
     </div>
   );
-}
+});
+
+export default EntryHeader;

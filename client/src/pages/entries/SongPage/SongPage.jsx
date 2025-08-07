@@ -3,6 +3,7 @@ import { getSongById, getRelatedSongs } from "../../../api/entries/songs";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { memo, useMemo } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import DbError from "../../../components/DbError/DbError";
@@ -15,7 +16,7 @@ import styles from "./SongPage.module.css";
 
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 
-export default function SongPage() {
+export default memo(function SongPage() {
   const { id } = useParams();
 
   const { data, loading, error } = useAsyncData(
@@ -30,6 +31,33 @@ export default function SongPage() {
   const song = data.song?.data || null;
   const moreSongs = data.moreSongs?.data || null;
 
+  const { mainArtist, otherArtists, presetEntries } = useMemo(() => {
+    if (!song) return { mainArtist: null, otherArtists: [], presetEntries: [] };
+
+    const main = song.artists?.find((a) => a.role === "Main");
+    const others = song.artists?.filter((a) => a.role !== "Main") || [];
+    const presets = Object.values(song.presets || []);
+
+    return {
+      mainArtist: main,
+      otherArtists: others,
+      presetEntries: presets,
+    };
+  }, [song]);
+
+  const moreEntriesSection = useMemo(() => {
+    if (!moreSongs || moreSongs.length === 0 || !mainArtist) return null;
+
+    return (
+      <MoreEntries
+        entryType="songs"
+        title={`More songs by ${mainArtist.name}`}
+        entries={moreSongs}
+        linkPrefix="song"
+      />
+    );
+  }, [moreSongs, mainArtist]);
+
   if (loading) return <PageLoader />;
 
   if (error || !song) {
@@ -42,9 +70,6 @@ export default function SongPage() {
       </>
     );
   }
-
-  const mainArtist = song.artists?.find((a) => a.role === "Main");
-  const otherArtists = song.artists?.filter((a) => a.role !== "Main") || [];
 
   return (
     <>
@@ -70,14 +95,7 @@ export default function SongPage() {
                 otherArtists={otherArtists}
               />
 
-              {moreSongs.length > 0 && (
-                <MoreEntries
-                  entryType="songs"
-                  title={`More songs by ${mainArtist?.name}`}
-                  entries={moreSongs}
-                  linkPrefix="song"
-                />
-              )}
+              {moreEntriesSection}
 
               <a
                 href={song.songUrl}
@@ -97,7 +115,7 @@ export default function SongPage() {
             <EntryList
               entryType="presets"
               title="Presets"
-              entries={Object.values(song.presets || {})}
+              entries={presetEntries}
               filterPlaceholder="Filter presets..."
             />
           </div>
@@ -105,4 +123,4 @@ export default function SongPage() {
       </ContentContainer>
     </>
   );
-}
+});

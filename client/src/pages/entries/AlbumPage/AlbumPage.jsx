@@ -3,6 +3,7 @@ import { getAlbumById, getRelatedAlbums } from "../../../api/entries/albums";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { memo, useMemo } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import DbError from "../../../components/DbError/DbError";
@@ -13,7 +14,7 @@ import MoreEntries from "../../../components/Entries/MoreEntries/MoreEntries";
 import EntryList from "../../../components/Entries/EntryList/EntryList";
 import styles from "./AlbumPage.module.css";
 
-export default function AlbumPage() {
+export default memo(function AlbumPage() {
   const { id } = useParams();
 
   const { data, loading, error } = useAsyncData(
@@ -27,6 +28,24 @@ export default function AlbumPage() {
 
   const album = data.album?.data || null;
   const moreAlbums = data.moreAlbums?.data || null;
+
+  const songEntries = useMemo(() => {
+    if (!album || !album.songs) return [];
+    return Object.values(album.songs || []);
+  });
+
+  const moreEntriesSection = useMemo(() => {
+    if (!moreAlbums || moreAlbums.length === 0 || !album?.artist) return null;
+
+    return (
+      <MoreEntries
+        entryType="albums"
+        title={`More albums by ${album?.artist.name}`}
+        entries={moreAlbums}
+        linkPrefix="album"
+      />
+    );
+  }, [moreAlbums, album]);
 
   if (loading) return <PageLoader />;
 
@@ -61,20 +80,13 @@ export default function AlbumPage() {
 
               <EntryMoreInfo entryType="album" data={album} />
 
-              {moreAlbums.length > 0 && (
-                <MoreEntries
-                  entryType="albums"
-                  title={`More albums by ${album?.artist.name}`}
-                  entries={moreAlbums}
-                  linkPrefix="album"
-                />
-              )}
+              {moreEntriesSection}
             </div>
 
             <EntryList
               entryType="songs"
               title="Songs"
-              entries={Object.values(album.songs || {})}
+              entries={songEntries}
               filterPlaceholder="Filter songs..."
             />
           </div>
@@ -82,4 +94,4 @@ export default function AlbumPage() {
       </ContentContainer>
     </>
   );
-}
+});

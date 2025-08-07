@@ -1,9 +1,14 @@
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./EntryMoreInfo.module.css";
 
 import * as FaIcons from "react-icons/fa6";
 
-function InfoSection({ icon, children, className = "" }) {
+const InfoSection = memo(function InfoSection({
+  icon,
+  children,
+  className = "",
+}) {
   const IconComponent = FaIcons[icon];
   return (
     <div className={`${styles.entryMoreInfoSection} ${className}`}>
@@ -15,16 +20,16 @@ function InfoSection({ icon, children, className = "" }) {
       {children}
     </div>
   );
-}
+});
 
-export default function EntryMoreInfo({
+const EntryMoreInfo = memo(function EntryMoreInfo({
   entryType,
   data,
   otherArtists = [],
   totalSongs,
   favoriteSynth,
 }) {
-  const renderByType = () => {
+  const renderedContent = useMemo(() => {
     switch (entryType) {
       case "song":
         return (
@@ -120,7 +125,9 @@ export default function EntryMoreInfo({
       default:
         return null;
     }
-  };
+  }, [entryType, data, otherArtists, totalSongs, favoriteSynth]);
 
-  return <div className={styles.entryMoreInfoContainer}>{renderByType()}</div>;
-}
+  return <div className={styles.entryMoreInfoContainer}>{renderedContent}</div>;
+});
+
+export default EntryMoreInfo;

@@ -8,6 +8,7 @@ import {
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { memo, useMemo } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import DbError from "../../../components/DbError/DbError";
@@ -18,7 +19,7 @@ import MoreEntries from "../../../components/Entries/MoreEntries/MoreEntries";
 import EntryList from "../../../components/Entries/EntryList/EntryList";
 import styles from "./ArtistPage.module.css";
 
-export default function ArtistPage() {
+export default memo(function ArtistPage() {
   const { id } = useParams();
 
   const { data, loading, error } = useAsyncData(
@@ -36,6 +37,24 @@ export default function ArtistPage() {
   const totalSongs = data.totalSongs?.data || 0;
   const albums = data.albums?.data || [];
   const favoriteSynth = data.favoriteSynth?.data || null;
+
+  const songEntries = useMemo(() => {
+    if (!artist) return [];
+    return Object.values(artist.presets || []);
+  });
+
+  const moreEntriesSection = useMemo(() => {
+    if (!albums || albums.length === 0 || !artist) return null;
+
+    return (
+      <MoreEntries
+        entryType="artist"
+        title={`Albums by ${artist.name}`}
+        entries={albums}
+        linkPrefix="album"
+      />
+    );
+  });
 
   if (loading) return <PageLoader />;
 
@@ -73,20 +92,13 @@ export default function ArtistPage() {
                 favoriteSynth={favoriteSynth}
               />
 
-              {albums.length > 0 && (
-                <MoreEntries
-                  entryType="artist"
-                  title={`Albums by ${artist.name}`}
-                  entries={albums}
-                  linkPrefix="album"
-                />
-              )}
+              {moreEntriesSection}
             </div>
 
             <EntryList
               entryType="songs"
               title="Songs"
-              entries={Object.values(artist.songs || {})}
+              entries={songEntries}
               filterPlaceholder="Filter songs..."
             />
           </div>
@@ -94,4 +106,4 @@ export default function ArtistPage() {
       </ContentContainer>
     </>
   );
-}
+});

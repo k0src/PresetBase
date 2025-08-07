@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useMemo } from "react";
+import { useState, useRef, useEffect, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./EntryList.module.css";
 
@@ -177,7 +177,7 @@ function AudioPlayer({ audioUrl, isPlaying, onToggle }) {
   );
 }
 
-function EntryRow({
+const EntryRow = memo(function EntryRow({
   entry,
   index,
   entryType,
@@ -267,9 +267,9 @@ function EntryRow({
       {renderRowContent()}
     </RowWrapper>
   );
-}
+});
 
-export default function EntryList({
+export default memo(function EntryList({
   title,
   entries,
   entryType,
@@ -328,4 +328,4 @@ export default function EntryList({
       </div>
     </div>
   );
-}
+});
