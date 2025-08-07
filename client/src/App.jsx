@@ -23,7 +23,7 @@ import BrowsePresets from "./pages/browse/BrowsePresets";
 // import BrowseGenres from "./pages/browse/BrowseGenres";
 import BrowsePopular from "./pages/browse/BrowsePopular";
 import BrowseHot from "./pages/browse/BrowseHot";
-// import BrowseRecent from "./pages/browse/BrowseRecent";
+import BrowseRecent from "./pages/browse/BrowseRecent";
 
 // import Auth from "./pages/auth/Auth";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
@@ -69,7 +69,7 @@ function App() {
         {/* <Route path="/browse/genres" element={<BrowseGenres />} /> */}
         <Route path="/browse/popular" element={<BrowsePopular />} />
         <Route path="/browse/hot" element={<BrowseHot />} />
-        {/* <Route path="/browse/recent" element={<BrowseRecent />} /> */}
+        <Route path="/browse/recent" element={<BrowseRecent />} />
 
         {/* Auth routes */}
         {/* <Route path="/auth" element={<Auth />} /> */}

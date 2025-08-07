@@ -28,6 +28,13 @@ const sortKeys = {
     added: "timestamp",
     hot: "hotScore",
   },
+  recent: {
+    title: "title",
+    year: "year",
+    artist: "json_extract(artist, '$.name')",
+    album: "json_extract(album, '$.title')",
+    added: "timestamp",
+  },
   artists: {
     name: "artists.name",
     country: "artists.country",
