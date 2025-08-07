@@ -84,33 +84,14 @@ export default function SearchResultSection({ title, data, type, filter }) {
       <div className={`${styles.resultColumns} ${getGridClass()}`}>
         {getColumnHeaders()}
       </div>
-      {data.map((entry, index) => {
-        const getId = () => {
-          switch (type) {
-            case "songs":
-              return entry.song_id;
-            case "artists":
-              return entry.artist_id;
-            case "albums":
-              return entry.album_id;
-            case "synths":
-              return entry.synth_id;
-            case "presets":
-              return entry.preset_id;
-            default:
-              return entry.id || index;
-          }
-        };
-
-        return (
-          <SearchResultEntry
-            key={`${type}-${getId()}`}
-            entry={entry}
-            type={type}
-            index={index}
-          />
-        );
-      })}
+      {data.map((entry, index) => (
+        <SearchResultEntry
+          key={`${type}-${entry.id}`}
+          entry={entry}
+          type={type}
+          index={index}
+        />
+      ))}
     </div>
   );
 }

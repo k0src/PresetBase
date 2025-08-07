@@ -1,43 +1,28 @@
-import { useState, useEffect } from "react";
+import { useAsyncData } from "../../../hooks/useAsyncData.js";
+import { searchDatabase } from "../../../api/api";
+
 import { useSearchParams } from "react-router-dom";
+import { Helmet } from "react-helmet-async";
+
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import PageLoader from "../../../components/PageLoader/PageLoader";
 import SearchResults from "../../../components/Search/SearchResults";
-import { searchDatabase } from "../../../api/api";
+
 import styles from "./SearchPage.module.css";
-import { Helmet } from "react-helmet-async";
 
 export default function SearchPage() {
   const [searchParams] = useSearchParams();
-  const [searchData, setSearchData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
   const query = searchParams.get("query");
 
-  useEffect(() => {
-    const performSearch = async () => {
-      if (!query?.trim()) {
-        setLoading(false);
-        setError("Search query is required");
-        return;
-      }
+  const { data, loading, error } = useAsyncData(
+    {
+      search: () => searchDatabase(query),
+    },
+    [query],
+    { cacheKey: `search-${query}`, ttl: 1000 * 60 }
+  );
 
-      try {
-        setLoading(true);
-        setError(null);
-        const data = await searchDatabase(query);
-        setSearchData(data);
-      } catch (err) {
-        console.error("Search error:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    performSearch();
-  }, [query]);
+  const searchData = data.search?.data || null;
 
   if (loading) {
     return <PageLoader />;

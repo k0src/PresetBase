@@ -6,15 +6,15 @@ export default function SearchResultEntry({ entry, type, index }) {
   const getLink = () => {
     switch (type) {
       case "songs":
-        return `/song/${entry.song_id}`;
+        return `/song/${entry.id}`;
       case "artists":
-        return `/artist/${entry.artist_id}`;
+        return `/artist/${entry.id}`;
       case "albums":
-        return `/album/${entry.album_id}`;
+        return `/album/${entry.id}`;
       case "synths":
-        return `/synth/${entry.synth_id}`;
+        return `/synth/${entry.id}`;
       case "presets":
-        return `/synth/${entry.synth_id}`;
+        return `/synth/${entry.id}`;
       default:
         return "#";
     }
@@ -24,15 +24,12 @@ export default function SearchResultEntry({ entry, type, index }) {
     const baseUrl = "/uploads/images/approved/";
     switch (type) {
       case "songs":
-        return baseUrl + entry.song_image;
       case "artists":
-        return baseUrl + entry.artist_image;
       case "albums":
-        return baseUrl + entry.album_image;
       case "synths":
-        return baseUrl + entry.synth_image;
+        return baseUrl + entry.imageUrl;
       case "presets":
-        return baseUrl + entry.synth_image;
+        return baseUrl + entry.synth.imageUrl;
       default:
         return "";
     }
@@ -61,23 +58,21 @@ export default function SearchResultEntry({ entry, type, index }) {
       <div className={styles.resultEntryTitleContainer}>
         <img
           src={getImageSrc()}
-          alt={entry.song_title}
+          alt={entry.title}
           className={styles.resultEntryImg}
         />
         <div className={styles.resultEntryTitle}>
           <span className={styles.resultEntrySecondary}>
-            {entry.artist_name}
+            {entry.artist.name}
           </span>
-          <span className={styles.resultEntryPrimary}>{entry.song_title}</span>
+          <span className={styles.resultEntryPrimary}>{entry.title}</span>
         </div>
       </div>
       <span className={styles.resultEntryTertiary}>
-        {entry.album_title === "[SINGLE]" ? "Single" : entry.album_title}
+        {entry.album.title === "[SINGLE]" ? "Single" : entry.album.title}
       </span>
-      <GenreTag genre={entry.song_genre} />
-      <span className={styles.resultEntryQuaternary}>
-        {entry.song_release_year}
-      </span>
+      <GenreTag genre={entry.genre} />
+      <span className={styles.resultEntryQuaternary}>{entry.year}</span>
     </>
   );
 
@@ -87,14 +82,12 @@ export default function SearchResultEntry({ entry, type, index }) {
       <div className={styles.resultEntryTitleContainer}>
         <img
           src={getImageSrc()}
-          alt={entry.artist_name}
+          alt={entry.name}
           className={styles.resultEntryImg}
         />
-        <span className={styles.resultEntryPrimary}>{entry.artist_name}</span>
+        <span className={styles.resultEntryPrimary}>{entry.name}</span>
       </div>
-      <span className={styles.resultEntrySecondary}>
-        {entry.artist_country}
-      </span>
+      <span className={styles.resultEntrySecondary}>{entry.country}</span>
     </>
   );
 
@@ -104,16 +97,14 @@ export default function SearchResultEntry({ entry, type, index }) {
       <div className={styles.resultEntryTitleContainer}>
         <img
           src={getImageSrc()}
-          alt={entry.album_title}
+          alt={entry.title}
           className={styles.resultEntryImg}
         />
-        <span className={styles.resultEntryPrimary}>{entry.album_title}</span>
+        <span className={styles.resultEntryPrimary}>{entry.title}</span>
       </div>
-      <span className={styles.resultEntrySecondary}>{entry.artist_name}</span>
-      <GenreTag genre={entry.album_genre} />
-      <span className={styles.resultEntryTertiary}>
-        {entry.album_release_year}
-      </span>
+      <span className={styles.resultEntrySecondary}>{entry.artist.name}</span>
+      <GenreTag genre={entry.genre} />
+      <span className={styles.resultEntryTertiary}>{entry.year}</span>
     </>
   );
 
@@ -123,18 +114,14 @@ export default function SearchResultEntry({ entry, type, index }) {
       <div className={styles.resultEntryTitleContainer}>
         <img
           src={getImageSrc()}
-          alt={entry.synth_name}
+          alt={entry.name}
           className={styles.resultEntryImg}
         />
-        <span className={styles.resultEntryPrimary}>{entry.synth_name}</span>
+        <span className={styles.resultEntryPrimary}>{entry.name}</span>
       </div>
-      <span className={styles.resultEntrySecondary}>
-        {entry.synth_manufacturer}
-      </span>
-      <span className={styles.tag}>{entry.synth_type}</span>
-      <span className={styles.resultEntryTertiary}>
-        {entry.synth_release_year}
-      </span>
+      <span className={styles.resultEntrySecondary}>{entry.manufacturer}</span>
+      <span className={styles.tag}>{entry.type}</span>
+      <span className={styles.resultEntryTertiary}>{entry.year}</span>
     </>
   );
 
@@ -144,18 +131,14 @@ export default function SearchResultEntry({ entry, type, index }) {
       <div className={styles.resultEntryTitleContainer}>
         <img
           src={getImageSrc()}
-          alt={entry.preset_name}
+          alt={entry.name}
           className={styles.resultEntryImg}
         />
-        <span className={styles.resultEntryPrimary}>{entry.preset_name}</span>
+        <span className={styles.resultEntryPrimary}>{entry.name}</span>
       </div>
-      <span className={styles.resultEntrySecondary}>{entry.synth_name}</span>
-      <span className={styles.resultEntryTertiary}>
-        {entry.preset_pack_name}
-      </span>
-      <span className={styles.resultEntryQuaternary}>
-        {entry.preset_author}
-      </span>
+      <span className={styles.resultEntrySecondary}>{entry.synth.name}</span>
+      <span className={styles.resultEntryTertiary}>{entry.packName}</span>
+      <span className={styles.resultEntryQuaternary}>{entry.author}</span>
     </>
   );
 

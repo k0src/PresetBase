@@ -70,8 +70,8 @@ if (isProd) {
 // app.use("/about", aboutRoutes);
 const statsRoutes = require("./routes/main/stats");
 app.use("/api/stats", statsRoutes);
-// const searchRoutes = require("./routes/main/search");
-// app.use("/search", searchRoutes);
+const searchRoutes = require("./routes/main/search");
+app.use("/api/search", searchRoutes);
 // const submitRoute = require("./routes/main/submit");
 // app.use("/submit", submitRoute);
 
