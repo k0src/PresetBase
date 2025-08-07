@@ -83,6 +83,7 @@ const BrowseTableView = memo(function BrowseTableView({
             src={`/uploads/images/approved/${song.imageUrl}`}
             className={styles.rowImg}
             alt={song.title}
+            loading="lazy"
           />
           {/* song is new, icon */}
           {/* song is hot, icon */}
@@ -117,6 +118,7 @@ const BrowseTableView = memo(function BrowseTableView({
             src={`/uploads/images/approved/${artist.imageUrl}`}
             className={styles.rowImg}
             alt={artist.name}
+            loading="lazy"
           />
         </div>
         <span className={styles.rowTextPrimary}>{artist.name}</span>
@@ -142,6 +144,7 @@ const BrowseTableView = memo(function BrowseTableView({
             src={`/uploads/images/approved/${album.imageUrl}`}
             className={styles.rowImg}
             alt={album.title}
+            loading="lazy"
           />
         </div>
         <span className={styles.rowTextPrimary}>{album.title}</span>
@@ -169,6 +172,7 @@ const BrowseTableView = memo(function BrowseTableView({
             src={`/uploads/images/approved/${synth.imageUrl}`}
             className={styles.rowImg}
             alt={synth.name}
+            loading="lazy"
           />
         </div>
         <span className={styles.rowTextPrimary}>{synth.name}</span>
@@ -196,6 +200,7 @@ const BrowseTableView = memo(function BrowseTableView({
             src={`/uploads/images/approved/${preset.synth.imageUrl}`}
             className={styles.rowImg}
             alt={preset.synth.name}
+            loading="lazy"
           />
         </div>
         <span className={styles.rowTextPrimary}>{preset.name}</span>
@@ -222,6 +227,7 @@ const BrowseTableView = memo(function BrowseTableView({
             src={`/uploads/images/approved/${genre.imageUrl}`}
             className={styles.rowImg}
             alt={genre.name}
+            loading="lazy"
           />
         </div>
         <span className={styles.rowTextPrimary}>{genre.name}</span>
