@@ -34,6 +34,24 @@ export const entryConfigs = {
       { value: "clicks", label: "Popularity" },
     ],
   },
+  hot: {
+    gridClass: "gridLayoutSongs",
+    columns: [
+      { key: "#", label: "#" },
+      { key: "title", label: "Title" },
+      { key: "album", label: "Album" },
+      { key: "genre", label: "Genre" },
+      { key: "year", label: "Year" },
+    ],
+    sortOptions: [
+      { value: "title", label: "Title" },
+      { value: "artist", label: "Artist" },
+      { value: "album", label: "Album" },
+      { value: "year", label: "Year" },
+      { value: "added", label: "Date Added" },
+      { value: "hot", label: "Hot" },
+    ],
+  },
   artists: {
     gridClass: "gridLayoutArtists",
     columns: [

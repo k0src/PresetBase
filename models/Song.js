@@ -357,30 +357,43 @@ class Song extends Entry {
   }
 
   // Get hot songs
-  static async getHotSongs(sort = "hot_score", direction = "DESC") {
+  static async getHotSongs(sort = "hotScore", direction = "DESC") {
     try {
+      // For case-insensitive sorting
+      const textFields = [
+        "title",
+        "genre",
+        "json_extract(artist, '$.name')",
+        "json_extract(album, '$.title')",
+      ];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
+
       const query = `
-        WITH hot_songs AS (
+        WITH hotSongs AS (
           SELECT
-              songs.id AS song_id,
-              songs.title AS song_title,
-              songs.genre AS song_genre,
-              songs.release_year AS song_release_year,
-              songs.image_url AS song_image,
-              MAX(artists.name) AS artist_name,
-              MAX(artists.id) AS artist_id,
-              MAX(albums.title) AS album_title,
-              MAX(albums.id) AS album_id,
-              songs.timestamp AS song_added_timestamp,
-              COALESCE(MAX(song_clicks.clicks), 0) AS total_clicks,
-              COALESCE(MAX(song_clicks.recent_click), 0) AS recent_clicks,
-              (
-                0.6 * COALESCE(MAX(song_clicks.recent_click), 0) +
-                0.3 * COALESCE(MAX(song_clicks.clicks), 0) +
-                0.1 * (
-                  1.0 / NULLIF((julianday('now') - julianday(songs.timestamp)) + 1, 0)
-                )
-              ) AS hot_score
+            songs.id AS id,
+            songs.title AS title,
+            songs.genre AS genre,
+            songs.release_year year,
+            songs.image_url AS imageUrl,
+            songs.timestamp AS timestamp,
+            json_object (
+              'id', artists.id,
+              'name', artists.name
+            ) AS artist,
+            json_object (
+              'id', albums.id,
+              'title', albums.title
+            ) AS album,
+            (
+              0.6 * COALESCE(MAX(song_clicks.recent_click), 0) +
+              0.3 * COALESCE(MAX(song_clicks.clicks), 0) +
+              0.1 * (
+                1.0 / NULLIF((julianday('now') - julianday(songs.timestamp)) + 1, 0)
+              )
+            ) AS hotScore
           FROM songs
           LEFT JOIN song_artists ON songs.id = song_artists.song_id
           LEFT JOIN artists ON song_artists.artist_id = artists.id
@@ -388,15 +401,23 @@ class Song extends Entry {
           LEFT JOIN albums ON album_songs.album_id = albums.id
           LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
           WHERE song_artists.role = 'Main'
-          GROUP BY songs.id, songs.title, songs.genre, songs.release_year,
-                  songs.image_url, songs.timestamp
-          ORDER BY hot_score DESC
+          GROUP BY songs.id
+          ORDER BY hotScore DESC
           LIMIT 10
         )
-        SELECT * FROM hot_songs
-        ORDER BY ${sort} ${direction}`;
+        SELECT * FROM hotSongs
+        ORDER BY ${sortClause}`;
 
-      return await DB.dbAll(query);
+      const hotSongsData = await DB.dbAll(query);
+
+      if (hotSongsData) {
+        hotSongsData.forEach((song) => {
+          song.artist = JSON.parse(song.artist || "{}");
+          song.album = JSON.parse(song.album || "{}");
+        });
+      }
+
+      return hotSongsData;
     } catch (err) {
       throw new Error(`Error fetching hot songs: ${err.message}`);
     }
@@ -417,7 +438,7 @@ class Song extends Entry {
         : `${sort} ${direction}`;
 
       const query = `
-        WITH popular_songs AS (
+        WITH popularSongs AS (
           SELECT
               songs.id AS id,
               songs.title AS title,
@@ -445,7 +466,7 @@ class Song extends Entry {
           ORDER BY song_clicks.clicks DESC
           LIMIT 10
         )
-        SELECT * FROM popular_songs
+        SELECT * FROM popularSongs
         ORDER BY ${sortClause}`;
 
       const popularSongsData = await DB.dbAll(query);

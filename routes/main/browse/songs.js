@@ -46,8 +46,34 @@ router.get("/popular", async (req, res) => {
   }
 });
 
-router.get("/hot", async (req, res) => {});
+router.get("/hot", async (req, res) => {
+  const sortKey = sortKeys.hot[req.query.sort] || sortKeys.hot.clicks;
+  const sortDirection = sortDirections[req.query.direction] || "DESC";
 
-router.get("/recent", async (req, res) => {});
+  try {
+    const hotSongsData = await Song.getHotSongs(sortKey, sortDirection);
+    res.json({ data: hotSongsData });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/recent", async (req, res) => {
+  const sortKey = sortKeys.recent[req.query.sort] || sortKeys.recent.added;
+  const sortDirection = sortDirections[req.query.direction] || "DESC";
+
+  try {
+    const recentSongsData = await Song.getRecentSongs(sortKey, sortDirection);
+    res.json({ data: recentSongsData });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
 
 module.exports = router;
