@@ -1,7 +1,8 @@
 import { getPopularSongsData } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -10,32 +11,20 @@ import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
-export default function BrowseSongs() {
-  const [popularSongsData, setPopularSongsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function BrowsePopular() {
   const [sortBy, setSortBy] = useState("clicks");
   const [sortDirection, setSortDirection] = useState("desc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadPopularSongsData = async () => {
-      try {
-        setLoading(true);
-        const popularSongsDataRes = await getPopularSongsData(
-          sortBy,
-          sortDirection
-        );
-        setPopularSongsData(popularSongsDataRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, loading, error } = useAsyncData(
+    {
+      songs: () => getPopularSongsData(sortBy, sortDirection),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browsePopular-${sortBy}-${sortDirection}` }
+  );
 
-    loadPopularSongsData();
-  }, [sortBy, sortDirection]);
+  const popularSongsData = data.songs?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

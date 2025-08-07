@@ -1,7 +1,8 @@
 import { getSynthsData, getTotalSynthEntries } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -11,34 +12,21 @@ import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoRes
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
 export default function BrowseSynths() {
-  const [synthsData, setSynthsData] = useState(null);
-  const [totalEntries, setTotalEntries] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadSynthsData = async () => {
-      try {
-        setLoading(true);
-        const [synthsDataRes, totalEntriesRes] = await Promise.all([
-          getSynthsData(sortBy, sortDirection),
-          getTotalSynthEntries(),
-        ]);
+  const { data, loading, error } = useAsyncData(
+    {
+      synths: () => getSynthsData(sortBy, sortDirection),
+      total: () => getTotalSynthEntries(),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browseSynths-${sortBy}-${sortDirection}` }
+  );
 
-        setSynthsData(synthsDataRes.data);
-        setTotalEntries(totalEntriesRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSynthsData();
-  }, [sortBy, sortDirection]);
+  const synthsData = data.synths?.data || null;
+  const totalEntries = data.total?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

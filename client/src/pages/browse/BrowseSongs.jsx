@@ -1,7 +1,8 @@
 import { getSongsData, getTotalSongEntries } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -11,34 +12,21 @@ import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoRes
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
 export default function BrowseSongs() {
-  const [songsData, setSongsData] = useState(null);
-  const [totalEntries, setTotalEntries] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadSongsData = async () => {
-      try {
-        setLoading(true);
-        const [songsDataRes, totalEntriesRes] = await Promise.all([
-          getSongsData(sortBy, sortDirection),
-          getTotalSongEntries(),
-        ]);
+  const { data, loading, error } = useAsyncData(
+    {
+      songs: () => getSongsData(sortBy, sortDirection),
+      total: () => getTotalSongEntries(),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browseSongs-${sortBy}-${sortDirection}` }
+  );
 
-        setSongsData(songsDataRes.data);
-        setTotalEntries(totalEntriesRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadSongsData();
-  }, [sortBy, sortDirection]);
+  const songsData = data.songs?.data || null;
+  const totalEntries = data.total?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);
@@ -59,7 +47,7 @@ export default function BrowseSongs() {
         <Helmet>
           <title>Internal Server Error</title>
         </Helmet>
-        <DbError errorMessage={error} />
+        <DbError errorMessage={error.message} />
       </>
     );
   }

@@ -1,7 +1,8 @@
 import { getPresetsData, getTotalPresetEntries } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -11,34 +12,21 @@ import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoRes
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
 export default function BrowsePresets() {
-  const [presetsData, setPresetsData] = useState(null);
-  const [totalEntries, setTotalEntries] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadPresetsData = async () => {
-      try {
-        setLoading(true);
-        const [presetsDataRes, totalEntriesRes] = await Promise.all([
-          getPresetsData(sortBy, sortDirection),
-          getTotalPresetEntries(),
-        ]);
+  const { data, loading, error } = useAsyncData(
+    {
+      presets: () => getPresetsData(sortBy, sortDirection),
+      total: () => getTotalPresetEntries(),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browsePresets-${sortBy}-${sortDirection}` }
+  );
 
-        setPresetsData(presetsDataRes.data);
-        setTotalEntries(totalEntriesRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadPresetsData();
-  }, [sortBy, sortDirection]);
+  const presetsData = data.presets?.data || null;
+  const totalEntries = data.total?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

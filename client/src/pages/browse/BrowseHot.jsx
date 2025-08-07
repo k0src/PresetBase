@@ -1,7 +1,8 @@
 import { getHotSongsData } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -10,29 +11,20 @@ import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
-export default function BrowseSongs() {
-  const [hotSongsData, setHotSongsData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+export default function BrowseHot() {
   const [sortBy, setSortBy] = useState("hot");
   const [sortDirection, setSortDirection] = useState("desc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadHotSongsData = async () => {
-      try {
-        setLoading(true);
-        const hotSongsDataRes = await getHotSongsData(sortBy, sortDirection);
-        setHotSongsData(hotSongsDataRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const { data, loading, error } = useAsyncData(
+    {
+      songs: () => getHotSongsData(sortBy, sortDirection),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browseHot-${sortBy}-${sortDirection}` }
+  );
 
-    loadHotSongsData();
-  }, [sortBy, sortDirection]);
+  const hotSongsData = data.songs?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

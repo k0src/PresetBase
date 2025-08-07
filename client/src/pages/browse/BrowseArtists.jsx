@@ -1,7 +1,8 @@
 import { getArtistsData, getTotalArtistEntries } from "../../api/browse";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
@@ -11,34 +12,21 @@ import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoRes
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
 export default function BrowseArtists() {
-  const [artistsData, setArtistsData] = useState(null);
-  const [totalEntries, setTotalEntries] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadArtistsData = async () => {
-      try {
-        setLoading(true);
-        const [artistsDataRes, totalEntriesRes] = await Promise.all([
-          getArtistsData(sortBy, sortDirection),
-          getTotalArtistEntries(),
-        ]);
+  const { data, loading, error } = useAsyncData(
+    {
+      artists: () => getArtistsData(sortBy, sortDirection),
+      total: () => getTotalArtistEntries(),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browseArtists-${sortBy}-${sortDirection}` }
+  );
 
-        setArtistsData(artistsDataRes.data);
-        setTotalEntries(totalEntriesRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadArtistsData();
-  }, [sortBy, sortDirection]);
+  const artistsData = data.artists?.data || null;
+  const totalEntries = data.total?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);
@@ -59,7 +47,7 @@ export default function BrowseArtists() {
         <Helmet>
           <title>Internal Server Error</title>
         </Helmet>
-        <DbError errorMessage={error} />
+        <DbError errorMessage={error.message} />
       </>
     );
   }
