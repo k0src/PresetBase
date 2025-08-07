@@ -1,12 +1,18 @@
+import { memo, useMemo } from "react";
 import SearchResultEntry from "./SearchResultEntry";
 import styles from "./SearchResults.module.css";
 
-export default function SearchResultSection({ title, data, type, filter }) {
+export default memo(function SearchResultSection({
+  title,
+  data,
+  type,
+  filter,
+}) {
   if (!data.length || (filter !== "all" && filter !== type)) {
     return null;
   }
 
-  const getGridClass = () => {
+  const gridClass = useMemo(() => {
     switch (type) {
       case "songs":
         return styles.gridLayoutSongs;
@@ -21,9 +27,9 @@ export default function SearchResultSection({ title, data, type, filter }) {
       default:
         return "";
     }
-  };
+  }, [type]);
 
-  const getColumnHeaders = () => {
+  const columnHeaders = useMemo(() => {
     switch (type) {
       case "songs":
         return (
@@ -76,13 +82,13 @@ export default function SearchResultSection({ title, data, type, filter }) {
       default:
         return null;
     }
-  };
+  }, [type]);
 
   return (
     <div className={`${styles.searchResultsSection} --section-${type}`}>
       <h2 className={styles.headingSecondary}>{title}</h2>
-      <div className={`${styles.resultColumns} ${getGridClass()}`}>
-        {getColumnHeaders()}
+      <div className={`${styles.resultColumns} ${gridClass}`}>
+        {columnHeaders}
       </div>
       {data.map((entry, index) => (
         <SearchResultEntry
@@ -94,4 +100,4 @@ export default function SearchResultSection({ title, data, type, filter }) {
       ))}
     </div>
   );
-}
+});

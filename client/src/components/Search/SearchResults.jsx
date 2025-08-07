@@ -1,10 +1,20 @@
-import { useState } from "react";
+import { useState, memo, useMemo, useCallback } from "react";
 import { FaBan, FaFilter } from "react-icons/fa";
 import SearchResultSection from "./SearchResultSection";
 import styles from "./SearchResults.module.css";
 
-export default function SearchResults({ searchData, searchQuery }) {
+export default memo(function SearchResults({ searchData, searchQuery }) {
   const [filter, setFilter] = useState("all");
+
+  const handleFilterChange = useCallback((e) => {
+    setFilter(e.target.value);
+  }, []);
+
+  const { totalResults, songs, artists, albums, synths, presets } =
+    useMemo(() => {
+      if (!searchData) return {};
+      return searchData;
+    }, [searchData]);
 
   if (!searchData) {
     return (
@@ -14,8 +24,6 @@ export default function SearchResults({ searchData, searchQuery }) {
       </div>
     );
   }
-
-  const { totalResults, songs, artists, albums, synths, presets } = searchData;
 
   if (!totalResults) {
     return (
@@ -40,7 +48,7 @@ export default function SearchResults({ searchData, searchQuery }) {
             name="filter"
             className={styles.searchResultsFilterSelect}
             value={filter}
-            onChange={(e) => setFilter(e.target.value)}
+            onChange={handleFilterChange}
           >
             <option value="all">All</option>
             <option value="songs">Songs</option>
@@ -87,4 +95,4 @@ export default function SearchResults({ searchData, searchQuery }) {
       </section>
     </>
   );
-}
+});

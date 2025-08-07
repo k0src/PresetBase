@@ -3,6 +3,7 @@ import { searchDatabase } from "../../../api/api";
 
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
+import { memo, useMemo } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import PageLoader from "../../../components/PageLoader/PageLoader";
@@ -10,7 +11,7 @@ import SearchResults from "../../../components/Search/SearchResults";
 
 import styles from "./SearchPage.module.css";
 
-export default function SearchPage() {
+export default memo(function SearchPage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query");
 
@@ -23,6 +24,14 @@ export default function SearchPage() {
   );
 
   const searchData = data.search?.data || null;
+
+  const memoizedProps = useMemo(
+    () => ({
+      searchData,
+      searchQuery: searchData?.searchQuery || query,
+    }),
+    [searchData, query]
+  );
 
   if (loading) {
     return <PageLoader />;
@@ -61,10 +70,10 @@ export default function SearchPage() {
 
       <ContentContainer isAuth={false} userIsAdmin={false}>
         <SearchResults
-          searchData={searchData}
-          searchQuery={searchData?.searchQuery || query}
+          searchData={memoizedProps.searchData}
+          searchQuery={memoizedProps.searchQuery}
         />
       </ContentContainer>
     </>
   );
-}
+});

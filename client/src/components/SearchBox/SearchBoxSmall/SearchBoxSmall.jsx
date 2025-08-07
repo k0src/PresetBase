@@ -160,7 +160,6 @@ export default function SearchBoxSmall({ limit }) {
   useEffect(() => {
     const handleKeydown = (e) => {
       if (e.ctrlKey && e.key.toLowerCase() === "k") {
-        console.log("Ctrl+K detected!");
         e.preventDefault();
         inputRef.current?.focus();
       }

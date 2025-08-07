@@ -47,19 +47,19 @@ class Preset extends Entry {
     try {
       const query = `
         SELECT
-          presets.id AS preset_id,
-          presets.preset_name,
-          presets.pack_name,
-          presets.author,
-          presets.timestamp AS preset_added_timestamp,
+          presets.id AS id,
+          presets.preset_name AS name,
+          presets.pack_name AS packName,
+          presets.author AS author,
+          presets.timestamp AS timestamp,
 
           json_object(
             'id', synths.id,
-            'synth_name', synths.synth_name,
+            'name', synths.synth_name,
             'manufacturer', synths.manufacturer,
-            'synth_type', synths.synth_type,
-            'image_url', synths.image_url,
-            'release_year', synths.release_year
+            'type', synths.synth_type,
+            'imageUrl', synths.image_url,
+            'year', synths.release_year
           ) AS synth
         FROM presets
         LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
