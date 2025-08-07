@@ -27,6 +27,9 @@ const BrowseTableView = memo(function BrowseTableView({
     return dataRowsWithIndex.filter((row) => {
       switch (entryType) {
         case "songs":
+        case "popular":
+        case "hot":
+        case "recent":
           return (
             row.title.toLowerCase().includes(searchText) ||
             row.artist.name.toLowerCase().includes(searchText) ||
@@ -97,9 +100,7 @@ const BrowseTableView = memo(function BrowseTableView({
     </Link>
   ));
 
-  const renderSongRow = (song) => <SongRow key={song.id} song={song} />;
-
-  const renderArtistRow = (artist) => (
+  const ArtistRow = memo(({ artist }) => (
     <Link
       key={artist.id}
       to={`/artist/${artist.id}`}
@@ -122,9 +123,9 @@ const BrowseTableView = memo(function BrowseTableView({
       </div>
       <span className={styles.rowTextSecondary}>{artist.country}</span>
     </Link>
-  );
+  ));
 
-  const renderAlbumRow = (album) => (
+  const AlbumRow = memo(({ album }) => (
     <Link
       key={album.id}
       to={`/album/${album.id}`}
@@ -149,9 +150,9 @@ const BrowseTableView = memo(function BrowseTableView({
       <GenreTag genre={album.genre} />
       <span className={styles.rowTextQuaternary}>{album.year}</span>
     </Link>
-  );
+  ));
 
-  const renderSynthRow = (synth) => (
+  const SynthRow = memo(({ synth }) => (
     <Link
       key={synth.id}
       to={`/synth/${synth.id}`}
@@ -176,9 +177,9 @@ const BrowseTableView = memo(function BrowseTableView({
       <SynthTag type={synth.type} />
       <span className={styles.rowTextQuaternary}>{synth.year}</span>
     </Link>
-  );
+  ));
 
-  const renderPresetRow = (preset) => (
+  const PresetRow = memo(({ preset }) => (
     <Link
       key={preset.id}
       to={`/preset/${preset.id}`}
@@ -203,9 +204,9 @@ const BrowseTableView = memo(function BrowseTableView({
       <span className={styles.rowTextTertiary}>{preset.packName}</span>
       <span className={styles.rowTextTertiary}>{preset.author}</span>
     </Link>
-  );
+  ));
 
-  const renderGenreRow = (genre) => (
+  const GenreRow = memo(({ genre }) => (
     <div
       key={genre.id}
       className={classNames(
@@ -227,11 +228,25 @@ const BrowseTableView = memo(function BrowseTableView({
       </div>
       <span className={styles.rowTextSecondary}>{genre.songCount}</span>
     </div>
+  ));
+
+  const renderSongRow = (song) => <SongRow key={song.id} song={song} />;
+  const renderArtistRow = (artist) => (
+    <ArtistRow key={artist.id} artist={artist} />
   );
+  const renderAlbumRow = (album) => <AlbumRow key={album.id} album={album} />;
+  const renderSynthRow = (synth) => <SynthRow key={synth.id} synth={synth} />;
+  const renderPresetRow = (preset) => (
+    <PresetRow key={preset.id} preset={preset} />
+  );
+  const renderGenreRow = (genre) => <GenreRow key={genre.id} genre={genre} />;
 
   const renderRow = useMemo(() => {
     switch (entryType) {
       case "songs":
+      case "popular":
+      case "hot":
+      case "recent":
         return renderSongRow;
       case "artists":
         return renderArtistRow;

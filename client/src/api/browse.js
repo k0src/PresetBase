@@ -13,6 +13,31 @@ export async function getTotalSongEntries() {
   return res.json();
 }
 
+/* -------------------------- Popular, Hot, Recent -------------------------- */
+export async function getPopularSongsData(sort = null, direction = "DESC") {
+  const res = await fetch(
+    `/api/browse/songs/popular?sort=${sort}&direction=${direction}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch popular songs");
+  return res.json();
+}
+
+export async function getHotSongsData(sort = null, direction = "DESC") {
+  const res = await fetch(
+    `/api/browse/songs/hot?sort=${sort}&direction=${direction}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch hot songs");
+  return res.json();
+}
+
+export async function getRecentSongsData(sort = null, direction = "DESC") {
+  const res = await fetch(
+    `/api/browse/songs/recent?sort=${sort}&direction=${direction}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch recent songs");
+  return res.json();
+}
+
 /* --------------------------------- Artists -------------------------------- */
 export async function getArtistsData(sort = null, direction = "ASC") {
   const res = await fetch(

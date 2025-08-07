@@ -12,6 +12,14 @@ const sortKeys = {
     album: "albums.title",
     added: "songs.timestamp",
   },
+  popular: {
+    title: "title",
+    year: "year",
+    artist: "json_extract(artist, '$.name')",
+    album: "json_extract(album, '$.title')",
+    added: "timestamp",
+    clicks: "clicks",
+  },
   artists: {
     name: "artists.name",
     country: "artists.country",

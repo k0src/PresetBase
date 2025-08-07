@@ -31,4 +31,23 @@ router.get("/total-entries", async (req, res) => {
   }
 });
 
+router.get("/popular", async (req, res) => {
+  const sortKey = sortKeys.popular[req.query.sort] || sortKeys.popular.clicks;
+  const sortDirection = sortDirections[req.query.direction] || "DESC";
+
+  try {
+    const popularSongsData = await Song.getPopularSongs(sortKey, sortDirection);
+    res.json({ data: popularSongsData });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/hot", async (req, res) => {});
+
+router.get("/recent", async (req, res) => {});
+
 module.exports = router;
