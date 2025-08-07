@@ -1,3 +1,4 @@
+import { useAsyncData } from "../../../hooks/useAsyncData";
 import {
   getArtistById,
   getTotalSongs,
@@ -5,7 +6,6 @@ import {
   getFavoriteSynth,
 } from "../../../api/entries/artists";
 
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -21,40 +21,21 @@ import styles from "./ArtistPage.module.css";
 export default function ArtistPage() {
   const { id } = useParams();
 
-  const [artist, setArtist] = useState(null);
-  const [totalSongs, setTotalSongs] = useState(0);
-  const [albums, setAlbums] = useState([]);
-  const [favoriteSynth, setFavoriteSynth] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error } = useAsyncData(
+    {
+      artist: () => getArtistById(id),
+      totalSongs: () => getTotalSongs(id, 5),
+      albums: () => getAlbums(id, 5),
+      favoriteSynth: () => getFavoriteSynth(id),
+    },
+    [id],
+    { cacheKey: `artist-${id}` }
+  );
 
-  useEffect(() => {
-    const loadArtistData = async () => {
-      try {
-        setLoading(true);
-        const [artistData, totalSongsData, albumsData, favoriteSynthData] =
-          await Promise.all([
-            getArtistById(id),
-            getTotalSongs(id),
-            getAlbums(id),
-            getFavoriteSynth(id),
-          ]);
-
-        setArtist(artistData.data);
-        setTotalSongs(totalSongsData.data);
-        setAlbums(albumsData.data);
-        setFavoriteSynth(favoriteSynthData.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      loadArtistData();
-    }
-  }, [id]);
+  const artist = data.artist?.data || null;
+  const totalSongs = data.totalSongs?.data || 0;
+  const albums = data.albums?.data || [];
+  const favoriteSynth = data.favoriteSynth?.data || null;
 
   if (loading) return <PageLoader />;
 

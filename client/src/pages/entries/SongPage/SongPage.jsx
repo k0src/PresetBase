@@ -1,6 +1,6 @@
+import { useAsyncData } from "../../../hooks/useAsyncData";
 import { getSongById, getRelatedSongs } from "../../../api/entries/songs";
 
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -18,33 +18,17 @@ import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 export default function SongPage() {
   const { id } = useParams();
 
-  const [song, setSong] = useState(null);
-  const [moreSongs, setMoreSongs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error } = useAsyncData(
+    {
+      song: () => getSongById(id),
+      moreSongs: () => getRelatedSongs(id, 5),
+    },
+    [id],
+    { cacheKey: `song-${id}` }
+  );
 
-  useEffect(() => {
-    const loadSongData = async () => {
-      try {
-        setLoading(true);
-        const [songData, moreSongsData] = await Promise.all([
-          getSongById(id),
-          getRelatedSongs(id, 5),
-        ]);
-
-        setSong(songData.data);
-        setMoreSongs(moreSongsData.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      loadSongData();
-    }
-  }, [id]);
+  const song = data.song?.data || null;
+  const moreSongs = data.moreSongs?.data || null;
 
   if (loading) return <PageLoader />;
 

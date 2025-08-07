@@ -1,6 +1,6 @@
+import { useAsyncData } from "../../../hooks/useAsyncData";
 import { getAlbumById, getRelatedAlbums } from "../../../api/entries/albums";
 
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -16,33 +16,17 @@ import styles from "./AlbumPage.module.css";
 export default function AlbumPage() {
   const { id } = useParams();
 
-  const [album, setAlbum] = useState(null);
-  const [moreAlbums, setMoreAlbums] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error } = useAsyncData(
+    {
+      album: () => getAlbumById(id),
+      moreAlbums: () => getRelatedAlbums(id, 5),
+    },
+    [id],
+    { cacheKey: `album-${id}` }
+  );
 
-  useEffect(() => {
-    const loadAlbumData = async () => {
-      try {
-        setLoading(true);
-        const [albumData, moreAlbumsData] = await Promise.all([
-          getAlbumById(id),
-          getRelatedAlbums(id, 5),
-        ]);
-
-        setAlbum(albumData.data);
-        setMoreAlbums(moreAlbumsData.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      loadAlbumData();
-    }
-  }, [id]);
+  const album = data.album?.data || null;
+  const moreAlbums = data.moreAlbums?.data || null;
 
   if (loading) return <PageLoader />;
 

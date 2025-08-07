@@ -1,6 +1,6 @@
+import { useAsyncData } from "../../../hooks/useAsyncData";
 import { getSynthById, getRelatedSynths } from "../../../api/entries/synths";
 
-import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -16,33 +16,17 @@ import styles from "./SynthPage.module.css";
 export default function SynthPage() {
   const { id } = useParams();
 
-  const [synth, setSynth] = useState(null);
-  const [moreSynths, setMoreSynths] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const { data, loading, error } = useAsyncData(
+    {
+      synth: () => getSynthById(id),
+      moreSynths: () => getRelatedSynths(id, 5),
+    },
+    [id],
+    { cacheKey: `synth-${id}` }
+  );
 
-  useEffect(() => {
-    const loadSynthData = async () => {
-      try {
-        setLoading(true);
-        const [synthData, moreSynthsData] = await Promise.all([
-          getSynthById(id),
-          getRelatedSynths(id, 5),
-        ]);
-
-        setSynth(synthData.data);
-        setMoreSynths(moreSynthsData.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (id) {
-      loadSynthData();
-    }
-  }, [id]);
+  const synth = data.synth?.data || null;
+  const moreSynths = data.moreSynths?.data || null;
 
   if (loading) return <PageLoader />;
 
