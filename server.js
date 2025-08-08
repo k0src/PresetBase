@@ -72,8 +72,8 @@ const statsRoutes = require("./routes/main/stats");
 app.use("/api/stats", statsRoutes);
 const searchRoutes = require("./routes/main/search");
 app.use("/api/search", searchRoutes);
-// const submitRoute = require("./routes/main/submit");
-// app.use("/submit", submitRoute);
+const submitRoute = require("./routes/main/submit");
+app.use("/api/submit", submitRoute);
 
 const songRoutes = require("./routes/entries/song");
 app.use("/api/song", songRoutes);
