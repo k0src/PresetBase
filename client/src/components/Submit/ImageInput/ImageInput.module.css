@@ -1,0 +1,88 @@
+.red {
+  color: #c25c5c !important;
+}
+
+.label {
+  position: relative;
+  display: block;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.input {
+  opacity: 0;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.small {
+  font-size: 1.3rem;
+  display: block;
+  color: #899096;
+  line-height: 1.3;
+}
+
+.small a {
+  text-decoration: underline !important;
+}
+
+.button {
+  background-color: #2d343a;
+  border: none;
+  color: #e3e5e4;
+  padding: 0.6rem 1rem;
+  border-radius: 0.2rem;
+  cursor: pointer;
+  font-size: 1.2rem;
+  transition: background-color 0.2s ease;
+}
+
+.button:hover {
+  background-color: #42484e;
+}
+
+.imageInputContainer {
+  margin-top: 1.2rem;
+  display: flex;
+  gap: 1.2rem;
+  align-items: center;
+}
+
+.imageDisplay {
+  width: 9.6rem;
+  height: 9.6rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.imageInputWrapper {
+  width: 100%;
+}
+
+.customImageInput {
+  display: flex;
+  align-items: center;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  padding: 1rem 1.2rem;
+  position: relative;
+  max-width: 100%;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.fileName {
+  font-size: 1.3rem;
+  color: #e3e5e4;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

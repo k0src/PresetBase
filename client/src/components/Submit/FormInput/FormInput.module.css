@@ -1,0 +1,50 @@
+.red {
+  color: #c25c5c !important;
+}
+
+.label,
+.input,
+.small {
+  width: 100%;
+}
+
+.label {
+  position: relative;
+  display: block;
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.input {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  margin-bottom: 1.2rem;
+  margin-top: 1.2rem;
+}
+
+.input[type="number"]::-webkit-inner-spin-button,
+.input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.small {
+  font-size: 1.3rem;
+  display: block;
+  color: #899096;
+  line-height: 1.2;
+}
+
+.small a {
+  text-decoration: underline !important;
+}

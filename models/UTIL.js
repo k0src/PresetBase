@@ -1,5 +1,7 @@
 const db = require("../db/db");
 
+/* ------------------------ MOVE ME TO A UTIL FOLDER ------------------------ */
+
 /* -------------------------------- DATABASE -------------------------------- */
 const dbAll = function (query, params = []) {
   return new Promise((resolve, reject) => {

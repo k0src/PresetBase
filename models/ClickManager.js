@@ -27,7 +27,7 @@ class ClickManager {
         recent_click = excluded.recent_click
     `;
 
-    await DB.dbRun(query, [entryId, now]);
+    await DB.run(query, [entryId, now]);
   }
 }
 

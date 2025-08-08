@@ -22,12 +22,12 @@ class Artist extends Entry {
   async save() {
     try {
       if (this.#id) {
-        return DB.dbRun(
+        return DB.run(
           `UPDATE artists SET name = ?, country = ?, image_url = ?, timestamp = ? WHERE id = ?`,
           [this.#name, this.#country, this.#imageUrl, this.#timestamp, this.#id]
         );
       } else {
-        return DB.dbRun(
+        return DB.run(
           `INSERT INTO artists (name, country, image_url, timestamp) VALUES (?, ?, ?, ?)`,
           [this.#name, this.#country, this.#imageUrl, this.#timestamp]
         );
@@ -65,7 +65,7 @@ class Artist extends Entry {
         WHERE artists.id = ?
         GROUP BY artists.id`;
 
-      const artistData = await DB.dbGet(query, [this.#id]);
+      const artistData = await DB.get(query, [this.#id]);
 
       if (artistData) {
         artistData.songs = JSON.parse(artistData.songs || "[]");
@@ -101,7 +101,7 @@ class Artist extends Entry {
         params.push(limit);
       }
 
-      return await DB.dbAll(query, params);
+      return await DB.all(query, params);
     } catch (err) {
       throw new Error(`Error fetching artist albums: ${err.message}`);
     }
@@ -116,7 +116,7 @@ class Artist extends Entry {
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         WHERE song_artists.artist_id = ?`;
 
-      const totalSongs = await DB.dbGet(query, [this.#id]);
+      const totalSongs = await DB.get(query, [this.#id]);
       return totalSongs.total_songs;
     } catch (err) {
       throw new Error(`Error fetching total songs: ${err.message}`);
@@ -143,7 +143,7 @@ class Artist extends Entry {
         ORDER BY usageCount DESC
         LIMIT 1`;
 
-      return await DB.dbGet(query, [this.#id]);
+      return await DB.get(query, [this.#id]);
     } catch (err) {
       throw new Error(`Error fetching favorite synth: ${err.message}`);
     }
@@ -203,7 +203,7 @@ class Artist extends Entry {
   static async create({ name, country, imageUrl }) {
     try {
       const now = new Date().toISOString();
-      const lastId = await DB.dbRun(
+      const lastId = await DB.run(
         `INSERT INTO artists (name, country, image_url, timestamp) VALUES (?, ?, ?, ?)`,
         [name, country, imageUrl, now]
       );
@@ -234,7 +234,7 @@ class Artist extends Entry {
   // Get artist by ID
   static async getById(id) {
     try {
-      const row = await DB.dbGet(`SELECT * FROM artists WHERE id = ?`, [id]);
+      const row = await DB.get(`SELECT * FROM artists WHERE id = ?`, [id]);
       return row ? Artist.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching artist by ID: ${err.message}`);
@@ -245,9 +245,9 @@ class Artist extends Entry {
   static async deleteById(id) {
     try {
       await Promise.all([
-        DB.dbRun(`DELETE FROM artists WHERE id = ?`, [id]),
-        DB.dbRun(`DELETE FROM song_artists WHERE artist_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM artist_clicks WHERE artist_id = ?`, [id]),
+        DB.run(`DELETE FROM artists WHERE id = ?`, [id]),
+        DB.run(`DELETE FROM song_artists WHERE artist_id = ?`, [id]),
+        DB.run(`DELETE FROM artist_clicks WHERE artist_id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting artist by ID: ${err.message}`);
@@ -257,7 +257,7 @@ class Artist extends Entry {
   // Return whether artist exists in DB by ID
   static async exists(id) {
     try {
-      const artistId = await DB.dbGet(`SELECT id FROM artists WHERE id = ?`, [
+      const artistId = await DB.get(`SELECT id FROM artists WHERE id = ?`, [
         id,
       ]);
       return !!artistId;
@@ -269,7 +269,7 @@ class Artist extends Entry {
   // Get total number of artists in DB
   static async totalEntries() {
     try {
-      const totalResults = await DB.dbGet(
+      const totalResults = await DB.get(
         `SELECT COUNT(*) AS total_results FROM artists`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -297,7 +297,7 @@ class Artist extends Entry {
         FROM artists
         ORDER BY ${sortClause}`;
 
-      return await DB.dbAll(query);
+      return await DB.all(query);
     } catch (err) {
       throw new Error(`Error fetching all artists: ${err.message}`);
     }

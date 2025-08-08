@@ -147,12 +147,12 @@ class SearchManager {
 
       const [totalResults, songs, artists, albums, synths, presets] =
         await Promise.all([
-          DB.dbGet(queries.totalResults, Array(5).fill(`%${escapedQuery}%`)),
-          DB.dbAll(queries.songs, Array(4).fill(`%${escapedQuery}%`)),
-          DB.dbAll(queries.artists, Array(4).fill(`%${escapedQuery}%`)),
-          DB.dbAll(queries.albums, Array(4).fill(`%${escapedQuery}%`)),
-          DB.dbAll(queries.synths, Array(4).fill(`%${escapedQuery}%`)),
-          DB.dbAll(queries.presets, Array(4).fill(`%${escapedQuery}%`)),
+          DB.get(queries.totalResults, Array(5).fill(`%${escapedQuery}%`)),
+          DB.all(queries.songs, Array(4).fill(`%${escapedQuery}%`)),
+          DB.all(queries.artists, Array(4).fill(`%${escapedQuery}%`)),
+          DB.all(queries.albums, Array(4).fill(`%${escapedQuery}%`)),
+          DB.all(queries.synths, Array(4).fill(`%${escapedQuery}%`)),
+          DB.all(queries.presets, Array(4).fill(`%${escapedQuery}%`)),
         ]);
 
       if (songs) {

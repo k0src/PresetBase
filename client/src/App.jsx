@@ -7,7 +7,7 @@ import Copyright from "./pages/static/Copyright/Copyright";
 import UploadTos from "./pages/static/UploadTos/UploadTos";
 import StatsPage from "./pages/static/StatsPage/StatsPage";
 import SearchPage from "./pages/static/SearchPage/SearchPage";
-// import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
+import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
 
 import SongPage from "./pages/entries/SongPage/SongPage";
 import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
@@ -51,7 +51,7 @@ function App() {
         <Route path="/upload-tos" element={<UploadTos />} />
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/search" element={<SearchPage />} />
-        {/* <Route path="/submit" element={<SubmitPage />} /> */}
+        <Route path="/submit" element={<SubmitPage />} />
 
         {/* Entry routes */}
         <Route path="/song/:id" element={<SongPage />} />

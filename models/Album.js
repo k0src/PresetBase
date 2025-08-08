@@ -24,7 +24,7 @@ class Album extends Entry {
   async save() {
     try {
       if (this.#id) {
-        return DB.dbRun(
+        return DB.run(
           `UPDATE albums SET title = ?, genre = ?, release_year = ?, image_url = ?, timestamp = ? WHERE id = ?`,
           [
             this.#title,
@@ -36,7 +36,7 @@ class Album extends Entry {
           ]
         );
       } else {
-        return DB.dbRun(
+        return DB.run(
           `INSERT INTO albums (title, genre, release_year, image_url, timestamp) VALUES (?, ?, ?, ?, ?)`,
           [
             this.#title,
@@ -95,7 +95,7 @@ class Album extends Entry {
         WHERE albums.id = ?
         GROUP BY albums.id`;
 
-      const albumData = await DB.dbGet(query, [this.#id]);
+      const albumData = await DB.get(query, [this.#id]);
 
       if (albumData) {
         albumData.songs = JSON.parse(albumData.songs || "[]");
@@ -142,7 +142,7 @@ class Album extends Entry {
         params.push(limit);
       }
 
-      return await DB.dbAll(query, params);
+      return await DB.all(query, params);
     } catch (err) {
       throw new Error(`Error fetching more albums: ${err.message}`);
     }
@@ -211,7 +211,7 @@ class Album extends Entry {
   static async create({ title, genre, releaseYear, imageUrl }) {
     try {
       const now = new Date().toISOString();
-      const lastId = await DB.dbRun(
+      const lastId = await DB.run(
         `INSERT INTO albums (title, genre, release_year, image_url, timestamp)
          VALUES (?, ?, ?, ?, ?)`,
         [title, genre, releaseYear, imageUrl, now]
@@ -245,7 +245,7 @@ class Album extends Entry {
   // Get album by ID
   static async getById(id) {
     try {
-      const row = await DB.dbGet(`SELECT * FROM albums WHERE id = ?`, [id]);
+      const row = await DB.get(`SELECT * FROM albums WHERE id = ?`, [id]);
       return row ? Album.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching album by ID: ${err.message}`);
@@ -256,9 +256,9 @@ class Album extends Entry {
   static async deleteById(id) {
     try {
       await Promise.all([
-        DB.dbRun(`DELETE FROM albums WHERE id = ?`, [id]),
-        DB.dbRun(`DELETE FROM album_songs WHERE album_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM album_clicks WHERE album_id = ?`, [id]),
+        DB.run(`DELETE FROM albums WHERE id = ?`, [id]),
+        DB.run(`DELETE FROM album_songs WHERE album_id = ?`, [id]),
+        DB.run(`DELETE FROM album_clicks WHERE album_id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting album: ${err.message}`);
@@ -268,9 +268,7 @@ class Album extends Entry {
   // Return whether album exists in DB by ID
   static async exists(id) {
     try {
-      const albumId = await DB.dbGet(`SELECT id FROM albums WHERE id = ?`, [
-        id,
-      ]);
+      const albumId = await DB.get(`SELECT id FROM albums WHERE id = ?`, [id]);
       return !!albumId;
     } catch (err) {
       throw new Error(`Error checking album existence: ${err.message}`);
@@ -280,7 +278,7 @@ class Album extends Entry {
   // Get total number of albums in DB
   static async totalEntries() {
     try {
-      const totalResults = await DB.dbGet(
+      const totalResults = await DB.get(
         `SELECT COUNT(*) AS total_results FROM albums`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -320,7 +318,7 @@ class Album extends Entry {
         GROUP BY albums.id
         ORDER BY ${sortClause}`;
 
-      const albumsData = await DB.dbAll(query);
+      const albumsData = await DB.all(query);
 
       if (albumsData) {
         albumsData.forEach((album) => {

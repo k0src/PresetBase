@@ -1,7 +1,7 @@
 const db = require("../db/db");
 
 class DB {
-  static dbAll(query, params = []) {
+  static all(query, params = []) {
     return new Promise((resolve, reject) => {
       db.all(query, params, (err, rows) => {
         if (err) reject(err);
@@ -10,7 +10,7 @@ class DB {
     });
   }
 
-  static dbGet(query, params = []) {
+  static get(query, params = []) {
     return new Promise((resolve, reject) => {
       db.get(query, params, (err, row) => {
         if (err) reject(err);
@@ -19,7 +19,7 @@ class DB {
     });
   }
 
-  static dbRun(query, params = []) {
+  static run(query, params = []) {
     return new Promise((resolve, reject) => {
       db.run(query, params, function (err) {
         if (err) reject(err);

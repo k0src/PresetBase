@@ -1,0 +1,41 @@
+.alertMessage {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1.8rem;
+  justify-content: space-between;
+  border: 0.2rem solid;
+  padding: 1.8rem;
+  border-radius: 0.8rem;
+}
+
+.errorMessage {
+  color: #c25c5c;
+  border-color: #c25c5c;
+  background-color: #e1aeae;
+}
+
+.infoMessage {
+  color: #5e8faf;
+  border-color: #5e8faf;
+  background-color: #dfe9ef;
+}
+
+.succesMessage {
+  color: #70a37f;
+  border-color: #70a37f;
+  background-color: #e2ede5;
+}
+
+.alertIcon {
+  font-size: 2.4rem;
+}
+
+.alertText {
+  font-size: 1.6rem;
+  line-height: 1.2;
+}
+
+.alertText > a {
+  text-decoration: underline !important;
+}

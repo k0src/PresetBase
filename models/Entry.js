@@ -44,7 +44,7 @@ class Entry {
           (SELECT COUNT(*) FROM presets) 
         AS total_results`;
 
-      const totalResults = await DB.dbGet(query);
+      const totalResults = await DB.get(query);
       return totalResults ? totalResults.total_results : 0;
     } catch (err) {
       throw new Error(`Error fetching total entries: ${err.message}`);

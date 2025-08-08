@@ -21,7 +21,7 @@ class Preset extends Entry {
   async save() {
     try {
       if (this.#id) {
-        return DB.dbRun(
+        return DB.run(
           `UPDATE presets SET preset_name = ?, pack_name = ?, author = ?, timestamp = ? WHERE id = ?`,
           [
             this.#presetName,
@@ -32,7 +32,7 @@ class Preset extends Entry {
           ]
         );
       } else {
-        return DB.dbRun(
+        return DB.run(
           `INSERT INTO presets (preset_name, pack_name, author, timestamp) VALUES (?, ?, ?, ?)`,
           [this.#presetName, this.#packName, this.#author, this.#timestamp]
         );
@@ -66,7 +66,7 @@ class Preset extends Entry {
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
         WHERE presets.id = ?`;
 
-      const presetData = await DB.dbGet(query, [this.#id]);
+      const presetData = await DB.get(query, [this.#id]);
 
       if (presetData) {
         presetData.synth = JSON.parse(presetData.synth || "{}");
@@ -132,7 +132,7 @@ class Preset extends Entry {
   static async create({ presetName, packName, author }) {
     try {
       const now = new Date().toISOString();
-      const result = await DB.dbRun(
+      const result = await DB.run(
         `INSERT INTO presets (preset_name, pack_name, author, timestamp) VALUES (?, ?, ?, ?)`,
         [presetName, packName, author, now]
       );
@@ -163,7 +163,7 @@ class Preset extends Entry {
   // Get preset by ID
   static async getById(id) {
     try {
-      const row = await DB.dbGet(`SELECT * FROM presets WHERE id = ?`, [id]);
+      const row = await DB.get(`SELECT * FROM presets WHERE id = ?`, [id]);
       return row ? Preset.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching preset by ID: ${err.message}`);
@@ -174,9 +174,9 @@ class Preset extends Entry {
   static async deleteById(id) {
     try {
       await Promise.all([
-        DB.dbRun(`DELETE FROM presets WHERE id = ?`, [id]),
-        DB.dbRun(`DELETE FROM preset_synths WHERE preset_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM song_presets WHERE preset_id = ?`, [id]),
+        DB.run(`DELETE FROM presets WHERE id = ?`, [id]),
+        DB.run(`DELETE FROM preset_synths WHERE preset_id = ?`, [id]),
+        DB.run(`DELETE FROM song_presets WHERE preset_id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting preset by ID: ${err.message}`);
@@ -186,7 +186,7 @@ class Preset extends Entry {
   // Return whether preset in DB by ID
   static async exists(id) {
     try {
-      const presetId = await DB.dbGet(`SELECT id FROM presets WHERE id = ?`, [
+      const presetId = await DB.get(`SELECT id FROM presets WHERE id = ?`, [
         id,
       ]);
       return !!presetId;
@@ -198,7 +198,7 @@ class Preset extends Entry {
   // Get total number of presets in DB
   static async totalEntries() {
     try {
-      const totalResults = await DB.dbGet(
+      const totalResults = await DB.get(
         `SELECT COUNT(*) AS total_results FROM presets`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -238,7 +238,7 @@ class Preset extends Entry {
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
         ORDER BY ${sortClause}`;
 
-      const presetsData = await DB.dbAll(query);
+      const presetsData = await DB.all(query);
 
       if (presetsData) {
         presetsData.forEach((preset) => {

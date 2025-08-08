@@ -26,7 +26,7 @@ class Song extends Entry {
   async save() {
     try {
       if (this.#id) {
-        return DB.dbRun(
+        return DB.run(
           `UPDATE songs SET title = ?, genre = ?, release_year = ?, song_url = ?, image_url = ? WHERE id = ?`,
           [
             this.#title,
@@ -38,7 +38,7 @@ class Song extends Entry {
           ]
         );
       } else {
-        return DB.dbRun(
+        return DB.run(
           `INSERT INTO songs (title, genre, release_year, song_url, image_url) VALUES (?, ?, ?, ?, ?)`,
           [
             this.#title,
@@ -102,7 +102,7 @@ class Song extends Entry {
         WHERE songs.id = ?
         GROUP BY songs.id`;
 
-      const songData = await DB.dbGet(query, [this.#id]);
+      const songData = await DB.get(query, [this.#id]);
 
       if (songData) {
         songData.album = JSON.parse(songData.album || "{}");
@@ -143,7 +143,7 @@ class Song extends Entry {
         params.push(limit);
       }
 
-      return await DB.dbAll(query, params);
+      return await DB.all(query, params);
     } catch (err) {
       throw new Error(`Error fetching more songs: ${err.message}`);
     }
@@ -222,7 +222,7 @@ class Song extends Entry {
   static async create({ title, genre, releaseYear, songUrl, imageUrl }) {
     try {
       const now = new Date().toISOString();
-      const lastId = await DB.dbRun(
+      const lastId = await DB.run(
         `INSERT INTO songs (title, genre, release_year, song_url, image_url, timestamp)
          VALUES (?, ?, ?, ?, ?, ?)`,
         [title, genre, releaseYear, songUrl, imageUrl, now]
@@ -258,7 +258,7 @@ class Song extends Entry {
   // Get song by ID
   static async getById(id) {
     try {
-      const row = await DB.dbGet(`SELECT * FROM songs WHERE id = ?`, [id]);
+      const row = await DB.get(`SELECT * FROM songs WHERE id = ?`, [id]);
       return row ? Song.#fromRow(row) : null;
     } catch (err) {
       throw new Error(`Error fetching song by ID: ${err.message}`);
@@ -269,11 +269,11 @@ class Song extends Entry {
   static async deleteById(id) {
     try {
       await Promise.all([
-        DB.dbRun(`DELETE FROM song_artists WHERE song_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM song_presets WHERE song_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM song_clicks WHERE song_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM album_songs WHERE song_id = ?`, [id]),
-        DB.dbRun(`DELETE FROM songs WHERE id = ?`, [id]),
+        DB.run(`DELETE FROM song_artists WHERE song_id = ?`, [id]),
+        DB.run(`DELETE FROM song_presets WHERE song_id = ?`, [id]),
+        DB.run(`DELETE FROM song_clicks WHERE song_id = ?`, [id]),
+        DB.run(`DELETE FROM album_songs WHERE song_id = ?`, [id]),
+        DB.run(`DELETE FROM songs WHERE id = ?`, [id]),
       ]);
     } catch (err) {
       throw new Error(`Error deleting song by ID: ${err.message}`);
@@ -283,7 +283,7 @@ class Song extends Entry {
   // Return whether song exists in DB by ID
   static async exists(id) {
     try {
-      const songId = await DB.dbGet(`SELECT id FROM songs WHERE id = ?`, [id]);
+      const songId = await DB.get(`SELECT id FROM songs WHERE id = ?`, [id]);
       return !!songId;
     } catch (err) {
       throw new Error(`Error checking song existence: ${err.message}`);
@@ -293,7 +293,7 @@ class Song extends Entry {
   // Get total number of songs in DB
   static async totalEntries() {
     try {
-      const totalResults = await DB.dbGet(
+      const totalResults = await DB.get(
         `SELECT COUNT(*) AS total_results FROM songs`
       );
       return totalResults ? totalResults.total_results : 0;
@@ -341,7 +341,7 @@ class Song extends Entry {
         GROUP BY songs.id
         ORDER BY ${sortClause}`;
 
-      const songsData = await DB.dbAll(query);
+      const songsData = await DB.all(query);
 
       if (songsData) {
         songsData.forEach((song) => {
@@ -408,7 +408,7 @@ class Song extends Entry {
         SELECT * FROM hotSongs
         ORDER BY ${sortClause}`;
 
-      const hotSongsData = await DB.dbAll(query);
+      const hotSongsData = await DB.all(query);
 
       if (hotSongsData) {
         hotSongsData.forEach((song) => {
@@ -469,7 +469,7 @@ class Song extends Entry {
         SELECT * FROM popularSongs
         ORDER BY ${sortClause}`;
 
-      const popularSongsData = await DB.dbAll(query);
+      const popularSongsData = await DB.all(query);
 
       if (popularSongsData) {
         popularSongsData.forEach((song) => {
@@ -529,7 +529,7 @@ class Song extends Entry {
         SELECT * FROM recentSongs
         ORDER BY ${sortClause}`;
 
-      const recentSongsData = await DB.dbAll(query);
+      const recentSongsData = await DB.all(query);
 
       if (recentSongsData) {
         recentSongsData.forEach((song) => {
