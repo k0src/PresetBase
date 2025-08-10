@@ -211,7 +211,7 @@ class UserSubmissionManager {
           synthData.filled = true;
         }
 
-        for (let j = 0; j < synths.presets.length; j++) {
+        for (let j = 0; j < synthData.presets.length; j++) {
           const presetData = synthData.presets[j];
 
           const presetDb = await DB.get(

@@ -93,12 +93,10 @@ const UserSubmissionManager = require("../../models/UserSubmissionManager.js");
 
 router.post("/", multer, async (req, res) => {
   try {
-    console.log(req.body);
-    console.log(req.files);
-    // await UserSubmissionManager.processSubmission({
-    //   formData: req.body,
-    //   fileData: req.files,
-    // });
+    await UserSubmissionManager.processSubmission({
+      formData: req.body,
+      fileData: req.files,
+    });
 
     res.status(200).json({ message: "Submission processed successfully" });
   } catch (err) {
