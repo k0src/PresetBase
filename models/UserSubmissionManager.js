@@ -112,52 +112,51 @@ class UserSubmissionManager {
       const albumDb = await DB.get(
         `SELECT id, genre, release_year, image_url 
         FROM albums WHERE title = ? AND release_year = ?`,
-        [mergedData.album.title, mergedData.album.year]
+        [mergedData.albumTitle, mergedData.albumYear]
       );
 
       if (albumDb) {
-        mergedData.album.genre = albumDb.genre;
-        mergedData.album.year = String(albumDb.release_year);
+        mergedData.albumGenre = albumDb.genre;
+        mergedData.albumYear = String(albumDb.release_year);
 
-        if (mergedData.album.imageUrl) {
-          mergedData.album.imageUrl = albumDb.image_url;
+        if (mergedData.albumImg) {
+          mergedData.albumImg = albumDb.image_url;
           await UserSubmissionManager.#deletePendingFile({
-            fileName: mergedData.album.imageUrl,
+            fileName: mergedData.albumImg,
             type: "images",
           });
-        } else if (!mergedData.album.imageUrl) {
-          mergedData.album.imageUrl = albumDb.image_url;
+        } else if (!mergedData.albumImg) {
+          mergedData.albumImg = albumDb.image_url;
         }
-        mergedData.album.filled = true;
+        mergedData.albumFilled = true;
       }
 
       const songDb = await DB.get(
         `SELECT id, genre, release_year, song_url, image_url
         FROM songs WHERE title = ? AND release_year = ?`,
-        [mergedData.song.title, mergedData.song.year]
+        [mergedData.songTitle, mergedData.songYear]
       );
 
       if (songDb) {
-        mergedData.song.genre = songDb.genre;
-        mergedData.song.year = String(songDb.release_year);
-        mergedData.song.songUrl = songDb.song_url;
+        mergedData.songGenre = songDb.genre;
+        mergedData.songYear = String(songDb.release_year);
+        mergedData.songUrl = songDb.song_url;
 
-        if (mergedData.song.imageUrl) {
-          mergedData.song.imageUrl = songDb.image_url;
+        if (mergedData.songImg) {
+          mergedData.songImg = songDb.image_url;
           await UserSubmissionManager.#deletePendingFile({
-            fileName: mergedData.song.imageUrl,
+            fileName: mergedData.songImg,
             type: "images",
           });
-        } else if (!mergedData.song.imageUrl) {
-          mergedData.song.imageUrl = songDb.image_url;
+        } else if (!mergedData.songImg) {
+          mergedData.songImg = songDb.image_url;
         }
       } else {
         if (
-          (!mergedData.song.imageUrl ||
-            mergedData.song.imageUrl.trim() === "") &&
-          mergedData.album.imageUrl
+          (!mergedData.songImg || mergedData.songImg.trim() === "") &&
+          mergedData.albumImg
         ) {
-          mergedData.song.imageUrl = mergedData.album.imageUrl;
+          mergedData.songImg = mergedData.albumImg;
         }
       }
 
@@ -173,14 +172,14 @@ class UserSubmissionManager {
         if (artistDb) {
           artistData.country = artistDb.country;
 
-          if (artistData.imageUrl) {
-            artistData.imageUrl = artistDb.image_url;
+          if (artistData.img) {
+            artistData.img = artistDb.image_url;
             await UserSubmissionManager.#deletePendingFile({
-              fileName: artistData.imageUrl,
+              fileName: artistData.img,
               type: "images",
             });
-          } else if (!artistData.imageUrl) {
-            artistData.imageUrl = artistDb.image_url;
+          } else if (!artistData.img) {
+            artistData.img = artistDb.image_url;
           }
           artistData.filled = true;
         }
@@ -200,14 +199,14 @@ class UserSubmissionManager {
           synthData.type = synthDb.type;
           synthData.year = String(synthDb.release_year);
 
-          if (synthData.imageUrl) {
-            synthData.imageUrl = synthDb.image_url;
+          if (synthData.img) {
+            synthData.img = synthDb.image_url;
             await UserSubmissionManager.#deletePendingFile({
-              fileName: synthData.imageUrl,
+              fileName: synthData.img,
               type: "images",
             });
-          } else if (!synthData.imageUrl) {
-            synthData.imageUrl = synthDb.image_url;
+          } else if (!synthData.img) {
+            synthData.img = synthDb.image_url;
           }
           synthData.filled = true;
         }

@@ -1,15 +1,53 @@
+import { useState } from "react";
 import { Link } from "react-router-dom";
+
+import { submitData } from "../../../api/api";
+import { useSubmitForm } from "../../../hooks/useSubmitForm";
 
 import FormInput from "../FormInput/FormInput";
 import ImageInput from "../ImageInput/ImageInput";
-import AudioInput from "../AudioInput/AudioInput";
 import FormCheckbox from "../FormCheckbox/FormCheckbox";
-import FormSelector from "../FormSelector/FormSelector";
+import ArtistSection from "../ArtistSection/ArtistSection";
+import SynthSection from "../SynthSection/SynthSection";
 import styles from "./SubmitForm.module.css";
 
 export default function SubmitForm() {
-  const handleSubmit = (e) => {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState(null);
+
+  const {
+    artists,
+    synths,
+    addArtist,
+    removeArtist,
+    addSynth,
+    removeSynth,
+    addPreset,
+    removePreset,
+    collectFormData,
+    setArtists,
+    setSynths,
+  } = useSubmitForm();
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const formData = collectFormData(e.target);
+
+      await submitData(formData);
+
+      e.target.reset();
+      setArtists([{ id: Date.now() }]);
+      setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
+    } catch (error) {
+      console.error("Submission error:", error);
+      setSubmitError(error.message);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -21,7 +59,7 @@ export default function SubmitForm() {
             <FormInput
               required
               type="text"
-              id="song.title"
+              id="songTitle"
               autofill
               label="Song Title"
             >
@@ -32,7 +70,7 @@ export default function SubmitForm() {
             <FormInput
               required
               type="text"
-              id="song.genre"
+              id="songGenre"
               autofill
               label="Genre"
             >
@@ -42,19 +80,19 @@ export default function SubmitForm() {
             <FormInput
               required
               type="number"
-              id="song.year"
+              id="songYear"
               label="Release Year"
             >
               Enter the year the song was released (e.g., 2018).
             </FormInput>
 
-            <FormInput required type="url" id="song.songUrl" label="Song URL">
+            <FormInput required type="url" id="songUrl" label="Song URL">
               Paste the YouTube URL of the song. Use the official artist's
               channel. Avoid music videos unless no official audio uploads
               exist.
             </FormInput>
 
-            <ImageInput label="Cover Image" id="song.imageUrl">
+            <ImageInput label="Cover Image" id="songImg">
               Upload the song's cover image. Leave blank to default to the album
               cover. Minimum dimensions: 1000 x 1000 pixels.
             </ImageInput>
@@ -63,44 +101,15 @@ export default function SubmitForm() {
 
         <legend className={styles.legend}>Artist Information</legend>
         <fieldset className={styles.fieldset}>
-          <div className={styles.formSection}>
-            <FormInput
-              required
-              type="text"
-              id="artist[0][name]"
-              autofill
-              label="Artist Name"
-            >
-              Enter the name of the artist.
-            </FormInput>
+          {artists.map((artist, index) => (
+            <ArtistSection
+              key={artist.id}
+              index={index}
+              onRemove={removeArtist}
+            />
+          ))}
 
-            <FormInput
-              required
-              type="text"
-              id="artist[0][country]"
-              autofill
-              label="Artist Country"
-            >
-              Specify the artist's country of origin.
-            </FormInput>
-
-            <FormInput
-              required
-              type="text"
-              id="artist[0][role]"
-              autofill
-              label="Artist Role"
-            >
-              State the artist's role on the track. Use 'Main' for primary
-              artist. Enter only one role.
-            </FormInput>
-
-            <ImageInput label="Artist Image" id="artist[0][imageUrl]" required>
-              Upload the artist's image. Minimum dimensions: 1000 x 1000 pixels.
-            </ImageInput>
-          </div>
-
-          <button type="button" className={styles.addBtn}>
+          <button type="button" className={styles.addBtn} onClick={addArtist}>
             + Add Another Artist
           </button>
         </fieldset>
@@ -116,7 +125,7 @@ export default function SubmitForm() {
             <FormInput
               required
               type="text"
-              id="album.title"
+              id="albumTitle"
               autofill
               label="Album Title"
             >
@@ -126,7 +135,7 @@ export default function SubmitForm() {
             <FormInput
               required
               type="text"
-              id="album.genre"
+              id="albumGenre"
               autofill
               label="Genre"
             >
@@ -136,13 +145,13 @@ export default function SubmitForm() {
             <FormInput
               required
               type="number"
-              id="album.year"
+              id="albumYear"
               label="Release Year"
             >
               Enter the year the album was released.
             </FormInput>
 
-            <ImageInput label="Album Image" id="album.imageUrl" required>
+            <ImageInput label="Album Image" id="albumImg" required>
               Upload the album's cover image. Minimum dimensions: 1000 x 1000
               pixels.
             </ImageInput>
@@ -151,138 +160,36 @@ export default function SubmitForm() {
 
         <legend className={styles.legend}>Preset Information</legend>
         <fieldset className={styles.fieldset}>
-          <div className={styles.synthSection}>
-            <div className={styles.formSection}>
-              <FormInput
-                required
-                type="text"
-                id="synth[0][name]"
-                autofill
-                label="Synth Name"
-              >
-                Name the synth used in the track.
-              </FormInput>
-
-              <FormInput
-                required
-                type="text"
-                id="synth[0][manufacturer]"
-                autofill
-                label="Manufacturer"
-              >
-                Provide the manufacturer or developer (e.g., Spectrasonics)
-              </FormInput>
-
-              <FormInput
-                required
-                type="number"
-                id="synth[0][year]"
-                label="Release Year"
-              >
-                Enter the synth's release year.
-              </FormInput>
-
-              <FormSelector
-                label="Synth Type"
-                id="synth[0][type]"
-                required
-                selectOptions={[
-                  { value: "vst", label: "VST" },
-                  { value: "hardware", label: "Hardware" },
-                  { value: "kontakt", label: "Kontakt Bank" },
-                  { value: "soundfont", label: "SoundFont" },
-                  { value: "other", label: "Other" },
-                ]}
-              >
-                Select the synth format.
-              </FormSelector>
-
-              <ImageInput label="Synth Image" id="synth.imageUrl" required>
-                Upload an image of the synth. Minimum dimensions: 1000 x 1000
-                pixels.
-              </ImageInput>
-            </div>
-
-            <hr className={styles.hrSep} />
-
-            <div className={styles.formSection}>
-              <FormInput
-                required
-                type="text"
-                id="synths[0][presets][0][name]"
-                autofill
-                label="Preset Name"
-              >
-                Enter the full name of the exact preset used (e.g., 2 Sparklepad
-                BT, LD King of Buzz 2).
-              </FormInput>
-
-              <FormInput
-                type="text"
-                id="synths[0][presets][0][packName]"
-                autofill
-                label="Pack Name"
-              >
-                Provide the name of the preset pack. Leave blank for built-in
-                presets.
-              </FormInput>
-
-              <FormInput
-                type="text"
-                id="synths[0][presets][0][author]"
-                autofill
-                label="Preset Author"
-              >
-                Identify who created the preset or preset pack. Leave blank for
-                manufacturer, for factory presets.{" "}
-                <Link to="/submit/info/preset-authors">
-                  Where do I find preset authors?
-                </Link>
-              </FormInput>
-
-              <FormInput
-                type="text"
-                id="synths[0][presets][0][usageType]"
-                autofill
-                required
-                label="Usage Type"
-              >
-                Describe how the preset was used (e.g., Lead, Pad, Sequence).{" "}
-                <Link to="/submit/info/preset-usage-types">
-                  What do I enter for the usage type?
-                </Link>
-              </FormInput>
-
-              <AudioInput
-                label="Preset Audio (Optional)"
-                id="synths[0]presets[0][audioUrl]"
-              >
-                Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
-                demonstrating how the preset is used in the song. The clip
-                should feature the melody played{" "}
-                <strong>without any external effects</strong>.{" "}
-                <Link to="/submit/info/preset-audio">
-                  How do I properly export preset audios?
-                </Link>
-              </AudioInput>
-            </div>
-
-            <button type="button" className={styles.addBtn}>
-              + Add Another Preset
-            </button>
-          </div>
+          {synths.map((synth, index) => (
+            <SynthSection
+              key={synth.id}
+              index={index}
+              presets={synth.presets}
+              onRemove={removeSynth}
+              onAddPreset={addPreset}
+              onRemovePreset={removePreset}
+            />
+          ))}
 
           <hr className={styles.hrBtns} />
 
-          <button type="button" className={styles.addBtn}>
+          <button type="button" className={styles.addBtn} onClick={addSynth}>
             + Add Another Synth
           </button>
         </fieldset>
 
+        {submitError && (
+          <div className={styles.errorMessage}>Error: {submitError}</div>
+        )}
+
         <div className={styles.submitFooter}>
           <div className={styles.btnContainer}>
-            <button className={styles.submitBtn} type="submit">
-              Submit Entry
+            <button
+              className={styles.submitBtn}
+              type="submit"
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? "Submitting..." : "Submit Entry"}
             </button>
             <button className={styles.clearBtn} type="reset">
               Clear Form

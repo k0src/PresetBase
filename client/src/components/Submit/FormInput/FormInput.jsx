@@ -8,6 +8,7 @@ export default function FormInput({
   autofill,
   label,
   children,
+  ...inputProps
 }) {
   return (
     <label className={styles.label}>
@@ -15,9 +16,10 @@ export default function FormInput({
       <input
         className={styles.input}
         type={type}
-        id={id}
+        name={id}
         autoComplete="off"
         required={required || false}
+        {...inputProps}
       />
       {/* add props */}
       {/* {autofill && <AutofillDropdown />} */}

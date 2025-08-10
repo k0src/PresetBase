@@ -118,3 +118,43 @@
   line-height: 1.2;
   text-decoration: underline !important;
 }
+
+.entryNewHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.8rem;
+}
+
+.entryNewText {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #899096;
+}
+
+.entryDeleteBtn {
+  cursor: pointer;
+  padding: 0.4rem;
+  border-radius: 0.4rem;
+  background-color: #c25c5c;
+  color: #e3e5e4;
+  transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.4rem;
+  height: 2.4rem;
+}
+
+.entryDeleteBtn:hover {
+  background-color: #c86c6c;
+}
+
+.errorMessage {
+  background-color: #c25c5c;
+  color: #e3e5e4;
+  padding: 1.2rem;
+  border-radius: 0.4rem;
+  margin-bottom: 1.8rem;
+  text-align: center;
+}

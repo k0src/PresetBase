@@ -11,6 +11,9 @@ export default function FormSelector({
     <label className={styles.label}>
       {label} {required && <span className={styles.red}>*</span>}
       <select className={styles.select} required={required || false} name={id}>
+        <option value="" hidden disabled>
+          Select an option
+        </option>
         {selectOptions.map((option, index) => (
           <option key={index} value={option.value}>
             {option.label}
