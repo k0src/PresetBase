@@ -1,8 +1,9 @@
-import { useState, useRef, useEffect, useMemo, memo } from "react";
+import { useState, useMemo, memo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./EntryList.module.css";
 
 import { FaCirclePlay, FaCircleStop } from "react-icons/fa6";
+import { useAudioPlayer } from "../../../hooks/useAudioPlayer";
 
 function useEntryConfig(entryType) {
   return useMemo(() => {
@@ -57,73 +58,6 @@ function useEntryFilter(entries, entryType) {
     filterValue,
     setFilterValue,
     filteredEntries,
-  };
-}
-
-function useAudioPlayer(entries, hasAudio) {
-  const [playingAudio, setPlayingAudio] = useState(null);
-  const audioRefs = useRef({});
-
-  useEffect(() => {
-    if (!hasAudio) return;
-
-    entries.forEach((entry) => {
-      if (entry.audioUrl && !audioRefs.current[entry.audioUrl]) {
-        const audio = new Audio(`/uploads/audio/approved/${entry.audioUrl}`);
-        audioRefs.current[entry.audioUrl] = audio;
-      }
-    });
-  }, [entries, hasAudio]);
-
-  // Stop and cleanup all audio when component unmounts
-  useEffect(() => {
-    return () => {
-      Object.values(audioRefs.current).forEach((audio) => {
-        if (audio && !audio.paused) {
-          audio.pause();
-          audio.currentTime = 0;
-        }
-      });
-      setPlayingAudio(null);
-    };
-  }, []);
-
-  const handleAudioToggle = async (audioUrl) => {
-    // Stop all other audio
-    Object.values(audioRefs.current).forEach((audio) => {
-      if (audio && !audio.paused) {
-        audio.pause();
-        audio.currentTime = 0;
-      }
-    });
-
-    const audioElement = audioRefs.current[audioUrl];
-
-    if (playingAudio === audioUrl) {
-      if (audioElement) {
-        audioElement.pause();
-        audioElement.currentTime = 0;
-      }
-      setPlayingAudio(null);
-    } else {
-      if (audioElement) {
-        try {
-          await audioElement.play();
-          setPlayingAudio(audioUrl);
-
-          audioElement.onended = () => {
-            setPlayingAudio(null);
-          };
-        } catch (error) {
-          console.error("Audio play failed:", error);
-        }
-      }
-    }
-  };
-
-  return {
-    playingAudio,
-    handleAudioToggle,
   };
 }
 
@@ -280,9 +214,18 @@ export default memo(function EntryList({
     entries,
     entryType
   );
+
+  // Extract audio URLs for the hook
+  const audioSources = useMemo(() => {
+    if (!config?.hasAudio) return [];
+    return entries
+      .filter((entry) => entry.audioUrl)
+      .map((entry) => entry.audioUrl);
+  }, [entries, config?.hasAudio]);
+
   const { playingAudio, handleAudioToggle } = useAudioPlayer(
-    entries,
-    config?.hasAudio || false
+    audioSources,
+    "/uploads/audio/approved/"
   );
 
   if (!config) {
