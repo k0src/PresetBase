@@ -14,6 +14,7 @@ import styles from "./SubmitForm.module.css";
 export default function SubmitForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [isSingle, setIsSingle] = useState(false);
 
   const {
     artists,
@@ -28,6 +29,18 @@ export default function SubmitForm() {
     setArtists,
     setSynths,
   } = useSubmitForm();
+
+  const handleSingleChange = (checked) => {
+    setIsSingle(checked);
+
+    if (checked) {
+      setArtists([{ id: Date.now() }]);
+      setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
+    } else {
+      setArtists([{ id: Date.now() }]);
+      setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,7 +105,7 @@ export default function SubmitForm() {
               exist.
             </FormInput>
 
-            <ImageInput label="Cover Image" id="songImg">
+            <ImageInput label="Cover Image" id="songImg" required={isSingle}>
               Upload the song's cover image. Leave blank to default to the album
               cover. Minimum dimensions: 1000 x 1000 pixels.
             </ImageInput>
@@ -117,13 +130,18 @@ export default function SubmitForm() {
         <legend className={styles.legend}>Album Information</legend>
         <fieldset className={styles.fieldset}>
           <div className={styles.formSection}>
-            <FormCheckbox id="single">
+            <FormCheckbox
+              id="single"
+              checked={isSingle}
+              onChange={handleSingleChange}
+            >
               Check this box if the song is a single (doesn't appear on any
               albums besides possibly compilation albums).
             </FormCheckbox>
 
             <FormInput
-              required
+              required={!isSingle} // Not required when single is checked
+              disabled={isSingle} // Disabled when single is checked
               type="text"
               id="albumTitle"
               autofill
@@ -133,7 +151,8 @@ export default function SubmitForm() {
             </FormInput>
 
             <FormInput
-              required
+              required={!isSingle}
+              disabled={isSingle}
               type="text"
               id="albumGenre"
               autofill
@@ -143,7 +162,8 @@ export default function SubmitForm() {
             </FormInput>
 
             <FormInput
-              required
+              required={!isSingle}
+              disabled={isSingle}
               type="number"
               id="albumYear"
               label="Release Year"
@@ -151,7 +171,12 @@ export default function SubmitForm() {
               Enter the year the album was released.
             </FormInput>
 
-            <ImageInput label="Album Image" id="albumImg" required>
+            <ImageInput
+              label="Album Image"
+              id="albumImg"
+              required={!isSingle}
+              disabled={isSingle}
+            >
               Upload the album's cover image. Minimum dimensions: 1000 x 1000
               pixels.
             </ImageInput>

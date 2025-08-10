@@ -1,11 +1,11 @@
-import { useState } from "react";
 import styles from "./FormCheckbox.module.css";
 
-export default function FormCheckbox({ id, children }) {
-  const [checked, setChecked] = useState(false);
-
+export default function FormCheckbox({ id, children, checked, onChange }) {
   const handleChange = (e) => {
-    setChecked(e.target.checked);
+    const isChecked = e.target.checked;
+    if (onChange) {
+      onChange(isChecked);
+    }
   };
 
   return (
@@ -14,7 +14,7 @@ export default function FormCheckbox({ id, children }) {
       <input
         type="checkbox"
         className={styles.checkboxInput}
-        checked={checked}
+        checked={checked || false}
         onChange={handleChange}
       />
       <span className={styles.checkbox}></span>

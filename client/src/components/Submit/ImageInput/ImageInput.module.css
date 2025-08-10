@@ -81,6 +81,19 @@
   margin-bottom: 1.2rem;
 }
 
+.customImageInput.disabled {
+  background-color: #121417;
+  border-color: #3a3f44;
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.customImageInput.disabled .browse-button {
+  background-color: #2a2d32;
+  cursor: not-allowed;
+}
+
 .fileName {
   font-size: 1.3rem;
   color: #e3e5e4;

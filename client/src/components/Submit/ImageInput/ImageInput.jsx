@@ -1,12 +1,14 @@
 import { useState, useRef } from "react";
 import placeholderImage from "../../../assets/images/image-upload-placeholder.webp";
 import styles from "./ImageInput.module.css";
+import classNames from "classnames";
 
 export default function ImageInput({
   label,
   id,
   children,
   required,
+  disabled,
   options = { minImgSize: 1000, maxImgSize: 5000 },
 }) {
   const [fileName, setFileName] = useState("No file selected.");
@@ -14,6 +16,8 @@ export default function ImageInput({
   const fileInputRef = useRef(null);
 
   const handleFileChange = (event) => {
+    if (disabled) return;
+
     const file = event.target.files[0];
     if (!file) {
       setFileName("No file selected.");
@@ -60,6 +64,8 @@ export default function ImageInput({
   };
 
   const handleBrowseClick = () => {
+    if (disabled) return;
+
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -77,12 +83,16 @@ export default function ImageInput({
           className={styles.imageDisplay}
         />
         <div className={styles.imageInputWrapper}>
-          <div className={styles.customImageInput}>
+          <div
+            className={classNames(styles.customImageInput, {
+              [styles.disabled]: disabled,
+            })}
+          >
             <button
               className={styles.button}
               type="button"
               onClick={handleBrowseClick}
-              style={{ position: "relative", zIndex: 1 }}
+              disabled={disabled}
             >
               Browse...
             </button>
@@ -93,9 +103,9 @@ export default function ImageInput({
               type="file"
               name={id}
               accept="image/*"
-              required={required || false}
+              required={required && !disabled}
+              disabled={disabled}
               onChange={handleFileChange}
-              style={{ pointerEvents: "none" }}
             />
           </div>
           <small className={styles.small}>{children}</small>
