@@ -66,8 +66,10 @@ export default function ImageInput({
   };
 
   return (
-    <label className={styles.label}>
-      {label} {required && <span className={styles.red}>*</span>}
+    <div className={styles.label}>
+      <span>
+        {label} {required && <span className={styles.red}>*</span>}
+      </span>
       <div className={styles.imageInputContainer}>
         <img
           src={imageSrc}
@@ -80,6 +82,7 @@ export default function ImageInput({
               className={styles.button}
               type="button"
               onClick={handleBrowseClick}
+              style={{ position: "relative", zIndex: 1 }}
             >
               Browse...
             </button>
@@ -92,11 +95,12 @@ export default function ImageInput({
               accept="image/*"
               required={required || false}
               onChange={handleFileChange}
+              style={{ pointerEvents: "none" }}
             />
           </div>
           <small className={styles.small}>{children}</small>
         </div>
       </div>
-    </label>
+    </div>
   );
 }

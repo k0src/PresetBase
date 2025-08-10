@@ -74,8 +74,10 @@ export default function AudioInput({
   };
 
   return (
-    <label className={styles.label}>
-      {label} {required && <span className={styles.red}>*</span>}
+    <div className={styles.label}>
+      <span>
+        {label} {required && <span className={styles.red}>*</span>}
+      </span>
       <div className={styles.audioInputContainer}>
         <div className={styles.audioBtnContainer}>
           {playingAudio === id ? (
@@ -120,6 +122,6 @@ export default function AudioInput({
         </div>
       </div>
       <small className={styles.small}>{children}</small>
-    </label>
+    </div>
   );
 }
