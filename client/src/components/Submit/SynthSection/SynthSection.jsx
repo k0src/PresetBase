@@ -1,6 +1,8 @@
 import FormInput from "../FormInput/FormInput";
+import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
 import FormSelector from "../FormSelector/FormSelector";
+import FormSection from "../FormSection/FormSection";
 import PresetSection from "../PresetSection/PresetSection";
 import styles from "../SubmitForm/SubmitForm.module.css";
 
@@ -34,26 +36,27 @@ export default function SynthSection({
         </div>
       )}
 
-      <div className={styles.formSection}>
-        <FormInput
+      <FormSection type="synth" className={styles.formSection}>
+        <FormInputAutofill
           required
           type="text"
           id={`synths[${index}][name]`}
-          autofill
           label="Synth Name"
+          autofillType="synthName"
+          autofillSection
         >
           Name the synth used in the track.
-        </FormInput>
+        </FormInputAutofill>
 
-        <FormInput
+        <FormInputAutofill
           required
           type="text"
           id={`synths[${index}][manufacturer]`}
-          autofill
           label="Manufacturer"
+          autofillType="synthManufacturer"
         >
           Provide the manufacturer or developer (e.g., Spectrasonics)
-        </FormInput>
+        </FormInputAutofill>
 
         <FormInput
           required
@@ -82,7 +85,7 @@ export default function SynthSection({
         <ImageInput label="Synth Image" id={`synths[${index}][img]`} required>
           Upload an image of the synth. Minimum dimensions: 1000 x 1000 pixels.
         </ImageInput>
-      </div>
+      </FormSection>
 
       <hr className={styles.hrSep} />
 

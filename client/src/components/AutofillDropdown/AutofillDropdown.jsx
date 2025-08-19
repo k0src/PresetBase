@@ -3,10 +3,14 @@ import styles from "./AutofillDropdown.module.css";
 import classNames from "classnames";
 
 const AutofillDropdown = forwardRef(
-  ({ suggestions, selectedIndex, onSelect }, ref) => {
+  ({ suggestions, selectedIndex, onSelect, type = "search" }, ref) => {
     return (
       <ul
-        className={classNames(styles.autocompleteDropdown, styles.show)}
+        className={classNames(
+          styles.autocompleteDropdown,
+          styles.show,
+          styles[type]
+        )}
         ref={ref}
       >
         {suggestions.map((item, index) => (

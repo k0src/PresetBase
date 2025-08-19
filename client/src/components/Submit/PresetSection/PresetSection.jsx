@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
-import FormInput from "../FormInput/FormInput";
+
+import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import AudioInput from "../AudioInput/AudioInput";
+import FormSection from "../FormSection/FormSection";
 import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
@@ -11,7 +13,7 @@ export default function PresetSection({ synthIndex, presetIndex, onRemove }) {
   };
 
   return (
-    <div className={styles.formSection}>
+    <FormSection type="preset" className={styles.formSection}>
       {presetIndex > 0 && (
         <>
           <hr className={styles.hrSep} />
@@ -22,51 +24,52 @@ export default function PresetSection({ synthIndex, presetIndex, onRemove }) {
         </>
       )}
 
-      <FormInput
+      <FormInputAutofill
         required
         type="text"
         id={`synths[${synthIndex}][presets][${presetIndex}][name]`}
-        autofill
         label="Preset Name"
+        autofillType="presetName"
+        autofillSection
       >
         Enter the full name of the exact preset used (e.g., 2 Sparklepad BT, LD
         King of Buzz 2).
-      </FormInput>
+      </FormInputAutofill>
 
-      <FormInput
+      <FormInputAutofill
         type="text"
         id={`synths[${synthIndex}][presets][${presetIndex}][packName]`}
-        autofill
         label="Pack Name"
+        autofillType="presetPack"
       >
         Provide the name of the preset pack. Leave blank for built-in presets.
-      </FormInput>
+      </FormInputAutofill>
 
-      <FormInput
+      <FormInputAutofill
         type="text"
         id={`synths[${synthIndex}][presets][${presetIndex}][author]`}
-        autofill
         label="Preset Author"
+        autofillType="presetAuthor"
       >
         Identify who created the preset or preset pack. Leave blank for
         manufacturer, for factory presets.{" "}
         <Link to="/submit/info/preset-authors">
           Where do I find preset authors?
         </Link>
-      </FormInput>
+      </FormInputAutofill>
 
-      <FormInput
+      <FormInputAutofill
         type="text"
         id={`synths[${synthIndex}][presets][${presetIndex}][usageType]`}
-        autofill
         required
         label="Usage Type"
+        autofillType="presetUsageType"
       >
         Describe how the preset was used (e.g., Lead, Pad, Sequence).{" "}
         <Link to="/submit/info/preset-usage-types">
           What do I enter for the usage type?
         </Link>
-      </FormInput>
+      </FormInputAutofill>
 
       <AudioInput
         label="Preset Audio (Optional)"
@@ -79,6 +82,6 @@ export default function PresetSection({ synthIndex, presetIndex, onRemove }) {
           How do I properly export preset audios?
         </Link>
       </AudioInput>
-    </div>
+    </FormSection>
   );
 }

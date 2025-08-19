@@ -39,7 +39,7 @@ export default function SearchBoxSmall({ limit }) {
 
       abortController.current = new AbortController();
 
-      const url = `/api/getallnames?query=${encodeURIComponent(
+      const url = `/api/entry-names?query=${encodeURIComponent(
         q
       )}&limit=${limit}`;
 

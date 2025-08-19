@@ -5,8 +5,10 @@ import { submitData } from "../../../api/api";
 import { useSubmitForm } from "../../../hooks/useSubmitForm";
 
 import FormInput from "../FormInput/FormInput";
+import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
 import FormCheckbox from "../FormCheckbox/FormCheckbox";
+import FormSection from "../FormSection/FormSection";
 import ArtistSection from "../ArtistSection/ArtistSection";
 import SynthSection from "../SynthSection/SynthSection";
 import styles from "./SubmitForm.module.css";
@@ -75,27 +77,28 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <legend className={styles.legend}>Song Information</legend>
         <fieldset className={styles.fieldset}>
-          <div className={styles.formSection}>
-            <FormInput
+          <FormSection type="song" className={styles.formSection}>
+            <FormInputAutofill
               required
               type="text"
               id="songTitle"
-              autofill
               label="Song Title"
+              autofillType="songTitle"
+              autofillSection
             >
               Provide the full title of the song. Do not include featured
               artists or producers.
-            </FormInput>
+            </FormInputAutofill>
 
-            <FormInput
+            <FormInputAutofill
               required
               type="text"
               id="songGenre"
-              autofill
               label="Genre"
+              autofillType="genre"
             >
               Specify the music genre (e.g., Trap, House, Hip Hop).
-            </FormInput>
+            </FormInputAutofill>
 
             <FormInput
               required
@@ -121,7 +124,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               Upload the song's cover image. Leave blank to default to the album
               cover. Minimum dimensions: 1000 x 1000 pixels.
             </ImageInput>
-          </div>
+          </FormSection>
         </fieldset>
 
         <legend className={styles.legend}>Artist Information</legend>
@@ -141,7 +144,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
 
         <legend className={styles.legend}>Album Information</legend>
         <fieldset className={styles.fieldset}>
-          <div className={styles.formSection}>
+          <FormSection type="album" className={styles.formSection}>
             <FormCheckbox
               id="single"
               checked={isSingle}
@@ -151,27 +154,28 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               albums besides possibly compilation albums).
             </FormCheckbox>
 
-            <FormInput
+            <FormInputAutofill
               required={!isSingle}
               disabled={isSingle}
               type="text"
               id="albumTitle"
-              autofill
               label="Album Title"
+              autofillType="albumTitle"
+              autofillSection
             >
               Provide the album's title.
-            </FormInput>
+            </FormInputAutofill>
 
-            <FormInput
+            <FormInputAutofill
               required={!isSingle}
               disabled={isSingle}
               type="text"
               id="albumGenre"
-              autofill
               label="Genre"
+              autofillType="genre"
             >
               Indicate the album's genre.
-            </FormInput>
+            </FormInputAutofill>
 
             <FormInput
               required={!isSingle}
@@ -193,7 +197,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               Upload the album's cover image. Minimum dimensions: 1000 x 1000
               pixels.
             </ImageInput>
-          </div>
+          </FormSection>
         </fieldset>
 
         <legend className={styles.legend}>Preset Information</legend>

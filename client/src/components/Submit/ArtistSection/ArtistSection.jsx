@@ -1,5 +1,6 @@
-import FormInput from "../FormInput/FormInput";
+import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
+import FormSection from "../FormSection/FormSection";
 import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
@@ -10,7 +11,7 @@ export default function ArtistSection({ index, onRemove }) {
   };
 
   return (
-    <div className={styles.formSection}>
+    <FormSection type="artist" className={styles.formSection}>
       {index > 0 && (
         <>
           <hr className={styles.hrSep} />
@@ -21,40 +22,41 @@ export default function ArtistSection({ index, onRemove }) {
         </>
       )}
 
-      <FormInput
+      <FormInputAutofill
         required
         type="text"
         id={`artists[${index}][name]`}
-        autofill
         label="Artist Name"
+        autofillType="artistName"
+        autofillSection
       >
         Enter the name of the artist.
-      </FormInput>
+      </FormInputAutofill>
 
-      <FormInput
+      <FormInputAutofill
         required
         type="text"
         id={`artists[${index}][country]`}
-        autofill
         label="Artist Country"
+        autofillType="artistCountry"
       >
         Specify the artist's country of origin.
-      </FormInput>
+      </FormInputAutofill>
 
-      <FormInput
+      <FormInputAutofill
         required
         type="text"
         id={`artists[${index}][role]`}
-        autofill
         label="Artist Role"
+        autofillType="artistRole"
       >
         State the artist's role on the track. Use 'Main' for primary artist.
         Enter only one role.
-      </FormInput>
+      </FormInputAutofill>
 
       <ImageInput label="Artist Image" id={`artists[${index}][img]`} required>
         Upload the artist's image. Minimum dimensions: 1000 x 1000 pixels.
       </ImageInput>
-    </div>
+    </FormSection>
   );
 }

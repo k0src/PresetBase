@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { dbAll, dbGet } = require("../../util/UTIL.js");
 
-router.get("/loadcomplete/:type", async (req, res) => {
+router.get("/autofill/data/:type", async (req, res) => {
   const types = [
     "songTitle",
     "artistName",
@@ -66,18 +66,17 @@ router.get("/loadcomplete/:type", async (req, res) => {
   };
 
   try {
-    const results = await dbAll(queries[type], [`%${query}%`]);
-    return res.json(results);
+    const data = await dbAll(queries[type], [`%${query}%`]);
+    return res.json(data);
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth: req.isAuthenticated(),
-      PATH_URL: "db-error",
-    });
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
   }
 });
 
-router.get("/autofill/:type", async (req, res) => {
+router.get("/autofill/suggestions/:type", async (req, res) => {
   const types = [
     "songTitle",
     "genre",
@@ -104,70 +103,70 @@ router.get("/autofill/:type", async (req, res) => {
   const queries = {
     songTitle: `
       SELECT DISTINCT
-        songs.title AS songTitle
+        songs.title AS suggestion
       FROM songs
       WHERE songs.title LIKE ?
       LIMIT ?`,
 
     albumTitle: `
       SELECT DISTINCT
-        albums.title AS albumTitle
+        albums.title AS suggestion
       FROM albums
       WHERE albums.id != 0 AND albums.title LIKE ?
       LIMIT ?`,
 
     genre: `
       SELECT DISTINCT
-        songs.genre AS genre
+        songs.genre AS suggestion
       FROM songs
       WHERE songs.genre LIKE ?
       LIMIT ?`,
 
     artistName: `
       SELECT DISTINCT
-        artists.name AS artistName
+        artists.name AS suggestion
       FROM artists
       WHERE artists.name LIKE ?
       LIMIT ?`,
 
     artistCountry: `
       SELECT DISTINCT
-        artists.country AS artistCountry
+        artists.country AS suggestion
       FROM artists
       WHERE artists.country LIKE ?
       LIMIT ?`,
 
     artistRole: `
       SELECT DISTINCT
-        song_artists.role AS artistRole
+        song_artists.role AS suggestion
       FROM song_artists
       WHERE song_artists.role LIKE ?
       LIMIT ?`,
 
     synthName: `
       SELECT DISTINCT
-        synths.synth_name AS synthName
+        synths.synth_name AS suggestion
       FROM synths
       WHERE synths.synth_name LIKE ?
       LIMIT ?`,
 
     synthManufacturer: `
       SELECT DISTINCT
-        synths.manufacturer AS synthManufacturer
+        synths.manufacturer AS suggestion
       FROM synths
       WHERE synths.manufacturer LIKE ?
       LIMIT ?`,
 
     presetName: `
       SELECT DISTINCT
-        presets.preset_name AS presetName
+        presets.preset_name AS suggestion
       FROM presets
       WHERE presets.preset_name LIKE ?
       LIMIT ?`,
 
     presetPack: `
       SELECT DISTINCT
-        presets.pack_name AS presetPack
+        presets.pack_name AS suggestion
       FROM presets
       WHERE presets.pack_name != 'unknown' AND 
       presets.pack_name != 'Unknown' AND 
@@ -176,7 +175,7 @@ router.get("/autofill/:type", async (req, res) => {
 
     presetAuthor: `
       SELECT DISTINCT
-        presets.author AS presetAuthor
+        presets.author AS suggestion
       FROM presets
       WHERE presets.author != 'unknown' AND 
       presets.author != 'Unknown' AND 
@@ -185,7 +184,7 @@ router.get("/autofill/:type", async (req, res) => {
 
     presetUsageType: `
       SELECT DISTINCT
-        song_presets.usage_type AS presetUsageType
+        song_presets.usage_type AS suggestion
       FROM song_presets
       WHERE song_presets.usage_type LIKE ?
       LIMIT ?`,
@@ -195,15 +194,14 @@ router.get("/autofill/:type", async (req, res) => {
     const results = await dbAll(queries[type], [`%${query}%`, limitNum]);
     return res.json(results);
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth: req.isAuthenticated(),
-      PATH_URL: "db-error",
-    });
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
   }
 });
 
-router.get("/getallnames", async (req, res) => {
+router.get("/entry-names", async (req, res) => {
   const { query, limit } = req.query;
   const limitNum = Math.min(Number(limit));
 
@@ -242,11 +240,10 @@ router.get("/getallnames", async (req, res) => {
     const results = await dbAll(q, [`%${query}%`, limitNum]);
     return res.json(results);
   } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth: req.isAuthenticated(),
-      PATH_URL: "db-error",
-    });
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
   }
 });
 

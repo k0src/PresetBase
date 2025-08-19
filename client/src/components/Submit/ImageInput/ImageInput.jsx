@@ -37,9 +37,20 @@ const ImageInput = forwardRef(function ImageInput(
       resetComponent();
     };
 
+    const handleAutofillImage = (e) => {
+      const { input, imageUrl } = e.detail;
+      if (input === fileInputRef.current && imageUrl) {
+        setImageSrc(`/uploads/images/approved/${imageUrl}`);
+        setFileName(imageUrl);
+      }
+    };
+
     window.addEventListener("resetImageInputs", handleReset);
+    window.addEventListener("autofillImage", handleAutofillImage);
+
     return () => {
       window.removeEventListener("resetImageInputs", handleReset);
+      window.removeEventListener("autofillImage", handleAutofillImage);
     };
   }, []);
 

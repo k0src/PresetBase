@@ -1,4 +1,3 @@
-import AutofillDropdown from "../../AutofillDropdown/AutofillDropdown";
 import styles from "./FormInput.module.css";
 import classNames from "classnames";
 
@@ -6,7 +5,6 @@ export default function FormInput({
   required,
   type,
   id,
-  autofill,
   label,
   children,
   disabled,
@@ -21,11 +19,9 @@ export default function FormInput({
         name={id}
         autoComplete="off"
         required={required || false}
-        disabled={disabled}
+        disabled={disabled || false}
         {...inputProps}
       />
-      {/* add props */}
-      {/* {autofill && <AutofillDropdown />} */}
       <small className={styles.small}>{children}</small>
     </label>
   );

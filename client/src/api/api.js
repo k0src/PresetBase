@@ -13,8 +13,28 @@ export async function searchDatabase(query) {
 export async function submitData(data) {
   const res = await fetch("/api/submit", {
     method: "POST",
-    body: data, // FormData object
+    body: data,
   });
   if (!res.ok) throw new Error("Failed to submit data");
+  return res.json();
+}
+
+export async function getAutofillSuggestions(type, query, limit = 5) {
+  const res = await fetch(
+    `/api/autofill/suggestions/${encodeURIComponent(
+      type
+    )}?query=${encodeURIComponent(query)}&limit=${limit}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch autofill suggestions");
+  return res.json();
+}
+
+export async function getAutofillData(type, query) {
+  const res = await fetch(
+    `/api/autofill/data/${encodeURIComponent(type)}?query=${encodeURIComponent(
+      query
+    )}`
+  );
+  if (!res.ok) throw new Error("Failed to fetch autofill data");
   return res.json();
 }

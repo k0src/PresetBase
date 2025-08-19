@@ -1,67 +1,66 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 
-import AutofillDropdown from "../../../components/AutofillDropdown/AutofillDropdown";
-import ButtonMain from "../../Buttons/ButtonMain/ButtonMain";
-import styles from "./SearchBoxLarge.module.css";
+import { getAutofillSuggestions } from "../../../api/api";
+import { useFormSection } from "../FormSection/FormSection";
+import AutofillDropdown from "../../AutofillDropdown/AutofillDropdown";
+import styles from "./FormInputAutofill.module.css";
+import classNames from "classnames";
 
-import { FaMagnifyingGlass } from "react-icons/fa6";
-import { PulseLoader } from "react-spinners";
-
-export default function SearchBoxLarge({ limit }) {
+export default function FormInputAutofill({
+  required,
+  type,
+  id,
+  autofillType,
+  autofillLimit = 5,
+  autofillSection = false,
+  label,
+  children,
+  disabled,
+  ...inputProps
+}) {
   const [query, setQuery] = useState("");
   const [suggestions, setSuggestions] = useState([]);
   const [showDropdown, setShowDropdown] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
-  const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
   const dropdownRef = useRef(null);
-  const navigate = useNavigate();
   const debounceTimeout = useRef(null);
   const abortController = useRef(null);
 
-  const override = {
-    opacity: 0.5,
-  };
+  const formSection = useFormSection();
 
-  const handleSearch = useCallback(
-    (value = query) => {
-      if (value.trim()) {
-        navigate(
-          `/search?query=${encodeURIComponent(value.trim().toLowerCase())}`
-        );
+  const handleAttemptToAutofill = useCallback(
+    async (value = query) => {
+      if (!autofillSection || !formSection || !value.trim()) return;
 
-        setQuery("");
-        setShowDropdown(false);
-        setSelectedIndex(-1);
+      try {
+        const success = await formSection.attemptAutofill(value.trim());
+        if (success) {
+          setShowDropdown(false);
+          setSelectedIndex(-1);
+        }
+      } catch (error) {
+        console.error("Autofill error:", error);
       }
     },
-    [query, navigate]
+    [query, autofillSection, formSection]
   );
 
   const fetchSuggestions = useCallback(
     async (q) => {
-      // Cancel previous request
       if (abortController.current) {
         abortController.current.abort();
       }
 
       abortController.current = new AbortController();
 
-      const url = `/api/entry-names?query=${encodeURIComponent(
-        q
-      )}&limit=${limit}`;
-
       try {
-        setLoading(true);
-        const res = await fetch(url, {
-          signal: abortController.current.signal,
-        });
-
-        if (!res.ok) throw new Error("Fetch failed");
-
-        const data = await res.json();
-        const suggestionList = data.map((row) => row.name);
+        const data = await getAutofillSuggestions(
+          autofillType,
+          q,
+          autofillLimit
+        );
+        const suggestionList = data.map((row) => row.suggestion);
 
         setSuggestions(suggestionList);
         setShowDropdown(suggestionList.length > 0);
@@ -71,11 +70,9 @@ export default function SearchBoxLarge({ limit }) {
           setSuggestions([]);
           setShowDropdown(false);
         }
-      } finally {
-        setLoading(false);
       }
     },
-    [limit]
+    [autofillType, autofillLimit]
   );
 
   const handleInputChange = useCallback(
@@ -84,7 +81,6 @@ export default function SearchBoxLarge({ limit }) {
       setQuery(val);
       setSelectedIndex(-1);
 
-      // Clear previous timeout
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
       }
@@ -95,7 +91,6 @@ export default function SearchBoxLarge({ limit }) {
         } else {
           setSuggestions([]);
           setShowDropdown(false);
-          setLoading(false);
         }
       }, 150);
     },
@@ -122,9 +117,13 @@ export default function SearchBoxLarge({ limit }) {
         case "Enter":
           e.preventDefault();
           if (selectedIndex >= 0 && suggestions[selectedIndex]) {
-            handleSearch(suggestions[selectedIndex]);
-          } else {
-            handleSearch();
+            const selectedValue = suggestions[selectedIndex];
+            setQuery(selectedValue);
+            setShowDropdown(false);
+            setSelectedIndex(-1);
+            if (autofillSection) {
+              handleAttemptToAutofill(selectedValue);
+            }
           }
           break;
         case "Escape":
@@ -133,7 +132,7 @@ export default function SearchBoxLarge({ limit }) {
           break;
       }
     },
-    [suggestions, selectedIndex, handleSearch]
+    [suggestions, selectedIndex, autofillSection, handleAttemptToAutofill]
   );
 
   const handleClickOutside = useCallback((e) => {
@@ -154,12 +153,31 @@ export default function SearchBoxLarge({ limit }) {
     }
   }, [suggestions.length, query]);
 
+  const handleInputBlur = useCallback(() => {
+    setTimeout(() => {
+      if (autofillSection && query.trim()) {
+        handleAttemptToAutofill(query.trim());
+      }
+    }, 150);
+  }, [autofillSection, query, handleAttemptToAutofill]);
+
+  const handleSuggestionSelect = useCallback(
+    (suggestion) => {
+      setQuery(suggestion);
+      setShowDropdown(false);
+      setSelectedIndex(-1);
+      if (autofillSection) {
+        handleAttemptToAutofill(suggestion);
+      }
+    },
+    [autofillSection, handleAttemptToAutofill]
+  );
+
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
 
-      // Cleanup on unmount
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
       }
@@ -175,40 +193,35 @@ export default function SearchBoxLarge({ limit }) {
         <AutofillDropdown
           suggestions={suggestions}
           selectedIndex={selectedIndex}
-          onSelect={handleSearch}
+          onSelect={handleSuggestionSelect}
+          type="form"
           ref={dropdownRef}
         />
       );
     }
     return null;
-  }, [showDropdown, suggestions, selectedIndex, handleSearch]);
+  }, [showDropdown, suggestions, selectedIndex, handleSuggestionSelect]);
 
   return (
-    <div className={styles.searchBoxContainer}>
-      <div className={styles.searchBoxInputContainer}>
-        <FaMagnifyingGlass className={styles.searchBoxIcon} />
-        <input
-          ref={inputRef}
-          className={styles.searchBoxInput}
-          type="search"
-          placeholder="Search songs, artists, synths, presets..."
-          enterKeyHint="search"
-          value={query}
-          onChange={handleInputChange}
-          onKeyDown={handleKeyDown}
-          onFocus={handleInputFocus}
-        />
-
-        {dropdown}
-
-        <PulseLoader
-          loading={loading}
-          cssOverride={override}
-          color="#e3e5e4"
-          size={6}
-        />
-      </div>
-      <ButtonMain onClick={() => handleSearch()}>Search</ButtonMain>
-    </div>
+    <label className={styles.label}>
+      {label} {required && <span className={styles.red}>*</span>}
+      <input
+        ref={inputRef}
+        value={query}
+        className={classNames(styles.input, { [styles.disabled]: disabled })}
+        type={type}
+        name={id}
+        autoComplete="off"
+        required={required || false}
+        disabled={disabled || false}
+        onChange={handleInputChange}
+        onKeyDown={handleKeyDown}
+        onFocus={handleInputFocus}
+        onBlur={handleInputBlur}
+        {...inputProps}
+      />
+      {dropdown}
+      <small className={styles.small}>{children}</small>
+    </label>
   );
 }

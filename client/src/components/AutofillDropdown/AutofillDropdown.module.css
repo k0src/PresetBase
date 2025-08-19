@@ -1,7 +1,7 @@
 .autocompleteDropdown {
   position: absolute;
   left: 0;
-  top: 120%;
+  /* top: 120%; */
   transform-origin: top;
   list-style: none;
   background-color: #171b1f;
@@ -20,6 +20,14 @@
   width: 100%;
   max-width: 100%;
   min-width: 0;
+}
+
+.search {
+  top: 120%;
+}
+
+.form {
+  top: 75%;
 }
 
 .autocompleteDropdown.show {

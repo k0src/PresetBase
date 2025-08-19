@@ -9,7 +9,6 @@ export function useSubmitForm() {
     },
   ]);
 
-  // Artist management
   const addArtist = () => {
     setArtists((prev) => [...prev, { id: Date.now() }]);
   };
@@ -20,7 +19,6 @@ export function useSubmitForm() {
     }
   };
 
-  // Synth management
   const addSynth = () => {
     setSynths((prev) => [
       ...prev,
@@ -37,7 +35,6 @@ export function useSubmitForm() {
     }
   };
 
-  // Preset management
   const addPreset = (synthIndex) => {
     setSynths((prev) =>
       prev.map((synth, i) =>
