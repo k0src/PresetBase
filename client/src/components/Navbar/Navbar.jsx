@@ -1,11 +1,17 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink } from "react-router-dom";
 
 import SearchBoxSmall from "../../components/SearchBox/SearchBoxSmall/SearchBoxSmall";
 import SearchBoxMobile from "../../components/SearchBox/SearchBoxMobile/SearchBoxMobile";
 import styles from "./Navbar.module.css";
 
-import { FaCircleUser, FaGithub, FaBars, FaXmark } from "react-icons/fa6";
+import {
+  FaCircleUser,
+  FaGithub,
+  FaBars,
+  FaXmark,
+  FaBook,
+} from "react-icons/fa6";
 import NavbarLogo from "../../assets/images/logo-app.webp";
 
 export default function Navbar({ isAuth, userIsAdmin }) {
@@ -26,29 +32,54 @@ export default function Navbar({ isAuth, userIsAdmin }) {
 
           <ul className={styles.navbarLinkContainer}>
             <li>
-              <Link to="/browse" className={styles.navbarLink}>
+              <NavLink
+                to="/browse"
+                className={({ isActive }) =>
+                  isActive ? styles.navbarLinkActive : styles.navbarLink
+                }
+              >
                 Browse
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link to="/stats" className={styles.navbarLink}>
+              <NavLink
+                to="/stats"
+                className={({ isActive }) =>
+                  isActive ? styles.navbarLinkActive : styles.navbarLink
+                }
+              >
                 Stats
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link to="/about-us" className={styles.navbarLink}>
+              <NavLink
+                to="/about-us"
+                className={({ isActive }) =>
+                  isActive ? styles.navbarLinkActive : styles.navbarLink
+                }
+              >
                 About
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link to="/submit" className={styles.navbarLink}>
+              <NavLink
+                to="/submit"
+                className={({ isActive }) =>
+                  isActive ? styles.navbarLinkActive : styles.navbarLink
+                }
+              >
                 Submit
-              </Link>
+              </NavLink>
             </li>
             <li>
-              <Link to="/admin" className={styles.navbarLink}>
+              <NavLink
+                to="/admin"
+                className={({ isActive }) =>
+                  isActive ? styles.navbarLinkActive : styles.navbarLink
+                }
+              >
                 Admin
-              </Link>
+              </NavLink>
             </li>
           </ul>
         </div>
@@ -62,6 +93,13 @@ export default function Navbar({ isAuth, userIsAdmin }) {
             rel="noopener noreferrer"
           >
             <FaGithub className={styles.navbarIcon} />
+          </a>
+          <a
+            href="https://docs.presetbase.app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <FaBook className={styles.navbarIcon} />
           </a>
           <Link to={isAuth ? "/account-info" : "/login"}>
             <FaCircleUser className={styles.navbarIcon} />

@@ -50,17 +50,21 @@
 }
 
 .navbarLinkActive {
-  background-color: #202429;
-  outline: 1rem solid #202429;
-  outline-offset: 0;
-  border-radius: 0.008rem;
+  color: #e3e5e4;
+  font-size: 1.4rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.navbarLinkActive:hover {
+  color: #899096;
 }
 
 .navbarRight {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 3rem;
+  gap: 2.8rem;
 }
 
 .navbarIcon {
