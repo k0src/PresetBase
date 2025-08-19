@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { submitData } from "../../../api/api";
@@ -11,10 +11,13 @@ import ArtistSection from "../ArtistSection/ArtistSection";
 import SynthSection from "../SynthSection/SynthSection";
 import styles from "./SubmitForm.module.css";
 
-export default function SubmitForm() {
+export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [isSingle, setIsSingle] = useState(false);
+
+  const songImageRef = useRef(null);
+  const albumImageRef = useRef(null);
 
   const {
     artists,
@@ -32,14 +35,6 @@ export default function SubmitForm() {
 
   const handleSingleChange = (checked) => {
     setIsSingle(checked);
-
-    if (checked) {
-      setArtists([{ id: Date.now() }]);
-      setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
-    } else {
-      setArtists([{ id: Date.now() }]);
-      setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
-    }
   };
 
   const handleSubmit = async (e) => {
@@ -52,12 +47,24 @@ export default function SubmitForm() {
 
       await submitData(formData);
 
+      // Reset form
       e.target.reset();
       setArtists([{ id: Date.now() }]);
       setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
+      setIsSingle(false);
+
+      window.dispatchEvent(new CustomEvent("resetImageInputs"));
+
+      if (onSubmitSuccess) {
+        onSubmitSuccess();
+      }
     } catch (error) {
       console.error("Submission error:", error);
       setSubmitError(error.message);
+
+      if (onSubmitError) {
+        onSubmitError(error.message);
+      }
     } finally {
       setIsSubmitting(false);
     }
@@ -105,7 +112,12 @@ export default function SubmitForm() {
               exist.
             </FormInput>
 
-            <ImageInput label="Cover Image" id="songImg" required={isSingle}>
+            <ImageInput
+              ref={songImageRef}
+              label="Cover Image"
+              id="songImg"
+              required={isSingle}
+            >
               Upload the song's cover image. Leave blank to default to the album
               cover. Minimum dimensions: 1000 x 1000 pixels.
             </ImageInput>
@@ -140,8 +152,8 @@ export default function SubmitForm() {
             </FormCheckbox>
 
             <FormInput
-              required={!isSingle} // Not required when single is checked
-              disabled={isSingle} // Disabled when single is checked
+              required={!isSingle}
+              disabled={isSingle}
               type="text"
               id="albumTitle"
               autofill
@@ -172,6 +184,7 @@ export default function SubmitForm() {
             </FormInput>
 
             <ImageInput
+              ref={albumImageRef}
               label="Album Image"
               id="albumImg"
               required={!isSingle}

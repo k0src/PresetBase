@@ -1,19 +1,51 @@
-import { useState, useRef } from "react";
+import {
+  useState,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useEffect,
+} from "react";
 import placeholderImage from "../../../assets/images/image-upload-placeholder.webp";
 import styles from "./ImageInput.module.css";
 import classNames from "classnames";
 
-export default function ImageInput({
-  label,
-  id,
-  children,
-  required,
-  disabled,
-  options = { minImgSize: 1000, maxImgSize: 5000 },
-}) {
+const ImageInput = forwardRef(function ImageInput(
+  {
+    label,
+    id,
+    children,
+    required,
+    disabled,
+    options = { minImgSize: 1000, maxImgSize: 5000 },
+  },
+  ref
+) {
   const [fileName, setFileName] = useState("No file selected.");
   const [imageSrc, setImageSrc] = useState(placeholderImage);
   const fileInputRef = useRef(null);
+
+  const resetComponent = () => {
+    setFileName("No file selected.");
+    setImageSrc(placeholderImage);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  useEffect(() => {
+    const handleReset = () => {
+      resetComponent();
+    };
+
+    window.addEventListener("resetImageInputs", handleReset);
+    return () => {
+      window.removeEventListener("resetImageInputs", handleReset);
+    };
+  }, []);
+
+  useImperativeHandle(ref, () => ({
+    reset: resetComponent,
+  }));
 
   const handleFileChange = (event) => {
     if (disabled) return;
@@ -113,4 +145,6 @@ export default function ImageInput({
       </div>
     </div>
   );
-}
+});
+
+export default ImageInput;
