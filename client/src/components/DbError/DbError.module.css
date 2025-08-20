@@ -19,6 +19,7 @@
 
 .errorContainer {
   min-height: 60vh;
+  padding-top: 10vh;
   color: #899096;
   display: flex;
   gap: 2.4rem;
