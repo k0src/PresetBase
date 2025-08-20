@@ -28,7 +28,6 @@ export default function AudioInput({
       return;
     }
 
-    // Validate audio
     const audio = new Audio();
     const objectUrl = URL.createObjectURL(file);
     audio.src = objectUrl;
@@ -53,7 +52,6 @@ export default function AudioInput({
         }
         URL.revokeObjectURL(objectUrl);
       } else {
-        // Update display and add to audio player
         setFileName(file.name);
         setAudioFile(objectUrl);
         addAudioSource(id, objectUrl);
