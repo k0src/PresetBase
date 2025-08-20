@@ -40,7 +40,7 @@ export default memo(function ArtistPage() {
 
   const songEntries = useMemo(() => {
     if (!artist) return [];
-    return Object.values(artist.presets || []);
+    return Object.values(artist.songs || []);
   });
 
   const moreEntriesSection = useMemo(() => {
