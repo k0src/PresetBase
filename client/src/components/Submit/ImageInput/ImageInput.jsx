@@ -42,7 +42,7 @@ const ImageInput = forwardRef(function ImageInput(
       const { input, imageUrl } = e.detail;
       if (input === fileInputRef.current && imageUrl) {
         setImageSrc(`/uploads/images/approved/${imageUrl}`);
-        setFileName(imageUrl);
+        setFileName("Autofilled Image");
       }
     };
 

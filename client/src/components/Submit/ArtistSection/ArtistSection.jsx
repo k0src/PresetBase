@@ -1,4 +1,3 @@
-import { memo } from "react";
 import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
 import FormSection from "../FormSection/FormSection";
@@ -6,7 +5,7 @@ import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
 
-export default memo(function ArtistSection({ index, onRemove }) {
+export default function ArtistSection({ index, onRemove }) {
   const handleRemove = () => {
     onRemove(index);
   };
@@ -65,4 +64,4 @@ export default memo(function ArtistSection({ index, onRemove }) {
       </ImageInput>
     </FormSection>
   );
-});
+}

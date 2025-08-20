@@ -1,7 +1,6 @@
-import { memo } from "react";
 import styles from "./FormSelector.module.css";
 
-export default memo(function FormSelector({
+export default function FormSelector({
   label,
   id,
   children,
@@ -30,4 +29,4 @@ export default memo(function FormSelector({
       <small className={styles.small}>{children}</small>
     </label>
   );
-});
+}

@@ -1,4 +1,3 @@
-import { memo } from "react";
 import FormInput from "../FormInput/FormInput";
 import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
@@ -9,7 +8,7 @@ import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
 
-export default memo(function SynthSection({
+export default function SynthSection({
   index,
   presets,
   onRemove,
@@ -111,4 +110,4 @@ export default memo(function SynthSection({
       </button>
     </div>
   );
-});
+}

@@ -1,8 +1,7 @@
-import { memo } from "react";
 import styles from "./FormInput.module.css";
 import classNames from "classnames";
 
-export default memo(function FormInput({
+export default function FormInput({
   required,
   type,
   id,
@@ -28,4 +27,4 @@ export default memo(function FormInput({
       <small className={styles.small}>{children}</small>
     </label>
   );
-});
+}

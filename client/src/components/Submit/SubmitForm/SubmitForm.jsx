@@ -39,6 +39,15 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
     setIsSingle(checked);
   };
 
+  const clearForm = (form) => {
+    form.reset();
+    setArtists([{ id: Date.now() }]);
+    setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
+    setIsSingle(false);
+
+    window.dispatchEvent(new CustomEvent("resetImageInputs"));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -50,12 +59,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
       await submitData(formData);
 
       // Reset form
-      e.target.reset();
-      setArtists([{ id: Date.now() }]);
-      setSynths([{ id: Date.now(), presets: [{ id: Date.now() }] }]);
-      setIsSingle(false);
-
-      window.dispatchEvent(new CustomEvent("resetImageInputs"));
+      clearForm(e.target);
 
       if (onSubmitSuccess) {
         onSubmitSuccess();
@@ -74,7 +78,11 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
 
   return (
     <section className={styles.submitFormContainer}>
-      <form onSubmit={handleSubmit} encType="multipart/form-data">
+      <form
+        onSubmit={handleSubmit}
+        encType="multipart/form-data"
+        ref={(formRef) => (SubmitForm.formRef = formRef)}
+      >
         <legend className={styles.legend}>Song Information</legend>
         <fieldset className={styles.fieldset}>
           <FormSection type="songTitle" className={styles.formSection}>
@@ -243,7 +251,11 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
             >
               {isSubmitting ? "Submitting..." : "Submit Entry"}
             </button>
-            <button className={styles.clearBtn} type="reset">
+            <button
+              className={styles.clearBtn}
+              type="reset"
+              onClick={() => clearForm(SubmitForm.formRef)}
+            >
               Clear Form
             </button>
           </div>

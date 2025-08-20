@@ -1,4 +1,3 @@
-import { memo } from "react";
 import { Link } from "react-router-dom";
 
 import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
@@ -8,11 +7,7 @@ import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
 
-export default memo(function PresetSection({
-  synthIndex,
-  presetIndex,
-  onRemove,
-}) {
+export default function PresetSection({ synthIndex, presetIndex, onRemove }) {
   const handleRemove = () => {
     onRemove(synthIndex, presetIndex);
   };
@@ -89,4 +84,4 @@ export default memo(function PresetSection({
       </AudioInput>
     </FormSection>
   );
-});
+}
