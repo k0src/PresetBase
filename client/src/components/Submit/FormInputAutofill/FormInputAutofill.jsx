@@ -30,6 +30,24 @@ export default function FormInputAutofill({
 
   const formSection = useFormSection();
 
+  useEffect(() => {
+    const input = inputRef.current;
+    if (!input) return;
+
+    const form = input.closest("form");
+    if (!form) return;
+
+    const handleReset = () => {
+      setQuery("");
+      setSuggestions([]);
+      setShowDropdown(false);
+      setSelectedIndex(-1);
+    };
+
+    form.addEventListener("reset", handleReset);
+    return () => form.removeEventListener("reset", handleReset);
+  }, []);
+
   const handleAttemptToAutofill = useCallback(
     async (value = query) => {
       if (!autofillSection || !formSection || !value.trim()) return;
