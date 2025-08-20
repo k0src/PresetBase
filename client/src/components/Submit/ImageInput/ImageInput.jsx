@@ -23,13 +23,21 @@ const ImageInput = forwardRef(function ImageInput(
 ) {
   const [fileName, setFileName] = useState("No file selected.");
   const [imageSrc, setImageSrc] = useState(placeholderImage);
+  const [isAutofilled, setIsAutofilled] = useState(false);
+  const [autofilledValue, setAutofilledValue] = useState("");
   const fileInputRef = useRef(null);
+  const hiddenInputRef = useRef(null);
 
   const resetComponent = () => {
     setFileName("No file selected.");
     setImageSrc(placeholderImage);
+    setIsAutofilled(false);
+    setAutofilledValue("");
     if (fileInputRef.current) {
       fileInputRef.current.value = "";
+    }
+    if (hiddenInputRef.current) {
+      hiddenInputRef.current.value = "";
     }
   };
 
@@ -43,6 +51,11 @@ const ImageInput = forwardRef(function ImageInput(
       if (input === fileInputRef.current && imageUrl) {
         setImageSrc(`/uploads/images/approved/${imageUrl}`);
         setFileName("Autofilled Image");
+        setIsAutofilled(true);
+        setAutofilledValue(imageUrl);
+        if (hiddenInputRef.current) {
+          hiddenInputRef.current.value = imageUrl;
+        }
       }
     };
 
@@ -69,7 +82,12 @@ const ImageInput = forwardRef(function ImageInput(
       return;
     }
 
-    // Validate image
+    setIsAutofilled(false);
+    setAutofilledValue("");
+    if (hiddenInputRef.current) {
+      hiddenInputRef.current.value = "";
+    }
+
     const img = new Image();
     const objectUrl = URL.createObjectURL(file);
     img.src = objectUrl;
@@ -95,12 +113,10 @@ const ImageInput = forwardRef(function ImageInput(
           fileInputRef.current.value = "";
         }
       } else {
-        // Update display if file is valid
         setFileName(file.name);
         setImageSrc(objectUrl);
       }
 
-      // Don't revoke URL immediately if image is valid
       if (img.width < minImgSize || img.height < minImgSize) {
         URL.revokeObjectURL(objectUrl);
       }
@@ -148,9 +164,16 @@ const ImageInput = forwardRef(function ImageInput(
               name={id}
               data-key={dataKey}
               accept="image/*"
-              required={required && !disabled}
+              required={required && !disabled && !isAutofilled}
               disabled={disabled}
               onChange={handleFileChange}
+            />
+            {/* Hidden input for autofilled images */}
+            <input
+              ref={hiddenInputRef}
+              type="hidden"
+              name={isAutofilled ? id : ""}
+              value={autofilledValue}
             />
           </div>
           <small className={styles.small}>{children}</small>

@@ -120,11 +120,13 @@ class UserSubmissionManager {
         mergedData.albumYear = String(albumDb.release_year);
 
         if (mergedData.albumImg) {
+          if (!albumDb.image_url || mergedData.albumImg !== albumDb.image_url) {
+            await UserSubmissionManager.#deletePendingFile({
+              fileName: mergedData.albumImg,
+              type: "images",
+            });
+          }
           mergedData.albumImg = albumDb.image_url;
-          await UserSubmissionManager.#deletePendingFile({
-            fileName: mergedData.albumImg,
-            type: "images",
-          });
         } else if (!mergedData.albumImg) {
           mergedData.albumImg = albumDb.image_url;
         }
@@ -141,13 +143,16 @@ class UserSubmissionManager {
         mergedData.songGenre = songDb.genre;
         mergedData.songYear = String(songDb.release_year);
         mergedData.songUrl = songDb.song_url;
+        mergedData.songFilled = true;
 
         if (mergedData.songImg) {
+          if (!songDb.image_url || mergedData.songImg !== songDb.image_url) {
+            await UserSubmissionManager.#deletePendingFile({
+              fileName: mergedData.songImg,
+              type: "images",
+            });
+          }
           mergedData.songImg = songDb.image_url;
-          await UserSubmissionManager.#deletePendingFile({
-            fileName: mergedData.songImg,
-            type: "images",
-          });
         } else if (!mergedData.songImg) {
           mergedData.songImg = songDb.image_url;
         }
@@ -173,11 +178,13 @@ class UserSubmissionManager {
           artistData.country = artistDb.country;
 
           if (artistData.img) {
+            if (!artistDb.image_url || artistData.img !== artistDb.image_url) {
+              await UserSubmissionManager.#deletePendingFile({
+                fileName: artistData.img,
+                type: "images",
+              });
+            }
             artistData.img = artistDb.image_url;
-            await UserSubmissionManager.#deletePendingFile({
-              fileName: artistData.img,
-              type: "images",
-            });
           } else if (!artistData.img) {
             artistData.img = artistDb.image_url;
           }
@@ -200,11 +207,13 @@ class UserSubmissionManager {
           synthData.year = String(synthDb.release_year);
 
           if (synthData.img) {
+            if (!synthDb.image_url || synthData.img !== synthDb.image_url) {
+              await UserSubmissionManager.#deletePendingFile({
+                fileName: synthData.img,
+                type: "images",
+              });
+            }
             synthData.img = synthDb.image_url;
-            await UserSubmissionManager.#deletePendingFile({
-              fileName: synthData.img,
-              type: "images",
-            });
           } else if (!synthData.img) {
             synthData.img = synthDb.image_url;
           }
