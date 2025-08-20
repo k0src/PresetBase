@@ -16,6 +16,7 @@ const ImageInput = forwardRef(function ImageInput(
     children,
     required,
     disabled,
+    dataKey,
     options = { minImgSize: 1000, maxImgSize: 5000 },
   },
   ref
@@ -145,6 +146,7 @@ const ImageInput = forwardRef(function ImageInput(
               className={styles.input}
               type="file"
               name={id}
+              data-key={dataKey}
               accept="image/*"
               required={required && !disabled}
               disabled={disabled}

@@ -16,6 +16,7 @@ export default function FormInputAutofill({
   label,
   children,
   disabled,
+  dataKey,
   ...inputProps
 }) {
   const [query, setQuery] = useState("");
@@ -153,14 +154,6 @@ export default function FormInputAutofill({
     }
   }, [suggestions.length, query]);
 
-  const handleInputBlur = useCallback(() => {
-    setTimeout(() => {
-      if (autofillSection && query.trim()) {
-        handleAttemptToAutofill(query.trim());
-      }
-    }, 150);
-  }, [autofillSection, query, handleAttemptToAutofill]);
-
   const handleSuggestionSelect = useCallback(
     (suggestion) => {
       setQuery(suggestion);
@@ -175,8 +168,25 @@ export default function FormInputAutofill({
 
   useEffect(() => {
     document.addEventListener("click", handleClickOutside);
+
+    const handleProgrammaticChange = (e) => {
+      if (e.target === inputRef.current) {
+        setQuery(e.target.value);
+        setShowDropdown(false);
+        setSelectedIndex(-1);
+      }
+    };
+
+    if (inputRef.current) {
+      inputRef.current.addEventListener("input", handleProgrammaticChange);
+    }
+
     return () => {
       document.removeEventListener("click", handleClickOutside);
+
+      if (inputRef.current) {
+        inputRef.current.removeEventListener("input", handleProgrammaticChange);
+      }
 
       if (debounceTimeout.current) {
         clearTimeout(debounceTimeout.current);
@@ -211,13 +221,13 @@ export default function FormInputAutofill({
         className={classNames(styles.input, { [styles.disabled]: disabled })}
         type={type}
         name={id}
+        data-key={dataKey || autofillType}
         autoComplete="off"
         required={required || false}
         disabled={disabled || false}
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
         onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
         {...inputProps}
       />
       {dropdown}

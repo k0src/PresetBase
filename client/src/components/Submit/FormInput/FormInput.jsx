@@ -1,13 +1,15 @@
+import { memo } from "react";
 import styles from "./FormInput.module.css";
 import classNames from "classnames";
 
-export default function FormInput({
+export default memo(function FormInput({
   required,
   type,
   id,
   label,
   children,
   disabled,
+  dataKey,
   ...inputProps
 }) {
   return (
@@ -17,6 +19,7 @@ export default function FormInput({
         className={classNames(styles.input, { [styles.disabled]: disabled })}
         type={type}
         name={id}
+        data-key={dataKey}
         autoComplete="off"
         required={required || false}
         disabled={disabled || false}
@@ -25,4 +28,4 @@ export default function FormInput({
       <small className={styles.small}>{children}</small>
     </label>
   );
-}
+});

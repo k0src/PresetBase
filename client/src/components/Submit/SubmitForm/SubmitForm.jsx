@@ -77,7 +77,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
       <form onSubmit={handleSubmit} encType="multipart/form-data">
         <legend className={styles.legend}>Song Information</legend>
         <fieldset className={styles.fieldset}>
-          <FormSection type="song" className={styles.formSection}>
+          <FormSection type="songTitle" className={styles.formSection}>
             <FormInputAutofill
               required
               type="text"
@@ -105,11 +105,18 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               type="number"
               id="songYear"
               label="Release Year"
+              dataKey="songYear"
             >
               Enter the year the song was released (e.g., 2018).
             </FormInput>
 
-            <FormInput required type="url" id="songUrl" label="Song URL">
+            <FormInput
+              required
+              type="url"
+              id="songUrl"
+              label="Song URL"
+              dataKey="songUrl"
+            >
               Paste the YouTube URL of the song. Use the official artist's
               channel. Avoid music videos unless no official audio uploads
               exist.
@@ -119,6 +126,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               ref={songImageRef}
               label="Cover Image"
               id="songImg"
+              dataKey="songImg"
               required={isSingle}
             >
               Upload the song's cover image. Leave blank to default to the album
@@ -144,7 +152,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
 
         <legend className={styles.legend}>Album Information</legend>
         <fieldset className={styles.fieldset}>
-          <FormSection type="album" className={styles.formSection}>
+          <FormSection type="albumTitle" className={styles.formSection}>
             <FormCheckbox
               id="single"
               checked={isSingle}
@@ -183,6 +191,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               type="number"
               id="albumYear"
               label="Release Year"
+              dataKey="albumYear"
             >
               Enter the year the album was released.
             </FormInput>
@@ -191,6 +200,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               ref={albumImageRef}
               label="Album Image"
               id="albumImg"
+              dataKey="albumImg"
               required={!isSingle}
               disabled={isSingle}
             >

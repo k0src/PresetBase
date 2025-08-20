@@ -1,16 +1,23 @@
+import { memo } from "react";
 import styles from "./FormSelector.module.css";
 
-export default function FormSelector({
+export default memo(function FormSelector({
   label,
   id,
   children,
   required,
   selectOptions = [],
+  dataKey,
 }) {
   return (
     <label className={styles.label}>
       {label} {required && <span className={styles.red}>*</span>}
-      <select className={styles.select} required={required || false} name={id}>
+      <select
+        className={styles.select}
+        required={required || false}
+        name={id}
+        data-key={dataKey}
+      >
         <option value="" hidden disabled>
           Select an option
         </option>
@@ -23,4 +30,4 @@ export default function FormSelector({
       <small className={styles.small}>{children}</small>
     </label>
   );
-}
+});

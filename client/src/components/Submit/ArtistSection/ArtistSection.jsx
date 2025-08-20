@@ -1,3 +1,4 @@
+import { memo } from "react";
 import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
 import FormSection from "../FormSection/FormSection";
@@ -5,13 +6,13 @@ import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
 
-export default function ArtistSection({ index, onRemove }) {
+export default memo(function ArtistSection({ index, onRemove }) {
   const handleRemove = () => {
     onRemove(index);
   };
 
   return (
-    <FormSection type="artist" className={styles.formSection}>
+    <FormSection type="artistName" className={styles.formSection}>
       {index > 0 && (
         <>
           <hr className={styles.hrSep} />
@@ -54,9 +55,14 @@ export default function ArtistSection({ index, onRemove }) {
         Enter only one role.
       </FormInputAutofill>
 
-      <ImageInput label="Artist Image" id={`artists[${index}][img]`} required>
+      <ImageInput
+        label="Artist Image"
+        id={`artists[${index}][img]`}
+        dataKey="artistImg"
+        required
+      >
         Upload the artist's image. Minimum dimensions: 1000 x 1000 pixels.
       </ImageInput>
     </FormSection>
   );
-}
+});

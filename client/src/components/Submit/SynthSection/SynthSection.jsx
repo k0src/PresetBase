@@ -1,3 +1,4 @@
+import { memo } from "react";
 import FormInput from "../FormInput/FormInput";
 import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
 import ImageInput from "../ImageInput/ImageInput";
@@ -8,7 +9,7 @@ import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
 
-export default function SynthSection({
+export default memo(function SynthSection({
   index,
   presets,
   onRemove,
@@ -36,7 +37,7 @@ export default function SynthSection({
         </div>
       )}
 
-      <FormSection type="synth" className={styles.formSection}>
+      <FormSection type="synthName" className={styles.formSection}>
         <FormInputAutofill
           required
           type="text"
@@ -63,6 +64,7 @@ export default function SynthSection({
           type="number"
           id={`synths[${index}][year]`}
           label="Release Year"
+          dataKey="synthYear"
         >
           Enter the synth's release year.
         </FormInput>
@@ -71,6 +73,7 @@ export default function SynthSection({
           label="Synth Type"
           id={`synths[${index}][type]`}
           required
+          dataKey="synthType"
           selectOptions={[
             { value: "VST", label: "VST" },
             { value: "Hardware", label: "Hardware" },
@@ -82,7 +85,12 @@ export default function SynthSection({
           Select the synth format.
         </FormSelector>
 
-        <ImageInput label="Synth Image" id={`synths[${index}][img]`} required>
+        <ImageInput
+          label="Synth Image"
+          id={`synths[${index}][img]`}
+          dataKey="synthImg"
+          required
+        >
           Upload an image of the synth. Minimum dimensions: 1000 x 1000 pixels.
         </ImageInput>
       </FormSection>
@@ -103,4 +111,4 @@ export default function SynthSection({
       </button>
     </div>
   );
-}
+});
