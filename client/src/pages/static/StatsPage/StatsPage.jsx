@@ -26,6 +26,7 @@ export default function StatsPage() {
       <Helmet>
         <title>Stats</title>
       </Helmet>
+
       <ContentContainer isAuth={true} userIsAdmin={true}>
         <header className={styles.statsHeader}>
           <h1 className={styles.headingPrimary}>Stats</h1>

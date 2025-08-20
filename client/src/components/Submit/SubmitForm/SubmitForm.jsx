@@ -206,7 +206,7 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
 
             <ImageInput
               ref={albumImageRef}
-              label="Album Image"
+              label="Album Cover"
               id="albumImg"
               dataKey="albumImg"
               required={!isSingle}
