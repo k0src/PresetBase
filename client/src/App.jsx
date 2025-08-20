@@ -8,6 +8,7 @@ import UploadTos from "./pages/static/UploadTos/UploadTos";
 import StatsPage from "./pages/static/StatsPage/StatsPage";
 import SearchPage from "./pages/static/SearchPage/SearchPage";
 import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
+import SubmitExamplePage from "./pages/static/SubmitPage/SubmitExamplePage";
 
 import SongPage from "./pages/entries/SongPage/SongPage";
 import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
@@ -32,8 +33,6 @@ import LoginPage from "./pages/auth/LoginPage/LoginPage";
 // import AdminDashboard from "./pages/admin/AdminDashboard/AdminDashboard";
 // import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 // import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
-// import AdminTagEditor from "./pages/admin/AdminTagEditor/AdminTagEditor";
-// import AdminAnnouncements from "./pages/admin/AdminAnnouncements/AdminAnnouncements";
 // import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
 // import AdminManageDb from "./pages/admin/AdminManageDb/AdminManageDb";
 
@@ -52,6 +51,7 @@ function App() {
         <Route path="/stats" element={<StatsPage />} />
         <Route path="/search" element={<SearchPage />} />
         <Route path="/submit" element={<SubmitPage />} />
+        <Route path="/submit/example" element={<SubmitExamplePage />} />
 
         {/* Entry routes */}
         <Route path="/song/:id" element={<SongPage />} />
@@ -80,8 +80,6 @@ function App() {
         {/* <Route path="/admin" element={<AdminDashboard />} /> */}
         {/* <Route path="/admin/approvals" element={<AdminApprovals />} /> */}
         {/* <Route path="/admin/upload" element={<AdminUpload />} /> */}
-        {/* <Route path="/admin/tag-editor" element={<AdminTagEditor />} /> */}
-        {/* <Route path="/admin/announcements" element={<AdminAnnouncements />} /> */}
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
 
@@ -145,8 +143,6 @@ const router = createBrowserRouter([
     children: [
       { path: "approvals", element: <AdminApprovals /> },
       { path: "upload", element: <AdminUpload /> },
-      { path: "tag-editor", element: <AdminTagEditor /> },
-      { path: "announcements", element: <AdminAnnouncements /> },
       { path: "manage-users", element: <AdminManageUsers /> },
       { path: "manage-db", element: <AdminManageDb /> },
     ],

@@ -5,6 +5,7 @@ export default function FormSelector({
   id,
   children,
   required,
+  disabled,
   selectOptions = [],
   dataKey,
 }) {
@@ -16,6 +17,7 @@ export default function FormSelector({
         required={required || false}
         name={id}
         data-key={dataKey}
+        disabled={disabled || false}
       >
         <option value="" hidden disabled>
           Select an option
