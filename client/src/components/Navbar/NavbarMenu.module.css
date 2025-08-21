@@ -1,0 +1,111 @@
+.navbarMenuContainer {
+  position: relative;
+}
+
+.navbarMenuTitle {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  color: #899096;
+  font-size: 1.4rem;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease;
+}
+
+.navbarMenuTitle:hover {
+  color: #e3e5e4;
+}
+
+.navbarMenuTitleChevron {
+  font-size: 1rem;
+  transition: transform 0.3s ease;
+}
+
+.navbarMenuContainer:hover .navbarMenuTitleChevron {
+  transform: rotate(180deg);
+}
+
+.navbarMenuBridge {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  height: 0.8rem;
+  background: transparent;
+  z-index: 1;
+}
+
+.navbarMenu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translateY(2.4rem) scale(0.95);
+  transform-origin: top center;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  font-size: 1.4rem;
+  color: #899096;
+  border-radius: 0.4rem;
+  padding: 1.4rem;
+  opacity: 0;
+  animation: menuFadeIn 0.2s ease-out forwards;
+}
+
+.navbarMenuClosing {
+  animation: menuFadeOut 0.2s ease-out forwards;
+}
+
+@keyframes menuFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(2.4rem) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(2.4rem) scale(1);
+  }
+}
+
+@keyframes menuFadeOut {
+  from {
+    opacity: 1;
+    transform: translateY(2.4rem) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(2.4rem) scale(0.95);
+  }
+}
+
+.navbarMenuLink,
+.navbarMenuLink:link,
+.navbarMenuLink:visited {
+  color: #899096;
+  font-size: 1.4rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+  white-space: nowrap;
+}
+
+.navbarMenuLink:hover {
+  color: #e3e5e4;
+}
+
+.navbarMenuLinkActive {
+  color: #e3e5e4;
+  font-size: 1.4rem;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  display: block;
+  white-space: nowrap;
+}
+
+.navbarMenuLinkActive:hover {
+  color: #899096;
+}

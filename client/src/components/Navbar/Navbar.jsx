@@ -3,6 +3,7 @@ import { Link, NavLink } from "react-router-dom";
 
 import SearchBoxSmall from "../../components/SearchBox/SearchBoxSmall/SearchBoxSmall";
 import SearchBoxMobile from "../../components/SearchBox/SearchBoxMobile/SearchBoxMobile";
+import NavbarMenu from "./NavbarMenu";
 import styles from "./Navbar.module.css";
 
 import {
@@ -71,22 +72,20 @@ export default function Navbar({ isAuth, userIsAdmin }) {
                 Submit
               </NavLink>
             </li>
-            <li>
-              <NavLink
-                to="/admin"
-                className={({ isActive }) =>
-                  isActive ? styles.navbarLinkActive : styles.navbarLink
-                }
-              >
-                Admin
-              </NavLink>
-            </li>
+            <NavbarMenu
+              title="Admin"
+              menuItems={[
+                { title: "Approvals", link: "/admin/approvals" },
+                { title: "Upload", link: "/admin/upload" },
+                { title: "Manage Users", link: "/admin/manage-users" },
+                { title: "Manage Database", link: "/admin/manage-db" },
+              ]}
+            />
           </ul>
         </div>
 
         <div className={styles.navbarRight}>
           <SearchBoxSmall limit={5} />
-
           <a
             href="https://github.com/k0src/presetbase"
             target="_blank"
