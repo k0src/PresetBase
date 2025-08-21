@@ -30,7 +30,7 @@ export function useStatsData() {
         } = await import("../api/stats");
 
         const [
-          totalEntriesResult,
+          totalEntriesData,
           topPresetsResult,
           presetsPerSynthResult,
           topSynthsResult,
@@ -47,7 +47,7 @@ export function useStatsData() {
           getHeatmapData(),
         ]);
 
-        setTotalEntries(totalEntriesResult);
+        setTotalEntries(totalEntriesData.data);
         setTopPresets(topPresetsResult);
         setPresetsPerSynth(presetsPerSynthResult);
         setTopSynths(topSynthsResult);

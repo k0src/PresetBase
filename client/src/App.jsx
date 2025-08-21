@@ -15,7 +15,7 @@ import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
 import ArtistPage from "./pages/entries/ArtistPage/ArtistPage";
 import SynthPage from "./pages/entries/SynthPage/SynthPage";
 
-// import BrowsePage from "./pages/browse/BrowsePage/BrowsePage";
+import BrowsePage from "./pages/browse/BrowsePage/BrowsePage";
 import BrowseSongs from "./pages/browse/BrowseSongs";
 import BrowseArtists from "./pages/browse/BrowseArtists";
 import BrowseAlbums from "./pages/browse/BrowseAlbums";
@@ -30,7 +30,6 @@ import BrowseRecent from "./pages/browse/BrowseRecent";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
 // import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
 
-// import AdminDashboard from "./pages/admin/AdminDashboard/AdminDashboard";
 // import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 // import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
 // import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
@@ -60,7 +59,7 @@ function App() {
         <Route path="/synth/:id" element={<SynthPage />} />
 
         {/* Browse routes */}
-        {/* <Route path="/browse" element={<BrowsePage />} /> */}
+        <Route path="/browse" element={<BrowsePage />} />
         <Route path="/browse/songs" element={<BrowseSongs />} />
         <Route path="/browse/artists" element={<BrowseArtists />} />
         <Route path="/browse/albums" element={<BrowseAlbums />} />
@@ -77,7 +76,6 @@ function App() {
         {/* <Route path="/account-info" element={<AccountInfoPage />} /> */}
 
         {/* Admin routes */}
-        {/* <Route path="/admin" element={<AdminDashboard />} /> */}
         {/* <Route path="/admin/approvals" element={<AdminApprovals />} /> */}
         {/* <Route path="/admin/upload" element={<AdminUpload />} /> */}
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}

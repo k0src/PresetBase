@@ -303,7 +303,11 @@ class Song extends Entry {
   }
 
   // Get all songs
-  static async getAll(sort = "songs.timestamp", direction = "ASC") {
+  static async getAll(
+    sort = "songs.timestamp",
+    direction = "ASC",
+    limit = null
+  ) {
     try {
       // For case-insensitive sorting
       const textFields = [
@@ -339,9 +343,13 @@ class Song extends Entry {
         LEFT JOIN albums ON album_songs.album_id = albums.id
         WHERE song_artists.role = 'Main'
         GROUP BY songs.id
-        ORDER BY ${sortClause}`;
+        ORDER BY ${sortClause}
+        ${limit ? "LIMIT ?" : ""}`;
 
-      const songsData = await DB.all(query);
+      const params = [];
+      if (limit) params.push(limit);
+
+      const songsData = await DB.all(query, params);
 
       if (songsData) {
         songsData.forEach((song) => {
@@ -357,7 +365,11 @@ class Song extends Entry {
   }
 
   // Get hot songs
-  static async getHotSongs(sort = "hotScore", direction = "DESC") {
+  static async getHotSongs(
+    sort = "hotScore",
+    direction = "DESC",
+    limit = null
+  ) {
     try {
       // For case-insensitive sorting
       const textFields = [
@@ -406,9 +418,13 @@ class Song extends Entry {
           LIMIT 10
         )
         SELECT * FROM hotSongs
-        ORDER BY ${sortClause}`;
+        ORDER BY ${sortClause}
+        ${limit ? "LIMIT ?" : ""}`;
 
-      const hotSongsData = await DB.all(query);
+      const params = [];
+      if (limit) params.push(limit);
+
+      const hotSongsData = await DB.all(query, params);
 
       if (hotSongsData) {
         hotSongsData.forEach((song) => {
@@ -424,7 +440,11 @@ class Song extends Entry {
   }
 
   // Get popular songs
-  static async getPopularSongs(sort = "clicks", direction = "DESC") {
+  static async getPopularSongs(
+    sort = "clicks",
+    direction = "DESC",
+    limit = null
+  ) {
     try {
       // For case-insensitive sorting
       const textFields = [
@@ -467,9 +487,13 @@ class Song extends Entry {
           LIMIT 10
         )
         SELECT * FROM popularSongs
-        ORDER BY ${sortClause}`;
+        ORDER BY ${sortClause}
+        ${limit ? "LIMIT ?" : ""}`;
 
-      const popularSongsData = await DB.all(query);
+      const params = [];
+      if (limit) params.push(limit);
+
+      const popularSongsData = await DB.all(query, params);
 
       if (popularSongsData) {
         popularSongsData.forEach((song) => {
@@ -485,7 +509,11 @@ class Song extends Entry {
   }
 
   // Get recently added songs
-  static async getRecentSongs(sort = "timestamp", direction = "DESC") {
+  static async getRecentSongs(
+    sort = "timestamp",
+    direction = "DESC",
+    limit = null
+  ) {
     try {
       // For case-insensitive sorting
       const textFields = [
@@ -527,9 +555,13 @@ class Song extends Entry {
           LIMIT 10
         )
         SELECT * FROM recentSongs
-        ORDER BY ${sortClause}`;
+        ORDER BY ${sortClause}
+        ${limit ? "LIMIT ?" : ""}`;
 
-      const recentSongsData = await DB.all(query);
+      const params = [];
+      if (limit) params.push(limit);
+
+      const recentSongsData = await DB.all(query, params);
 
       if (recentSongsData) {
         recentSongsData.forEach((song) => {

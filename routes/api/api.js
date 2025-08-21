@@ -284,8 +284,8 @@ router.get("/total-entries", async (req, res) => {
         (SELECT COUNT(*) FROM synths) AS synths,
         (SELECT COUNT(*) FROM presets) AS presets`;
   try {
-    const dbStats = await dbGet(query);
-    return res.json(dbStats);
+    const totalEntries = await dbGet(query);
+    return res.json({ data: totalEntries });
   } catch (err) {
     console.error(err);
     res
@@ -307,7 +307,7 @@ router.get("/number-entries", async (req, res) => {
 
   try {
     const totalCount = await dbGet(query);
-    return res.json(totalCount.total_count);
+    return res.json({ data: totalCount.total_count });
   } catch (err) {
     console.error(err);
     res

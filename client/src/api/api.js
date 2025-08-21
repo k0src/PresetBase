@@ -4,6 +4,12 @@ export async function getTotalEntries() {
   return res.json();
 }
 
+export async function getNumberEntries() {
+  const res = await fetch("/api/number-entries");
+  if (!res.ok) throw new Error("Failed to fetch total number of entries");
+  return res.json();
+}
+
 export async function searchDatabase(query) {
   const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
   if (!res.ok) throw new Error("Failed to search database");

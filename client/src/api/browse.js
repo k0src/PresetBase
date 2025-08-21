@@ -1,7 +1,11 @@
 /* ---------------------------------- Songs --------------------------------- */
-export async function getSongsData(sort = null, direction = "ASC") {
+export async function getSongsData(
+  sort = null,
+  direction = "ASC",
+  limit = null
+) {
   const res = await fetch(
-    `/api/browse/songs?sort=${sort}&direction=${direction}`
+    `/api/browse/songs?sort=${sort}&direction=${direction}&limit=${limit}`
   );
   if (!res.ok) throw new Error("Failed to fetch songs data");
   return res.json();
@@ -14,25 +18,37 @@ export async function getTotalSongEntries() {
 }
 
 /* -------------------------- Popular, Hot, Recent -------------------------- */
-export async function getPopularSongsData(sort = null, direction = "DESC") {
+export async function getPopularSongsData(
+  sort = null,
+  direction = "DESC",
+  limit = null
+) {
   const res = await fetch(
-    `/api/browse/songs/popular?sort=${sort}&direction=${direction}`
+    `/api/browse/songs/popular?sort=${sort}&direction=${direction}&limit=${limit}`
   );
   if (!res.ok) throw new Error("Failed to fetch popular songs");
   return res.json();
 }
 
-export async function getHotSongsData(sort = null, direction = "DESC") {
+export async function getHotSongsData(
+  sort = null,
+  direction = "DESC",
+  limit = null
+) {
   const res = await fetch(
-    `/api/browse/songs/hot?sort=${sort}&direction=${direction}`
+    `/api/browse/songs/hot?sort=${sort}&direction=${direction}&limit=${limit}`
   );
   if (!res.ok) throw new Error("Failed to fetch hot songs");
   return res.json();
 }
 
-export async function getRecentSongsData(sort = null, direction = "DESC") {
+export async function getRecentSongsData(
+  sort = null,
+  direction = "DESC",
+  limit = null
+) {
   const res = await fetch(
-    `/api/browse/songs/recent?sort=${sort}&direction=${direction}`
+    `/api/browse/songs/recent?sort=${sort}&direction=${direction}&limit=${limit}`
   );
   if (!res.ok) throw new Error("Failed to fetch recent songs");
   return res.json();

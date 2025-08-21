@@ -21,8 +21,8 @@ export default function AboutPage() {
       try {
         setLoading(true);
         setError(null);
-        const data = await getTotalEntries();
-        setTotalEntries(data);
+        const totalEntriesData = await getTotalEntries();
+        setTotalEntries(totalEntriesData.data);
       } catch (err) {
         console.error("Error fetching total entries:", err);
         setError(err.message);

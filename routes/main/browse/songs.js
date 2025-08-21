@@ -7,9 +7,12 @@ const { sortKeys, sortDirections } = require("../../../util/UTIL.js");
 router.get("/", async (req, res) => {
   const sortKey = sortKeys.songs[req.query.sort] || sortKeys.songs.added;
   const sortDirection = sortDirections[req.query.direction] || "ASC";
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
 
   try {
-    const songsData = await Song.getAll(sortKey, sortDirection);
+    const songsData = await Song.getAll(sortKey, sortDirection, limit);
     res.json({ data: songsData });
   } catch (err) {
     console.error(err);
@@ -34,9 +37,16 @@ router.get("/total-entries", async (req, res) => {
 router.get("/popular", async (req, res) => {
   const sortKey = sortKeys.popular[req.query.sort] || sortKeys.popular.clicks;
   const sortDirection = sortDirections[req.query.direction] || "DESC";
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
 
   try {
-    const popularSongsData = await Song.getPopularSongs(sortKey, sortDirection);
+    const popularSongsData = await Song.getPopularSongs(
+      sortKey,
+      sortDirection,
+      limit
+    );
     res.json({ data: popularSongsData });
   } catch (err) {
     console.error(err);
@@ -49,9 +59,12 @@ router.get("/popular", async (req, res) => {
 router.get("/hot", async (req, res) => {
   const sortKey = sortKeys.hot[req.query.sort] || sortKeys.hot.clicks;
   const sortDirection = sortDirections[req.query.direction] || "DESC";
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
 
   try {
-    const hotSongsData = await Song.getHotSongs(sortKey, sortDirection);
+    const hotSongsData = await Song.getHotSongs(sortKey, sortDirection, limit);
     res.json({ data: hotSongsData });
   } catch (err) {
     console.error(err);
@@ -64,9 +77,16 @@ router.get("/hot", async (req, res) => {
 router.get("/recent", async (req, res) => {
   const sortKey = sortKeys.recent[req.query.sort] || sortKeys.recent.added;
   const sortDirection = sortDirections[req.query.direction] || "DESC";
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
 
   try {
-    const recentSongsData = await Song.getRecentSongs(sortKey, sortDirection);
+    const recentSongsData = await Song.getRecentSongs(
+      sortKey,
+      sortDirection,
+      limit
+    );
     res.json({ data: recentSongsData });
   } catch (err) {
     console.error(err);
