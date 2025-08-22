@@ -62,7 +62,7 @@ const sortKeys = {
   },
   genres: {
     genre: "genre_tags.name",
-    songsCount: "songsCount",
+    songCount: "songCount",
   },
 };
 

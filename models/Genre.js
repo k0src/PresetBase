@@ -297,7 +297,7 @@ class Genre extends Entry {
 
       let sortClause;
       if (sort === "songCount") {
-        sortClause = `songCount ${direction}`;
+        sortClause = `COUNT(songs.id) ${direction}`;
       } else if (textFields.includes(sort)) {
         sortClause = `${sort} COLLATE NOCASE ${direction}`;
       } else {

@@ -1,5 +1,6 @@
 import { getGenresData, getTotalGenreEntries } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
+import { useAsyncData } from "../../hooks/useAsyncData.js";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
@@ -11,34 +12,21 @@ import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoRes
 import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
 
 export default function BrowseGenres() {
-  const [genresData, setGenresData] = useState(null);
-  const [totalEntries, setTotalEntries] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [sortBy, setSortBy] = useState("added");
-  const [sortDirection, setSortDirection] = useState("asc");
+  const [sortBy, setSortBy] = useState("songCount");
+  const [sortDirection, setSortDirection] = useState("desc");
   const [filterText, setFilterText] = useState("");
 
-  useEffect(() => {
-    const loadGenresData = async () => {
-      try {
-        setLoading(true);
-        const [genresDataRes, totalEntriesRes] = await Promise.all([
-          getGenresData(sortBy, sortDirection),
-          getTotalGenreEntries(),
-        ]);
+  const { data, loading, error } = useAsyncData(
+    {
+      genres: () => getGenresData(sortBy, sortDirection),
+      total: () => getTotalGenreEntries(),
+    },
+    [sortBy, sortDirection],
+    { cacheKey: `browseGenres-${sortBy}-${sortDirection}` }
+  );
 
-        setGenresData(genresDataRes.data);
-        setTotalEntries(totalEntriesRes.data);
-      } catch (err) {
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadGenresData();
-  }, [sortBy, sortDirection]);
+  const genresData = data.genres?.data || null;
+  const totalEntries = data.total?.data || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);
