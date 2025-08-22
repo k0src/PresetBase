@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./BrowseAllCategories.module.css";
 
@@ -10,7 +11,7 @@ import {
   FaUser,
 } from "react-icons/fa6";
 
-export default function BrowseAllCategories() {
+export default memo(function BrowseAllCategories() {
   return (
     <div id="allCategories" className={styles.categoriesContainer}>
       <Link to="/browse/songs" className={styles.categoryCard}>
@@ -39,4 +40,4 @@ export default function BrowseAllCategories() {
       </Link>
     </div>
   );
-}
+});

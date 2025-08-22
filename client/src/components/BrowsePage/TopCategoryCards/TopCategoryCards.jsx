@@ -1,9 +1,10 @@
+import { memo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./TopCategoryCards.module.css";
 
 import { FaKeyboard, FaMusic, FaSliders, FaUser } from "react-icons/fa6";
 
-export default function TopCategoryCards() {
+export default memo(function TopCategoryCards() {
   return (
     <div className={styles.topCategoryCards}>
       <Link to="/browse/songs" className={styles.topCategoryCard}>
@@ -24,4 +25,4 @@ export default function TopCategoryCards() {
       </Link>
     </div>
   );
-}
+});

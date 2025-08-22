@@ -1,7 +1,19 @@
+import { memo, useCallback } from "react";
 import styles from "./TopPresets.module.css";
 import classNames from "classnames";
 
-export default function TopPresets({ presetsData }) {
+export default memo(function TopPresets({ presetsData }) {
+  const getRankClass = useCallback((index) => {
+    if (index === 0) return styles.rankFirst;
+    if (index === 1) return styles.rankSecond;
+    if (index === 2) return styles.rankThird;
+    return "";
+  }, []);
+
+  const formatUsageCount = useCallback((count) => {
+    return count > 999 ? "999+" : count.toString();
+  }, []);
+
   if (!presetsData || presetsData.length === 0) {
     return (
       <div className={styles.topPresetsContainer}>
@@ -9,17 +21,6 @@ export default function TopPresets({ presetsData }) {
       </div>
     );
   }
-
-  const getRankClass = (index) => {
-    if (index === 0) return styles.rankFirst;
-    if (index === 1) return styles.rankSecond;
-    if (index === 2) return styles.rankThird;
-    return "";
-  };
-
-  const formatUsageCount = (count) => {
-    return count > 999 ? "999+" : count.toString();
-  };
 
   return (
     <div className={styles.topPresetsContainer}>
@@ -76,4 +77,4 @@ export default function TopPresets({ presetsData }) {
       </div>
     </div>
   );
-}
+});

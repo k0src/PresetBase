@@ -1,9 +1,9 @@
-import { memo } from "react";
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./BrowseEntryCards.module.css";
 
 const EntryCard = memo(function EntryCard({ entryData, entryType }) {
-  const renderCardContent = () => {
+  const cardContent = useMemo(() => {
     switch (entryType) {
       case "synth":
         return (
@@ -13,6 +13,7 @@ const EntryCard = memo(function EntryCard({ entryData, entryType }) {
                 src={`/uploads/images/approved/${entryData.imageUrl}`}
                 alt={entryData.name}
                 className={styles.entryCardImg}
+                loading="lazy"
               />
             </div>
             <div className={styles.entryCardRight}>
@@ -36,8 +37,9 @@ const EntryCard = memo(function EntryCard({ entryData, entryType }) {
             <div className={styles.imgContainer}>
               <img
                 src={`/uploads/images/approved/${entryData.imageUrl}`}
-                alt={entryData.name}
+                alt={entryData.title}
                 className={styles.entryCardImg}
+                loading="lazy"
               />
             </div>
             <div className={styles.entryCardRight}>
@@ -60,12 +62,16 @@ const EntryCard = memo(function EntryCard({ entryData, entryType }) {
       default:
         return null;
     }
-  };
+  }, [entryData, entryType]);
 
-  return renderCardContent();
+  return cardContent;
 });
 
-export default function BrowseEntryCards({ entriesData, entryType }) {
+export default memo(function BrowseEntryCards({ entriesData, entryType }) {
+  if (!entriesData || entriesData.length === 0) {
+    return <div className={styles.entryCardsContainer}></div>;
+  }
+
   return (
     <div className={styles.entryCardsContainer}>
       {entriesData.map((entry) => (
@@ -73,4 +79,4 @@ export default function BrowseEntryCards({ entriesData, entryType }) {
       ))}
     </div>
   );
-}
+});

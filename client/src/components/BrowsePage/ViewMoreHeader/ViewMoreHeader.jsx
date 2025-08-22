@@ -1,8 +1,9 @@
+import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 import styles from "./ViewMoreHeader.module.css";
 
-export default function ViewMoreHeader({ title, link }) {
-  const isAnchor = link.startsWith("#");
+export default memo(function ViewMoreHeader({ title, link }) {
+  const isAnchor = useMemo(() => link.startsWith("#"), [link]);
 
   return (
     <div className={styles.header}>
@@ -18,4 +19,4 @@ export default function ViewMoreHeader({ title, link }) {
       )}
     </div>
   );
-}
+});

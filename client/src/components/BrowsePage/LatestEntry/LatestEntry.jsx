@@ -1,15 +1,15 @@
-import { useMemo } from "react";
+import { memo, useMemo, useCallback } from "react";
 import { Link } from "react-router-dom";
 import styles from "./LatestEntry.module.css";
 
-export default function LatestEntry({ songData }) {
-  const convertTimestamp = (timestamp) => {
+export default memo(function LatestEntry({ songData }) {
+  const convertTimestamp = useCallback((timestamp) => {
     const date = new Date(timestamp);
     const now = new Date();
     const diffTime = Math.abs(now - date);
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
-  };
+  }, []);
 
   const { mainArtist, otherArtists, synths, addedDaysAgo } = useMemo(() => {
     if (!songData)
@@ -23,7 +23,11 @@ export default function LatestEntry({ songData }) {
     const addedDaysAgo = convertTimestamp(songData.timestamp);
 
     return { mainArtist: main, otherArtists: others, synths, addedDaysAgo };
-  }, [songData]);
+  }, [songData, convertTimestamp]);
+
+  if (!songData) {
+    return <div className={styles.latestEntry}></div>;
+  }
 
   return (
     <Link to={`/song/${songData.id}`} className={styles.latestEntry}>
@@ -72,4 +76,4 @@ export default function LatestEntry({ songData }) {
       </div>
     </Link>
   );
-}
+});
