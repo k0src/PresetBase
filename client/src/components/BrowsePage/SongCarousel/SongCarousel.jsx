@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import styles from "./SongCarousel.module.css";
+import classNames from "classnames";
 
 export default function SongCarousel({ songData }) {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -22,7 +23,12 @@ export default function SongCarousel({ songData }) {
   }, []);
 
   const nextSlide = useCallback(() => {
+    setIsMoving(true);
     setCurrentSlide((prev) => (prev + 1) % totalSlides);
+
+    setTimeout(() => {
+      setIsMoving(false);
+    }, 500);
   }, [totalSlides]);
 
   const startAutoSlide = useCallback(() => {
@@ -70,9 +76,9 @@ export default function SongCarousel({ songData }) {
 
   return (
     <div
-      className={`${styles.songCarousel} ${
-        isMoving ? styles.songCarouselMoving : ""
-      }`}
+      className={classNames(styles.songCarousel, {
+        [styles.songCarouselMoving]: isMoving,
+      })}
     >
       <div className={styles.carouselTrack}>
         {Array.from({ length: totalSlides }, (_, slideIndex) => (
@@ -125,9 +131,9 @@ export default function SongCarousel({ songData }) {
           {Array.from({ length: totalSlides }, (_, index) => (
             <button
               key={index}
-              className={`${styles.carouselNavDot} ${
-                index === currentSlide ? styles.carouselNavDotActive : ""
-              }`}
+              className={classNames(styles.carouselNavDot, {
+                [styles.carouselNavDotActive]: index === currentSlide,
+              })}
               onClick={() => handleDotClick(index)}
             />
           ))}
