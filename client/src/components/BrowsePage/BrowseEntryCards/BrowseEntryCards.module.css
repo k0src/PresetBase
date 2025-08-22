@@ -1,0 +1,87 @@
+.entryCardsContainer {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.2rem;
+}
+
+.entryCard {
+  overflow: hidden;
+  cursor: pointer;
+  flex-shrink: 0;
+  background-color: #171b1f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.4rem;
+  border-radius: 0.8rem;
+  padding: 1.8rem;
+  border: 0.2rem solid #2d343a;
+  transition: background-color 0.2s ease;
+}
+.entryCard:hover {
+  background-color: #15181c;
+}
+
+.imgContainer {
+  position: relative;
+}
+
+.entryCardImg {
+  width: 9.6rem;
+  height: 9.6rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.8rem;
+}
+
+.entryCardRight {
+  padding: 0.2rem 0;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.entryCardTextSecondary,
+.entryCardTextPrimary,
+.entryCardTextTertiary,
+.entryCardTextYear {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.entryCardTextSecondary {
+  font-size: 1.2rem;
+  color: #899096;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.entryCardTextPrimary {
+  font-family: "Sora", sans-serif;
+  font-size: 2rem;
+  font-weight: 600;
+}
+
+.entryCardTextTertiary {
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.entryCardTextYear {
+  font-size: 1.1rem;
+  font-weight: 500;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  border: 0.1rem #2d343a solid;
+  background-color: #202429;
+}

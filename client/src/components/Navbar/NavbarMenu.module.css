@@ -45,13 +45,13 @@
   transform-origin: top center;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 2.4rem;
   background-color: #171b1f;
   border: 0.2rem solid #2d343a;
   font-size: 1.4rem;
   color: #899096;
-  border-radius: 0.4rem;
-  padding: 1.4rem;
+  border-radius: 0.8rem;
+  padding: 1.8rem;
   opacity: 0;
   animation: menuFadeIn 0.2s ease-out forwards;
 }

@@ -3,6 +3,8 @@ const router = express.Router();
 const { dbAll, dbGet } = require("../../util/UTIL.js");
 const Song = require("../../models/Song.js");
 const Genre = require("../../models/Genre.js");
+const Synth = require("../../models/Synth.js");
+const Preset = require("../../models/Preset.js");
 
 router.get("/latest-entry", async (req, res) => {
   try {
@@ -27,6 +29,38 @@ router.get("/top-genres", async (req, res) => {
   try {
     const topGenres = await Genre.getTopGenres(limit);
     res.json({ data: topGenres });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/top-synths", async (req, res) => {
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
+
+  try {
+    const topSynths = await Synth.getTopSynths(limit);
+    res.json({ data: topSynths });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/top-presets", async (req, res) => {
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
+
+  try {
+    const topPresets = await Preset.getTopPresets(limit);
+    res.json({ data: topPresets });
   } catch (err) {
     console.error(err);
     return res

@@ -2,13 +2,17 @@ import {
   getNumberEntries,
   getLatestEntry,
   getTopGenres,
+  getTopSynths,
+  getTopPresets,
 } from "../../../api/api";
-import { getHotSongsData } from "../../../api/browse";
+import {
+  getHotSongsData,
+  getRecentSongsData,
+  getPopularSongsData,
+} from "../../../api/browse";
 import { useAsyncData } from "../../../hooks/useAsyncData";
 
-import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
-import { Link } from "react-router-dom";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import PageLoader from "../../../components/PageLoader/PageLoader";
@@ -17,9 +21,12 @@ import ViewMoreHeader from "../../../components/BrowsePage/ViewMoreHeader/ViewMo
 import SongCarousel from "../../../components/BrowsePage/SongCarousel/SongCarousel";
 import TopCategoryCards from "../../../components/BrowsePage/TopCategoryCards/TopCategoryCards";
 import BrowsePageHeader from "../../../components/BrowsePage/BrowsePageHeader/BrowsePageHeader";
-import styles from "./BrowsePage.module.css";
 import LatestEntry from "../../../components/BrowsePage/LatestEntry/LatestEntry";
 import TopGenres from "../../../components/BrowsePage/TopGenres/TopGenres";
+import BrowseEntryCards from "../../../components/BrowsePage/BrowseEntryCards/BrowseEntryCards";
+import BrowseAllCategories from "../../../components/BrowsePage/BrowseAllCategories/BrowseAllCategories";
+import TopPresets from "../../../components/BrowsePage/TopPresets/TopPresets";
+import styles from "./BrowsePage.module.css";
 
 export default function BrowsePage() {
   const { data, loading, error } = useAsyncData(
@@ -27,7 +34,11 @@ export default function BrowsePage() {
       numberEntries: () => getNumberEntries(),
       hotSongs: () => getHotSongsData(null, "DESC", 9),
       latestEntry: () => getLatestEntry(),
-      topGenres: () => getTopGenres(),
+      topGenres: () => getTopGenres(6),
+      topSynths: () => getTopSynths(6),
+      recentSongs: () => getRecentSongsData(null, "DESC", 6),
+      popularSongs: () => getPopularSongsData(null, "DESC", 6),
+      topPresets: () => getTopPresets(10),
     },
     [],
     { cacheKey: "browsePageData" }
@@ -37,6 +48,10 @@ export default function BrowsePage() {
   const hotSongsData = data.hotSongs?.data || null;
   const latestEntryData = data.latestEntry?.data || null;
   const topGenresData = data.topGenres?.data || null;
+  const topSynthsData = data.topSynths?.data || null;
+  const recentSongsData = data.recentSongs?.data || null;
+  const popularSongsData = data.popularSongs?.data || null;
+  const topPresetsData = data.topPresets?.data || null;
 
   if (loading) return <PageLoader />;
 
@@ -83,12 +98,46 @@ export default function BrowsePage() {
                 <LatestEntry songData={latestEntryData} />
               </div>
 
+              <div className={styles.recentSongsSection}>
+                <ViewMoreHeader title="Recently Added" link="/browse/recent" />
+                <BrowseEntryCards
+                  entriesData={recentSongsData}
+                  entryType="song"
+                />
+              </div>
+
+              <div className={styles.popularSongsSection}>
+                <ViewMoreHeader title="Popular Songs" link="/browse/popular" />
+                <BrowseEntryCards
+                  entriesData={popularSongsData}
+                  entryType="song"
+                />
+              </div>
+
+              <div className={styles.browseCategoriesSection}>
+                <BrowsePageHeader title="Browse All" />
+                <BrowseAllCategories />
+              </div>
+            </div>
+            <div className={styles.browseColumnsRight}>
+              <div className={styles.topPresetsSection}>
+                <ViewMoreHeader title="Top Presets" link="/browse/presets" />
+                <TopPresets presetsData={topPresetsData} />
+              </div>
+
               <div className={styles.topGenresSection}>
                 <ViewMoreHeader title="Top Genres" link="/browse/genres" />
                 <TopGenres genresData={topGenresData} />
               </div>
+
+              <div className={styles.topSynthsSection}>
+                <ViewMoreHeader title="Popular Synths" link="/browse/synths" />
+                <BrowseEntryCards
+                  entriesData={topSynthsData}
+                  entryType="synth"
+                />
+              </div>
             </div>
-            <div className={styles.browseColumnsRight}></div>
           </div>
         </section>
       </ContentContainer>

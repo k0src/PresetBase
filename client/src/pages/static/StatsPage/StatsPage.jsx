@@ -7,8 +7,8 @@ import TopPresetsChart from "../../../components/Stats/TopPresetsChart/TopPreset
 import PresetsPerSynthChart from "../../../components/Stats/PresetsPerSynthChart/PresetsPerSynthChart";
 import TopSynthsChart from "../../../components/Stats/TopSynthsChart/TopSynthsChart";
 import SynthTimeChart from "../../../components/Stats/SynthTimeChart/SynthTimeChart";
-import CommunityStats from "../../../components/Stats/CommunityStats/CommunityStats";
-import HeatmapChart from "../../../components/Stats/HeatmapChart/HeatmapChart";
+// import CommunityStats from "../../../components/Stats/CommunityStats/CommunityStats";
+// import HeatmapChart from "../../../components/Stats/HeatmapChart/HeatmapChart";
 import PageLoader from "../../../components/PageLoader/PageLoader";
 import DbError from "../../../components/DbError/DbError";
 import { useStatsData } from "../../../hooks/useStatsData";
@@ -98,10 +98,10 @@ export default function StatsPage() {
           <SynthTimeChart data={data.synthTimeData} />
         </div>
 
+        {/* 
         <div className={styles.statsHeaderSecondary}>
           <h2 className={styles.headingSecondary}>Community Stats</h2>
         </div>
-
         <div className={styles.communityStatsContainer}>
           <HeatmapChart
             data={data.heatmapData}
@@ -109,7 +109,7 @@ export default function StatsPage() {
             onYearChange={refetchHeatmapData}
           />
           <CommunityStats data={data.communityStats} />
-        </div>
+        </div> */}
       </ContentContainer>
     </>
   );

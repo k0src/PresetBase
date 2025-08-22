@@ -1,0 +1,171 @@
+.topPresetsContainer {
+  background-color: #202429;
+  border-radius: 0.8rem;
+  border: 0.2rem solid #2d343a;
+  overflow: hidden;
+}
+
+.noPresets {
+  font-size: 1.6rem;
+  color: #899096;
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.tableHeader {
+  display: grid;
+  grid-template-columns: 2rem 1.5fr 1fr 8rem 14rem;
+  gap: 1.8rem;
+  padding: 1.6rem 2rem;
+  background-color: #171b1f;
+  border-bottom: 0.1rem solid #2d343a;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #899096;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+}
+
+.headerRank,
+.headerPreset,
+.headerSynth,
+.headerUsageType,
+.headerUsageCount {
+  display: flex;
+  align-items: center;
+}
+
+.tableBody {
+  display: flex;
+  flex-direction: column;
+}
+
+.tableRow {
+  display: grid;
+  grid-template-columns: 2rem 1.5fr 1fr 8rem 14rem;
+  gap: 1.8rem;
+  padding: 1.4rem 2rem;
+  border-bottom: 0.1rem solid #2d343a;
+  transition: background-color 0.2s ease;
+  align-items: center;
+}
+
+.tableRow:last-child {
+  border-bottom: none;
+}
+
+.rankNumber {
+  font-size: 1.6rem;
+  color: #899096;
+}
+
+.rankFirst {
+  color: #ffd700;
+}
+
+.rankSecond {
+  color: #c0c0c0;
+}
+
+.rankThird {
+  color: #cd7f32;
+}
+
+.presetCell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.presetName {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #e3e5e4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.synthCell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.synthName {
+  font-size: 1.4rem;
+  color: #899096;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.usageTypeCell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.usageTypeText {
+  font-size: 1.4rem;
+  color: #e3e5e4;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.usageCountCell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.usageCountWrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: 0.8rem;
+}
+
+.usageCountNumber {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: #e3e5e4;
+  min-width: 3rem;
+}
+
+.usageCountBar {
+  flex: 1;
+  height: 0.6rem;
+  background-color: #2d343a;
+  border-radius: 0.4rem;
+  overflow: hidden;
+}
+
+.usageCountFill {
+  height: 100%;
+  background: linear-gradient(90deg, #899096, #a5b2ba);
+  border-radius: 0.3rem;
+  transition: width 0.3s ease-in-out;
+}
+
+.usageCountFill.rankFirst {
+  background: linear-gradient(90deg, #ffd700, #ffed4e);
+}
+
+.usageCountFill.rankSecond {
+  background: linear-gradient(90deg, #c0c0c0, #d9d9d9);
+}
+
+.usageCountFill.rankThird {
+  background: linear-gradient(90deg, #cd7f32, #e89a5b);
+}

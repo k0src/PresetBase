@@ -251,6 +251,59 @@ class Preset extends Entry {
       throw new Error(`Error fetching all presets: ${err.message}`);
     }
   }
+
+  // Get top presets
+  static async getTopPresets(limit = null) {
+    try {
+      const query = `
+        SELECT
+          presets.id AS id,
+          presets.preset_name AS name,
+          json_object(
+            'id', synths.id,
+            'name', synths.synth_name,
+            'imageUrl', synths.image_url
+          ) AS synth,
+          preset_usage_stats.most_common_usage_type AS usageType,
+          preset_usage_stats.total_usage_count AS usageCount
+        FROM presets
+        LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+        LEFT JOIN synths ON preset_synths.synth_id = synths.id
+        LEFT JOIN (
+          SELECT 
+            song_presets.preset_id,
+            COUNT(*) AS total_usage_count,
+            (
+              SELECT sp_inner.usage_type
+              FROM song_presets sp_inner
+              WHERE sp_inner.preset_id = song_presets.preset_id
+              GROUP BY sp_inner.usage_type
+              ORDER BY COUNT(*) DESC
+              LIMIT 1
+            ) AS most_common_usage_type
+          FROM song_presets
+          GROUP BY song_presets.preset_id
+        ) AS preset_usage_stats ON presets.id = preset_usage_stats.preset_id
+        WHERE preset_usage_stats.total_usage_count IS NOT NULL
+        ORDER BY preset_usage_stats.total_usage_count DESC
+        ${limit ? "LIMIT ?" : ""}`;
+
+      const params = [];
+      if (limit) params.push(limit);
+
+      const topPresetsData = await DB.all(query, params);
+
+      if (topPresetsData) {
+        topPresetsData.forEach((preset) => {
+          preset.synth = JSON.parse(preset.synth || "{}");
+        });
+      }
+
+      return topPresetsData;
+    } catch (err) {
+      throw new Error(`Error fetching top presets: ${err.message}`);
+    }
+  }
 }
 
 module.exports = Preset;

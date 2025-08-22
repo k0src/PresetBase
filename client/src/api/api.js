@@ -51,8 +51,20 @@ export async function getLatestEntry() {
   return res.json();
 }
 
-export async function getTopGenres(limit = 6) {
+export async function getTopGenres(limit = null) {
   const res = await fetch(`/api/top-genres?limit=${limit}`);
   if (!res.ok) throw new Error("Failed to fetch top genres");
+  return res.json();
+}
+
+export async function getTopSynths(limit = null) {
+  const res = await fetch(`/api/top-synths?limit=${limit}`);
+  if (!res.ok) throw new Error("Failed to fetch top synths");
+  return res.json();
+}
+
+export async function getTopPresets(limit = null) {
+  const res = await fetch(`/api/top-presets?limit=${limit}`);
+  if (!res.ok) throw new Error("Failed to fetch top presets");
   return res.json();
 }

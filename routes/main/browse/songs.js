@@ -47,6 +47,7 @@ router.get("/popular", async (req, res) => {
       sortDirection,
       limit
     );
+
     res.json({ data: popularSongsData });
   } catch (err) {
     console.error(err);

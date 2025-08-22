@@ -320,6 +320,57 @@ class Synth extends Entry {
       throw new Error(`Error fetching all synths: ${err.message}`);
     }
   }
+
+  // Get top synths by preset usage
+  static async getTopSynths(limit = null) {
+    try {
+      const query = `
+        SELECT
+          synths.id AS id,
+          synths.synth_name AS name,
+          synths.manufacturer,
+          synths.synth_type AS type,
+          synths.image_url AS imageUrl,
+          synths.release_year AS year,
+          synths.timestamp AS timestamp,
+
+          json_group_array(
+            DISTINCT json_object(
+              'id', presets.id,
+              'name', presets.preset_name,
+              'packName', presets.pack_name,
+              'author', presets.author,
+              'synthId', synths.id,
+              'imageUrl', synths.image_url
+            )
+          ) AS presets,
+
+        COALESCE(SUM(synth_clicks.clicks), 0) AS clicks
+
+        FROM synths
+        LEFT JOIN preset_synths ON synths.id = preset_synths.synth_id
+        LEFT JOIN presets ON preset_synths.preset_id = presets.id
+        LEFT JOIN synth_clicks ON synths.id = synth_clicks.synth_id
+        GROUP BY synths.id
+        ORDER BY clicks DESC
+        ${limit ? "LIMIT ?" : ""}`;
+
+      const params = [];
+      if (limit) params.push(limit);
+
+      const topSynthsData = await DB.all(query, params);
+
+      if (topSynthsData) {
+        topSynthsData.forEach((synth) => {
+          synth.presets = JSON.parse(synth.presets || "[]");
+        });
+      }
+
+      return topSynthsData;
+    } catch (err) {
+      throw new Error(`Error fetching top synths: ${err.message}`);
+    }
+  }
 }
 
 module.exports = Synth;
