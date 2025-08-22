@@ -1,6 +1,39 @@
 const express = require("express");
 const router = express.Router();
 const { dbAll, dbGet } = require("../../util/UTIL.js");
+const Song = require("../../models/Song.js");
+const Genre = require("../../models/Genre.js");
+
+router.get("/latest-entry", async (req, res) => {
+  try {
+    const latestEntry = await Song.getLatestSong();
+    if (!latestEntry)
+      return res.status(404).json({ error: "No entries found" });
+
+    res.json({ data: latestEntry });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/top-genres", async (req, res) => {
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
+
+  try {
+    const topGenres = await Genre.getTopGenres(limit);
+    res.json({ data: topGenres });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
 
 router.get("/autofill/data/:type", async (req, res) => {
   const types = [

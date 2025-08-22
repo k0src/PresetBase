@@ -1,0 +1,11 @@
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}

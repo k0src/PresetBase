@@ -1,7 +1,6 @@
 .songCarousel {
   overflow: hidden;
   position: relative;
-  padding: 0.2rem 0;
 }
 
 .songCarousel::before,
@@ -39,7 +38,7 @@
 
 .carouselSlide {
   display: flex;
-  gap: 1.6rem;
+  gap: 1.4rem;
   min-width: 100%;
   flex-shrink: 0;
   transition: transform 0.5s ease-in-out;
@@ -57,14 +56,13 @@
   border-radius: 0.8rem;
   padding: 1.8rem;
   border: 0.2rem solid #2d343a;
-  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   transition: background-color 0.2s ease;
   text-decoration: none;
   color: inherit;
 }
 
 .songItem:hover {
-  background-color: #23262a;
+  background-color: #15181c;
 }
 
 .songImgContainer {

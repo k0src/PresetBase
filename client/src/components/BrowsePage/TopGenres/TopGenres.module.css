@@ -1,0 +1,81 @@
+.topGenresContainer {
+  overflow: hidden;
+  background-color: #2d343a;
+  border-radius: 0.8rem;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, minmax(0, 1fr));
+  row-gap: 1.8rem;
+  padding: 1.8rem 0;
+  justify-items: center;
+  align-items: center;
+}
+
+.genreEntry {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  width: 100%;
+  max-width: 16rem;
+  overflow: hidden;
+}
+
+.imgContainer {
+  position: relative;
+}
+
+.genreImg {
+  width: 14rem;
+  height: 14rem;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  flex-shrink: 0;
+  border-radius: 0.8rem;
+  overflow: hidden;
+  filter: brightness(0.2) contrast(0.75);
+  -webkit-filter: brightness(0.2) contrast(0.75);
+  display: block;
+}
+
+.genreIcon {
+  position: absolute;
+  font-size: 6.4rem;
+  bottom: 50%;
+  right: 50%;
+  transform: translate(50%, 50%);
+  text-shadow: 0 0.2rem 0.8rem rgba(0, 0, 0, 0.05);
+}
+
+.titleContainer {
+  width: 16rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding: 0 1.2rem;
+}
+
+.genreTitle,
+.genreCount {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.genreTitle {
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.genreCount {
+  font-size: 1.2rem;
+  color: #899096;
+  text-transform: uppercase;
+  font-weight: 700;
+}

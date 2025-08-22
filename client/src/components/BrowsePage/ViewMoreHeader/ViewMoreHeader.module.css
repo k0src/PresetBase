@@ -1,0 +1,22 @@
+.header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}
+
+.viewMoreLink:link,
+.viewMoreLink:visited {
+  color: #899096 !important;
+  font-size: 1.6rem;
+  transition: color 0.2s ease;
+}
+
+.viewMoreLink:hover {
+  color: #e3e5e4 !important;
+}

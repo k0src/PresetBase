@@ -302,6 +302,69 @@ class Song extends Entry {
     }
   }
 
+  // Get latest song
+  static async getLatestSong() {
+    try {
+      const query = `
+        SELECT
+          songs.id AS id,
+          songs.title AS title,
+          songs.song_url AS songUrl,
+          songs.image_url AS imageUrl,
+          songs.genre AS genre,
+          songs.release_year AS year,
+          songs.timestamp AS timestamp,
+          json_object('id', albums.id, 'title', albums.title) AS album,
+
+          json_group_array(
+            DISTINCT json_object(
+              'id', artists.id,
+              'name', artists.name,
+              'role', song_artists.role
+            )
+          ) AS artists,
+
+          json_group_array(
+            DISTINCT json_object(
+              'id', presets.id,
+              'name', presets.preset_name,
+              'usageType', song_presets.usage_type,
+              'audioUrl', song_presets.audio_url,
+              'synth', json_object(
+                'id', synths.id,
+                'name', synths.synth_name,
+                'imageUrl', synths.image_url
+              )
+            )
+          ) AS presets
+
+        FROM songs
+        LEFT JOIN album_songs ON songs.id = album_songs.song_id
+        LEFT JOIN albums ON album_songs.album_id = albums.id
+        LEFT JOIN song_artists ON songs.id = song_artists.song_id
+        LEFT JOIN artists ON song_artists.artist_id = artists.id
+        LEFT JOIN song_presets ON songs.id = song_presets.song_id
+        LEFT JOIN presets ON song_presets.preset_id = presets.id
+        LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+        LEFT JOIN synths ON preset_synths.synth_id = synths.id
+        GROUP BY songs.id
+        ORDER BY songs.timestamp DESC
+        LIMIT 1`;
+
+      const songData = await DB.get(query);
+
+      if (songData) {
+        songData.album = JSON.parse(songData.album || "{}");
+        songData.artists = JSON.parse(songData.artists || "[]");
+        songData.presets = JSON.parse(songData.presets || "[]");
+      }
+
+      return songData;
+    } catch (err) {
+      throw new Error(`Error fetching latest song: ${err.message}`);
+    }
+  }
+
   // Get all songs
   static async getAll(
     sort = "songs.timestamp",

@@ -1,0 +1,32 @@
+.browseHeader {
+  padding: 3.2rem 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.totalEntriesText {
+  color: #899096;
+  font-size: 1.3rem;
+}
+
+.browseColumns {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-top: 3.2rem;
+  gap: 3.2rem;
+}
+
+.browseColumnsLeft,
+.browseColumnsRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 3.2rem;
+}

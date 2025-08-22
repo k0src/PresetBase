@@ -44,3 +44,15 @@ export async function getAutofillData(type, query) {
   if (!res.ok) throw new Error("Failed to fetch autofill data");
   return res.json();
 }
+
+export async function getLatestEntry() {
+  const res = await fetch("/api/latest-entry");
+  if (!res.ok) throw new Error("Failed to fetch latest entry");
+  return res.json();
+}
+
+export async function getTopGenres(limit = 6) {
+  const res = await fetch(`/api/top-genres?limit=${limit}`);
+  if (!res.ok) throw new Error("Failed to fetch top genres");
+  return res.json();
+}

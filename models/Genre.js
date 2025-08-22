@@ -326,6 +326,36 @@ class Genre extends Entry {
       throw new Error(`Error fetching all genres: ${err.message}`);
     }
   }
+
+  // Get top genres
+  static async getTopGenres(limit = null) {
+    try {
+      const query = `
+        SELECT
+          genre_tags.id AS id,
+          genre_tags.name AS name,
+          genre_tags.slug AS slug,
+          genre_tags.text_color AS textColor,
+          genre_tags.border_color AS borderColor,
+          genre_tags.bg_color AS backgroundColor,
+          COUNT(songs.id) AS songCount,
+          MAX(songs.image_url) AS imageUrl
+        FROM genre_tags
+        LEFT JOIN songs ON songs.genre = genre_tags.name
+        GROUP BY genre_tags.id, genre_tags.name, genre_tags.slug, 
+          genre_tags.text_color, genre_tags.border_color, genre_tags.bg_color
+        HAVING songCount > 0
+        ORDER BY songCount DESC
+        ${limit ? "LIMIT ?" : ""}`;
+
+      const params = [];
+      if (limit) params.push(limit);
+
+      return await DB.all(query, params);
+    } catch (err) {
+      throw new Error(`Error fetching top genres: ${err.message}`);
+    }
+  }
 }
 
 module.exports = Genre;
