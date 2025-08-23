@@ -17,6 +17,9 @@ const ImageInput = forwardRef(function ImageInput(
     required,
     disabled,
     dataKey,
+    initialImage = null,
+    isApprovalMode = false,
+    isFilled = false,
     options = { minImgSize: 1000, maxImgSize: 5000 },
   },
   ref
@@ -28,16 +31,38 @@ const ImageInput = forwardRef(function ImageInput(
   const fileInputRef = useRef(null);
   const hiddenInputRef = useRef(null);
 
-  const resetComponent = () => {
-    setFileName("No file selected.");
-    setImageSrc(placeholderImage);
-    setIsAutofilled(false);
-    setAutofilledValue("");
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+  useEffect(() => {
+    if (initialImage && isApprovalMode && initialImage.trim()) {
+      let imagePath;
+      if (initialImage.startsWith("/uploads/")) {
+        imagePath = initialImage;
+      } else {
+        const folder = isFilled ? "approved" : "pending";
+        imagePath = `/uploads/images/${folder}/${initialImage}`;
+      }
+
+      setImageSrc(imagePath);
+      setFileName("Uploaded Image");
+      setIsAutofilled(true);
+      setAutofilledValue(initialImage);
+      if (hiddenInputRef.current) {
+        hiddenInputRef.current.value = initialImage;
+      }
     }
-    if (hiddenInputRef.current) {
-      hiddenInputRef.current.value = "";
+  }, [initialImage, isApprovalMode, isFilled]);
+
+  const resetComponent = () => {
+    if (!isApprovalMode) {
+      setFileName("No file selected.");
+      setImageSrc(placeholderImage);
+      setIsAutofilled(false);
+      setAutofilledValue("");
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+      if (hiddenInputRef.current) {
+        hiddenInputRef.current.value = "";
+      }
     }
   };
 

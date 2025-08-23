@@ -1,0 +1,58 @@
+.submissionHeader {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.6rem;
+  padding: 1.6rem 2rem;
+  background-color: #171b1f;
+  border-radius: 0.8rem;
+  margin-bottom: 1.8rem;
+  border: 0.2rem solid #2d343a;
+}
+
+.submissionHeaderSection {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.submissionHeaderIcon {
+  font-size: 1.4rem;
+  color: #899096;
+}
+
+.submissionHeaderText {
+  font-size: 1.4rem;
+  color: #e3e5e4;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.submissionHeaderKbd {
+  font-family: monospace;
+  font-size: 1.4rem;
+  color: #6c7278;
+  background-color: #1e2227;
+  padding: 0.3rem 0.6rem;
+  border-radius: 0.4rem;
+  border: 1px solid #2d343a;
+}
+
+.submissionHeaderDivider {
+  width: 1px;
+  height: 2rem;
+  background-color: #2d343a;
+}
+
+@media (max-width: 768px) {
+  .submissionHeader {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .submissionHeaderDivider {
+    display: none;
+  }
+}

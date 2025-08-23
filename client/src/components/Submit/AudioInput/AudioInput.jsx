@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import styles from "./AudioInput.module.css";
 import { FaCirclePlay, FaCircleStop } from "react-icons/fa6";
 import { useAudioPlayer } from "../../../hooks/useAudioPlayer";
@@ -8,14 +8,37 @@ export default function AudioInput({
   id,
   children,
   required,
+  initialAudio = null,
+  isApprovalMode = false,
+  isFilled = false,
   options = { minAudioDuration: 0, maxAudioDuration: 120 },
 }) {
   const [fileName, setFileName] = useState("No file selected.");
   const [audioFile, setAudioFile] = useState(null);
   const fileInputRef = useRef(null);
+  const hiddenInputRef = useRef(null);
 
   const { playingAudio, handleAudioToggle, addAudioSource, removeAudioSource } =
     useAudioPlayer();
+
+  useEffect(() => {
+    if (initialAudio && isApprovalMode && initialAudio.trim()) {
+      let audioPath;
+      if (initialAudio.startsWith("/uploads/")) {
+        audioPath = initialAudio;
+      } else {
+        const folder = isFilled ? "approved" : "pending";
+        audioPath = `/uploads/audio/${folder}/${initialAudio}`;
+      }
+
+      setAudioFile(audioPath);
+      setFileName("Pre-uploaded Audio");
+      addAudioSource(id, audioPath);
+      if (hiddenInputRef.current) {
+        hiddenInputRef.current.value = initialAudio;
+      }
+    }
+  }, [initialAudio, isApprovalMode, isFilled, id, addAudioSource]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -116,6 +139,13 @@ export default function AudioInput({
             accept="audio/mpeg"
             required={required || false}
             onChange={handleFileChange}
+          />
+          {/* Hidden input for pre-existing audio files */}
+          <input
+            ref={hiddenInputRef}
+            type="hidden"
+            name={`${id}_existing`}
+            defaultValue=""
           />
         </div>
       </div>

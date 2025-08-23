@@ -1,4 +1,34 @@
-/* Styles for AdminApprovals component */
-.adminapprovals {
-  /* Add your styles here */
+.submitHeader {
+  padding: 3.2rem 0 2rem 0;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
+}
+
+.submissionsContainer {
+  padding: 2.4rem 0 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2.8rem;
+}
+
+.noSubmissionsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3.2rem 0;
+}
+
+.noSubmissionsText {
+  font-size: 1.8rem;
+  color: #899096;
 }

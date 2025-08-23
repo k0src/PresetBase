@@ -30,7 +30,7 @@ import BrowseRecent from "./pages/browse/BrowseRecent";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
 // import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
 
-// import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
+import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 // import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
 // import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
 // import AdminManageDb from "./pages/admin/AdminManageDb/AdminManageDb";
@@ -76,7 +76,7 @@ function App() {
         {/* <Route path="/account-info" element={<AccountInfoPage />} /> */}
 
         {/* Admin routes */}
-        {/* <Route path="/admin/approvals" element={<AdminApprovals />} /> */}
+        <Route path="/admin/approvals" element={<AdminApprovals />} />
         {/* <Route path="/admin/upload" element={<AdminUpload />} /> */}
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
@@ -88,71 +88,3 @@ function App() {
 }
 
 export default App;
-
-/*
-const router = createBrowserRouter([
-  // Static routes
-  { path: "/", element: <HomePage /> },
-  { path: "/about-us", element: <AboutPage /> },
-  { path: "/privacy-policy", element: <PrivacyPolicy /> },
-  { path: "/copyright", element: <Copyright /> },
-  { path: "/upload-tos", element: <UploadTos /> },
-  { path: "/stats", element: <StatsPage /> },
-  { path: "/search", element: <SearchPage /> },
-  { path: "/submit", element: <SubmitPage /> },
-
-  // Entry routes
-  { path: "/song/:id", element: <SongPage /> },
-  { path: "/album/:id", element: <AlbumPage /> },
-  { path: "/artist/:id", element: <ArtistPage /> },
-  { path: "/synth/:id", element: <SynthPage /> },
-
-  // Browse routes
-  {
-    path: "/browse",
-    element: <BrowsePage />,
-    children: [
-      { path: "songs", element: <BrowseSongs /> },
-      { path: "artists", element: <BrowseArtists /> },
-      { path: "albums", element: <BrowseAlbums /> },
-      { path: "synths", element: <BrowseSynths /> },
-      { path: "presets", element: <BrowsePresets /> },
-      { path: "genres", element: <BrowseGenres /> },
-      { path: "popular", element: <BrowsePopular /> },
-      { path: "hot", element: <BrowseHot /> },
-      { path: "recent", element: <BrowseRecent /> },
-    ],
-  },
-
-  // Auth routes
-  {
-    path: "/auth",
-    element: <Auth />,
-    children: [
-      { path: "login", element: <LoginPage /> },
-      { path: "account-info", element: <AccountInfoPage /> },
-    ],
-  },
-
-  // Admin routes
-  {
-    path: "/admin",
-    element: <AdminDashboard />,
-    children: [
-      { path: "approvals", element: <AdminApprovals /> },
-      { path: "upload", element: <AdminUpload /> },
-      { path: "manage-users", element: <AdminManageUsers /> },
-      { path: "manage-db", element: <AdminManageDb /> },
-    ],
-  },
-
-  // Catch-all
-  { path: "*", element: <NotFound /> },
-]);
-
-function App() {
-  return <RouterProvider router={router} />;
-}
-
-export default App;
-*/

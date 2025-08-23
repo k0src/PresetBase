@@ -105,8 +105,8 @@ app.use("/api/browse/genres", browseGenresRoutes);
 // const recentlyAddedRoute = require("./routes/main/browse/recent");
 // app.use("/browse/recent", recentlyAddedRoute);
 
-// const adminRoute = require("./routes/admin/admin");
-// app.use("/admin", adminRoute);
+const adminRoute = require("./routes/admin/admin");
+app.use("/api/admin", adminRoute);
 // const adminApprovalsRoute = require("./routes/admin/approvals");
 // app.use("/admin/approvals", adminApprovalsRoute);
 // const adminUploadRoute = require("./routes/admin/upload");
