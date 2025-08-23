@@ -89,7 +89,7 @@
   cursor: not-allowed;
 }
 
-.customImageInput.disabled .browse-button {
+.customImageInput.disabled .button {
   background-color: #2a2d32;
   cursor: not-allowed;
 }

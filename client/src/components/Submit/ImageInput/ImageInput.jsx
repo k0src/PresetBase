@@ -193,7 +193,6 @@ const ImageInput = forwardRef(function ImageInput(
               disabled={disabled}
               onChange={handleFileChange}
             />
-            {/* Hidden input for autofilled images */}
             <input
               ref={hiddenInputRef}
               type="hidden"

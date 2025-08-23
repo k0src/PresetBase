@@ -31,7 +31,7 @@ import LoginPage from "./pages/auth/LoginPage/LoginPage";
 // import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
 
 import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
-// import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
+import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
 // import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
 // import AdminManageDb from "./pages/admin/AdminManageDb/AdminManageDb";
 
@@ -77,7 +77,7 @@ function App() {
 
         {/* Admin routes */}
         <Route path="/admin/approvals" element={<AdminApprovals />} />
-        {/* <Route path="/admin/upload" element={<AdminUpload />} /> */}
+        <Route path="/admin/upload" element={<AdminUpload />} />
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
 

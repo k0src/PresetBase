@@ -7,7 +7,7 @@ const AdminManager = require("../../models/AdminManager.js");
 router.get("/pending-submissions", async (req, res) => {
   try {
     // add support for user id later - dummy ID 1
-
+    // this should be in the AdminManager
     const pendingSubmissionsData = await dbAll(
       "SELECT id, data, submitted_at, user_id FROM pending_submissions"
     );
@@ -52,6 +52,22 @@ router.post("/deny-submission", async (req, res) => {
     await AdminManager.denySubmission(req.body.submissionId);
 
     res.status(200).json({ message: "Submission denied successfully" });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.post("/upload", multer, async (req, res) => {
+  try {
+    await AdminManager.uploadEntry({
+      formData: req.body,
+      fileData: req.files,
+    });
+
+    res.status(200).json({ message: "Entry uploaded successfully" });
   } catch (err) {
     console.error(err);
     return res

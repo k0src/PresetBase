@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "dev": "concurrently \"nodemon server.js\" \"npm run dev --prefix client\""
+    "dev": "concurrently \"nodemon server.js\" \"npm run dev --prefix client\"",
+    "db": "node backup-db.js"
   },
   "keywords": [],
   "author": "",

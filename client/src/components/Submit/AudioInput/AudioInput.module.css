@@ -91,3 +91,17 @@
   display: flex;
   align-items: center;
 }
+
+.customAudioInput.disabled {
+  background-color: #121417;
+  border-color: #3a3f44;
+  opacity: 0.6;
+  pointer-events: none;
+  cursor: not-allowed;
+}
+
+.customAudioInput.disabled .audioBtn,
+.customAudioInput.disabled .button {
+  background-color: #2a2d32;
+  cursor: not-allowed;
+}

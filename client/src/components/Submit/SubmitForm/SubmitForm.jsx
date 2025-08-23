@@ -2,6 +2,7 @@ import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
 import { submitData } from "../../../api/api";
+import { uploadEntry } from "../../../api/admin";
 import { useSubmitForm } from "../../../hooks/useSubmitForm";
 
 import FormInput from "../FormInput/FormInput";
@@ -13,7 +14,11 @@ import ArtistSection from "../ArtistSection/ArtistSection";
 import SynthSection from "../SynthSection/SynthSection";
 import styles from "./SubmitForm.module.css";
 
-export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
+export default function SubmitForm({
+  onSubmitSuccess,
+  onSubmitError,
+  mode = "submit",
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
   const [isSingle, setIsSingle] = useState(false);
@@ -56,7 +61,11 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
     try {
       const formData = collectFormData(e.target);
 
-      await submitData(formData);
+      if (mode === "submit") {
+        await submitData(formData);
+      } else if (mode === "upload") {
+        await uploadEntry(formData);
+      }
 
       // Reset form
       clearForm(e.target);
@@ -249,7 +258,13 @@ export default function SubmitForm({ onSubmitSuccess, onSubmitError }) {
               type="submit"
               disabled={isSubmitting}
             >
-              {isSubmitting ? "Submitting..." : "Submit Entry"}
+              {isSubmitting
+                ? mode === "upload"
+                  ? "Uploading..."
+                  : "Submitting..."
+                : mode === "upload"
+                ? "Upload Entry"
+                : "Submit Entry"}
             </button>
             <button
               className={styles.clearBtn}

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useRef, useEffect } from "react";
 import styles from "./FormSelector.module.css";
 
 export default function FormSelector({
@@ -9,30 +9,28 @@ export default function FormSelector({
   disabled,
   selectOptions = [],
   dataKey,
-  defaultValue,
+  defaultValue = "",
   ...selectProps
 }) {
-  const [value, setValue] = useState(defaultValue || "");
+  const selectRef = useRef(null);
 
   useEffect(() => {
-    setValue(defaultValue || "");
+    if (selectRef.current && defaultValue) {
+      selectRef.current.value = defaultValue;
+    }
   }, [defaultValue]);
-
-  const handleChange = (e) => {
-    setValue(e.target.value);
-  };
 
   return (
     <label className={styles.label}>
       {label} {required && <span className={styles.red}>*</span>}
       <select
+        ref={selectRef}
         className={styles.select}
         required={required || false}
         name={id}
         data-key={dataKey}
         disabled={disabled || false}
-        value={value}
-        onChange={handleChange}
+        defaultValue={defaultValue}
         {...selectProps}
       >
         <option value="" hidden disabled>

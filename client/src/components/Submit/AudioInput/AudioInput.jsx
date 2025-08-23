@@ -1,20 +1,25 @@
 import { useState, useRef, useEffect } from "react";
-import styles from "./AudioInput.module.css";
-import { FaCirclePlay, FaCircleStop } from "react-icons/fa6";
 import { useAudioPlayer } from "../../../hooks/useAudioPlayer";
+
+import styles from "./AudioInput.module.css";
+import classNames from "classnames";
+
+import { FaCirclePlay, FaCircleStop } from "react-icons/fa6";
 
 export default function AudioInput({
   label,
   id,
   children,
   required,
+  disabled,
   initialAudio = null,
   isApprovalMode = false,
-  isFilled = false,
   options = { minAudioDuration: 0, maxAudioDuration: 120 },
 }) {
   const [fileName, setFileName] = useState("No file selected.");
   const [audioFile, setAudioFile] = useState(null);
+  const [isAutofilled, setIsAutofilled] = useState(false);
+  const [autofilledValue, setAutofilledValue] = useState("");
   const fileInputRef = useRef(null);
   const hiddenInputRef = useRef(null);
 
@@ -27,26 +32,36 @@ export default function AudioInput({
       if (initialAudio.startsWith("/uploads/")) {
         audioPath = initialAudio;
       } else {
-        const folder = isFilled ? "approved" : "pending";
-        audioPath = `/uploads/audio/${folder}/${initialAudio}`;
+        audioPath = `/uploads/audio/pending/${initialAudio}`;
       }
 
       setAudioFile(audioPath);
-      setFileName("Pre-uploaded Audio");
+      setFileName("Uploaded Audio");
+      setIsAutofilled(true);
+      setAutofilledValue(initialAudio);
       addAudioSource(id, audioPath);
       if (hiddenInputRef.current) {
         hiddenInputRef.current.value = initialAudio;
       }
     }
-  }, [initialAudio, isApprovalMode, isFilled, id, addAudioSource]);
+  }, [initialAudio, isApprovalMode, id, addAudioSource]);
 
   const handleFileChange = (event) => {
+    if (disabled) return;
+
     const file = event.target.files[0];
     if (!file) {
       setFileName("No file selected.");
       if (audioFile) {
         removeAudioSource(id);
         setAudioFile(null);
+      }
+      if (isAutofilled) {
+        setIsAutofilled(false);
+        setAutofilledValue("");
+        if (hiddenInputRef.current) {
+          hiddenInputRef.current.value = "";
+        }
       }
       return;
     }
@@ -78,11 +93,20 @@ export default function AudioInput({
         setFileName(file.name);
         setAudioFile(objectUrl);
         addAudioSource(id, objectUrl);
+        if (isAutofilled) {
+          setIsAutofilled(false);
+          setAutofilledValue("");
+          if (hiddenInputRef.current) {
+            hiddenInputRef.current.value = "";
+          }
+        }
       }
     };
   };
 
   const handleBrowseClick = () => {
+    if (disabled) return;
+
     if (fileInputRef.current) {
       fileInputRef.current.click();
     }
@@ -122,10 +146,15 @@ export default function AudioInput({
           )}
         </div>
         <audio src={audioFile}></audio>
-        <div className={styles.customAudioInput}>
+        <div
+          className={classNames(styles.customAudioInput, {
+            [styles.disabled]: disabled,
+          })}
+        >
           <button
             className={styles.button}
             type="button"
+            disabled={disabled}
             onClick={handleBrowseClick}
           >
             Browse...
@@ -137,15 +166,15 @@ export default function AudioInput({
             type="file"
             name={id}
             accept="audio/mpeg"
-            required={required || false}
+            disabled={disabled}
+            required={required && !disabled && !isAutofilled}
             onChange={handleFileChange}
           />
-          {/* Hidden input for pre-existing audio files */}
           <input
             ref={hiddenInputRef}
             type="hidden"
-            name={`${id}_existing`}
-            defaultValue=""
+            name={isAutofilled ? id : ""}
+            value={autofilledValue}
           />
         </div>
       </div>

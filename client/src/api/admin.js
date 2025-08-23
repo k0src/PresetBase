@@ -24,3 +24,12 @@ export async function denySubmission(submissionId) {
   if (!res.ok) throw new Error("Failed to deny submission");
   return res.json();
 }
+
+export async function uploadEntry(data) {
+  const res = await fetch("/api/admin/upload", {
+    method: "POST",
+    body: data,
+  });
+  if (!res.ok) throw new Error("Failed to upload entry");
+  return res.json();
+}

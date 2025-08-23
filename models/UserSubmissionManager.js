@@ -156,13 +156,6 @@ class UserSubmissionManager {
         } else if (!mergedData.songImg) {
           mergedData.songImg = songDb.image_url;
         }
-      } else {
-        if (
-          (!mergedData.songImg || mergedData.songImg.trim() === "") &&
-          mergedData.albumImg
-        ) {
-          mergedData.songImg = mergedData.albumImg;
-        }
       }
 
       for (let i = 0; i < mergedData.artists.length; i++) {
@@ -203,7 +196,7 @@ class UserSubmissionManager {
 
         if (synthDb) {
           synthData.manufacturer = synthDb.manufacturer;
-          synthData.type = synthDb.type;
+          synthData.type = synthDb.synth_type;
           synthData.year = String(synthDb.release_year);
 
           if (synthData.img) {
@@ -257,6 +250,7 @@ class UserSubmissionManager {
       formData,
       fileData,
     });
+
     try {
       const sanitizedData = await UserSubmissionManager.#sanitizeSubmissionData(
         rawData

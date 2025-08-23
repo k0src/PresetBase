@@ -1,4 +1,15 @@
-/* Styles for AdminUpload component */
-.adminupload {
-  /* Add your styles here */
+.submitHeader {
+  padding: 3.2rem 0 2rem 0;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+  padding-bottom: 1.6rem;
 }

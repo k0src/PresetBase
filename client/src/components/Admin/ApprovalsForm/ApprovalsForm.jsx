@@ -386,6 +386,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
                   </FormInput>
 
                   <FormInput
+                    required
                     type="text"
                     id={`synths[${synthIndex}][presets][${presetIndex}][packName]`}
                     label="Pack Name"
@@ -396,6 +397,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
                   </FormInput>
 
                   <FormInput
+                    required
                     type="text"
                     id={`synths[${synthIndex}][presets][${presetIndex}][author]`}
                     label="Preset Author"
@@ -417,11 +419,11 @@ export default function ApprovalsForm({ submission, onUpdate }) {
                   </FormInput>
 
                   <AudioInput
-                    label="Preset Audio (Optional)"
+                    required
+                    label="Preset Audio"
                     id={`synths[${synthIndex}][presets][${presetIndex}][audio]`}
                     initialAudio={preset.audio}
                     isApprovalMode={true}
-                    isFilled={preset.filled}
                   >
                     Upload a short <kbd>.mp3</kbd> audio clip (approximately 4
                     bars) demonstrating how the preset is used in the song.
