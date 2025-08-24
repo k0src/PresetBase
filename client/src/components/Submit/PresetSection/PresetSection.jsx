@@ -7,7 +7,12 @@ import styles from "../SubmitForm/SubmitForm.module.css";
 
 import { FaXmark } from "react-icons/fa6";
 
-export default function PresetSection({ synthIndex, presetIndex, onRemove }) {
+export default function PresetSection({
+  synthIndex,
+  presetIndex,
+  onRemove,
+  mode = "submit",
+}) {
   const handleRemove = () => {
     onRemove(synthIndex, presetIndex);
   };
@@ -72,8 +77,9 @@ export default function PresetSection({ synthIndex, presetIndex, onRemove }) {
       </FormInputAutofill>
 
       <AudioInput
-        label="Preset Audio (Optional)"
+        label={mode === "upload" ? "Preset Audio" : "Preset Audio (Optional)"}
         id={`synths[${synthIndex}][presets][${presetIndex}][audio]`}
+        required={mode === "upload"}
       >
         Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
         demonstrating how the preset is used in the song. The clip should

@@ -3,11 +3,24 @@ import { Link } from "react-router-dom";
 import styles from "./LatestEntry.module.css";
 
 export default memo(function LatestEntry({ songData }) {
-  const convertTimestamp = useCallback((timestamp) => {
+  const getDiffDays = useCallback((timestamp) => {
     const date = new Date(timestamp);
     const now = new Date();
-    const diffTime = Math.abs(now - date);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    const normalizedDate = new Date(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate()
+    );
+    const normalizedNow = new Date(
+      now.getFullYear(),
+      now.getMonth(),
+      now.getDate()
+    );
+
+    const diffTime = normalizedNow - normalizedDate;
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
     return diffDays;
   }, []);
 
@@ -19,11 +32,21 @@ export default memo(function LatestEntry({ songData }) {
     const others =
       songData.artists?.filter((a) => a.role !== "Main").map((a) => a.name) ||
       [];
-    const synths = songData.presets?.map((p) => p.synth.name) || [];
-    const addedDaysAgo = convertTimestamp(songData.timestamp);
+    const synths =
+      [...new Set(songData.presets?.map((p) => p.synth.name))] || [];
+    const diffDays = getDiffDays(songData.timestamp);
+
+    let addedDaysAgo;
+    if (diffDays === 0) {
+      addedDaysAgo = "Today";
+    } else if (diffDays === 1) {
+      addedDaysAgo = "1 day ago";
+    } else {
+      addedDaysAgo = diffDays + " days ago";
+    }
 
     return { mainArtist: main, otherArtists: others, synths, addedDaysAgo };
-  }, [songData, convertTimestamp]);
+  }, [songData, getDiffDays]);
 
   if (!songData) {
     return <div className={styles.latestEntry}></div>;
@@ -33,9 +56,7 @@ export default memo(function LatestEntry({ songData }) {
     <Link to={`/song/${songData.id}`} className={styles.latestEntry}>
       <div className={styles.latestEntryTop}>
         <div className={styles.imgContainer}>
-          <span className={styles.addedDaysAgo}>
-            {addedDaysAgo !== 0 ? addedDaysAgo + " days ago" : "Today"}
-          </span>
+          <span className={styles.addedDaysAgo}>{addedDaysAgo}</span>
           <img
             src={`/uploads/images/approved/${songData.imageUrl}`}
             alt={songData.title}

@@ -136,7 +136,11 @@ export default function ApprovalsForm({ submission, onUpdate }) {
               required={isSingle}
               initialImage={submission.data.songImg}
               isApprovalMode={true}
-              isFilled={submission.data.songFilled}
+              isFilled={
+                submission.data.songImgFromAlbum
+                  ? submission.data.albumFilled
+                  : submission.data.songFilled
+              }
             >
               Upload the song's cover image. Leave blank to default to the album
               cover. Minimum dimensions: 1000 x 1000 pixels.

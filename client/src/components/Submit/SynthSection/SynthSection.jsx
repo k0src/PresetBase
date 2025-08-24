@@ -14,6 +14,7 @@ export default function SynthSection({
   onRemove,
   onAddPreset,
   onRemovePreset,
+  mode = "submit",
 }) {
   const handleRemove = () => {
     onRemove(index);
@@ -98,6 +99,7 @@ export default function SynthSection({
 
       {presets.map((preset, presetIndex) => (
         <PresetSection
+          mode={mode}
           key={preset.id}
           synthIndex={index}
           presetIndex={presetIndex}

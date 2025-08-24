@@ -118,19 +118,15 @@ class UserSubmissionManager {
       if (albumDb) {
         mergedData.albumGenre = albumDb.genre;
         mergedData.albumYear = String(albumDb.release_year);
-
-        if (mergedData.albumImg) {
-          if (!albumDb.image_url || mergedData.albumImg !== albumDb.image_url) {
-            await UserSubmissionManager.#deletePendingFile({
-              fileName: mergedData.albumImg,
-              type: "images",
-            });
-          }
-          mergedData.albumImg = albumDb.image_url;
-        } else if (!mergedData.albumImg) {
-          mergedData.albumImg = albumDb.image_url;
-        }
         mergedData.albumFilled = true;
+
+        if (mergedData.albumImg && mergedData.albumImg !== albumDb.image_url) {
+          await UserSubmissionManager.#deletePendingFile({
+            fileName: mergedData.albumImg,
+            type: "images",
+          });
+        }
+        mergedData.albumImg = albumDb.image_url;
       }
 
       const songDb = await DB.get(
@@ -145,16 +141,17 @@ class UserSubmissionManager {
         mergedData.songUrl = songDb.song_url;
         mergedData.songFilled = true;
 
-        if (mergedData.songImg) {
-          if (!songDb.image_url || mergedData.songImg !== songDb.image_url) {
-            await UserSubmissionManager.#deletePendingFile({
-              fileName: mergedData.songImg,
-              type: "images",
-            });
-          }
-          mergedData.songImg = songDb.image_url;
-        } else if (!mergedData.songImg) {
-          mergedData.songImg = songDb.image_url;
+        if (mergedData.songImg && mergedData.songImg !== songDb.image_url) {
+          await UserSubmissionManager.#deletePendingFile({
+            fileName: mergedData.songImg,
+            type: "images",
+          });
+        }
+        mergedData.songImg = songDb.image_url;
+      } else {
+        if (!mergedData.songImg || mergedData.songImg.trim() === "") {
+          mergedData.songImg = mergedData.albumImg;
+          mergedData.songImgFromAlbum = true;
         }
       }
 
@@ -169,19 +166,15 @@ class UserSubmissionManager {
 
         if (artistDb) {
           artistData.country = artistDb.country;
-
-          if (artistData.img) {
-            if (!artistDb.image_url || artistData.img !== artistDb.image_url) {
-              await UserSubmissionManager.#deletePendingFile({
-                fileName: artistData.img,
-                type: "images",
-              });
-            }
-            artistData.img = artistDb.image_url;
-          } else if (!artistData.img) {
-            artistData.img = artistDb.image_url;
-          }
           artistData.filled = true;
+
+          if (artistData.img && artistData.img !== artistDb.image_url) {
+            await UserSubmissionManager.#deletePendingFile({
+              fileName: artistData.img,
+              type: "images",
+            });
+          }
+          artistData.img = artistDb.image_url;
         }
       }
 
@@ -198,19 +191,15 @@ class UserSubmissionManager {
           synthData.manufacturer = synthDb.manufacturer;
           synthData.type = synthDb.synth_type;
           synthData.year = String(synthDb.release_year);
-
-          if (synthData.img) {
-            if (!synthDb.image_url || synthData.img !== synthDb.image_url) {
-              await UserSubmissionManager.#deletePendingFile({
-                fileName: synthData.img,
-                type: "images",
-              });
-            }
-            synthData.img = synthDb.image_url;
-          } else if (!synthData.img) {
-            synthData.img = synthDb.image_url;
-          }
           synthData.filled = true;
+
+          if (synthData.img && synthData.img !== synthDb.image_url) {
+            await UserSubmissionManager.#deletePendingFile({
+              fileName: synthData.img,
+              type: "images",
+            });
+          }
+          synthData.img = synthDb.image_url;
         }
 
         for (let j = 0; j < synthData.presets.length; j++) {
@@ -243,7 +232,8 @@ class UserSubmissionManager {
   }
 
   static async processSubmission({ formData, fileData }) {
-    const userId = formData.userId;
+    // const userId = formData.userId;
+    const userId = 1;
     const now = new Date().toISOString();
 
     const rawData = UserSubmissionManager.#attachFileDataToFormData({

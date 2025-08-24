@@ -231,6 +231,7 @@ export default function SubmitForm({
         <fieldset className={styles.fieldset}>
           {synths.map((synth, index) => (
             <SynthSection
+              mode={mode}
               key={synth.id}
               index={index}
               presets={synth.presets}

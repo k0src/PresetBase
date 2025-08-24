@@ -56,27 +56,32 @@ class AdminManager {
     return updated;
   }
 
-  static #mergeDataSets(dataSet1, dataSet2) {
-    if (Array.isArray(dataSet1) && Array.isArray(dataSet2)) {
-      return dataSet1.map((item, i) =>
-        AdminManager.#mergeDataSets(item, dataSet2[i] || {})
-      );
+  static #mergeDataSets(oldData, newData) {
+    if (Array.isArray(oldData) && Array.isArray(newData)) {
+      const maxLength = Math.max(oldData.length, newData.length);
+      const result = [];
+      for (let i = 0; i < maxLength; i++) {
+        const item1 = oldData[i] || {};
+        const item2 = newData[i] || {};
+        result[i] = AdminManager.#mergeDataSets(item1, item2);
+      }
+      return result;
     }
 
-    if (typeof dataSet1 === "object" && typeof dataSet2 === "object") {
-      const merged = { ...dataSet1 };
-      for (const key of Object.keys(dataSet2)) {
-        if (dataSet2[key] !== undefined && dataSet2[key] !== "") {
-          merged[key] = AdminManager.#mergeDataSets(
-            dataSet1[key],
-            dataSet2[key]
-          );
-        }
+    if (
+      typeof oldData === "object" &&
+      typeof newData === "object" &&
+      oldData !== null &&
+      newData !== null
+    ) {
+      const merged = { ...oldData };
+      for (const key of Object.keys(newData)) {
+        merged[key] = AdminManager.#mergeDataSets(oldData[key], newData[key]);
       }
       return merged;
     }
 
-    return dataSet2 ?? dataSet1;
+    return newData !== undefined ? newData : oldData;
   }
 
   static async #approveFile({ filename, type }) {
@@ -134,26 +139,27 @@ class AdminManager {
     }
   }
 
-  static async #deleteUnusedPendingFiles(pendingSubmissionData) {
+  static async #deleteUnusedPendingFiles(submissionData) {
     try {
-      if (pendingSubmissionData.songImg && !pendingSubmissionData.songFilled) {
+      const songImgFilled = submissionData.songImgFromAlbum
+        ? submissionData.albumFilled
+        : submissionData.songFilled;
+
+      if (submissionData.songImg && !songImgFilled) {
         await AdminManager.#deletePendingFile({
-          fileName: pendingSubmissionData.songImg,
+          fileName: submissionData.songImg,
           type: "images",
         });
       }
 
-      if (
-        pendingSubmissionData.albumImg &&
-        !pendingSubmissionData.albumFilled
-      ) {
+      if (submissionData.albumImg && !submissionData.albumFilled) {
         await AdminManager.#deletePendingFile({
-          fileName: pendingSubmissionData.albumImg,
+          fileName: submissionData.albumImg,
           type: "images",
         });
       }
 
-      for (const artist of pendingSubmissionData.artists || []) {
+      for (const artist of submissionData.artists || []) {
         if (artist.img && !artist.filled) {
           await AdminManager.#deletePendingFile({
             fileName: artist.img,
@@ -162,7 +168,7 @@ class AdminManager {
         }
       }
 
-      for (const synth of pendingSubmissionData.synths || []) {
+      for (const synth of submissionData.synths || []) {
         if (synth.img && !synth.filled) {
           await AdminManager.#deletePendingFile({
             fileName: synth.img,
@@ -180,7 +186,92 @@ class AdminManager {
         }
       }
     } catch (err) {
-      throw new Error(`Error deleting unused pending files: ${err.message}`);
+      throw new Error(`Error deleting pending files: ${err.message}`);
+    }
+  }
+
+  static async #deleteReplacedPendingFiles(oldData, newData) {
+    try {
+      if (
+        oldData.songImg &&
+        newData.songImg &&
+        oldData.songImg !== newData.songImg
+      ) {
+        await AdminManager.#deletePendingFile({
+          fileName: oldData.songImg,
+          type: "images",
+        });
+      }
+
+      if (
+        oldData.albumImg &&
+        newData.albumImg &&
+        oldData.albumImg !== newData.albumImg
+      ) {
+        await AdminManager.#deletePendingFile({
+          fileName: oldData.albumImg,
+          type: "images",
+        });
+      }
+
+      const oldArtistsLength = oldData.artists?.length || 0;
+      const newArtistsLength = newData.artists?.length || 0;
+
+      for (let i = 0; i < Math.max(oldArtistsLength, newArtistsLength); i++) {
+        const oldArtist = oldData.artists?.[i];
+        const newArtist = newData.artists?.[i];
+
+        if (oldArtist?.img) {
+          if (
+            !newArtist ||
+            (newArtist.img && oldArtist.img !== newArtist.img)
+          ) {
+            await AdminManager.#deletePendingFile({
+              fileName: oldArtist.img,
+              type: "images",
+            });
+          }
+        }
+      }
+
+      const oldSynthsLength = oldData.synths?.length || 0;
+      const newSynthsLength = newData.synths?.length || 0;
+
+      for (let i = 0; i < Math.max(oldSynthsLength, newSynthsLength); i++) {
+        const oldSynth = oldData.synths?.[i];
+        const newSynth = newData.synths?.[i];
+
+        if (oldSynth?.img) {
+          if (!newSynth || (newSynth.img && oldSynth.img !== newSynth.img)) {
+            await AdminManager.#deletePendingFile({
+              fileName: oldSynth.img,
+              type: "images",
+            });
+          }
+        }
+
+        const oldPresetsLength = oldSynth?.presets?.length || 0;
+        const newPresetsLength = newSynth?.presets?.length || 0;
+
+        for (let j = 0; j < Math.max(oldPresetsLength, newPresetsLength); j++) {
+          const oldPreset = oldSynth?.presets?.[j];
+          const newPreset = newSynth?.presets?.[j];
+
+          if (oldPreset?.audio) {
+            if (
+              !newPreset ||
+              (newPreset.audio && oldPreset.audio !== newPreset.audio)
+            ) {
+              await AdminManager.#deletePendingFile({
+                fileName: oldPreset.audio,
+                type: "audio",
+              });
+            }
+          }
+        }
+      }
+    } catch (err) {
+      throw new Error(`Error deleting replaced pending files: ${err.message}`);
     }
   }
 
@@ -343,14 +434,18 @@ class AdminManager {
     }
 
     // Approve files
-    if (submissionData.songImg) {
+    const songImgFilled = submissionData.songImgFromAlbum
+      ? submissionData.albumFilled
+      : submissionData.songFilled;
+
+    if (submissionData.songImg && !songImgFilled) {
       await AdminManager.#approveFile({
         filename: submissionData.songImg,
         type: "images",
       });
     }
 
-    if (submissionData.albumImg) {
+    if (submissionData.albumImg && !submissionData.albumFilled) {
       await AdminManager.#approveFile({
         filename: submissionData.albumImg,
         type: "images",
@@ -358,7 +453,7 @@ class AdminManager {
     }
 
     for (const artist of submissionData.artists || []) {
-      if (artist.img) {
+      if (artist.img && !artist.filled) {
         await AdminManager.#approveFile({
           filename: artist.img,
           type: "images",
@@ -367,7 +462,7 @@ class AdminManager {
     }
 
     for (const synth of submissionData.synths || []) {
-      if (synth.img) {
+      if (synth.img && !synth.filled) {
         await AdminManager.#approveFile({
           filename: synth.img,
           type: "images",
@@ -387,7 +482,6 @@ class AdminManager {
 
   static async approveSubmission({ pendingSubmissionId, formData, fileData }) {
     try {
-      console.log(pendingSubmissionId);
       const pendingSubmission = await DB.get(
         "SELECT id, data, submitted_at, user_id FROM pending_submissions WHERE id = ?",
         [pendingSubmissionId]
@@ -404,20 +498,20 @@ class AdminManager {
         fileData,
       });
 
+      // Delete old pending files that will be replaced
+      await AdminManager.#deleteReplacedPendingFiles(
+        pendingSubmission.data,
+        rawData
+      );
+
       const finalSubmissionData = AdminManager.#mergeDataSets(
         pendingSubmission.data,
         rawData
       );
 
-      // Add song image if it doesn't exist
-      if (!finalSubmissionData.songImg) {
-        finalSubmissionData.songImg = finalSubmissionData.albumImg;
-      }
-
       // Add entry to database
       await AdminManager.#insertSubmissionDataIntoDb(
         finalSubmissionData,
-        pendingSubmissionId,
         pendingSubmission.submitted_at
       );
 
@@ -425,9 +519,6 @@ class AdminManager {
       await DB.run("DELETE FROM pending_submissions WHERE id = ?", [
         pendingSubmissionId,
       ]);
-
-      // Cleanup unused pending files
-      await AdminManager.#deleteUnusedPendingFiles(pendingSubmission.data);
     } catch (err) {
       throw new Error(`Error approving submission: ${err.message}`);
     }
@@ -497,19 +588,15 @@ class AdminManager {
       if (albumDb) {
         mergedData.albumGenre = albumDb.genre;
         mergedData.albumYear = String(albumDb.release_year);
-
-        if (mergedData.albumImg) {
-          if (!albumDb.image_url || mergedData.albumImg !== albumDb.image_url) {
-            await AdminManager.#deletePendingFile({
-              fileName: mergedData.albumImg,
-              type: "images",
-            });
-          }
-          mergedData.albumImg = albumDb.image_url;
-        } else if (!mergedData.albumImg) {
-          mergedData.albumImg = albumDb.image_url;
-        }
         mergedData.albumFilled = true;
+
+        if (mergedData.albumImg && mergedData.albumImg !== albumDb.image_url) {
+          await UserSubmissionManager.#deletePendingFile({
+            fileName: mergedData.albumImg,
+            type: "images",
+          });
+        }
+        mergedData.albumImg = albumDb.image_url;
       }
 
       const songDb = await DB.get(
@@ -524,22 +611,15 @@ class AdminManager {
         mergedData.songUrl = songDb.song_url;
         mergedData.songFilled = true;
 
-        if (mergedData.songImg) {
-          if (!songDb.image_url || mergedData.songImg !== songDb.image_url) {
-            await AdminManager.#deletePendingFile({
-              fileName: mergedData.songImg,
-              type: "images",
-            });
-          }
-          mergedData.songImg = songDb.image_url;
-        } else if (!mergedData.songImg) {
-          mergedData.songImg = songDb.image_url;
+        if (mergedData.songImg && mergedData.songImg !== songDb.image_url) {
+          await UserSubmissionManager.#deletePendingFile({
+            fileName: mergedData.songImg,
+            type: "images",
+          });
         }
+        mergedData.songImg = songDb.image_url;
       } else {
-        if (
-          (!mergedData.songImg || mergedData.songImg.trim() === "") &&
-          mergedData.albumImg
-        ) {
+        if (!mergedData.songImg || mergedData.songImg.trim() === "") {
           mergedData.songImg = mergedData.albumImg;
         }
       }
@@ -555,19 +635,15 @@ class AdminManager {
 
         if (artistDb) {
           artistData.country = artistDb.country;
-
-          if (artistData.img) {
-            if (!artistDb.image_url || artistData.img !== artistDb.image_url) {
-              await AdminManager.#deletePendingFile({
-                fileName: artistData.img,
-                type: "images",
-              });
-            }
-            artistData.img = artistDb.image_url;
-          } else if (!artistData.img) {
-            artistData.img = artistDb.image_url;
-          }
           artistData.filled = true;
+
+          if (artistData.img && artistData.img !== artistDb.image_url) {
+            await UserSubmissionManager.#deletePendingFile({
+              fileName: artistData.img,
+              type: "images",
+            });
+          }
+          artistData.img = artistDb.image_url;
         }
       }
 
@@ -582,21 +658,17 @@ class AdminManager {
 
         if (synthDb) {
           synthData.manufacturer = synthDb.manufacturer;
-          synthData.type = synthDb.type;
+          synthData.type = synthDb.synth_type;
           synthData.year = String(synthDb.release_year);
-
-          if (synthData.img) {
-            if (!synthDb.image_url || synthData.img !== synthDb.image_url) {
-              await AdminManager.#deletePendingFile({
-                fileName: synthData.img,
-                type: "images",
-              });
-            }
-            synthData.img = synthDb.image_url;
-          } else if (!synthData.img) {
-            synthData.img = synthDb.image_url;
-          }
           synthData.filled = true;
+
+          if (synthData.img && synthData.img !== synthDb.image_url) {
+            await UserSubmissionManager.#deletePendingFile({
+              fileName: synthData.img,
+              type: "images",
+            });
+          }
+          synthData.img = synthDb.image_url;
         }
 
         for (let j = 0; j < synthData.presets.length; j++) {
@@ -624,7 +696,7 @@ class AdminManager {
 
       return mergedData;
     } catch (err) {
-      throw new Error(`Merging submission data failed: ${err.message}`);
+      throw new Error(`Merging entry data failed: ${err.message}`);
     }
   }
 
