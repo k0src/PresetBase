@@ -9,6 +9,7 @@ import { FaCirclePlay, FaCircleStop } from "react-icons/fa6";
 export default function AudioInput({
   label,
   id,
+  uniqueId,
   children,
   required,
   disabled,
@@ -26,6 +27,8 @@ export default function AudioInput({
   const { playingAudio, handleAudioToggle, addAudioSource, removeAudioSource } =
     useAudioPlayer();
 
+  const audioSourceId = uniqueId || id;
+
   useEffect(() => {
     if (initialAudio && isApprovalMode && initialAudio.trim()) {
       let audioPath;
@@ -39,12 +42,12 @@ export default function AudioInput({
       setFileName("Uploaded Audio");
       setIsAutofilled(true);
       setAutofilledValue(initialAudio);
-      addAudioSource(id, audioPath);
+      addAudioSource(audioSourceId, audioPath);
       if (hiddenInputRef.current) {
         hiddenInputRef.current.value = initialAudio;
       }
     }
-  }, [initialAudio, isApprovalMode, id, addAudioSource]);
+  }, [initialAudio, isApprovalMode, audioSourceId, addAudioSource]);
 
   const handleFileChange = (event) => {
     if (disabled) return;
@@ -53,7 +56,7 @@ export default function AudioInput({
     if (!file) {
       setFileName("No file selected.");
       if (audioFile) {
-        removeAudioSource(id);
+        removeAudioSource(audioSourceId);
         setAudioFile(null);
       }
       if (isAutofilled) {
@@ -92,7 +95,7 @@ export default function AudioInput({
       } else {
         setFileName(file.name);
         setAudioFile(objectUrl);
-        addAudioSource(id, objectUrl);
+        addAudioSource(audioSourceId, objectUrl);
         if (isAutofilled) {
           setIsAutofilled(false);
           setAutofilledValue("");
@@ -114,7 +117,7 @@ export default function AudioInput({
 
   const handleAudioPlay = () => {
     if (audioFile) {
-      handleAudioToggle(id);
+      handleAudioToggle(audioSourceId);
     }
   };
 
@@ -125,7 +128,7 @@ export default function AudioInput({
       </span>
       <div className={styles.audioInputContainer}>
         <div className={styles.audioBtnContainer}>
-          {playingAudio === id ? (
+          {playingAudio === audioSourceId ? (
             <FaCircleStop
               className={styles.audioBtn}
               onClick={handleAudioPlay}

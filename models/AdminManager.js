@@ -56,34 +56,6 @@ class AdminManager {
     return updated;
   }
 
-  static #mergeDataSets(oldData, newData) {
-    if (Array.isArray(oldData) && Array.isArray(newData)) {
-      const maxLength = Math.max(oldData.length, newData.length);
-      const result = [];
-      for (let i = 0; i < maxLength; i++) {
-        const item1 = oldData[i] || {};
-        const item2 = newData[i] || {};
-        result[i] = AdminManager.#mergeDataSets(item1, item2);
-      }
-      return result;
-    }
-
-    if (
-      typeof oldData === "object" &&
-      typeof newData === "object" &&
-      oldData !== null &&
-      newData !== null
-    ) {
-      const merged = { ...oldData };
-      for (const key of Object.keys(newData)) {
-        merged[key] = AdminManager.#mergeDataSets(oldData[key], newData[key]);
-      }
-      return merged;
-    }
-
-    return newData !== undefined ? newData : oldData;
-  }
-
   static async #approveFile({ filename, type }) {
     const types = ["images", "audio"];
     if (!types.includes(type)) {
@@ -132,6 +104,12 @@ class AdminManager {
         "pending",
         fileName
       );
+
+      try {
+        await fs.access(filePath);
+      } catch {
+        throw new Error(`File does not exist: ${fileName}`);
+      }
 
       await fs.unlink(filePath);
     } catch (err) {
@@ -250,18 +228,26 @@ class AdminManager {
           }
         }
 
-        const oldPresetsLength = oldSynth?.presets?.length || 0;
-        const newPresetsLength = newSynth?.presets?.length || 0;
+        if (oldSynth?.presets) {
+          for (const oldPreset of oldSynth.presets) {
+            if (!oldPreset.audio) continue;
 
-        for (let j = 0; j < Math.max(oldPresetsLength, newPresetsLength); j++) {
-          const oldPreset = oldSynth?.presets?.[j];
-          const newPreset = newSynth?.presets?.[j];
+            // Find matching preset in new data by content
+            const matchingNewPreset = newSynth?.presets?.find((newPreset) => {
+              return (
+                newPreset.name === oldPreset.name &&
+                newPreset.packName === oldPreset.packName &&
+                newPreset.author === oldPreset.author &&
+                newPreset.usageType === oldPreset.usageType
+              );
+            });
 
-          if (oldPreset?.audio) {
-            if (
-              !newPreset ||
-              (newPreset.audio && oldPreset.audio !== newPreset.audio)
-            ) {
+            if (!matchingNewPreset) {
+              await AdminManager.#deletePendingFile({
+                fileName: oldPreset.audio,
+                type: "audio",
+              });
+            } else if (matchingNewPreset.audio !== oldPreset.audio) {
               await AdminManager.#deletePendingFile({
                 fileName: oldPreset.audio,
                 type: "audio",
@@ -393,8 +379,11 @@ class AdminManager {
       // Insert presets
       for (const preset of synth.presets) {
         let existingPreset = await DB.get(
-          `SELECT id FROM presets WHERE preset_name = ? AND pack_name = ? AND author = ?`,
-          [preset.name, preset.packName, preset.author]
+          `SELECT presets.id FROM presets
+          INNER JOIN preset_synths ON presets.id = preset_synths.preset_id
+          INNER JOIN synths ON preset_synths.synth_id = synths.id
+          WHERE preset_name = ? AND pack_name = ? AND author = ? AND synths.id = ?`,
+          [preset.name, preset.packName, preset.author, synthId]
         );
 
         const presetId = existingPreset
@@ -434,9 +423,10 @@ class AdminManager {
     }
 
     // Approve files
-    const songImgFilled = submissionData.songImgFromAlbum
-      ? submissionData.albumFilled
-      : submissionData.songFilled;
+    const songImgFilled =
+      (submissionData.songImgFromAlbum
+        ? submissionData.albumFilled
+        : submissionData.songFilled) || false;
 
     if (submissionData.songImg && !songImgFilled) {
       await AdminManager.#approveFile({
@@ -445,7 +435,11 @@ class AdminManager {
       });
     }
 
-    if (submissionData.albumImg && !submissionData.albumFilled) {
+    if (
+      submissionData.albumImg &&
+      !submissionData.albumFilled &&
+      !submissionData.songImgFromAlbum
+    ) {
       await AdminManager.#approveFile({
         filename: submissionData.albumImg,
         type: "images",
@@ -480,6 +474,93 @@ class AdminManager {
     }
   }
 
+  static #addFilledInfoToFormData(pendingData, formData) {
+    const result = structuredClone(formData);
+
+    if (
+      pendingData.songFilled &&
+      formData.songImg &&
+      pendingData.songImg === formData.songImg
+    ) {
+      result.songFilled = true;
+    }
+
+    if (
+      pendingData.songImgFromAlbum &&
+      formData.songImg &&
+      pendingData.songImg === formData.songImg
+    ) {
+      result.songImgFromAlbum = true;
+    }
+
+    if (
+      pendingData.albumFilled &&
+      formData.albumImg &&
+      pendingData.albumImg === formData.albumImg
+    ) {
+      result.albumFilled = true;
+    }
+
+    if (formData.artists && pendingData.artists) {
+      for (let i = 0; i < formData.artists.length; i++) {
+        const formArtist = formData.artists[i];
+        const pendingArtist = pendingData.artists[i];
+
+        if (
+          pendingArtist?.filled &&
+          formArtist.img &&
+          pendingArtist.img === formArtist.img
+        ) {
+          result.artists[i].filled = true;
+        }
+      }
+    }
+
+    if (formData.synths && pendingData.synths) {
+      for (let i = 0; i < formData.synths.length; i++) {
+        const formSynth = formData.synths[i];
+        const pendingSynth = pendingData.synths[i];
+
+        if (
+          pendingSynth?.filled &&
+          formSynth.img &&
+          pendingSynth.img === formSynth.img
+        ) {
+          result.synths[i].filled = true;
+        }
+
+        // Handle presets filled status - match by preset content
+        if (formSynth.presets && pendingSynth?.presets) {
+          for (let j = 0; j < formSynth.presets.length; j++) {
+            const formPreset = formSynth.presets[j];
+            const matchingPendingPreset = pendingSynth.presets.find(
+              (pendingPreset) => {
+                const matches =
+                  pendingPreset.name === formPreset.name &&
+                  pendingPreset.packName === formPreset.packName &&
+                  pendingPreset.author === formPreset.author &&
+                  pendingPreset.usageType === formPreset.usageType;
+
+                return matches;
+              }
+            );
+
+            if (
+              matchingPendingPreset &&
+              matchingPendingPreset.filled &&
+              formPreset.audio &&
+              matchingPendingPreset.audio === formPreset.audio
+            ) {
+              result.synths[i].presets[j].filled = true;
+            }
+          }
+        }
+      }
+    }
+
+    return result;
+  }
+
   static async approveSubmission({ pendingSubmissionId, formData, fileData }) {
     try {
       const pendingSubmission = await DB.get(
@@ -491,22 +572,23 @@ class AdminManager {
         throw new Error("Pending submission not found");
       }
 
-      // Parse, attach files, and merge data
-      pendingSubmission.data = JSON.parse(pendingSubmission.data);
+      // Parse submission data and add files to form data
+      const pendingSubmissionData = JSON.parse(pendingSubmission.data);
       const rawData = AdminManager.#attachFileDataToFormData({
         formData,
         fileData,
       });
 
-      // Delete old pending files that will be replaced
-      await AdminManager.#deleteReplacedPendingFiles(
-        pendingSubmission.data,
+      // Add filled info from pending data to form data
+      const finalSubmissionData = AdminManager.#addFilledInfoToFormData(
+        pendingSubmissionData,
         rawData
       );
 
-      const finalSubmissionData = AdminManager.#mergeDataSets(
-        pendingSubmission.data,
-        rawData
+      // Delete old pending files that will be replaced
+      await AdminManager.#deleteReplacedPendingFiles(
+        pendingSubmissionData,
+        finalSubmissionData
       );
 
       // Add entry to database
@@ -535,10 +617,10 @@ class AdminManager {
         throw new Error("Pending submission not found");
       }
 
-      pendingSubmission.data = JSON.parse(pendingSubmission.data);
+      const pendingSubmissionData = JSON.parse(pendingSubmission.data);
 
       // Delete unused pending files
-      await AdminManager.#deleteUnusedPendingFiles(pendingSubmission.data);
+      await AdminManager.#deleteUnusedPendingFiles(pendingSubmissionData);
 
       // Delete pending submission
       await DB.run("DELETE FROM pending_submissions WHERE id = ?", [
@@ -591,7 +673,7 @@ class AdminManager {
         mergedData.albumFilled = true;
 
         if (mergedData.albumImg && mergedData.albumImg !== albumDb.image_url) {
-          await UserSubmissionManager.#deletePendingFile({
+          await AdminManager.#deletePendingFile({
             fileName: mergedData.albumImg,
             type: "images",
           });
@@ -612,7 +694,7 @@ class AdminManager {
         mergedData.songFilled = true;
 
         if (mergedData.songImg && mergedData.songImg !== songDb.image_url) {
-          await UserSubmissionManager.#deletePendingFile({
+          await AdminManager.#deletePendingFile({
             fileName: mergedData.songImg,
             type: "images",
           });
@@ -621,6 +703,7 @@ class AdminManager {
       } else {
         if (!mergedData.songImg || mergedData.songImg.trim() === "") {
           mergedData.songImg = mergedData.albumImg;
+          mergedData.songImgFromAlbum = true;
         }
       }
 
@@ -638,7 +721,7 @@ class AdminManager {
           artistData.filled = true;
 
           if (artistData.img && artistData.img !== artistDb.image_url) {
-            await UserSubmissionManager.#deletePendingFile({
+            await AdminManager.#deletePendingFile({
               fileName: artistData.img,
               type: "images",
             });
@@ -663,7 +746,7 @@ class AdminManager {
           synthData.filled = true;
 
           if (synthData.img && synthData.img !== synthDb.image_url) {
-            await UserSubmissionManager.#deletePendingFile({
+            await AdminManager.#deletePendingFile({
               fileName: synthData.img,
               type: "images",
             });

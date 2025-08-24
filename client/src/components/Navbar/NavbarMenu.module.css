@@ -98,7 +98,7 @@
 }
 
 .navbarMenuLinkActive {
-  color: #e3e5e4;
+  color: #e3e5e4 !important;
   font-size: 1.4rem;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -107,5 +107,5 @@
 }
 
 .navbarMenuLinkActive:hover {
-  color: #899096;
+  color: #899096 !important;
 }

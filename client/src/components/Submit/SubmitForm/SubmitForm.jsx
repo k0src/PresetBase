@@ -234,6 +234,7 @@ export default function SubmitForm({
               mode={mode}
               key={synth.id}
               index={index}
+              synth={synth}
               presets={synth.presets}
               onRemove={removeSynth}
               onAddPreset={addPreset}

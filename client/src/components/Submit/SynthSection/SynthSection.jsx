@@ -10,6 +10,7 @@ import { FaXmark } from "react-icons/fa6";
 
 export default function SynthSection({
   index,
+  synth,
   presets,
   onRemove,
   onAddPreset,
@@ -21,11 +22,11 @@ export default function SynthSection({
   };
 
   const handleAddPreset = () => {
-    onAddPreset(index);
+    onAddPreset(synth.id);
   };
 
-  const handleRemovePreset = (presetIndex) => {
-    onRemovePreset(index, presetIndex);
+  const handleRemovePreset = (presetId) => {
+    onRemovePreset(synth.id, presetId);
   };
 
   return (
@@ -103,6 +104,7 @@ export default function SynthSection({
           key={preset.id}
           synthIndex={index}
           presetIndex={presetIndex}
+          preset={preset}
           onRemove={handleRemovePreset}
         />
       ))}

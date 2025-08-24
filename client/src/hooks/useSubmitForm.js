@@ -35,25 +35,31 @@ export function useSubmitForm() {
     }
   };
 
-  const addPreset = (synthIndex) => {
+  const addPreset = (synthId) => {
     setSynths((prev) =>
-      prev.map((synth, i) =>
-        i === synthIndex
-          ? { ...synth, presets: [...synth.presets, { id: Date.now() }] }
+      prev.map((synth) =>
+        synth.id === synthId
+          ? {
+              ...synth,
+              presets: [
+                ...synth.presets,
+                { id: `preset-${synth.id}-${Date.now()}` },
+              ],
+            }
           : synth
       )
     );
   };
 
-  const removePreset = (synthIndex, presetIndex) => {
+  const removePreset = (synthId, presetId) => {
     setSynths((prev) =>
-      prev.map((synth, i) =>
-        i === synthIndex
+      prev.map((synth) =>
+        synth.id === synthId
           ? {
               ...synth,
               presets:
                 synth.presets.length > 1
-                  ? synth.presets.filter((_, j) => j !== presetIndex)
+                  ? synth.presets.filter((preset) => preset.id !== presetId)
                   : synth.presets,
             }
           : synth

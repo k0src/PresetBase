@@ -37,27 +37,57 @@ export default function ApprovalsForm({ submission, onUpdate }) {
     if (submission.data.artists) {
       setArtists(
         submission.data.artists.map((artist, index) => ({
-          id: `artist-${submission.id}-${index}`,
           ...artist,
+          id: `artist-${submission.id}-${index}`,
         }))
       );
     }
+
     if (submission.data.synths) {
       setSynths(
-        submission.data.synths.map((synth, index) => ({
-          id: `synth-${submission.id}-${index}`,
-          presets: synth.presets?.map((preset, presetIndex) => ({
-            id: `preset-${submission.id}-${index}-${presetIndex}`,
+        submission.data.synths.map((synth, index) => {
+          const base = { ...synth };
+          const rawPresets = Array.isArray(base.presets) ? base.presets : [];
+          const presetsSource = rawPresets.length ? rawPresets : [{}];
+          const presets = presetsSource.map((preset, presetIndex) => ({
             ...preset,
-          })) || [{ id: `preset-${submission.id}-${index}-0` }],
-          ...synth,
-        }))
+            id: `preset-${submission.id}-${index}-${presetIndex}`,
+          }));
+
+          return {
+            ...base,
+            id: `synth-${submission.id}-${index}`,
+            presets,
+          };
+        })
       );
     }
-  }, [submission.data, setArtists, setSynths]);
+  }, [submission.id, submission.data, setArtists, setSynths]);
 
   const handleSingleChange = (checked) => {
     setIsSingle(checked);
+  };
+
+  const handleRemoveArtist = (artistId) => {
+    const artistIndex = artists.findIndex((artist) => artist.id === artistId);
+    if (artistIndex !== -1) {
+      removeArtist(artistIndex);
+    }
+  };
+
+  const handleRemoveSynth = (synthId) => {
+    const synthIndex = synths.findIndex((synth) => synth.id === synthId);
+    if (synthIndex !== -1) {
+      removeSynth(synthIndex);
+    }
+  };
+
+  const handleAddPreset = (synthId) => {
+    addPreset(synthId);
+  };
+
+  const handleRemovePreset = (synthId, presetId) => {
+    removePreset(synthId, presetId);
   };
 
   const handleApproveSubmission = async (e) => {
@@ -152,7 +182,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
         <fieldset className={styles.fieldset}>
           {artists.map((artist, index) => (
             <FormSection
-              key={`artist-${index}`}
+              key={artist.id}
               type="artistName"
               className={styles.formSection}
             >
@@ -165,7 +195,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
                     </span>
                     <FaXmark
                       className={styles.entryDeleteBtn}
-                      onClick={() => removeArtist(index)}
+                      onClick={() => handleRemoveArtist(artist.id)}
                     />
                   </div>
                 </>
@@ -284,13 +314,13 @@ export default function ApprovalsForm({ submission, onUpdate }) {
         <legend className={styles.legend}>Preset Information</legend>
         <fieldset className={styles.fieldset}>
           {synths.map((synth, synthIndex) => (
-            <div key={`synth-${synthIndex}`} className={styles.synthSection}>
+            <div key={synth.id} className={styles.synthSection}>
               {synthIndex > 0 && (
                 <div className={styles.entryNewHeader}>
                   <span className={styles.entryNewText}>Additional Synth</span>
                   <FaXmark
                     className={styles.entryDeleteBtn}
-                    onClick={() => removeSynth(synthIndex)}
+                    onClick={() => handleRemoveSynth(synth.id)}
                   />
                 </div>
               )}
@@ -359,7 +389,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
 
               {synth.presets?.map((preset, presetIndex) => (
                 <FormSection
-                  key={`synth-${synthIndex}-preset-${presetIndex}`}
+                  key={preset.id}
                   type="presetName"
                   className={styles.formSection}
                 >
@@ -372,7 +402,9 @@ export default function ApprovalsForm({ submission, onUpdate }) {
                         </span>
                         <FaXmark
                           className={styles.entryDeleteBtn}
-                          onClick={() => removePreset(synthIndex, presetIndex)}
+                          onClick={() =>
+                            handleRemovePreset(synth.id, preset.id)
+                          }
                         />
                       </div>
                     </>
@@ -426,6 +458,8 @@ export default function ApprovalsForm({ submission, onUpdate }) {
                     required
                     label="Preset Audio"
                     id={`synths[${synthIndex}][presets][${presetIndex}][audio]`}
+                    uniqueId={`audio-${preset.id}`}
+                    key={`audio-${preset.id}`}
                     initialAudio={preset.audio}
                     isApprovalMode={true}
                   >
@@ -438,7 +472,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
               <button
                 type="button"
                 className={styles.addBtn}
-                onClick={() => addPreset(synthIndex)}
+                onClick={() => handleAddPreset(synth.id)}
               >
                 + Add Another Preset
               </button>

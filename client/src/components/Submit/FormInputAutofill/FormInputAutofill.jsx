@@ -146,6 +146,7 @@ export default function FormInputAutofill({
           }
           break;
         case "Escape":
+        case "Tab":
           setShowDropdown(false);
           setSelectedIndex(-1);
           break;

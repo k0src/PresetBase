@@ -10,11 +10,12 @@ import { FaXmark } from "react-icons/fa6";
 export default function PresetSection({
   synthIndex,
   presetIndex,
+  preset,
   onRemove,
   mode = "submit",
 }) {
   const handleRemove = () => {
-    onRemove(synthIndex, presetIndex);
+    onRemove(preset.id);
   };
 
   return (
@@ -79,6 +80,7 @@ export default function PresetSection({
       <AudioInput
         label={mode === "upload" ? "Preset Audio" : "Preset Audio (Optional)"}
         id={`synths[${synthIndex}][presets][${presetIndex}][audio]`}
+        uniqueId={`audio-${preset.id}`}
         required={mode === "upload"}
       >
         Upload a short <kbd>.mp3</kbd> audio clip (approximately 4 bars)
