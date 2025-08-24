@@ -1,6 +1,9 @@
 const fs = require("fs").promises;
 const path = require("path");
 
+const projectRoot = path.resolve(__dirname, "..");
+require("dotenv").config({ path: path.join(projectRoot, ".env") });
+
 async function stopDevServer() {
   console.log("Manually stop the dev server (Ctrl+C) before continuing");
   console.log(
@@ -22,8 +25,8 @@ async function stopDevServer() {
 
 async function backupDatabase() {
   try {
-    const sourceDb = "./db/presetbase.sqlite";
-    const backupsDir = "./db/backups";
+    const sourceDb = path.join(__dirname, "..", "db", "presetbase.sqlite");
+    const backupsDir = path.join(__dirname, "..", "db", "backups");
 
     const now = new Date();
     const timestamp = now.toISOString().replace(/:/g, "-").replace(/\..+/, "");
@@ -58,8 +61,8 @@ async function backupDatabase() {
 
 async function restoreDatabase() {
   try {
-    const sourceDb = "./db/presetbase.sqlite";
-    const backupsDir = "./db/backups";
+    const sourceDb = path.join(__dirname, "..", "db", "presetbase.sqlite");
+    const backupsDir = path.join(__dirname, "..", "db", "backups");
 
     await stopDevServer();
 

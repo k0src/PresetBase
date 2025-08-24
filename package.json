@@ -4,8 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "concurrently \"nodemon server.js\" \"npm run dev --prefix client\"",
-    "db": "node backup-db.js",
-    "cleanup": "node cleanup.js"
+    "db": "node scripts/backup-db.js",
+    "cleanup": "node scripts/cleanup.js"
   },
   "keywords": [],
   "author": "",

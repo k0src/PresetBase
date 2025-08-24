@@ -3,7 +3,9 @@ const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 require("dotenv").config();
 
-const dbPath = path.resolve(__dirname, process.env.DB_PATH);
+const projectRoot = path.resolve(__dirname, "..");
+require("dotenv").config({ path: path.join(projectRoot, ".env") });
+const dbPath = path.resolve(projectRoot, process.env.DB_PATH);
 
 function connectToDatabase() {
   return new Promise((resolve, reject) => {
@@ -129,22 +131,21 @@ async function cleanupUnusedFiles() {
   try {
     db = await connectToDatabase();
 
+    const projectRoot = path.resolve(__dirname, "..");
     const imageDir = path.join(
-      __dirname,
+      projectRoot,
       "public",
       "uploads",
       "images",
       "approved"
     );
     const audioDir = path.join(
-      __dirname,
+      projectRoot,
       "public",
       "uploads",
       "audio",
       "approved"
     );
-
-    console.log("🔍 Scanning database for used files...");
 
     const [usedImageFiles, usedAudioFiles] = await Promise.all([
       getAllUsedImageFiles(db),
