@@ -81,7 +81,7 @@ export default function AdminManageDb() {
     setFilterText(filter);
   }, []);
 
-  if (loading)
+  if (loading) {
     return (
       <>
         <Helmet>
@@ -106,6 +106,7 @@ export default function AdminManageDb() {
         </ContentContainer>
       </>
     );
+  }
 
   if (error) {
     return (

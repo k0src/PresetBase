@@ -46,7 +46,6 @@ export function useAdminTableData(selectedTable, sortBy, sortDirection) {
   const fetchConfig = useMemo(() => {
     const fetchers = dataFetchers[selectedTable];
     if (!fetchers) return {};
-
     return {
       data: () => fetchers.data(sortBy, sortDirection),
       total: () => fetchers.total(),
@@ -56,7 +55,10 @@ export function useAdminTableData(selectedTable, sortBy, sortDirection) {
   const { data, loading, error } = useAsyncData(
     fetchConfig,
     [selectedTable, sortBy, sortDirection],
-    { cacheKey: `adminManageDb-${selectedTable}-${sortBy}-${sortDirection}` }
+    {
+      cacheKey: `adminManageDb-${selectedTable}-${sortBy}-${sortDirection}`,
+      resetOnDepsChange: true,
+    }
   );
 
   return {

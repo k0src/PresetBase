@@ -86,42 +86,42 @@
 
 .gridLayoutSongs {
   display: grid;
-  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2.8rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .gridLayoutArtists {
   display: grid;
-  grid-template-columns: 2rem 1fr 1fr;
+  grid-template-columns: 2.8rem 1fr 1fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .gridLayoutAlbums {
   display: grid;
-  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2.8rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .gridLayoutSynths {
   display: grid;
-  grid-template-columns: 2rem 400fr 300fr 200fr 75fr;
+  grid-template-columns: 2.8rem 400fr 300fr 200fr 75fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .gridLayoutPresets {
   display: grid;
-  grid-template-columns: 2rem 400fr 300fr 300fr 200fr;
+  grid-template-columns: 2.8rem 400fr 300fr 300fr 200fr;
   align-items: center;
   gap: 1.4rem;
 }
 
 .gridLayoutGenres {
   display: grid;
-  grid-template-columns: 2rem 1fr 1fr;
+  grid-template-columns: 2.8rem 1fr 1fr;
   align-items: center;
   gap: 1.4rem;
 }

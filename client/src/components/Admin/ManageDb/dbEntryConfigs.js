@@ -2,6 +2,7 @@ export const dbEntryConfigs = {
   songs: {
     gridClass: "gridLayoutSongs",
     columns: [
+      { key: "id", label: "#" },
       { key: "title", label: "Title" },
       { key: "genre", label: "Genre" },
       { key: "year", label: "Year" },
@@ -19,6 +20,7 @@ export const dbEntryConfigs = {
   artists: {
     gridClass: "gridLayoutArtists",
     columns: [
+      { key: "id", label: "#" },
       { key: "name", label: "Name" },
       { key: "country", label: "Country" },
       { key: "imageUrl", label: "Image URL" },
@@ -34,6 +36,7 @@ export const dbEntryConfigs = {
   albums: {
     gridClass: "gridLayoutAlbums",
     columns: [
+      { key: "id", label: "#" },
       { key: "title", label: "Title" },
       { key: "genre", label: "Genre" },
       { key: "year", label: "Year" },
@@ -50,6 +53,7 @@ export const dbEntryConfigs = {
   synths: {
     gridClass: "gridLayoutSynths",
     columns: [
+      { key: "id", label: "#" },
       { key: "name", label: "Name" },
       { key: "manufacturer", label: "Manufacturer" },
       { key: "type", label: "Type" },
@@ -69,6 +73,7 @@ export const dbEntryConfigs = {
   presets: {
     gridClass: "gridLayoutPresets",
     columns: [
+      { key: "id", label: "#" },
       { key: "name", label: "Name" },
       { key: "packName", label: "Pack Name" },
       { key: "author", label: "Author" },
@@ -85,6 +90,7 @@ export const dbEntryConfigs = {
   genres: {
     gridClass: "gridLayoutGenres",
     columns: [
+      { key: "id", label: "#" },
       { key: "name", label: "Name" },
       { key: "slug", label: "Slug" },
       { key: "textColor", label: "Text Color" },

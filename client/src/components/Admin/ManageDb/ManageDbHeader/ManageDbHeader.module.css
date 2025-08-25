@@ -51,14 +51,3 @@
   color: #899096;
   font-size: 1.3rem;
 }
-
-.downloadBtn {
-  color: #899096;
-  font-size: 1.6rem;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.downloadBtn:hover {
-  color: #e3e5e4;
-}

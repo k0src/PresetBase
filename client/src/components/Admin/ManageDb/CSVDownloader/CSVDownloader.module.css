@@ -1,0 +1,37 @@
+.downloadIcon {
+  color: #899096;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.downloadIcon:hover {
+  color: #e3e5e4;
+}
+
+.loadingIcon {
+  cursor: not-allowed;
+  color: #899096;
+  font-size: 1.6rem;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.errorIcon {
+  color: #c25c5c;
+  font-size: 1.6rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.errorIconn:hover {
+  color: #c86c6c;
+}

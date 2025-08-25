@@ -1,12 +1,9 @@
-import { memo, useMemo } from "react";
-
 import TableSelector from "../TableSelector/TableSelector";
 import ManageDbFilter from "../ManageDbFilter/ManageDbFilter";
 import ManageDbSortSelector from "../ManageDbSortSelector/ManageDbSortSelector";
+import CSVDownloader from "../CSVDownloader/CSVDownloader";
 
 import styles from "./ManageDbHeader.module.css";
-
-import { FaArrowDown } from "react-icons/fa6";
 
 export default function ManageDbHeader({
   entryType,
@@ -24,11 +21,9 @@ export default function ManageDbHeader({
     <section className={styles.header}>
       <div className={styles.headerTop}>
         <h1 className={styles.headingPrimary}>Manage Database</h1>
-        {totalEntries && (
-          <span className={styles.totalEntries}>
-            {totalEntries} {entryType}
-          </span>
-        )}
+        <span className={styles.totalEntries}>
+          {totalEntries ? totalEntries : "…"} {entryType}
+        </span>
       </div>
 
       <div className={styles.headerBottomContainer}>
@@ -37,7 +32,7 @@ export default function ManageDbHeader({
             selectedTable={selectedTable}
             onTableChange={onTableChange}
           />
-          <FaArrowDown className={styles.downloadBtn} />
+          <CSVDownloader entryType={entryType} />
         </div>
 
         <div className={styles.headerBottom}>

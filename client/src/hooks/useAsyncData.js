@@ -13,11 +13,9 @@ const getCachedData = (cacheKey) => {
   try {
     const { data, timestamp, ttl } = JSON.parse(raw);
     const now = Date.now();
-
     if (ttl && now - timestamp > ttl) {
       return { data, expired: true }; // Stale cached data
     }
-
     return { data, expired: false }; // fresh
   } catch {
     console.error("Error parsing cached data:", raw);
@@ -49,6 +47,7 @@ const setCachedData = (cacheKey, data, ttl = null) => {
  * @param {Object} options - Optional settings.
  * @param {string} options.cacheKey - A unique key for caching the data in localStorage.
  * @param {number} [options.ttl=300000] - Time-to-live for the cache in milliseconds (default: 5 minutes).
+ * @param {boolean} [options.resetOnDepsChange=false] - Whether to reset data/loading states when dependencies change.
  *
  * @returns {{
  *   data: Object,
@@ -61,10 +60,24 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const requestIdRef = useRef(0);
-  const { cacheKey, ttl = 1000 * 60 * 5 } = options; // default: 5 minutes
+  const prevDepsRef = useRef(dependencies);
+
+  const { cacheKey, ttl = 1000 * 60 * 5, resetOnDepsChange = false } = options; // default: 5 minutes
 
   useEffect(() => {
     const currentRequestId = ++requestIdRef.current;
+
+    // Check if dependencies have changed and reset is enabled
+    const depsChanged =
+      resetOnDepsChange &&
+      JSON.stringify(prevDepsRef.current) !== JSON.stringify(dependencies);
+
+    if (depsChanged) {
+      setData({});
+      setError(null);
+    }
+
+    prevDepsRef.current = dependencies;
 
     const fetchData = async () => {
       try {
@@ -96,13 +109,18 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
       }
     };
 
-    // Load from cache first (only if not in development mode)
+    // If dependencies changed and reset is enabled, skip cache and fetch immediately
+    if (depsChanged) {
+      fetchData();
+      return;
+    }
+
+    // Load from cache first
     if (cacheKey && !IS_DEV) {
       const cached = getCachedData(cacheKey);
       if (cached) {
         setData(cached.data);
         setLoading(false);
-
         // Trigger background refetch if expired
         if (cached.expired) {
           fetchData();

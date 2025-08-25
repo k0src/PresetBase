@@ -37,17 +37,22 @@ export default function EntryTable({ data, config, filterText = "" }) {
         row.originalIndex % 2 === 1 ? styles.oddRow : ""
       )}
     >
-      <span className={styles.rowNumber}>{row.originalIndex + 1}</span>
-      {config.columns.map((column) => (
-        <EntryTableCell
-          key={column.key}
-          rowId={row.id}
-          columnKey={column.key}
-          value={row[column.key]}
-          editingCell={editingCell}
-          setEditingCell={setEditingCell}
-        />
-      ))}
+      {config.columns.map((column) =>
+        column.key === "id" ? (
+          <span key={column.key} className={styles.rowNumber}>
+            {row[column.key]}
+          </span>
+        ) : (
+          <EntryTableCell
+            key={column.key}
+            rowId={row.id}
+            columnKey={column.key}
+            value={row[column.key]}
+            editingCell={editingCell}
+            setEditingCell={setEditingCell}
+          />
+        )
+      )}
 
       <button type="button" className={styles.editBtn}>
         <FaPenToSquare className={styles.editIcon} />
@@ -68,7 +73,6 @@ export default function EntryTable({ data, config, filterText = "" }) {
       <div
         className={classNames(styles[config.gridClass], styles.tableColumns)}
       >
-        <span>#</span>
         {columnHeaders}
       </div>
       {filteredData.map((row) => (
