@@ -1,0 +1,31 @@
+.entryInfoTop {
+  display: flex;
+  gap: 1.2rem;
+}
+
+.infoLink,
+.infoEntry {
+  display: flex;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.infoText {
+  font-size: 1.3rem;
+  line-height: 1.1;
+  color: #899096;
+}
+
+.infoLink .infoText {
+  text-decoration: underline !important;
+}
+
+.infoLink:hover {
+  cursor: pointer;
+  color: #e3e5e4 !important;
+}
+
+.infoLinkIcon {
+  font-size: 1rem;
+  color: #899096;
+}

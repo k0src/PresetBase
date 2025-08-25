@@ -1,0 +1,29 @@
+.slideoutInput {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+}
+
+.labelText {
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.input {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 1.2rem 0.8rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.input.disabled {
+  background-color: #121417;
+  border-color: #3a3f44;
+  color: #777;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
