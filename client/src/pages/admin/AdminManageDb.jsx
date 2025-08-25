@@ -1,7 +1,8 @@
 import { dbEntryConfigs } from "../../components/Admin/ManageDb/dbEntryConfigs";
 import { useAdminTableData } from "../../hooks/useAdminTableData";
 
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer";
@@ -11,29 +12,65 @@ import ManageDbNoEntries from "../../components/Admin/ManageDb/ManageDbNoEntries
 import ManageDbHeader from "../../components/Admin/ManageDb/ManageDbHeader/ManageDbHeader";
 import EntryTable from "../../components/Admin/ManageDb/EntryTable/EntryTable";
 
+const validTables = [
+  "songs",
+  "artists",
+  "albums",
+  "synths",
+  "presets",
+  "genres",
+];
+
 export default function AdminManageDb() {
-  const [selectedTable, setSelectedTable] = useState("songs");
+  const { table } = useParams();
+  const navigate = useNavigate();
+
+  const currentTable = validTables.includes(table) ? table : "songs";
+
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
 
+  const [urlTable, setUrlTable] = useState(currentTable);
+
+  useEffect(() => {
+    if (currentTable !== urlTable) {
+      setUrlTable(currentTable);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTable]);
+
+  useEffect(() => {
+    setSortBy("added");
+    setSortDirection("asc");
+    setFilterText("");
+  }, [currentTable]);
+
   const { tableData, totalEntries, loading, error } = useAdminTableData(
-    selectedTable,
+    currentTable,
     sortBy,
     sortDirection
   );
 
   const currentConfig = useMemo(
-    () => dbEntryConfigs[selectedTable],
-    [selectedTable]
+    () => dbEntryConfigs[currentTable],
+    [currentTable]
   );
 
-  const handleTableChange = useCallback((newTable) => {
-    setSelectedTable(newTable);
-    setSortBy("added");
-    setSortDirection("asc");
-    setFilterText("");
-  }, []);
+  const pageTitle = useMemo(() => {
+    const tableName =
+      currentTable.charAt(0).toUpperCase() + currentTable.slice(1);
+    return `Manage Database - ${tableName}`;
+  }, [currentTable]);
+
+  const handleTableChange = useCallback(
+    (newTable) => {
+      if (newTable === urlTable) return;
+      setUrlTable(newTable);
+      navigate(`/admin/manage-db/${newTable}`, { replace: false });
+    },
+    [navigate, urlTable]
+  );
 
   const handleSortChange = useCallback((sort, direction) => {
     setSortBy(sort);
@@ -48,19 +85,19 @@ export default function AdminManageDb() {
     return (
       <>
         <Helmet>
-          <title>Manage Database</title>
+          <title>{pageTitle}</title>
         </Helmet>
 
         <ContentContainer isAuth={true} userIsAdmin={true}>
           <ManageDbHeader
-            entryType={selectedTable}
+            entryType={currentTable}
             totalEntries={totalEntries}
             sortOptions={currentConfig.sortOptions}
             onFilterChange={handleFilterChange}
             onSortSelectChange={handleSortChange}
             sortBy={sortBy}
             sortDirection={sortDirection}
-            selectedTable={selectedTable}
+            selectedTable={urlTable}
             onTableChange={handleTableChange}
             filterText={filterText}
           />
@@ -81,29 +118,29 @@ export default function AdminManageDb() {
     );
   }
 
-  // No results
+  // No results view
   if (!tableData || !tableData.length) {
     return (
       <>
         <Helmet>
-          <title>Manage Database</title>
+          <title>{pageTitle}</title>
         </Helmet>
 
         <ContentContainer isAuth={true} userIsAdmin={true}>
           <ManageDbHeader
-            entryType={selectedTable}
+            entryType={currentTable}
             totalEntries={totalEntries}
             sortOptions={currentConfig.sortOptions}
             onFilterChange={handleFilterChange}
             onSortSelectChange={handleSortChange}
             sortBy={sortBy}
             sortDirection={sortDirection}
-            selectedTable={selectedTable}
+            selectedTable={urlTable}
             onTableChange={handleTableChange}
             filterText={filterText}
           />
 
-          <ManageDbNoEntries entryType={selectedTable} />
+          <ManageDbNoEntries entryType={currentTable} />
         </ContentContainer>
       </>
     );
@@ -112,19 +149,19 @@ export default function AdminManageDb() {
   return (
     <>
       <Helmet>
-        <title>Manage Database</title>
+        <title>{pageTitle}</title>
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
         <ManageDbHeader
-          entryType={selectedTable}
+          entryType={currentTable}
           totalEntries={totalEntries}
           sortOptions={currentConfig.sortOptions}
           onFilterChange={handleFilterChange}
           onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
-          selectedTable={selectedTable}
+          selectedTable={urlTable}
           onTableChange={handleTableChange}
           filterText={filterText}
         />

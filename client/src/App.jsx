@@ -80,6 +80,7 @@ function App() {
         <Route path="/admin/upload" element={<AdminUpload />} />
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
         <Route path="/admin/manage-db" element={<AdminManageDb />} />
+        <Route path="/admin/manage-db/:table" element={<AdminManageDb />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
