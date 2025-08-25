@@ -26,25 +26,13 @@
   padding: 0.8rem 0;
 }
 
-.filterClear {
+.clearBtn {
   cursor: pointer;
   font-size: 1.4rem;
   color: #899096;
   transition: color 0.2s ease;
 }
 
-.filterClear:hover {
+.clearBtn:hover {
   color: #e3e5e4;
-}
-
-/* --------------------------------- Queries -------------------------------- */
-@media (max-width: 35em) {
-  .browseFilter {
-    width: 70%;
-    max-width: 70%;
-  }
-
-  .filterClear {
-    display: none !important;
-  }
 }

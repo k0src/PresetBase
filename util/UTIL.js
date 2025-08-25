@@ -63,6 +63,7 @@ const sortKeys = {
   genres: {
     genre: "genre_tags.name",
     songCount: "songCount",
+    added: "genre_tags.timestamp",
   },
 };
 

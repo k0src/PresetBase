@@ -6,10 +6,10 @@ import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
-import PageLoader from "../../components/PageLoader/PageLoader.jsx";
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader.jsx";
 import DbError from "../../components/DbError/DbError.jsx";
-import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
-import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
+import BrowseHeader from "../../components/Browse/BrowseHeader/BrowseHeader.jsx";
+import BrowseTableView from "../../components/Browse/BrowseTableView/BrowseTableView.jsx";
 
 export default function BrowseRecent() {
   const [sortBy, setSortBy] = useState("added");
@@ -37,7 +37,28 @@ export default function BrowseRecent() {
 
   const recentSongsConfig = useMemo(() => entryConfigs.songs, []);
 
-  if (loading) return <PageLoader />;
+  if (loading)
+    return (
+      <>
+        <Helmet>
+          <title>Recent Songs</title>
+        </Helmet>
+
+        <ContentContainer isAuth={true} userIsAdmin={true}>
+          <BrowseHeader
+            entryType="recent"
+            filterPlaceholder="Filter songs..."
+            sortOptions={recentSongsConfig.sortOptions}
+            onFilterChange={handleFilterChange}
+            onSortSelectChange={handleSortChange}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+          />
+
+          <ComponentLoader />
+        </ContentContainer>
+      </>
+    );
 
   if (error) {
     return (
@@ -72,16 +93,21 @@ export default function BrowseRecent() {
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
-        <BrowseResults
+        <BrowseHeader
           entryType="recent"
-          data={recentSongsData}
-          config={recentSongsConfig}
-          onSortChange={handleSortChange}
+          filterPlaceholder="Filter songs..."
+          sortOptions={recentSongsConfig.sortOptions}
           onFilterChange={handleFilterChange}
+          onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
+        />
+
+        <BrowseTableView
+          data={recentSongsData}
+          entryType="recent"
+          config={recentSongsConfig}
           filterText={filterText}
-          filterPlaceholder="Filter songs..."
         />
       </ContentContainer>
     </>

@@ -33,7 +33,7 @@ import LoginPage from "./pages/auth/LoginPage/LoginPage";
 import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
 // import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
-// import AdminManageDb from "./pages/admin/AdminManageDb/AdminManageDb";
+import AdminManageDb from "./pages/admin/AdminManageDb";
 
 import NotFound from "./pages/static/NotFound/NotFound";
 
@@ -79,7 +79,7 @@ function App() {
         <Route path="/admin/approvals" element={<AdminApprovals />} />
         <Route path="/admin/upload" element={<AdminUpload />} />
         {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
-        {/* <Route path="/admin/manage-db" element={<AdminManageDb />} /> */}
+        <Route path="/admin/manage-db" element={<AdminManageDb />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>

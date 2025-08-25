@@ -6,10 +6,11 @@ import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
-import PageLoader from "../../components/PageLoader/PageLoader.jsx";
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader.jsx";
 import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
-import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
+import BrowseHeader from "../../components/Browse/BrowseHeader/BrowseHeader.jsx";
+import BrowseTableView from "../../components/Browse/BrowseTableView/BrowseTableView.jsx";
 
 export default function BrowseArtists() {
   const [sortBy, setSortBy] = useState("added");
@@ -39,7 +40,29 @@ export default function BrowseArtists() {
 
   const artistsConfig = useMemo(() => entryConfigs.artists, []);
 
-  if (loading) return <PageLoader />;
+  if (loading)
+    return (
+      <>
+        <Helmet>
+          <title>Browse Artists</title>
+        </Helmet>
+
+        <ContentContainer isAuth={true} userIsAdmin={true}>
+          <BrowseHeader
+            entryType="artists"
+            totalEntries={totalEntries}
+            filterPlaceholder="Filter artists..."
+            sortOptions={artistsConfig.sortOptions}
+            onFilterChange={handleFilterChange}
+            onSortSelectChange={handleSortChange}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+          />
+
+          <ComponentLoader />
+        </ContentContainer>
+      </>
+    );
 
   if (error) {
     return (
@@ -74,17 +97,22 @@ export default function BrowseArtists() {
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
-        <BrowseResults
+        <BrowseHeader
           entryType="artists"
-          data={artistsData}
           totalEntries={totalEntries}
-          config={artistsConfig}
-          onSortChange={handleSortChange}
+          filterPlaceholder="Filter artists..."
+          sortOptions={artistsConfig.sortOptions}
           onFilterChange={handleFilterChange}
+          onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
+        />
+
+        <BrowseTableView
+          data={artistsData}
+          entryType="artists"
+          config={artistsConfig}
           filterText={filterText}
-          filterPlaceholder="Filter artists..."
         />
       </ContentContainer>
     </>

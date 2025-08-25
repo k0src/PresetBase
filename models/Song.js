@@ -389,6 +389,7 @@ class Song extends Entry {
           songs.title AS title,
           songs.genre AS genre,
           songs.release_year AS year,
+          songs.song_url AS songUrl,
           songs.image_url AS imageUrl,
           songs.timestamp AS timestamp,
           json_object (

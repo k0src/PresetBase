@@ -1,0 +1,103 @@
+.gridLayoutSongs {
+  display: grid;
+  grid-template-columns: 2rem 9fr 6fr 5fr 11fr 11fr 7fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutArtists {
+  display: grid;
+  grid-template-columns: 2rem 14fr 7fr 18fr 11fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutAlbums {
+  display: grid;
+  grid-template-columns: 2rem 16fr 7fr 5fr 14fr 8fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutSynths {
+  display: grid;
+  grid-template-columns: 2rem 10fr 9fr 5fr 5fr 13fr 8fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutPresets {
+  display: grid;
+  grid-template-columns: 2rem 14fr 13fr 12fr 11fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.gridLayoutGenres {
+  display: grid;
+  grid-template-columns: 2rem 12fr 12fr 6fr 6fr 6fr 9fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.tableColumns {
+  color: #899096;
+  font-size: 1.3rem;
+  border-top: 0.1rem solid #2d343a;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.4rem;
+}
+
+.tableRow {
+  padding: 1.4rem;
+  border-bottom: 0.1rem solid #2d343a;
+  transition: background-color 0.2s ease;
+  min-width: 0;
+}
+
+.tableRow:hover,
+.oddRow:hover {
+  background-color: #2d343a;
+}
+
+.oddRow {
+  background-color: #1e2227;
+}
+
+.rowText,
+.rowNumber {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.rowNumber {
+  color: #899096;
+}
+
+.editBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.editIcon {
+  cursor: pointer;
+  font-size: 1.6rem;
+  color: #899096;
+  transition: color 0.2s ease;
+}
+
+.editIcon:hover {
+  color: #e3e5e4;
+}

@@ -6,10 +6,11 @@ import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
-import PageLoader from "../../components/PageLoader/PageLoader.jsx";
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader.jsx";
 import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
-import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
+import BrowseHeader from "../../components/Browse/BrowseHeader/BrowseHeader.jsx";
+import BrowseTableView from "../../components/Browse/BrowseTableView/BrowseTableView.jsx";
 
 export default function BrowseHot() {
   const [sortBy, setSortBy] = useState("hot");
@@ -37,7 +38,28 @@ export default function BrowseHot() {
 
   const hotSongsConfig = useMemo(() => entryConfigs.hot, []);
 
-  if (loading) return <PageLoader />;
+  if (loading)
+    return (
+      <>
+        <Helmet>
+          <title>Hot Songs</title>
+        </Helmet>
+
+        <ContentContainer isAuth={true} userIsAdmin={true}>
+          <BrowseHeader
+            entryType="hot"
+            filterPlaceholder="Filter songs..."
+            sortOptions={hotSongsConfig.sortOptions}
+            onFilterChange={handleFilterChange}
+            onSortSelectChange={handleSortChange}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+          />
+
+          <ComponentLoader />
+        </ContentContainer>
+      </>
+    );
 
   if (error) {
     return (
@@ -72,16 +94,21 @@ export default function BrowseHot() {
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
-        <BrowseResults
+        <BrowseHeader
           entryType="hot"
-          data={hotSongsData}
-          config={hotSongsConfig}
-          onSortChange={handleSortChange}
+          filterPlaceholder="Filter songs..."
+          sortOptions={hotSongsConfig.sortOptions}
           onFilterChange={handleFilterChange}
+          onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
+        />
+
+        <BrowseTableView
+          data={hotSongsData}
+          entryType="hot"
+          config={hotSongsConfig}
           filterText={filterText}
-          filterPlaceholder="Filter songs..."
         />
       </ContentContainer>
     </>

@@ -6,10 +6,11 @@ import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
-import PageLoader from "../../components/PageLoader/PageLoader.jsx";
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader.jsx";
 import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
-import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
+import BrowseHeader from "../../components/Browse/BrowseHeader/BrowseHeader.jsx";
+import BrowseTableView from "../../components/Browse/BrowseTableView/BrowseTableView.jsx";
 
 export default function BrowseAlbums() {
   const [sortBy, setSortBy] = useState("added");
@@ -39,7 +40,29 @@ export default function BrowseAlbums() {
 
   const albumsConfig = useMemo(() => entryConfigs.albums, []);
 
-  if (loading) return <PageLoader />;
+  if (loading)
+    return (
+      <>
+        <Helmet>
+          <title>Browse Albums</title>
+        </Helmet>
+
+        <ContentContainer isAuth={true} userIsAdmin={true}>
+          <BrowseHeader
+            entryType="albums"
+            totalEntries={totalEntries}
+            filterPlaceholder="Filter albums..."
+            sortOptions={albumsConfig.sortOptions}
+            onFilterChange={handleFilterChange}
+            onSortSelectChange={handleSortChange}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+          />
+
+          <ComponentLoader />
+        </ContentContainer>
+      </>
+    );
 
   if (error) {
     return (
@@ -74,17 +97,22 @@ export default function BrowseAlbums() {
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
-        <BrowseResults
+        <BrowseHeader
           entryType="albums"
-          data={albumsData}
           totalEntries={totalEntries}
-          config={albumsConfig}
-          onSortChange={handleSortChange}
+          filterPlaceholder="Filter albums..."
+          sortOptions={albumsConfig.sortOptions}
           onFilterChange={handleFilterChange}
+          onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
+        />
+
+        <BrowseTableView
+          data={albumsData}
+          entryType="albums"
+          config={albumsConfig}
           filterText={filterText}
-          filterPlaceholder="Filter albums..."
         />
       </ContentContainer>
     </>

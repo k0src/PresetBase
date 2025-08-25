@@ -6,10 +6,11 @@ import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
-import PageLoader from "../../components/PageLoader/PageLoader.jsx";
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader.jsx";
 import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
-import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
+import BrowseHeader from "../../components/Browse/BrowseHeader/BrowseHeader.jsx";
+import BrowseTableView from "../../components/Browse/BrowseTableView/BrowseTableView.jsx";
 
 export default function BrowseSynths() {
   const [sortBy, setSortBy] = useState("added");
@@ -39,7 +40,29 @@ export default function BrowseSynths() {
 
   const synthsConfig = useMemo(() => entryConfigs.synths, []);
 
-  if (loading) return <PageLoader />;
+  if (loading)
+    return (
+      <>
+        <Helmet>
+          <title>Browse Synths</title>
+        </Helmet>
+
+        <ContentContainer isAuth={true} userIsAdmin={true}>
+          <BrowseHeader
+            entryType="synths"
+            totalEntries={totalEntries}
+            filterPlaceholder="Filter synths..."
+            sortOptions={synthsConfig.sortOptions}
+            onFilterChange={handleFilterChange}
+            onSortSelectChange={handleSortChange}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+          />
+
+          <ComponentLoader />
+        </ContentContainer>
+      </>
+    );
 
   if (error) {
     return (
@@ -74,17 +97,22 @@ export default function BrowseSynths() {
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
-        <BrowseResults
+        <BrowseHeader
           entryType="synths"
-          data={synthsData}
           totalEntries={totalEntries}
-          config={synthsConfig}
-          onSortChange={handleSortChange}
+          filterPlaceholder="Filter synths..."
+          sortOptions={synthsConfig.sortOptions}
           onFilterChange={handleFilterChange}
+          onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
+        />
+
+        <BrowseTableView
+          data={synthsData}
+          entryType="synths"
+          config={synthsConfig}
           filterText={filterText}
-          filterPlaceholder="Filter synths..."
         />
       </ContentContainer>
     </>

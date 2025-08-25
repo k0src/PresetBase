@@ -69,6 +69,7 @@ class Genre extends Entry {
           genre_tags.text_color AS textColor,
           genre_tags.border_color AS borderColor,
           genre_tags.bg_color AS backgroundColor,
+          genre_tags.timestamp AS timestamp,
           songs.image_url AS imageUrl,
           COUNT(songs.id) AS songCount
         FROM genre_tags
@@ -290,7 +291,7 @@ class Genre extends Entry {
   }
 
   // Get all genres
-  static async getAll(sort = "genre_tags.id", direction = "ASC") {
+  static async getAll(sort = "genre_tags.timestamp", direction = "ASC") {
     try {
       // For case-insensitive sorting on text fields
       const textFields = ["genre_tags.name"];
@@ -312,6 +313,7 @@ class Genre extends Entry {
           genre_tags.text_color AS textColor,
           genre_tags.border_color AS borderColor,
           genre_tags.bg_color AS backgroundColor,
+          genre_tags.timestamp AS timestamp,
           COUNT(songs.id) AS songCount,
           MAX(songs.image_url) AS imageUrl
         FROM genre_tags
@@ -338,6 +340,7 @@ class Genre extends Entry {
           genre_tags.text_color AS textColor,
           genre_tags.border_color AS borderColor,
           genre_tags.bg_color AS backgroundColor,
+          genre_tags.timestamp AS timestamp,
           COUNT(songs.id) AS songCount,
           MAX(songs.image_url) AS imageUrl
         FROM genre_tags

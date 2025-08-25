@@ -32,13 +32,6 @@
   justify-content: space-between;
 }
 
-.filterContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.4rem;
-}
-
 /* --------------------------------- Queries -------------------------------- */
 @media (max-width: 48em) {
   .browseHeader {

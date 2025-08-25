@@ -41,12 +41,11 @@ const BrowseHeader = memo(function BrowseHeader({
       </div>
 
       <div className={styles.browseHeaderBottom}>
-        <div className={styles.filterContainer}>
-          <BrowseFilter
-            placeholder={filterPlaceholder}
-            onFilterChange={onFilterChange}
-          />
-        </div>
+        <BrowseFilter
+          placeholder={filterPlaceholder}
+          onFilterChange={onFilterChange}
+        />
+
         <BrowseSortSelect
           sortOptions={sortOptions}
           onSortSelectChange={onSortSelectChange}

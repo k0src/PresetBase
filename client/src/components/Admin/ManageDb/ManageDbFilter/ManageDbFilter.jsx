@@ -1,13 +1,18 @@
-import { useState, useCallback, memo } from "react";
+import { useState, useCallback, memo, useEffect } from "react";
 
-import styles from "./BrowseFilter.module.css";
+import styles from "./ManageDbFilter.module.css";
 import { FaXmark } from "react-icons/fa6";
 
-const BrowseFilter = memo(function BrowseFilter({
+const ManageDbFilter = memo(function ManageDbFilter({
   placeholder,
   onFilterChange,
+  value = "",
 }) {
-  const [filterText, setFilterText] = useState("");
+  const [filterText, setFilterText] = useState(value);
+
+  useEffect(() => {
+    setFilterText(value);
+  }, [value]);
 
   const clearFilter = useCallback(() => {
     setFilterText("");
@@ -18,10 +23,10 @@ const BrowseFilter = memo(function BrowseFilter({
 
   const handleFilterChange = useCallback(
     (e) => {
-      const value = e.target.value;
-      setFilterText(value);
+      const inputValue = e.target.value;
+      setFilterText(inputValue);
       if (onFilterChange) {
-        onFilterChange(value);
+        onFilterChange(inputValue);
       }
     },
     [onFilterChange]
@@ -32,16 +37,16 @@ const BrowseFilter = memo(function BrowseFilter({
       <div className={styles.filter}>
         <input
           type="text"
-          placeholder={placeholder}
           className={styles.filterInput}
+          placeholder={placeholder}
           value={filterText}
-          onChange={(e) => handleFilterChange(e)}
+          onChange={handleFilterChange}
         />
 
-        <FaXmark className={styles.filterClear} onClick={clearFilter} />
+        <FaXmark className={styles.clearBtn} onClick={clearFilter} />
       </div>
     </div>
   );
 });
 
-export default BrowseFilter;
+export default ManageDbFilter;

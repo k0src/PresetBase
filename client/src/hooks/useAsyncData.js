@@ -1,5 +1,8 @@
 import { useState, useEffect, useRef } from "react";
 
+// Disable caching in dev mode
+const IS_DEV = true;
+
 // Key for persistent local storage cache
 const LOCAL_STORAGE_PREFIX = "useAsyncData:";
 
@@ -78,7 +81,7 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
           return acc;
         }, {});
 
-        if (cacheKey) {
+        if (cacheKey && !IS_DEV) {
           setCachedData(cacheKey, structuredData, ttl);
         }
 
@@ -93,8 +96,8 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
       }
     };
 
-    // Load from cache first
-    if (cacheKey) {
+    // Load from cache first (only if not in development mode)
+    if (cacheKey && !IS_DEV) {
       const cached = getCachedData(cacheKey);
       if (cached) {
         setData(cached.data);

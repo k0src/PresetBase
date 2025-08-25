@@ -6,10 +6,11 @@ import { useState, useCallback, useMemo } from "react";
 import { Helmet } from "react-helmet-async";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer.jsx";
-import PageLoader from "../../components/PageLoader/PageLoader.jsx";
+import ComponentLoader from "../../components/ComponentLoader/ComponentLoader.jsx";
 import DbError from "../../components/DbError/DbError.jsx";
 import BrowseNoResults from "../../components/Browse/BrowseNoResults/BrowseNoResults.jsx";
-import BrowseResults from "../../components/Browse/BrowseResults/BrowseResults.jsx";
+import BrowseHeader from "../../components/Browse/BrowseHeader/BrowseHeader.jsx";
+import BrowseTableView from "../../components/Browse/BrowseTableView/BrowseTableView.jsx";
 
 export default function BrowseGenres() {
   const [sortBy, setSortBy] = useState("songCount");
@@ -39,7 +40,29 @@ export default function BrowseGenres() {
 
   const genresConfig = useMemo(() => entryConfigs.genres, []);
 
-  if (loading) return <PageLoader />;
+  if (loading)
+    return (
+      <>
+        <Helmet>
+          <title>Browse Genres</title>
+        </Helmet>
+
+        <ContentContainer isAuth={true} userIsAdmin={true}>
+          <BrowseHeader
+            entryType="genres"
+            totalEntries={totalEntries}
+            filterPlaceholder="Filter genres..."
+            sortOptions={genresConfig.sortOptions}
+            onFilterChange={handleFilterChange}
+            onSortSelectChange={handleSortChange}
+            sortBy={sortBy}
+            sortDirection={sortDirection}
+          />
+
+          <ComponentLoader />
+        </ContentContainer>
+      </>
+    );
 
   if (error) {
     return (
@@ -74,17 +97,22 @@ export default function BrowseGenres() {
       </Helmet>
 
       <ContentContainer isAuth={true} userIsAdmin={true}>
-        <BrowseResults
+        <BrowseHeader
           entryType="genres"
-          data={genresData}
           totalEntries={totalEntries}
-          config={genresConfig}
-          onSortChange={handleSortChange}
+          filterPlaceholder="Filter genres..."
+          sortOptions={genresConfig.sortOptions}
           onFilterChange={handleFilterChange}
+          onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
+        />
+
+        <BrowseTableView
+          data={genresData}
+          entryType="genres"
+          config={genresConfig}
           filterText={filterText}
-          filterPlaceholder="Filter genres..."
         />
       </ContentContainer>
     </>
