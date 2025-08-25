@@ -1,0 +1,44 @@
+.rowText {
+  user-select: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.cellContainer {
+  position: relative;
+  min-width: 0;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  max-width: 100%;
+  font-size: 1.4rem;
+  line-height: 1.1;
+}
+
+.cellContainerEditing {
+  overflow: visible;
+}
+
+.fullTextField {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: auto;
+  max-width: 100%;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: translate(0, -50%);
+  z-index: 999;
+  overflow-x: auto;
+  white-space: nowrap;
+}

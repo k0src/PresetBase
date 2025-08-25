@@ -1,4 +1,6 @@
-import { useMemo, memo } from "react";
+import { useMemo, memo, useState } from "react";
+
+import EntryTableCell from "../EntryTableCell/EntryTableCell";
 
 import styles from "./EntryTable.module.css";
 import classNames from "classnames";
@@ -6,6 +8,8 @@ import classNames from "classnames";
 import { FaPenToSquare } from "react-icons/fa6";
 
 export default function EntryTable({ data, config, filterText = "" }) {
+  const [editingCell, setEditingCell] = useState(null);
+
   const filteredData = useMemo(() => {
     const dataRowsWithIndex = data.map((item, originalIndex) => ({
       ...item,
@@ -35,9 +39,14 @@ export default function EntryTable({ data, config, filterText = "" }) {
     >
       <span className={styles.rowNumber}>{row.originalIndex + 1}</span>
       {config.columns.map((column) => (
-        <span key={column.key} className={styles.rowText}>
-          {row[column.key]}
-        </span>
+        <EntryTableCell
+          key={column.key}
+          rowId={row.id}
+          columnKey={column.key}
+          value={row[column.key]}
+          editingCell={editingCell}
+          setEditingCell={setEditingCell}
+        />
       ))}
 
       <button type="button" className={styles.editBtn}>
@@ -62,7 +71,6 @@ export default function EntryTable({ data, config, filterText = "" }) {
         <span>#</span>
         {columnHeaders}
       </div>
-
       {filteredData.map((row) => (
         <TableRow key={row.id} row={row} />
       ))}

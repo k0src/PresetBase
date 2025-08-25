@@ -64,7 +64,6 @@
   background-color: #1e2227;
 }
 
-.rowText,
 .rowNumber {
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -73,9 +72,6 @@
   max-width: 100%;
   font-size: 1.4rem;
   line-height: 1.1;
-}
-
-.rowNumber {
   color: #899096;
 }
 
