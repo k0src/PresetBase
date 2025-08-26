@@ -11,7 +11,8 @@ import DbError from "../../components/DbError/DbError";
 import ManageDbNoEntries from "../../components/Admin/ManageDb/ManageDbNoEntries/ManageDbNoEntries";
 import ManageDbHeader from "../../components/Admin/ManageDb/ManageDbHeader/ManageDbHeader";
 import EntryTable from "../../components/Admin/ManageDb/EntryTable/EntryTable";
-import SlideoutGenreColorPickersSection from "../../components/Admin/ManageDb/Slideout/SlideoutGenreColorPickersSection/SlideoutGenreColorPickersSection";
+import SlideoutSelector from "../../components/Admin/ManageDb/Slideout/SlideoutSelector/SlideoutSelector";
+import SlideoutList from "../../components/Admin/ManageDb/Slideout/SlideoutList/SlideoutList";
 
 const validTables = [
   "songs",

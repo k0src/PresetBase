@@ -1,7 +1,7 @@
-import styles from "./AdminSlideoutInput.module.css";
+import styles from "./SlideoutInput.module.css";
 import classNames from "classnames";
 
-export default function AdminSlideoutInput({
+export default function SlideoutInput({
   required,
   type,
   id,

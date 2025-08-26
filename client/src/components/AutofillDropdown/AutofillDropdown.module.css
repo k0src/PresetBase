@@ -30,6 +30,9 @@
   top: 75%;
 }
 
+.selector {
+}
+
 .autocompleteDropdown.show {
   opacity: 1;
   transform: scaleY(1);

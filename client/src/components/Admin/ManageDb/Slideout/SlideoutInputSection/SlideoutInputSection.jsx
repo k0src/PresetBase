@@ -1,15 +1,17 @@
 import { memo, useMemo } from "react";
 
-import AdminSlideoutInput from "../AdminSlideoutInput/AdminSlideoutInput";
-import styles from "./AdminSlideoutInputSection.module.css";
+import SlideoutInput from "../SlideoutInput/SlideoutInput";
+import SlideoutGenreColorPicker from "../SlideoutGenreColorPicker/SlideoutGenreColorPicker";
+import SlideoutImageInput from "../SlideoutImageInput/SlideoutImageInput";
+import styles from "./SlideoutInputSection.module.css";
 
-const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
+const SlideoutInputSection = memo(function SlideoutInputSection({
   entryType,
-  inputData,
+  data,
 }) {
   const SongInputSection = memo(({ song }) => {
     <>
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="songTitle"
@@ -17,7 +19,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={song.title || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="songGenre"
@@ -25,7 +27,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={song.genre || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="songYear"
@@ -33,19 +35,26 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={song.year || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="url"
         id="songUrl"
         label="Song URL"
         defaultValue={song.songUrl || ""}
       />
+
+      <SlideoutImageInput
+        required
+        initialImage={song.imageUrl || null}
+        label="Cover Image"
+        id="songImageUrl"
+      />
     </>;
   });
 
   const ArtistInputSection = memo(({ artist }) => {
     <>
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="artistName"
@@ -53,19 +62,26 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={artist.name || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="artistCountry"
         label="Country"
         defaultValue={artist.country || ""}
       />
+
+      <SlideoutImageInput
+        required
+        initialImage={artist.imageUrl || null}
+        label="Artist Image"
+        id="artistImageUrl"
+      />
     </>;
   });
 
   const AlbumInputSection = memo(({ album }) => {
     <>
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="albumTitle"
@@ -73,7 +89,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={album.title || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="albumGenre"
@@ -81,19 +97,26 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={artist.country || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="albumYear"
         label="Release Year"
         defaultValue={artist.year || ""}
       />
+
+      <SlideoutImageInput
+        required
+        initialImage={album.imageUrl || null}
+        label="Cover Image"
+        id="albumImageUrl"
+      />
     </>;
   });
 
   const PresetInputSection = memo(({ preset }) => {
     <>
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="presetName"
@@ -101,7 +124,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={preset.name || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="presetPackName"
@@ -109,7 +132,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={preset.packName || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="presetAuthor"
@@ -119,9 +142,9 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
     </>;
   });
 
-  const SynthInputSection = memo(({ preset }) => {
+  const SynthInputSection = memo(({ synth }) => {
     <>
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="synthName"
@@ -129,7 +152,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={synth.name || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="synthManufacturer"
@@ -137,7 +160,7 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={synth.manufacturer || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="synthType"
@@ -145,19 +168,26 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={synth.type || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="synthYear"
         label="Release Year"
         defaultValue={synth.year || ""}
       />
+
+      <SlideoutImageInput
+        required
+        initialImage={synth.imageUrl || null}
+        label="Synth Image"
+        id="synthImageUrl"
+      />
     </>;
   });
 
-  const GenreInputSection = memo(({ preset }) => {
+  const GenreInputSection = memo(({ genre }) => {
     <>
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="genreName"
@@ -165,13 +195,30 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
         defaultValue={genre.name || ""}
       />
 
-      <AdminSlideoutInput
+      <SlideoutInput
         required
         type="text"
         id="genreSlug"
         label="Slug"
         defaultValue={genre.slug || ""}
       />
+
+      <div className={styles.colorPickers}>
+        <SlideoutGenreColorPicker
+          defaultValue={genre.textColor || "#ffffff"}
+          label="Text Color"
+        />
+
+        <SlideoutGenreColorPicker
+          defaultValue={genre.backgroundColor || "#ffffff"}
+          label="Background Color"
+        />
+
+        <SlideoutGenreColorPicker
+          defaultValue={genre.borderColor || "#ffffff"}
+          label="Border Color"
+        />
+      </div>
     </>;
   });
 
@@ -212,10 +259,10 @@ const AdminSlideoutInputSection = memo(function AdminSlideoutInputSection({
   }, [entryType]);
 
   return (
-    <div className={styles.entryInputs}>
-      {inputData && renderInputSection(inputData)}
+    <div className={styles.inputSection}>
+      {data && renderInputSection(data)}
     </div>
   );
 });
 
-export default AdminSlideoutInputSection;
+export default SlideoutInputSection;

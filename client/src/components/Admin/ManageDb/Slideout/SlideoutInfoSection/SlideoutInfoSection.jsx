@@ -1,13 +1,13 @@
 import { memo, useMemo } from "react";
 import { Link } from "react-router-dom";
 
-import styles from "./AdminSlideoutInfoSection.module.css";
+import styles from "./SlideoutInfoSection.module.css";
 
 import { FaArrowUpRightFromSquare } from "react-icons/fa6";
 
-const AdminSlideoutInfoSection = memo(function AdminSlideoutInfoSection({
+const SlideoutInfoSection = memo(function SlideoutInfoSection({
   entryType,
-  topData,
+  data,
 }) {
   const SongInfoSection = memo(({ song }) => (
     <>
@@ -208,10 +208,8 @@ const AdminSlideoutInfoSection = memo(function AdminSlideoutInfoSection({
   }, [entryType]);
 
   return (
-    <div className={styles.entryInfoTop}>
-      {topData && renderInfoSection(topData)}
-    </div>
+    <div className={styles.entryInfoTop}>{data && renderInfoSection(data)}</div>
   );
 });
 
-export default AdminSlideoutInfoSection;
+export default SlideoutInfoSection;

@@ -71,3 +71,46 @@
   display: flex;
   gap: 1.8rem;
 }
+
+.applyChangesBtn,
+.deleteBtn {
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.6rem;
+  padding: 1rem 1.4rem;
+  color: #e3e5e4;
+  border: none;
+  border-radius: 0.4rem;
+  width: 100%;
+  transition: background-color 0.2s ease;
+}
+
+.applyChangesBtn {
+  background-color: #5a7f71;
+}
+
+.applyChangesBtn:hover {
+  background-color: #73988a;
+}
+
+.deleteBtn {
+  background-color: #c25c5c;
+}
+
+.deleteBtn:hover {
+  background-color: #c86c6c;
+}
+
+.applyChangesBtn:disabled,
+.deleteBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.applyChangesBtn:disabled:hover {
+  background-color: #5a7f71;
+}
+
+.deleteBtn:disabled:hover {
+  background-color: #c25c5c;
+}

@@ -1,0 +1,123 @@
+.listContainer {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.listWrapper {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.listEntriesContainer {
+  position: relative;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+}
+
+.labelText {
+  font-size: 1.6rem;
+  line-height: 1.1;
+}
+
+.divider {
+  width: 100%;
+  border-bottom: 0.1rem solid #2d343a;
+}
+
+.addBtnContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 1.2rem 0;
+}
+
+.addBtn {
+  font-size: 1.4rem;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+  color: #e3e5e4;
+}
+
+.listEntrySingle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.2rem;
+}
+
+.listEntryDouble {
+  display: grid;
+  grid-template-columns: 1fr 1fr 2.4rem;
+  column-gap: 0.8rem;
+  align-items: center;
+  border-bottom: 0.1rem solid #2d343a;
+  padding: 1.2rem;
+}
+
+.listEntryTextWrapper {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: #899096;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 100%;
+  max-width: 100%;
+  min-width: 0;
+}
+
+.listEntryText {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: #899096;
+}
+
+.listEntryInput {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 0.6rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.removeBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  margin: 0;
+  appearance: none;
+  -webkit-appearance: none;
+  box-shadow: none;
+  outline: none;
+  font-size: 1.6rem;
+  color: #899096;
+  transition: color 0.2s ease;
+}
+
+.removeIcon {
+  font-size: 1.6rem;
+}
+
+.removeBtn:hover {
+  color: #e3e5e4;
+}

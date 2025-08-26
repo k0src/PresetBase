@@ -1,4 +1,5 @@
-import AdminSlideoutInfoSection from "../AdminSlideoutInfoSection/AdminSlideoutInfoSection";
+import SlideoutInfoSection from "../SlideoutInfoSection/SlideoutInfoSection";
+import SlideoutInputSection from "../SlideoutInputSection/SlideoutInputSection";
 import styles from "./AdminSlideout.module.css";
 
 import { FaXmark } from "react-icons/fa6";
@@ -15,14 +16,21 @@ export default function AdminSlideout() {
 
       <div className={styles.content}>
         <div className={styles.entryInfo}>
-          <AdminSlideoutInfoSection entryType="songs" topData={{}} />
-          <div className={styles.entryInputs}></div>
+          <SlideoutInfoSection entryType="songs" data={{}} />
+          <SlideoutInputSection entryType="songs" data={{}} />
         </div>
 
         <hr className={styles.hr} />
 
         <div className={styles.actions}>
-          <div className={styles.actionsBtns}></div>
+          <div className={styles.actionsBtns}>
+            <button type="button" className={styles.applyChangesBtn}>
+              Apply Changes
+            </button>
+            <button type="button" className={styles.deleteBtn}>
+              Delete Entry
+            </button>
+          </div>
         </div>
       </div>
     </aside>

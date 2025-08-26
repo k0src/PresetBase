@@ -97,10 +97,10 @@ const ImageInput = forwardRef(function ImageInput(
     reset: resetComponent,
   }));
 
-  const handleFileChange = (event) => {
+  const handleFileChange = (e) => {
     if (disabled) return;
 
-    const file = event.target.files[0];
+    const file = e.target.files[0];
     if (!file) {
       setFileName("No file selected.");
       setImageSrc(placeholderImage);
@@ -166,6 +166,7 @@ const ImageInput = forwardRef(function ImageInput(
           src={imageSrc}
           alt="Uploaded Image"
           className={styles.imageDisplay}
+          loading="lazy"
         />
         <div className={styles.imageInputWrapper}>
           <div
