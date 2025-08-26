@@ -1,10 +1,16 @@
+import { memo } from "react";
+
 import AutofillDropdown from "../../../../AutofillDropdown/AutofillDropdown";
 import styles from "./SlideoutSelector.module.css";
 import classNames from "classnames";
 
 import { FaCaretDown, FaPlus } from "react-icons/fa6";
 
-export default function SlideoutSelector({ label, defaultValue, placeholder }) {
+const SlideoutSelector = memo(function SlideoutSelector({
+  label,
+  defaultValue,
+  placeholder,
+}) {
   return (
     <div className={styles.selectorContainer}>
       <span className={styles.labelText}>{label}</span>
@@ -29,4 +35,6 @@ export default function SlideoutSelector({ label, defaultValue, placeholder }) {
       </div>
     </div>
   );
-}
+});
+
+export default SlideoutSelector;
