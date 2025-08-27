@@ -107,7 +107,7 @@ const SlideoutList = memo(function SlideoutList({
                   type="text"
                   className={styles.listEntryInput}
                   placeholder={inputLabel}
-                  value={item[inputField] || ""}
+                  value={item[inputField] ?? ""}
                   required
                   onChange={(e) => handleInputChange(index, e.target.value)}
                 />
@@ -150,13 +150,13 @@ const SlideoutList = memo(function SlideoutList({
             <input
               type="hidden"
               name={`${id}[${index}][${idField}]`}
-              value={item[idField] || ""}
+              value={item[idField] ?? ""}
             />
             {hasInput && (
               <input
                 type="hidden"
                 name={`${id}[${index}][${inputField}]`}
-                value={item[inputField] || ""}
+                value={item[inputField] ?? ""}
               />
             )}
           </div>

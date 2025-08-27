@@ -443,8 +443,8 @@ class Song extends Entry {
           if (preset.id) {
             await DB.run(
               `INSERT INTO song_presets
-              (song_id, preset_id, usage_type, verified, timestamp)
-             VALUES (?, ?, ?, ?, ?)`,
+                (song_id, preset_id, usage_type, verified, timestamp)
+              VALUES (?, ?, ?, ?, ?)`,
               [id, preset.id, preset.usageType, "t", new Date().toISOString()]
             );
           }

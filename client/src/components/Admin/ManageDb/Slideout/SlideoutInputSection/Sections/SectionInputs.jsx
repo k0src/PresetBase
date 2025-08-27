@@ -14,7 +14,7 @@ const SectionInputs = memo(function SectionInputs({
           key={input.key}
           id={input.key}
           label={input.label}
-          defaultValue={data[input.key] || ""}
+          defaultValue={data[input.key] ?? ""}
           onChange={handleInputChange}
         />
       ))}

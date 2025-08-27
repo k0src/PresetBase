@@ -53,7 +53,7 @@ const SlideoutSelector = memo(function SlideoutSelector({
       <span className={styles.labelText}>{label}</span>
 
       <div>
-        <input type="hidden" name={id} value={selectedValue[idField] || ""} />
+        <input type="hidden" name={id} value={selectedValue[idField] ?? ""} />
         <div
           className={classNames(styles.textContainer, {
             [styles.show]: isOpen,

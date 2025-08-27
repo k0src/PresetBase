@@ -67,7 +67,6 @@ export function useSubmitForm() {
     );
   };
 
-  // Form data collection
   const collectFormData = (formElement) => {
     const formData = new FormData(formElement);
     return formData;

@@ -276,10 +276,12 @@ export default function SubmitForm({
               Clear Form
             </button>
           </div>
-          <Link to="/upload-tos" className={styles.submitTosText}>
-            Please ensure you have read and understood the Upload Terms of
-            Service before submitting.
-          </Link>
+          {mode === "submit" && (
+            <Link to="/upload-tos" className={styles.submitTosText}>
+              Please ensure you have read and understood the Upload Terms of
+              Service before submitting.
+            </Link>
+          )}
         </div>
       </form>
     </section>

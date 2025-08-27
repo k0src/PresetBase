@@ -16,7 +16,7 @@ const SectionSelectors = memo(function SectionSelectors({
           label={selector.label}
           dataFields={selector.dataFields}
           searchTable={selector.searchTable}
-          value={data[selector.key] || ""}
+          value={data[selector.key] ?? ""}
           onChange={handleInputChange}
         />
       ))}
