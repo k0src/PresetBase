@@ -26,7 +26,7 @@ const validTables = [
 function AdminManageDbContent() {
   const { table } = useParams();
   const navigate = useNavigate();
-  const { isOpen } = useSlideout();
+  const { isOpen, madeChanges } = useSlideout();
 
   const currentTable = validTables.includes(table) ? table : "songs";
 
@@ -76,12 +76,15 @@ function AdminManageDbContent() {
   }, []);
 
   const prevIsOpenRef = useRef(isOpen);
+  const prevMadeChangesRef = useRef(madeChanges);
+
   useEffect(() => {
-    if (prevIsOpenRef.current && !isOpen) {
+    if (prevIsOpenRef.current && !isOpen && prevMadeChangesRef.current) {
       refreshTableData();
     }
     prevIsOpenRef.current = isOpen;
-  }, [isOpen, refreshTableData]);
+    prevMadeChangesRef.current = madeChanges;
+  }, [isOpen, madeChanges, refreshTableData]);
 
   if (error) {
     return (

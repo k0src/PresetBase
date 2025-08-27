@@ -16,6 +16,7 @@ export function useSlideoutData() {
     setLoading,
     setHasChanges,
     resetChanges,
+    setMadeChanges,
     refreshSlideoutData,
     closeSlideout,
   } = useSlideout();
@@ -49,6 +50,7 @@ export function useSlideoutData() {
         setLoading(true);
         await updateEntry(entryType, entryId, formData);
         resetChanges();
+        setMadeChanges();
         await fetchSlideoutData();
         return true;
       } catch (err) {
@@ -59,7 +61,15 @@ export function useSlideoutData() {
         setLoading(false);
       }
     },
-    [entryType, entryId, setLoading, setError, resetChanges, fetchSlideoutData]
+    [
+      entryType,
+      entryId,
+      setLoading,
+      setError,
+      resetChanges,
+      setMadeChanges,
+      fetchSlideoutData,
+    ]
   );
 
   const deleteEntryData = useCallback(async () => {

@@ -14,6 +14,7 @@ const slideoutReducer = (state, action) => {
         error: null,
         data: null,
         hasChanges: false,
+        madeChanges: false,
       };
     case "SET_DATA":
       return {
@@ -48,11 +49,17 @@ const slideoutReducer = (state, action) => {
         loading: false,
         error: null,
         hasChanges: false,
+        madeChanges: false,
       };
     case "RESET_CHANGES":
       return {
         ...state,
         hasChanges: false,
+      };
+    case "SET_MADE_CHANGES":
+      return {
+        ...state,
+        madeChanges: true,
       };
     default:
       return state;
@@ -67,6 +74,7 @@ const initialState = {
   loading: false,
   error: null,
   hasChanges: false,
+  madeChanges: false,
 };
 
 export function SlideoutProvider({ children }) {
@@ -103,6 +111,10 @@ export function SlideoutProvider({ children }) {
     dispatch({ type: "RESET_CHANGES" });
   }, []);
 
+  const setMadeChanges = useCallback(() => {
+    dispatch({ type: "SET_MADE_CHANGES" });
+  }, []);
+
   const refreshSlideoutData = useCallback(() => {
     if (state.isOpen && state.entryType && state.entryId) {
       dispatch({ type: "SET_LOADING", payload: true });
@@ -119,6 +131,7 @@ export function SlideoutProvider({ children }) {
     setLoading,
     setHasChanges,
     resetChanges,
+    setMadeChanges,
     refreshSlideoutData,
   };
 
