@@ -1,8 +1,8 @@
 import { dbEntryConfigs } from "../../components/Admin/ManageDb/dbEntryConfigs";
 import { useAdminTableData } from "../../hooks/useAdminTableData";
-import { SlideoutProvider } from "../../contexts/SlideoutContext";
+import { SlideoutProvider, useSlideout } from "../../contexts/SlideoutContext";
 
-import { useState, useCallback, useMemo, useEffect } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
@@ -23,9 +23,10 @@ const validTables = [
   "genres",
 ];
 
-export default function AdminManageDb() {
+function AdminManageDbContent() {
   const { table } = useParams();
   const navigate = useNavigate();
+  const { isOpen } = useSlideout();
 
   const currentTable = validTables.includes(table) ? table : "songs";
 
@@ -49,16 +50,12 @@ export default function AdminManageDb() {
     setFilterText("");
   }, [currentTable]);
 
-  const { tableData, totalEntries, loading, error } = useAdminTableData(
-    currentTable,
-    sortBy,
-    sortDirection,
-    refreshKey
-  );
+  const { tableData, totalEntries, loading, error, refreshTableData } =
+    useAdminTableData(currentTable, sortBy, sortDirection, refreshKey);
 
-  const handleRefreshData = useCallback(() => {
-    setRefreshKey((prev) => prev + 1);
-  }, []);
+  const handleSlideoutDelete = useCallback(() => {
+    refreshTableData();
+  }, [refreshTableData]);
 
   const currentConfig = useMemo(
     () => dbEntryConfigs[currentTable],
@@ -89,6 +86,14 @@ export default function AdminManageDb() {
     setFilterText(filter);
   }, []);
 
+  const prevIsOpenRef = useRef(isOpen);
+  useEffect(() => {
+    if (prevIsOpenRef.current && !isOpen) {
+      refreshTableData();
+    }
+    prevIsOpenRef.current = isOpen;
+  }, [isOpen, refreshTableData]);
+
   if (error) {
     return (
       <>
@@ -103,7 +108,7 @@ export default function AdminManageDb() {
   const hasData = tableData && tableData.length;
 
   return (
-    <SlideoutProvider>
+    <>
       <Helmet>
         <title>{pageTitle}</title>
       </Helmet>
@@ -136,12 +141,15 @@ export default function AdminManageDb() {
         )}
       </ContentContainer>
 
-      {hasData && !loading && (
-        <AdminSlideout
-          onUpdate={handleRefreshData}
-          onDelete={handleRefreshData}
-        />
-      )}
+      {hasData && !loading && <AdminSlideout onDelete={handleSlideoutDelete} />}
+    </>
+  );
+}
+
+export default function AdminManageDb() {
+  return (
+    <SlideoutProvider>
+      <AdminManageDbContent />
     </SlideoutProvider>
   );
 }

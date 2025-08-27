@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useCallback, useState, useRef } from "react";
 import { useAsyncData } from "./useAsyncData";
 import {
   getSongsData,
@@ -48,6 +48,14 @@ export function useAdminTableData(
   sortDirection,
   refreshKey
 ) {
+  const [tableRefreshKey, setTableRefreshKey] = useState(0);
+  const lastRefreshKeyRef = useRef(refreshKey);
+
+  if (refreshKey !== lastRefreshKeyRef.current) {
+    setTableRefreshKey((prev) => prev + 1);
+    lastRefreshKeyRef.current = refreshKey;
+  }
+
   const fetchConfig = useMemo(() => {
     const fetchers = dataFetchers[selectedTable];
     if (!fetchers) return {};
@@ -59,17 +67,22 @@ export function useAdminTableData(
 
   const { data, loading, error } = useAsyncData(
     fetchConfig,
-    [selectedTable, sortBy, sortDirection, refreshKey],
+    [selectedTable, sortBy, sortDirection, tableRefreshKey],
     {
       cacheKey: `adminManageDb-${selectedTable}-${sortBy}-${sortDirection}`,
       resetOnDepsChange: true,
     }
   );
 
+  const refreshTableData = useCallback(() => {
+    setTableRefreshKey((prev) => prev + 1);
+  }, []);
+
   return {
     tableData: data.data?.data || null,
     totalEntries: data.total?.data || null,
     loading,
     error,
+    refreshTableData,
   };
 }

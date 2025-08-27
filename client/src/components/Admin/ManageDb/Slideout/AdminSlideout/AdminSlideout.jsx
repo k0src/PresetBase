@@ -12,7 +12,7 @@ import classNames from "classnames";
 
 import { FaXmark } from "react-icons/fa6";
 
-const AdminSlideout = memo(function AdminSlideout({ onUpdate, onDelete }) {
+const AdminSlideout = memo(function AdminSlideout({ onDelete }) {
   const {
     isOpen,
     entryType,
@@ -66,9 +66,6 @@ const AdminSlideout = memo(function AdminSlideout({ onUpdate, onDelete }) {
       e.preventDefault();
       const formData = new FormData(e.target);
       await updateEntryData(formData);
-      if (onUpdate) {
-        onUpdate();
-      }
     } catch (err) {
       console.error("Error applying changes:", err);
     }
@@ -76,8 +73,8 @@ const AdminSlideout = memo(function AdminSlideout({ onUpdate, onDelete }) {
 
   const handleDelete = async () => {
     try {
-      await deleteEntryData();
-      if (onDelete) {
+      const success = await deleteEntryData();
+      if (success && onDelete) {
         onDelete();
       }
     } catch (err) {

@@ -16,27 +16,30 @@ export function useSlideoutData() {
     setLoading,
     setHasChanges,
     resetChanges,
+    refreshSlideoutData,
     closeSlideout,
   } = useSlideout();
 
-  useEffect(() => {
-    if (isOpen && entryType && entryId && !data) {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          const entryData = await getEntryData(entryType, entryId);
-          setData(entryData);
-        } catch (err) {
-          console.error("Failed to fetch entry data:", err);
-          setError(err.message);
-        } finally {
-          setLoading(false);
-        }
-      };
+  const fetchSlideoutData = useCallback(async () => {
+    if (!entryType || !entryId) return;
 
-      fetchData();
+    try {
+      setLoading(true);
+      const entryData = await getEntryData(entryType, entryId);
+      setData(entryData);
+    } catch (err) {
+      console.error("Failed to fetch entry data:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-  }, [isOpen, entryType, entryId, data, setData, setError, setLoading]);
+  }, [entryType, entryId, setData, setError, setLoading]);
+
+  useEffect(() => {
+    if (isOpen && entryType && entryId && (!data || loading)) {
+      fetchSlideoutData();
+    }
+  }, [isOpen, entryType, entryId, data, loading, fetchSlideoutData]);
 
   const updateEntryData = useCallback(
     async (formData) => {
@@ -46,6 +49,7 @@ export function useSlideoutData() {
         setLoading(true);
         await updateEntry(entryType, entryId, formData);
         resetChanges();
+        await fetchSlideoutData();
         return true;
       } catch (err) {
         console.error("Failed to update entry:", err);
@@ -55,7 +59,7 @@ export function useSlideoutData() {
         setLoading(false);
       }
     },
-    [entryType, entryId, setLoading, setError, resetChanges, closeSlideout]
+    [entryType, entryId, setLoading, setError, resetChanges, fetchSlideoutData]
   );
 
   const deleteEntryData = useCallback(async () => {
@@ -68,7 +72,6 @@ export function useSlideoutData() {
     if (!confirmed) return false;
 
     try {
-      setLoading(true);
       await deleteEntry(entryType, entryId);
       closeSlideout();
       return true;
@@ -76,10 +79,8 @@ export function useSlideoutData() {
       console.error("Failed to delete entry:", err);
       setError(err.message);
       return false;
-    } finally {
-      setLoading(false);
     }
-  }, [entryType, entryId, setLoading, setError, closeSlideout]);
+  }, [entryType, entryId, setError, closeSlideout]);
 
   const markAsChanged = useCallback(() => {
     if (!hasChanges) {
@@ -98,6 +99,7 @@ export function useSlideoutData() {
     updateEntryData,
     deleteEntryData,
     markAsChanged,
+    refreshSlideoutData,
     closeSlideout,
   };
 }

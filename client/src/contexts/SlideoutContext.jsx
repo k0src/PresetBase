@@ -103,6 +103,13 @@ export function SlideoutProvider({ children }) {
     dispatch({ type: "RESET_CHANGES" });
   }, []);
 
+  const refreshSlideoutData = useCallback(() => {
+    if (state.isOpen && state.entryType && state.entryId) {
+      dispatch({ type: "SET_LOADING", payload: true });
+      dispatch({ type: "SET_ERROR", payload: null });
+    }
+  }, [state.isOpen, state.entryType, state.entryId]);
+
   const value = {
     ...state,
     openSlideout,
@@ -112,6 +119,7 @@ export function SlideoutProvider({ children }) {
     setLoading,
     setHasChanges,
     resetChanges,
+    refreshSlideoutData,
   };
 
   return (
