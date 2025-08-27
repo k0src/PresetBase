@@ -1,30 +1,33 @@
-import { useState, useRef, forwardRef, useEffect } from "react";
-
+import { useState, useRef, memo, useEffect } from "react";
 import placeholderImage from "../../../../../assets/images/image-upload-placeholder.webp";
 import styles from "./SlideoutImageInput.module.css";
 
-const SlideoutImageInput = forwardRef(function SlideoutImageInput({
-  initalImage = null,
+const SlideoutImageInput = memo(function SlideoutImageInput({
+  initialImage = null,
   label,
   id,
-  required,
+  onChange,
 }) {
   const [fileName, setFileName] = useState("No file selected.");
   const [imageSrc, setImageSrc] = useState(placeholderImage);
+  const [hasFile, setHasFile] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
-    if (initalImage && initalImage.trim()) {
-      setImageSrc(`/uploads/images/approved/${initalImage}`);
-      setFileName(initalImage);
+    if (initialImage && initialImage.trim()) {
+      setImageSrc(`/uploads/images/approved/${initialImage}`);
+      setFileName(initialImage);
+      setHasFile(true);
     }
-  }, [initalImage]);
+  }, [initialImage]);
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) {
       setFileName("No file selected.");
       setImageSrc(placeholderImage);
+      setHasFile(false);
+      if (onChange) onChange();
       return;
     }
 
@@ -36,17 +39,18 @@ const SlideoutImageInput = forwardRef(function SlideoutImageInput({
       alert("Invalid image file.");
       setFileName("No file selected.");
       setImageSrc(placeholderImage);
-
+      setHasFile(false);
       if (fileInputRef.current) {
         fileInputRef.current.value = "";
       }
-
       URL.revokeObjectURL(objectUrl);
     };
 
     img.onload = () => {
       setFileName(file.name);
       setImageSrc(objectUrl);
+      setHasFile(true);
+      if (onChange) onChange();
     };
   };
 
@@ -59,7 +63,6 @@ const SlideoutImageInput = forwardRef(function SlideoutImageInput({
   return (
     <div className={styles.slideoutImageInputContainer}>
       <span className={styles.labelText}>{label}</span>
-
       <div className={styles.imageInputContainer}>
         <img
           src={imageSrc}
@@ -83,7 +86,7 @@ const SlideoutImageInput = forwardRef(function SlideoutImageInput({
               type="file"
               name={id}
               accept="image/*"
-              required={required || false}
+              required={!hasFile}
               onChange={handleFileChange}
             />
           </div>

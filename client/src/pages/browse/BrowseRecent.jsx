@@ -37,29 +37,6 @@ export default function BrowseRecent() {
 
   const recentSongsConfig = useMemo(() => entryConfigs.songs, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Recent Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="recent"
-            filterPlaceholder="Filter songs..."
-            sortOptions={recentSongsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -67,21 +44,6 @@ export default function BrowseRecent() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!recentSongsData || !recentSongsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Recent Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="songs" />
-        </ContentContainer>
       </>
     );
   }
@@ -102,13 +64,18 @@ export default function BrowseRecent() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={recentSongsData}
-          entryType="recent"
-          config={recentSongsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !recentSongsData || !recentSongsData.length ? (
+          <BrowseNoResults entryType="songs" />
+        ) : (
+          <BrowseTableView
+            data={recentSongsData}
+            entryType="recent"
+            config={recentSongsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

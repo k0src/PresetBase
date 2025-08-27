@@ -77,8 +77,6 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
       setError(null);
     }
 
-    prevDepsRef.current = dependencies;
-
     const fetchData = async () => {
       try {
         setLoading(true);
@@ -112,6 +110,7 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
     // If dependencies changed and reset is enabled, skip cache and fetch immediately
     if (depsChanged) {
       fetchData();
+      prevDepsRef.current = dependencies;
       return;
     }
 
@@ -125,12 +124,14 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
         if (cached.expired) {
           fetchData();
         }
+        prevDepsRef.current = dependencies;
         return;
       }
     }
 
     // No cache: fetch immediately
     fetchData();
+    prevDepsRef.current = dependencies;
   }, dependencies);
 
   return { data, loading, error };

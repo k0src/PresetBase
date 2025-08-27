@@ -27,6 +27,18 @@ class DB {
       });
     });
   }
+
+  static async beginTransaction() {
+    await this.run("BEGIN TRANSACTION");
+  }
+
+  static async commit() {
+    await this.run("COMMIT");
+  }
+
+  static async rollback() {
+    await this.run("ROLLBACK");
+  }
 }
 
 module.exports = DB;

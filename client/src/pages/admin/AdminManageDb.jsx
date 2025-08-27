@@ -1,5 +1,6 @@
 import { dbEntryConfigs } from "../../components/Admin/ManageDb/dbEntryConfigs";
 import { useAdminTableData } from "../../hooks/useAdminTableData";
+import { SlideoutProvider } from "../../contexts/SlideoutContext";
 
 import { useState, useCallback, useMemo, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -11,8 +12,7 @@ import DbError from "../../components/DbError/DbError";
 import ManageDbNoEntries from "../../components/Admin/ManageDb/ManageDbNoEntries/ManageDbNoEntries";
 import ManageDbHeader from "../../components/Admin/ManageDb/ManageDbHeader/ManageDbHeader";
 import EntryTable from "../../components/Admin/ManageDb/EntryTable/EntryTable";
-import SlideoutSelector from "../../components/Admin/ManageDb/Slideout/SlideoutSelector/SlideoutSelector";
-import SlideoutList from "../../components/Admin/ManageDb/Slideout/SlideoutList/SlideoutList";
+import AdminSlideout from "../../components/Admin/ManageDb/Slideout/AdminSlideout/AdminSlideout";
 
 const validTables = [
   "songs",
@@ -32,6 +32,7 @@ export default function AdminManageDb() {
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const [urlTable, setUrlTable] = useState(currentTable);
 
@@ -51,8 +52,13 @@ export default function AdminManageDb() {
   const { tableData, totalEntries, loading, error } = useAdminTableData(
     currentTable,
     sortBy,
-    sortDirection
+    sortDirection,
+    refreshKey
   );
+
+  const handleRefreshData = useCallback(() => {
+    setRefreshKey((prev) => prev + 1);
+  }, []);
 
   const currentConfig = useMemo(
     () => dbEntryConfigs[currentTable],
@@ -83,33 +89,6 @@ export default function AdminManageDb() {
     setFilterText(filter);
   }, []);
 
-  if (loading) {
-    return (
-      <>
-        <Helmet>
-          <title>{pageTitle}</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <ManageDbHeader
-            entryType={currentTable}
-            totalEntries={totalEntries}
-            sortOptions={currentConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            selectedTable={urlTable}
-            onTableChange={handleTableChange}
-            filterText={filterText}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-  }
-
   if (error) {
     return (
       <>
@@ -121,36 +100,10 @@ export default function AdminManageDb() {
     );
   }
 
-  // No results view
-  if (!tableData || !tableData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>{pageTitle}</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <ManageDbHeader
-            entryType={currentTable}
-            totalEntries={totalEntries}
-            sortOptions={currentConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-            selectedTable={urlTable}
-            onTableChange={handleTableChange}
-            filterText={filterText}
-          />
-
-          <ManageDbNoEntries entryType={currentTable} />
-        </ContentContainer>
-      </>
-    );
-  }
+  const hasData = tableData && tableData.length;
 
   return (
-    <>
+    <SlideoutProvider>
       <Helmet>
         <title>{pageTitle}</title>
       </Helmet>
@@ -169,12 +122,26 @@ export default function AdminManageDb() {
           filterText={filterText}
         />
 
-        <EntryTable
-          data={tableData}
-          config={currentConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !hasData ? (
+          <ManageDbNoEntries entryType={currentTable} />
+        ) : (
+          <EntryTable
+            data={tableData}
+            config={currentConfig}
+            filterText={filterText}
+            entryType={currentTable}
+          />
+        )}
       </ContentContainer>
-    </>
+
+      {hasData && !loading && (
+        <AdminSlideout
+          onUpdate={handleRefreshData}
+          onDelete={handleRefreshData}
+        />
+      )}
+    </SlideoutProvider>
   );
 }

@@ -38,29 +38,6 @@ export default function BrowsePopular() {
 
   const popularSongsConfig = useMemo(() => entryConfigs.popular, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Popular Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="popular"
-            filterPlaceholder="Filter songs..."
-            sortOptions={popularSongsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -68,21 +45,6 @@ export default function BrowsePopular() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!popularSongsData || !popularSongsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Popular Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="songs" />
-        </ContentContainer>
       </>
     );
   }
@@ -103,13 +65,18 @@ export default function BrowsePopular() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={popularSongsData}
-          entryType="popular"
-          config={popularSongsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !popularSongsData || !popularSongsData.length ? (
+          <BrowseNoResults entryType="songs" />
+        ) : (
+          <BrowseTableView
+            data={popularSongsData}
+            entryType="popular"
+            config={popularSongsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

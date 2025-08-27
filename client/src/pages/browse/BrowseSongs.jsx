@@ -40,30 +40,6 @@ export default function BrowseSongs() {
 
   const songsConfig = useMemo(() => entryConfigs.songs, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Browse Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="songs"
-            totalEntries={totalEntries}
-            filterPlaceholder="Filter songs..."
-            sortOptions={songsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -71,21 +47,6 @@ export default function BrowseSongs() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error.message} />
-      </>
-    );
-  }
-
-  // No results
-  if (!songsData || !songsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Browse Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="songs" />
-        </ContentContainer>
       </>
     );
   }
@@ -107,13 +68,18 @@ export default function BrowseSongs() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={songsData}
-          entryType="songs"
-          config={songsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !songsData || !songsData.length ? (
+          <BrowseNoResults entryType="songs" />
+        ) : (
+          <BrowseTableView
+            data={songsData}
+            entryType="songs"
+            config={songsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

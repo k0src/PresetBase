@@ -371,6 +371,123 @@ class Synth extends Entry {
       throw new Error(`Error fetching top synths: ${err.message}`);
     }
   }
+
+  // Get full synth data by ID
+  static async getFullDataById(id) {
+    try {
+      const query = `
+        SELECT
+          synths.id AS id,
+          synths.synth_name AS name,
+          synths.manufacturer,
+          synths.synth_type AS type,
+          synths.image_url AS imageUrl,
+          synths.release_year AS year,
+          synths.timestamp AS timestamp,
+
+          json_group_array(
+            DISTINCT json_object(
+              'id', presets.id,
+              'name', presets.preset_name,
+              'packName', presets.pack_name,
+              'author', presets.author
+            )
+          ) AS presets
+
+        FROM synths
+        LEFT JOIN preset_synths ON synths.id = preset_synths.synth_id
+        LEFT JOIN presets ON preset_synths.preset_id = presets.id
+        WHERE synths.id = ?
+        GROUP BY synths.id`;
+
+      const synthData = await DB.get(query, [id]);
+
+      if (synthData) {
+        synthData.presets = JSON.parse(synthData.presets || "[]").filter(
+          Boolean
+        );
+      }
+
+      return synthData;
+    } catch (err) {
+      throw new Error(`Error fetching synth data: ${err.message}`);
+    }
+  }
+
+  // Update synth by ID
+  static async updateById(id, data, files) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main synth data
+      const fields = [];
+      const params = [];
+
+      if (data.name) {
+        fields.push("synth_name = ?");
+        params.push(data.name);
+      }
+
+      if (data.manufacturer) {
+        fields.push("manufacturer = ?");
+        params.push(data.manufacturer);
+      }
+
+      if (data.type) {
+        fields.push("synth_type = ?");
+        params.push(data.type);
+      }
+
+      if (data.year) {
+        fields.push("release_year = ?");
+        params.push(data.year);
+      }
+
+      if (data.imageUrl) {
+        fields.push("image_url = ?");
+        params.push(data.imageUrl);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE synths SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      // Relationships
+      if ("presets" in data) {
+        await DB.run(`DELETE FROM preset_synths WHERE synth_id = ?`, [id]);
+        for (const preset of data.presets || []) {
+          await DB.run(
+            `INSERT INTO preset_synths (preset_id, synth_id) VALUES (?, ?)`,
+            [preset.id, id]
+          );
+        }
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating synth ${id}: ${err.message}`);
+    }
+  }
+
+  static async searchForAutofill(query, limit = 10) {
+    try {
+      const sql = `
+        SELECT id, synth_name as label
+        FROM synths 
+        WHERE synth_name LIKE ? 
+        ORDER BY synth_name 
+        LIMIT ?`;
+
+      return await DB.all(sql, [`%${query}%`, limit]);
+    } catch (err) {
+      throw new Error(`Error searching synths for autofill: ${err.message}`);
+    }
+  }
 }
 
 module.exports = Synth;

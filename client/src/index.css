@@ -22,10 +22,9 @@ body {
   overflow-x: hidden;
 }
 
-html.scroll-lock,
-body.scroll-lock {
+body.noScroll,
+html.noScroll {
   overflow: hidden !important;
-  height: 100%;
 }
 
 a:link,

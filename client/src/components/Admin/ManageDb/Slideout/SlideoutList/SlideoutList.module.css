@@ -21,6 +21,12 @@
   min-width: 0;
 }
 
+.listEntriesContainer.show {
+  border-bottom: none;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
 .labelText {
   font-size: 1.6rem;
   line-height: 1.1;
@@ -120,4 +126,47 @@
 
 .removeBtn:hover {
   color: #e3e5e4;
+}
+
+.dropDownContainer {
+  width: 100%;
+  background-color: #202429;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  transform-origin: top;
+  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
+  z-index: 200;
+  min-width: 0;
+}
+
+.inputContainer {
+  padding: 1.2rem 0.8rem;
+  width: 100%;
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
+}
+
+.filterInput {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 0.8rem;
+  font-size: 1.4rem;
+  background-color: #202429;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.loadingMessage,
+.noResults {
+  border: 0.2rem solid #2d343a;
+  border-bottom-left-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
+  padding: 2.4rem 0.8rem;
+  color: #899096;
+  font-size: 1.4rem;
+  text-align: center;
 }

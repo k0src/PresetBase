@@ -40,30 +40,6 @@ export default function BrowseGenres() {
 
   const genresConfig = useMemo(() => entryConfigs.genres, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Browse Genres</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="genres"
-            totalEntries={totalEntries}
-            filterPlaceholder="Filter genres..."
-            sortOptions={genresConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -71,21 +47,6 @@ export default function BrowseGenres() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!genresData || !genresData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Browse Genres</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="genres" />
-        </ContentContainer>
       </>
     );
   }
@@ -107,13 +68,18 @@ export default function BrowseGenres() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={genresData}
-          entryType="genres"
-          config={genresConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !genresData || !genresData.length ? (
+          <BrowseNoResults entryType="genres" />
+        ) : (
+          <BrowseTableView
+            data={genresData}
+            entryType="genres"
+            config={genresConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

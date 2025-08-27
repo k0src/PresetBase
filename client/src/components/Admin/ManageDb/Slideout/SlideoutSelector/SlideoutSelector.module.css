@@ -41,7 +41,11 @@
   font-family: "Geist", sans-serif;
   color: #899096;
   font-size: 1.4rem;
-  transition: color 0.2s ease;
+  transition: color 0.2s ease, transform 0.2s ease;
+}
+
+.selectorIcon.open {
+  transform: rotate(180deg);
 }
 
 .textContainer:hover .selectorIcon,
@@ -56,16 +60,9 @@
 
 .dropDownContainer {
   width: 100%;
-  padding: 1.2rem 0.8rem;
   background-color: #202429;
-  border-left: 0.2rem solid #2d343a;
-  border-right: 0.2rem solid #2d343a;
-  border-bottom: 0.2rem solid #2d343a;
-  border-bottom-left-radius: 0.4rem;
-  border-bottom-right-radius: 0.4rem;
   display: flex;
   flex-direction: column;
-  gap: 1.8rem;
   position: absolute;
   left: 0;
   top: 100%;
@@ -73,6 +70,13 @@
   box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
   z-index: 200;
   min-width: 0;
+}
+
+.inputContainer {
+  padding: 1.2rem 0.8rem;
+  width: 100%;
+  border-left: 0.2rem solid #2d343a;
+  border-right: 0.2rem solid #2d343a;
 }
 
 .filterInput {
@@ -110,4 +114,15 @@
   box-shadow: none;
   outline: none;
   color: #e3e5e4;
+}
+
+.loadingMessage,
+.noResults {
+  border: 0.2rem solid #2d343a;
+  border-bottom-left-radius: 0.4rem;
+  border-bottom-right-radius: 0.4rem;
+  padding: 2.4rem 0.8rem;
+  color: #899096;
+  font-size: 1.4rem;
+  text-align: center;
 }

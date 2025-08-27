@@ -10,10 +10,10 @@ import SearchPage from "./pages/static/SearchPage/SearchPage";
 import SubmitPage from "./pages/static/SubmitPage/SubmitPage";
 import SubmitExamplePage from "./pages/static/SubmitPage/SubmitExamplePage";
 
-import SongPage from "./pages/entries/SongPage/SongPage";
-import AlbumPage from "./pages/entries/AlbumPage/AlbumPage";
-import ArtistPage from "./pages/entries/ArtistPage/ArtistPage";
-import SynthPage from "./pages/entries/SynthPage/SynthPage";
+import SongPage from "./pages/entries/SongPage";
+import AlbumPage from "./pages/entries/AlbumPage";
+import ArtistPage from "./pages/entries/ArtistPage";
+import SynthPage from "./pages/entries/SynthPage";
 
 import BrowsePage from "./pages/browse/BrowsePage/BrowsePage";
 import BrowseSongs from "./pages/browse/BrowseSongs";

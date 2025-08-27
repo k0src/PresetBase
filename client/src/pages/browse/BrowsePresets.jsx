@@ -40,30 +40,6 @@ export default function BrowsePresets() {
 
   const presetsConfig = useMemo(() => entryConfigs.presets, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Browse Presets</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="presets"
-            totalEntries={totalEntries}
-            filterPlaceholder="Filter presets..."
-            sortOptions={presetsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -71,21 +47,6 @@ export default function BrowsePresets() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!presetsData || !presetsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Browse Presets</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="presets" />
-        </ContentContainer>
       </>
     );
   }
@@ -107,13 +68,18 @@ export default function BrowsePresets() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={presetsData}
-          entryType="presets"
-          config={presetsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !presetsData || !presetsData.length ? (
+          <BrowseNoResults entryType="presets" />
+        ) : (
+          <BrowseTableView
+            data={presetsData}
+            entryType="presets"
+            config={presetsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

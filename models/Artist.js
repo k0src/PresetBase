@@ -278,6 +278,113 @@ class Artist extends Entry {
     }
   }
 
+  // Get full artist data by ID
+  static async getFullDataById(id) {
+    try {
+      const query = `
+        SELECT
+          artists.id AS id,
+          artists.name AS name,
+          artists.image_url AS imageUrl,
+          artists.country AS country,
+          artists.timestamp AS timestamp,
+          json_group_array(
+            DISTINCT CASE
+              WHEN songs.id IS NOT NULL THEN
+                json_object(
+                  'id', songs.id,
+                  'title', songs.title,
+                  'role', song_artists.role
+                )
+              ELSE NULL
+            END
+          ) AS songs
+        FROM artists
+        LEFT JOIN song_artists ON artists.id = song_artists.artist_id
+        LEFT JOIN songs ON song_artists.song_id = songs.id
+        WHERE artists.id = ?
+        GROUP BY artists.id`;
+
+      const artistData = await DB.get(query, [id]);
+
+      if (artistData) {
+        artistData.songs = JSON.parse(artistData.songs || "[]").filter(Boolean);
+      }
+
+      return artistData;
+    } catch (err) {
+      throw new Error(`Error fetching full artist data: ${err.message}`);
+    }
+  }
+
+  // Update artist by ID
+  static async updateById(id, data, files) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main artist data
+      const fields = [];
+      const params = [];
+
+      if (data.name) {
+        fields.push("name = ?");
+        params.push(data.name);
+      }
+
+      if (data.country) {
+        fields.push("country = ?");
+        params.push(data.country);
+      }
+
+      if (data.imageUrl) {
+        fields.push("image_url = ?");
+        params.push(data.imageUrl);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE artists SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      // Update relationships
+      if ("songs" in data) {
+        await DB.run("DELETE FROM song_artists WHERE artist_id = ?", [id]);
+        for (const song of data.songs || []) {
+          if (song.id) {
+            await DB.run(
+              `INSERT INTO song_artists (song_id, artist_id, role) VALUES (?, ?, ?)`,
+              [song.id, id, song.role]
+            );
+          }
+        }
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating artist ${id}: ${err.message}`);
+    }
+  }
+
+  // Search artists for autofill dropdown
+  static async searchForAutofill(query, limit = 10) {
+    try {
+      const sql = `
+        SELECT id, name as label
+        FROM artists 
+        WHERE name LIKE ? 
+        ORDER BY name 
+        LIMIT ?`;
+
+      return await DB.all(sql, [`%${query}%`, limit]);
+    } catch (err) {
+      throw new Error(`Error searching artists for autofill: ${err.message}`);
+    }
+  }
+
   // Get all artists
   static async getAll(sort = "artists.timestamp", direction = "ASC") {
     try {

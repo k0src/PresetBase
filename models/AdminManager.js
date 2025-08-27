@@ -2,8 +2,23 @@
 const DB = require("./DB.js");
 const fs = require("fs").promises;
 const path = require("path");
+const Song = require("./Song.js");
+const Artist = require("./Artist.js");
+const Album = require("./Album.js");
+const Synth = require("./Synth.js");
+const Preset = require("./Preset.js");
+const Genre = require("./Genre.js");
 
 class AdminManager {
+  static #models = {
+    songs: Song,
+    artists: Artist,
+    albums: Album,
+    synths: Synth,
+    presets: Preset,
+    genres: Genre,
+  };
+
   static #attachFileDataToFormData({ formData, fileData }) {
     if (!fileData.length) return formData;
 
@@ -265,212 +280,221 @@ class AdminManager {
     const isSingle = submissionData.single === "yes";
 
     // Insert song
-    let song = await DB.get(
-      `SELECT id FROM songs WHERE title = ? AND release_year = ?`,
-      [submissionData.songTitle, submissionData.songYear]
-    );
+    try {
+      await DB.beginTransaction();
 
-    const songId = song
-      ? song.id
-      : await DB.run(
-          `INSERT INTO songs (title, genre, release_year, song_url, image_url, timestamp)
-             VALUES (?, ?, ?, ?, ?, ?)`,
-          [
-            submissionData.songTitle,
-            submissionData.songGenre,
-            submissionData.songYear,
-            submissionData.songUrl,
-            submissionData.songImg,
-            submittedAt,
-          ]
-        );
-
-    if (!songId) {
-      throw new Error(
-        "songId is undefined for song: " + submissionData.songTitle
-      );
-    }
-
-    // Insert album
-    let albumId;
-
-    if (!isSingle) {
-      const album = await DB.get(
-        `SELECT id FROM albums WHERE title = ? AND release_year = ?`,
-        [submissionData.albumTitle, submissionData.albumYear]
+      let song = await DB.get(
+        `SELECT id FROM songs WHERE title = ? AND release_year = ?`,
+        [submissionData.songTitle, submissionData.songYear]
       );
 
-      albumId = album
-        ? album.id
+      const songId = song
+        ? song.id
         : await DB.run(
-            `INSERT INTO albums (title, genre, release_year, image_url, timestamp)
-               VALUES (?, ?, ?, ?, ?)`,
+            `INSERT INTO songs (title, genre, release_year, song_url, image_url, timestamp)
+             VALUES (?, ?, ?, ?, ?, ?)`,
             [
-              submissionData.albumTitle,
-              submissionData.albumGenre,
-              submissionData.albumYear,
-              submissionData.albumImg,
+              submissionData.songTitle,
+              submissionData.songGenre,
+              submissionData.songYear,
+              submissionData.songUrl,
+              submissionData.songImg,
               submittedAt,
             ]
           );
-    } else {
-      albumId = 0;
-    }
 
-    await DB.run(
-      `INSERT INTO album_songs (song_id, album_id)
-         VALUES (?, ?)`,
-      [songId, albumId]
-    );
+      if (!songId) {
+        throw new Error(
+          "songId is undefined for song: " + submissionData.songTitle
+        );
+      }
 
-    // Insert artists
-    for (const artist of submissionData.artists) {
-      let existingArtist = await DB.get(
-        `SELECT id FROM artists WHERE name = ? AND country = ?`,
-        [artist.name, artist.country]
-      );
+      // Insert album
+      let albumId;
 
-      const artistId = existingArtist
-        ? existingArtist.id
-        : await DB.run(
-            `INSERT INTO artists (name, country, image_url, timestamp)
-               VALUES (?, ?, ?, ?)`,
-            [artist.name, artist.country, artist.img, submittedAt]
-          );
+      if (!isSingle) {
+        const album = await DB.get(
+          `SELECT id FROM albums WHERE title = ? AND release_year = ?`,
+          [submissionData.albumTitle, submissionData.albumYear]
+        );
 
-      if (!artistId) {
-        throw new Error("artistId is undefined for artist: " + artist.name);
+        albumId = album
+          ? album.id
+          : await DB.run(
+              `INSERT INTO albums (title, genre, release_year, image_url, timestamp)
+               VALUES (?, ?, ?, ?, ?)`,
+              [
+                submissionData.albumTitle,
+                submissionData.albumGenre,
+                submissionData.albumYear,
+                submissionData.albumImg,
+                submittedAt,
+              ]
+            );
+      } else {
+        albumId = 0;
       }
 
       await DB.run(
-        `INSERT INTO song_artists (song_id, artist_id, role)
+        `INSERT INTO album_songs (song_id, album_id)
+         VALUES (?, ?)`,
+        [songId, albumId]
+      );
+
+      // Insert artists
+      for (const artist of submissionData.artists) {
+        let existingArtist = await DB.get(
+          `SELECT id FROM artists WHERE name = ? AND country = ?`,
+          [artist.name, artist.country]
+        );
+
+        const artistId = existingArtist
+          ? existingArtist.id
+          : await DB.run(
+              `INSERT INTO artists (name, country, image_url, timestamp)
+               VALUES (?, ?, ?, ?)`,
+              [artist.name, artist.country, artist.img, submittedAt]
+            );
+
+        if (!artistId) {
+          throw new Error("artistId is undefined for artist: " + artist.name);
+        }
+
+        await DB.run(
+          `INSERT INTO song_artists (song_id, artist_id, role)
            VALUES (?, ?, ?)`,
-        [songId, artistId, artist.role]
-      );
-    }
+          [songId, artistId, artist.role]
+        );
+      }
 
-    // Insert synths
-    for (const synth of submissionData.synths) {
-      let existingSynth = await DB.get(
-        `SELECT id FROM synths WHERE synth_name = ? AND manufacturer = ?`,
-        [synth.name, synth.manufacturer]
-      );
+      // Insert synths
+      for (const synth of submissionData.synths) {
+        let existingSynth = await DB.get(
+          `SELECT id FROM synths WHERE synth_name = ? AND manufacturer = ?`,
+          [synth.name, synth.manufacturer]
+        );
 
-      const synthId = existingSynth
-        ? existingSynth.id
-        : await DB.run(
-            `INSERT INTO synths 
+        const synthId = existingSynth
+          ? existingSynth.id
+          : await DB.run(
+              `INSERT INTO synths 
                 (synth_name, manufacturer, synth_type, image_url, release_year, timestamp)
               VALUES (?, ?, ?, ?, ?, ?)`,
+              [
+                synth.name,
+                synth.manufacturer,
+                synth.type,
+                synth.img,
+                synth.year,
+                submittedAt,
+              ]
+            );
+
+        if (!synthId) {
+          throw new Error("synthId is undefined for synth: " + synth.name);
+        }
+
+        // Insert presets
+        for (const preset of synth.presets) {
+          let existingPreset = await DB.get(
+            `SELECT presets.id FROM presets
+          INNER JOIN preset_synths ON presets.id = preset_synths.preset_id
+          INNER JOIN synths ON preset_synths.synth_id = synths.id
+          WHERE preset_name = ? AND pack_name = ? AND author = ? AND synths.id = ?`,
+            [preset.name, preset.packName, preset.author, synthId]
+          );
+
+          const presetId = existingPreset
+            ? existingPreset.id
+            : await DB.run(
+                `INSERT INTO presets (preset_name, pack_name, author, timestamp)
+                 VALUES (?, ?, ?, ?)`,
+                [preset.name, preset.packName, preset.author, submittedAt]
+              );
+
+          if (!presetId) {
+            throw new Error("presetId is undefined for preset: " + preset.name);
+          }
+
+          await DB.run(
+            `INSERT INTO preset_synths (preset_id, synth_id)
+             VALUES (?, ?)`,
+            [presetId, synthId]
+          );
+
+          const submissionId = await DB.run(
+            `INSERT INTO song_presets
+              (song_id, preset_id, usage_type, verified, audio_url, timestamp)
+            VALUES (?, ?, ?, ?, ?, ?)`,
             [
-              synth.name,
-              synth.manufacturer,
-              synth.type,
-              synth.img,
-              synth.year,
+              songId,
+              presetId,
+              preset.usageType,
+              "t",
+              preset.audio || null,
               submittedAt,
             ]
           );
 
-      if (!synthId) {
-        throw new Error("synthId is undefined for synth: " + synth.name);
-      }
-
-      // Insert presets
-      for (const preset of synth.presets) {
-        let existingPreset = await DB.get(
-          `SELECT presets.id FROM presets
-          INNER JOIN preset_synths ON presets.id = preset_synths.preset_id
-          INNER JOIN synths ON preset_synths.synth_id = synths.id
-          WHERE preset_name = ? AND pack_name = ? AND author = ? AND synths.id = ?`,
-          [preset.name, preset.packName, preset.author, synthId]
-        );
-
-        const presetId = existingPreset
-          ? existingPreset.id
-          : await DB.run(
-              `INSERT INTO presets (preset_name, pack_name, author, timestamp)
-                 VALUES (?, ?, ?, ?)`,
-              [preset.name, preset.packName, preset.author, submittedAt]
-            );
-
-        if (!presetId) {
-          throw new Error("presetId is undefined for preset: " + preset.name);
+          // add user info
         }
-
-        await DB.run(
-          `INSERT INTO preset_synths (preset_id, synth_id)
-             VALUES (?, ?)`,
-          [presetId, synthId]
-        );
-
-        const submissionId = await DB.run(
-          `INSERT INTO song_presets
-              (song_id, preset_id, usage_type, verified, audio_url, timestamp)
-            VALUES (?, ?, ?, ?, ?, ?)`,
-          [
-            songId,
-            presetId,
-            preset.usageType,
-            "t",
-            preset.audio || null,
-            submittedAt,
-          ]
-        );
-
-        // add user info
       }
-    }
 
-    // Approve files
-    const songImgFilled =
-      (submissionData.songImgFromAlbum
-        ? submissionData.albumFilled
-        : submissionData.songFilled) || false;
+      // Approve files
+      const songImgFilled =
+        (submissionData.songImgFromAlbum
+          ? submissionData.albumFilled
+          : submissionData.songFilled) || false;
 
-    if (submissionData.songImg && !songImgFilled) {
-      await AdminManager.#approveFile({
-        filename: submissionData.songImg,
-        type: "images",
-      });
-    }
-
-    if (
-      submissionData.albumImg &&
-      !submissionData.albumFilled &&
-      !submissionData.songImgFromAlbum
-    ) {
-      await AdminManager.#approveFile({
-        filename: submissionData.albumImg,
-        type: "images",
-      });
-    }
-
-    for (const artist of submissionData.artists || []) {
-      if (artist.img && !artist.filled) {
+      if (submissionData.songImg && !songImgFilled) {
         await AdminManager.#approveFile({
-          filename: artist.img,
-          type: "images",
-        });
-      }
-    }
-
-    for (const synth of submissionData.synths || []) {
-      if (synth.img && !synth.filled) {
-        await AdminManager.#approveFile({
-          filename: synth.img,
+          filename: submissionData.songImg,
           type: "images",
         });
       }
 
-      for (const preset of synth.presets || []) {
-        if (preset.audio) {
+      if (
+        submissionData.albumImg &&
+        !submissionData.albumFilled &&
+        !submissionData.songImgFromAlbum
+      ) {
+        await AdminManager.#approveFile({
+          filename: submissionData.albumImg,
+          type: "images",
+        });
+      }
+
+      for (const artist of submissionData.artists || []) {
+        if (artist.img && !artist.filled) {
           await AdminManager.#approveFile({
-            filename: preset.audio,
-            type: "audio",
+            filename: artist.img,
+            type: "images",
           });
         }
       }
+
+      for (const synth of submissionData.synths || []) {
+        if (synth.img && !synth.filled) {
+          await AdminManager.#approveFile({
+            filename: synth.img,
+            type: "images",
+          });
+        }
+
+        for (const preset of synth.presets || []) {
+          if (preset.audio) {
+            await AdminManager.#approveFile({
+              filename: preset.audio,
+              type: "audio",
+            });
+          }
+        }
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error inserting submission data: ${err.message}`);
     }
   }
 
@@ -785,20 +809,102 @@ class AdminManager {
 
   static async uploadEntry({ formData, fileData }) {
     const now = new Date().toISOString();
-
-    const rawData = AdminManager.#attachFileDataToFormData({
-      formData,
-      fileData,
-    });
     try {
+      const rawData = AdminManager.#attachFileDataToFormData({
+        formData,
+        fileData,
+      });
       const sanitizedData = await AdminManager.#sanitizeSubmissionData(rawData);
       const fullData = await AdminManager.#mergeSubmissionDataWithExistingData(
         sanitizedData
       );
-
       await AdminManager.#insertSubmissionDataIntoDb(fullData, now);
     } catch (err) {
       throw new Error(`Error uploading submission: ${err.message}`);
+    }
+  }
+
+  static async updateEntry({ table, entryId, formData, fileData }) {
+    try {
+      const Model = AdminManager.#models[table];
+      if (!Model) {
+        throw new Error(`Invalid table name: ${table}`);
+      }
+
+      const rawData = AdminManager.#attachFileDataToFormData({
+        formData,
+        fileData,
+      });
+      const sanitizedData = await AdminManager.#sanitizeSubmissionData(rawData);
+
+      await Model.updateById(entryId, sanitizedData);
+
+      if (sanitizedData.imageUrl) {
+        await AdminManager.#approveFile({
+          filename: sanitizedData.imageUrl,
+          type: "images",
+        });
+      }
+
+      if (sanitizedData.audioUrl) {
+        await AdminManager.#approveFile({
+          filename: sanitizedData.audioUrl,
+          type: "audio",
+        });
+      }
+    } catch (err) {
+      throw new Error(
+        `Error updating ${table} entry ${entryId}: ${err.message}`
+      );
+    }
+  }
+
+  static async deleteEntry({ table, entryId }) {
+    try {
+      const Model = AdminManager.#models[table];
+      if (!Model) {
+        throw new Error(`Invalid table name: ${table}`);
+      }
+
+      await Model.deleteById(entryId);
+    } catch (err) {
+      throw new Error(
+        `Error deleting ${table} entry ${entryId}: ${err.message}`
+      );
+    }
+  }
+
+  static async getEntryAutofillData({ table, query, limit }) {
+    try {
+      const Model = AdminManager.#models[table];
+      if (!Model) {
+        throw new Error(`Invalid table name: ${table}`);
+      }
+
+      const results = await Model.searchForAutofill(query, limit);
+      return results;
+    } catch (err) {
+      throw new Error(`Error fetching ${table} autofill data: ${err.message}`);
+    }
+  }
+
+  static async getEntryDataById({ table, entryId }) {
+    try {
+      const Model = AdminManager.#models[table];
+      if (!Model) {
+        throw new Error(`Invalid table name: ${table}`);
+      }
+
+      const entryData = await Model.getFullDataById(entryId);
+      if (!entryData) {
+        throw new Error(`${table} entry with ID ${entryId} not found`);
+      }
+
+      return entryData;
+    } catch (err) {
+      throw new Error(
+        `Error fetching ${table} entry ${entryId} data: ${err.message}`
+      );
     }
   }
 }

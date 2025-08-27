@@ -302,6 +302,178 @@ class Song extends Entry {
     }
   }
 
+  // Get full song data by ID
+  static async getFullDataById(id) {
+    try {
+      const query = `
+        SELECT
+          songs.id AS id,
+          songs.title AS title,
+          songs.song_url AS songUrl,
+          songs.image_url AS imageUrl,
+          songs.genre AS genre,
+          songs.release_year AS year,
+          songs.timestamp AS timestamp,
+          json_object('id', albums.id, 'title', albums.title) AS album,
+
+          json_group_array(
+            DISTINCT CASE
+              WHEN artists.id IS NOT NULL THEN
+                json_object(
+                  'id', artists.id,
+                  'name', artists.name,
+                  'role', song_artists.role
+                )
+              ELSE NULL
+            END
+          ) AS artists,
+
+          json_group_array(
+            DISTINCT CASE
+              WHEN presets.id IS NOT NULL THEN
+                json_object(
+                  'id', presets.id,
+                  'name', presets.preset_name,
+                  'usageType', song_presets.usage_type,
+                  'audioUrl', song_presets.audio_url,
+                  'synth', json_object(
+                    'id', synths.id,
+                    'name', synths.synth_name,
+                    'imageUrl', synths.image_url
+                  )
+                )
+              ELSE NULL
+            END
+          ) AS presets
+
+        FROM songs
+        LEFT JOIN album_songs ON songs.id = album_songs.song_id
+        LEFT JOIN albums ON album_songs.album_id = albums.id
+        LEFT JOIN song_artists ON songs.id = song_artists.song_id
+        LEFT JOIN artists ON song_artists.artist_id = artists.id
+        LEFT JOIN song_presets ON songs.id = song_presets.song_id
+        LEFT JOIN presets ON song_presets.preset_id = presets.id
+        LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+        LEFT JOIN synths ON preset_synths.synth_id = synths.id
+        WHERE songs.id = ?
+        GROUP BY songs.id`;
+
+      const songData = await DB.get(query, [id]);
+
+      if (songData) {
+        songData.album = JSON.parse(songData.album || "{}");
+        songData.artists = JSON.parse(songData.artists || "[]").filter(Boolean);
+        songData.presets = JSON.parse(songData.presets || "[]").filter(Boolean);
+      }
+
+      return songData;
+    } catch (err) {
+      throw new Error(`Error fetching full song data: ${err.message}`);
+    }
+  }
+
+  // Update song by ID
+  static async updateById(id, data) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main song data
+      const fields = [];
+      const params = [];
+
+      if (data.title) {
+        fields.push("title = ?");
+        params.push(data.title);
+      }
+
+      if (data.genre) {
+        fields.push("genre = ?");
+        params.push(data.genre);
+      }
+
+      if (data.year) {
+        fields.push("release_year = ?");
+        params.push(data.year);
+      }
+
+      if (data.songUrl) {
+        fields.push("song_url = ?");
+        params.push(data.songUrl);
+      }
+
+      if (data.imageUrl) {
+        fields.push("image_url = ?");
+        params.push(data.imageUrl);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE songs SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      // Update relationships
+      if ("album" in data) {
+        await DB.run("DELETE FROM album_songs WHERE song_id = ?", [id]);
+        if (data.album) {
+          await DB.run(
+            "INSERT INTO album_songs (song_id, album_id) VALUES (?, ?)",
+            [id, data.album]
+          );
+        }
+      }
+
+      if ("artists" in data) {
+        await DB.run("DELETE FROM song_artists WHERE song_id = ?", [id]);
+        for (const artist of data.artists || []) {
+          if (artist.id) {
+            await DB.run(
+              "INSERT INTO song_artists (song_id, artist_id, role) VALUES (?, ?, ?)",
+              [id, artist.id, artist.role]
+            );
+          }
+        }
+      }
+
+      if ("presets" in data) {
+        await DB.run("DELETE FROM song_presets WHERE song_id = ?", [id]);
+        for (const preset of data.presets || []) {
+          if (preset.id) {
+            await DB.run(
+              `INSERT INTO song_presets
+              (song_id, preset_id, usage_type, verified, timestamp)
+             VALUES (?, ?, ?, ?, ?)`,
+              [id, preset.id, preset.usageType, "t", new Date().toISOString()]
+            );
+          }
+        }
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating song ${id}: ${err.message}`);
+    }
+  }
+
+  // Search songs for autofill dropdown
+  static async searchForAutofill(query, limit = 10) {
+    try {
+      const sql = `
+        SELECT id, title as label
+        FROM songs 
+        WHERE title LIKE ? 
+        ORDER BY title 
+        LIMIT ?`;
+
+      return await DB.all(sql, [`%${query}%`, limit]);
+    } catch (err) {
+      throw new Error(`Error searching songs for autofill: ${err.message}`);
+    }
+  }
+
   // Get latest song
   static async getLatestSong() {
     try {
@@ -392,20 +564,24 @@ class Song extends Entry {
           songs.song_url AS songUrl,
           songs.image_url AS imageUrl,
           songs.timestamp AS timestamp,
-          json_object (
-            'id', artists.id,
-            'name', artists.name
-          ) AS artist,
-          json_object (
+          CASE
+            WHEN artists.id IS NOT NULL THEN
+              json_object(
+                'id', artists.id,
+                'name', artists.name
+              )
+            ELSE NULL
+          END AS artist,
+          json_object(
             'id', albums.id,
             'title', albums.title
           ) AS album
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
+          AND song_artists.role = 'Main'
         LEFT JOIN artists ON song_artists.artist_id = artists.id
         LEFT JOIN album_songs ON songs.id = album_songs.song_id
         LEFT JOIN albums ON album_songs.album_id = albums.id
-        WHERE song_artists.role = 'Main'
         GROUP BY songs.id
         ORDER BY ${sortClause}
         ${limit ? "LIMIT ?" : ""}`;

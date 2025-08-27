@@ -40,30 +40,6 @@ export default function BrowseAlbums() {
 
   const albumsConfig = useMemo(() => entryConfigs.albums, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Browse Albums</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="albums"
-            totalEntries={totalEntries}
-            filterPlaceholder="Filter albums..."
-            sortOptions={albumsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -71,21 +47,6 @@ export default function BrowseAlbums() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError message={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!albumsData || !albumsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Browse Albums</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="albums" />
-        </ContentContainer>
       </>
     );
   }
@@ -107,13 +68,18 @@ export default function BrowseAlbums() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={albumsData}
-          entryType="albums"
-          config={albumsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !albumsData || !albumsData.length ? (
+          <BrowseNoResults entryType="albums" />
+        ) : (
+          <BrowseTableView
+            data={albumsData}
+            entryType="albums"
+            config={albumsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

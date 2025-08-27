@@ -228,14 +228,19 @@ class Preset extends Entry {
           presets.pack_name AS packName,
           presets.author AS author,
           presets.timestamp AS timestamp,
-          json_object (
-            'id', synths.id,
-            'name', synths.synth_name,
-            'imageUrl', synths.image_url
-          ) AS synth
+          CASE
+            WHEN synths.id IS NOT NULL THEN
+              json_object(
+                'id', synths.id,
+                'name', synths.synth_name,
+                'imageUrl', synths.image_url
+              )
+            ELSE NULL
+          END AS synth
         FROM presets
         LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
         LEFT JOIN synths ON preset_synths.synth_id = synths.id
+        GROUP BY presets.id
         ORDER BY ${sortClause}`;
 
       const presetsData = await DB.all(query);
@@ -302,6 +307,106 @@ class Preset extends Entry {
       return topPresetsData;
     } catch (err) {
       throw new Error(`Error fetching top presets: ${err.message}`);
+    }
+  }
+
+  // Get full preset data by ID
+  static async getFullDataById(id) {
+    try {
+      const query = `
+        SELECT
+          presets.id AS id,
+          presets.preset_name AS name,
+          presets.pack_name AS packName,
+          presets.author AS author,
+          presets.timestamp AS timestamp,
+          json_object(
+            'id', synths.id,
+            'name', synths.synth_name,
+            'manufacturer', synths.manufacturer,
+            'type', synths.synth_type,
+            'imageUrl', synths.image_url,
+            'year', synths.release_year
+          ) AS synth
+        FROM presets
+        LEFT JOIN preset_synths ON presets.id = preset_synths.preset_id
+        LEFT JOIN synths ON preset_synths.synth_id = synths.id
+        WHERE presets.id = ?`;
+
+      const presetData = await DB.get(query, [id]);
+
+      if (presetData) {
+        presetData.synth = JSON.parse(presetData.synth || "{}");
+      }
+
+      return presetData;
+    } catch (err) {
+      throw new Error(`Error fetching preset data: ${err.message}`);
+    }
+  }
+
+  // Update preset by ID
+  static async updateById(id, data, files) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main preset data
+      const fields = [];
+      const params = [];
+
+      if (data.name) {
+        fields.push("preset_name = ?");
+        params.push(data.name);
+      }
+
+      if (data.packName) {
+        fields.push("pack_name = ?");
+        params.push(data.packName);
+      }
+
+      if (data.author) {
+        fields.push("author = ?");
+        params.push(data.author);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE presets SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      // Update relationships
+      if ("synth" in data) {
+        await DB.run("DELETE FROM preset_synths WHERE preset_id = ?", [id]);
+        if (data.synth) {
+          await DB.run(
+            `INSERT INTO preset_synths (preset_id, synth_id) VALUES (?, ?)`,
+            [id, data.synth]
+          );
+        }
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating preset ${id}: ${err.message}`);
+    }
+  }
+
+  static async searchForAutofill(query, limit = 10) {
+    try {
+      const sql = `
+        SELECT id, preset_name as label
+        FROM presets 
+        WHERE preset_name LIKE ? 
+        ORDER BY preset_name 
+        LIMIT ?`;
+
+      return await DB.all(sql, [`%${query}%`, limit]);
+    } catch (err) {
+      throw new Error(`Error searching presets for autofill: ${err.message}`);
     }
   }
 }

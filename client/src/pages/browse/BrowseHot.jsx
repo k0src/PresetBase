@@ -38,29 +38,6 @@ export default function BrowseHot() {
 
   const hotSongsConfig = useMemo(() => entryConfigs.hot, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Hot Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="hot"
-            filterPlaceholder="Filter songs..."
-            sortOptions={hotSongsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -68,21 +45,6 @@ export default function BrowseHot() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!hotSongsData || !hotSongsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Hot Songs</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="songs" />
-        </ContentContainer>
       </>
     );
   }
@@ -103,13 +65,18 @@ export default function BrowseHot() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={hotSongsData}
-          entryType="hot"
-          config={hotSongsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !hotSongsData || !hotSongsData.length ? (
+          <BrowseNoResults entryType="songs" />
+        ) : (
+          <BrowseTableView
+            data={hotSongsData}
+            entryType="hot"
+            config={hotSongsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

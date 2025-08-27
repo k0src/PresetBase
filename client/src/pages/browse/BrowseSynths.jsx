@@ -40,30 +40,6 @@ export default function BrowseSynths() {
 
   const synthsConfig = useMemo(() => entryConfigs.synths, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Browse Synths</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="synths"
-            totalEntries={totalEntries}
-            filterPlaceholder="Filter synths..."
-            sortOptions={synthsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -71,21 +47,6 @@ export default function BrowseSynths() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error} />
-      </>
-    );
-  }
-
-  // No results
-  if (!synthsData || !synthsData.length) {
-    return (
-      <>
-        <Helmet>
-          <title>Browse Synths</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="synths" />
-        </ContentContainer>
       </>
     );
   }
@@ -107,13 +68,18 @@ export default function BrowseSynths() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={synthsData}
-          entryType="synths"
-          config={synthsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !synthsData || !synthsData.length ? (
+          <BrowseNoResults entryType="synths" />
+        ) : (
+          <BrowseTableView
+            data={synthsData}
+            entryType="synths"
+            config={synthsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

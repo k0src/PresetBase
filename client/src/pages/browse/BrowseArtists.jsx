@@ -40,30 +40,6 @@ export default function BrowseArtists() {
 
   const artistsConfig = useMemo(() => entryConfigs.artists, []);
 
-  if (loading)
-    return (
-      <>
-        <Helmet>
-          <title>Browse Artists</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseHeader
-            entryType="artists"
-            totalEntries={totalEntries}
-            filterPlaceholder="Filter artists..."
-            sortOptions={artistsConfig.sortOptions}
-            onFilterChange={handleFilterChange}
-            onSortSelectChange={handleSortChange}
-            sortBy={sortBy}
-            sortDirection={sortDirection}
-          />
-
-          <ComponentLoader />
-        </ContentContainer>
-      </>
-    );
-
   if (error) {
     return (
       <>
@@ -71,21 +47,6 @@ export default function BrowseArtists() {
           <title>Internal Server Error</title>
         </Helmet>
         <DbError errorMessage={error.message} />
-      </>
-    );
-  }
-
-  // No results
-  if (!artistsData || artistsData.length === 0) {
-    return (
-      <>
-        <Helmet>
-          <title>Browse Artists</title>
-        </Helmet>
-
-        <ContentContainer isAuth={true} userIsAdmin={true}>
-          <BrowseNoResults entryType="artists" />
-        </ContentContainer>
       </>
     );
   }
@@ -107,13 +68,18 @@ export default function BrowseArtists() {
           sortBy={sortBy}
           sortDirection={sortDirection}
         />
-
-        <BrowseTableView
-          data={artistsData}
-          entryType="artists"
-          config={artistsConfig}
-          filterText={filterText}
-        />
+        {loading ? (
+          <ComponentLoader />
+        ) : !artistsData || !artistsData.length ? (
+          <BrowseNoResults entryType="artists" />
+        ) : (
+          <BrowseTableView
+            data={artistsData}
+            entryType="artists"
+            config={artistsConfig}
+            filterText={filterText}
+          />
+        )}
       </ContentContainer>
     </>
   );

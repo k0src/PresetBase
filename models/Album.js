@@ -331,6 +331,130 @@ class Album extends Entry {
       throw new Error(`Error fetching all albums: ${err.message}`);
     }
   }
+
+  // Get full album data by ID
+  static async getFullDataById(id) {
+    try {
+      const query = `
+        SELECT
+          albums.id AS id,
+          albums.title AS title,
+          albums.genre AS genre,
+          albums.release_year AS year,
+          albums.image_url AS imageUrl,
+          albums.timestamp AS timestamp,
+          (
+          SELECT json_object(
+            'id', artists.id,
+            'name', artists.name
+          )
+          FROM album_songs
+          JOIN song_artists ON album_songs.song_id = song_artists.song_id
+          JOIN artists ON song_artists.artist_id = artists.id
+          WHERE album_songs.album_id = albums.id
+          AND song_artists.role = 'Main'
+          LIMIT 1
+        ) AS artist,
+          
+        json_group_array(
+          DISTINCT json_object(
+            'id', songs.id,
+            'title', songs.title,
+            'songUrl', songs.song_url,
+            'imageUrl', songs.image_url,
+            'genre', songs.genre,
+            'year', songs.release_year
+          )
+        ) AS songs
+        
+        FROM albums
+        LEFT JOIN album_songs ON albums.id = album_songs.album_id
+        LEFT JOIN songs ON songs.id = album_songs.song_id
+        WHERE albums.id = ?
+        GROUP BY albums.id`;
+
+      const albumData = await DB.get(query, [id]);
+
+      if (albumData) {
+        albumData.songs = JSON.parse(albumData.songs || "[]").filter(Boolean);
+        albumData.artist = JSON.parse(albumData.artist || "{}");
+      }
+
+      return albumData;
+    } catch (err) {
+      throw new Error(`Error fetching album data: ${err.message}`);
+    }
+  }
+
+  // Update album by ID
+  static async updateById(id, data, files) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main album data
+      const fields = [];
+      const params = [];
+
+      if (data.title) {
+        fields.push("title = ?");
+        params.push(data.title);
+      }
+
+      if (data.genre) {
+        fields.push("genre = ?");
+        params.push(data.genre);
+      }
+
+      if (data.year) {
+        fields.push("release_year = ?");
+        params.push(data.year);
+      }
+
+      if (data.imageUrl) {
+        fields.push("image_url = ?");
+        params.push(data.imageUrl);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE albums SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      // Update relationships
+      if ("songs" in data) {
+        await DB.run("DELETE FROM album_songs WHERE album_id = ?", [id]);
+        for (const song of data.songs || []) {
+          await DB.run(
+            `INSERT INTO album_songs (song_id, album_id) VALUES (?, ?)`,
+            [song.id, id]
+          );
+        }
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating album ${id}: ${err.message}`);
+    }
+  }
+
+  static async searchForAutofill(query, limit = 10) {
+    try {
+      const sql = `
+        SELECT id, title as label
+        FROM albums 
+        WHERE title LIKE ? 
+        ORDER BY title 
+        LIMIT ?`;
+
+      return await DB.all(sql, [`%${query}%`, limit]);
+    } catch (err) {
+      throw new Error(`Error searching albums for autofill: ${err.message}`);
+    }
+  }
 }
 
 module.exports = Album;

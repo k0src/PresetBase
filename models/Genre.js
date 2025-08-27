@@ -290,6 +290,92 @@ class Genre extends Entry {
     }
   }
 
+  // Get full genre data by ID
+  static async getFullDataById(id) {
+    try {
+      const query = `
+        SELECT
+          id, 
+          name,
+          slug,
+          text_color AS textColor,
+          bg_color AS backgroundColor,
+          border_color AS borderColor,
+          timestamp
+        FROM genre_tags
+        WHERE id = ?`;
+
+      return await DB.get(query, [id]);
+    } catch (err) {
+      throw new Error(`Error fetching full genre data: ${err.message}`);
+    }
+  }
+
+  // Update genre by ID
+  static async updateById(id, data) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main genre data
+      const fields = [];
+      const params = [];
+
+      if (data.name) {
+        fields.push("name = ?");
+        params.push(data.name);
+      }
+
+      if (data.slug) {
+        fields.push("slug = ?");
+        params.push(data.slug);
+      }
+
+      if (data.textColor) {
+        fields.push("text_color = ?");
+        params.push(data.textColor);
+      }
+
+      if (data.backgroundColor) {
+        fields.push("bg_color = ?");
+        params.push(data.backgroundColor);
+      }
+
+      if (data.borderColor) {
+        fields.push("border_color = ?");
+        params.push(data.borderColor);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE genre_tags SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating genre ${id}: ${err.message}`);
+    }
+  }
+
+  // Search genres for autofill dropdown
+  static async searchForAutofill(query, limit = 10) {
+    try {
+      const sql = `
+        SELECT id, name as label
+        FROM genre_tags 
+        WHERE name LIKE ? 
+        ORDER BY name 
+        LIMIT ?`;
+
+      return await DB.all(sql, [`%${query}%`, limit]);
+    } catch (err) {
+      throw new Error(`Error searching genres for autofill: ${err.message}`);
+    }
+  }
+
   // Get all genres
   static async getAll(sort = "genre_tags.timestamp", direction = "ASC") {
     try {
@@ -318,9 +404,7 @@ class Genre extends Entry {
           MAX(songs.image_url) AS imageUrl
         FROM genre_tags
         LEFT JOIN songs ON songs.genre = genre_tags.name
-        GROUP BY genre_tags.id, genre_tags.name, genre_tags.slug, 
-          genre_tags.text_color, genre_tags.border_color, genre_tags.bg_color
-        HAVING songCount > 0
+        GROUP BY genre_tags.id
         ORDER BY ${sortClause}`;
 
       return await DB.all(query);

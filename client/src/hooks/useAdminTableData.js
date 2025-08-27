@@ -42,7 +42,12 @@ const dataFetchers = {
   },
 };
 
-export function useAdminTableData(selectedTable, sortBy, sortDirection) {
+export function useAdminTableData(
+  selectedTable,
+  sortBy,
+  sortDirection,
+  refreshKey
+) {
   const fetchConfig = useMemo(() => {
     const fetchers = dataFetchers[selectedTable];
     if (!fetchers) return {};
@@ -54,7 +59,7 @@ export function useAdminTableData(selectedTable, sortBy, sortDirection) {
 
   const { data, loading, error } = useAsyncData(
     fetchConfig,
-    [selectedTable, sortBy, sortDirection],
+    [selectedTable, sortBy, sortDirection, refreshKey],
     {
       cacheKey: `adminManageDb-${selectedTable}-${sortBy}-${sortDirection}`,
       resetOnDepsChange: true,

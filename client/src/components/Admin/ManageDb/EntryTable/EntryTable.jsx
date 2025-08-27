@@ -1,4 +1,5 @@
 import { useMemo, memo, useState } from "react";
+import { useSlideout } from "../../../../contexts/SlideoutContext";
 
 import EntryTableCell from "../EntryTableCell/EntryTableCell";
 
@@ -7,8 +8,14 @@ import classNames from "classnames";
 
 import { FaPenToSquare } from "react-icons/fa6";
 
-export default function EntryTable({ data, config, filterText = "" }) {
+export default function EntryTable({
+  data,
+  config,
+  filterText = "",
+  entryType,
+}) {
   const [editingCell, setEditingCell] = useState(null);
+  const { openSlideout } = useSlideout();
 
   const filteredData = useMemo(() => {
     const dataRowsWithIndex = data.map((item, originalIndex) => ({
@@ -27,6 +34,12 @@ export default function EntryTable({ data, config, filterText = "" }) {
       });
     });
   }, [data, filterText, config.filterOptions]);
+
+  const handleEditClick = (rowId) => {
+    if (entryType && rowId) {
+      openSlideout(entryType, rowId);
+    }
+  };
 
   const TableRow = memo(({ row }) => (
     <div
@@ -54,7 +67,11 @@ export default function EntryTable({ data, config, filterText = "" }) {
         )
       )}
 
-      <button type="button" className={styles.editBtn}>
+      <button
+        type="button"
+        className={styles.editBtn}
+        onClick={() => handleEditClick(row.id)}
+      >
         <FaPenToSquare className={styles.editIcon} />
       </button>
     </div>
@@ -75,8 +92,8 @@ export default function EntryTable({ data, config, filterText = "" }) {
       >
         {columnHeaders}
       </div>
-      {filteredData.map((row) => (
-        <TableRow key={row.id} row={row} />
+      {filteredData.map((row, index) => (
+        <TableRow key={`${row.id}-${index}`} row={row} />
       ))}
     </section>
   );

@@ -1,12 +1,25 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
 import styles from "./SlideoutGenreColorPicker.module.css";
 
 const SlideoutGenreColorPicker = memo(function SlideoutGenreColorPicker({
-  defaultValue,
+  value,
   label,
+  id,
+  onChange,
 }) {
-  const [color, setColor] = useState(defaultValue || "#ffffff");
+  const [color, setColor] = useState(value || "#ffffff");
+
+  useEffect(() => {
+    setColor(value || "#ffffff");
+  }, [value]);
+
+  const handleColorChange = (newColor) => {
+    setColor(newColor);
+    if (onChange) {
+      onChange();
+    }
+  };
 
   return (
     <div className={styles.colorPickerContainer}>
@@ -15,13 +28,15 @@ const SlideoutGenreColorPicker = memo(function SlideoutGenreColorPicker({
       <HexColorPicker
         className={styles.colorPicker}
         color={color}
-        onChange={setColor}
+        onChange={handleColorChange}
       />
 
       <HexColorInput
         className={styles.colorInput}
         color={color}
-        onChange={setColor}
+        onChange={handleColorChange}
+        prefixed
+        name={id}
       />
     </div>
   );
