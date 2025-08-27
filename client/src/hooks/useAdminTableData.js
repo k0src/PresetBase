@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState, useRef } from "react";
+import { useMemo, useCallback, useState } from "react";
 import { useAsyncData } from "./useAsyncData";
 import {
   getSongsData,
@@ -42,19 +42,8 @@ const dataFetchers = {
   },
 };
 
-export function useAdminTableData(
-  selectedTable,
-  sortBy,
-  sortDirection,
-  refreshKey
-) {
+export function useAdminTableData(selectedTable, sortBy, sortDirection) {
   const [tableRefreshKey, setTableRefreshKey] = useState(0);
-  const lastRefreshKeyRef = useRef(refreshKey);
-
-  if (refreshKey !== lastRefreshKeyRef.current) {
-    setTableRefreshKey((prev) => prev + 1);
-    lastRefreshKeyRef.current = refreshKey;
-  }
 
   const fetchConfig = useMemo(() => {
     const fetchers = dataFetchers[selectedTable];

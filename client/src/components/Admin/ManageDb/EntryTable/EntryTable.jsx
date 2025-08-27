@@ -1,4 +1,4 @@
-import { useMemo, memo, useState } from "react";
+import { useMemo, memo, useState, useCallback } from "react";
 import { useSlideout } from "../../../../contexts/SlideoutContext";
 
 import EntryTableCell from "../EntryTableCell/EntryTableCell";
@@ -8,42 +8,9 @@ import classNames from "classnames";
 
 import { FaPenToSquare } from "react-icons/fa6";
 
-export default function EntryTable({
-  data,
-  config,
-  filterText = "",
-  entryType,
-}) {
-  const [editingCell, setEditingCell] = useState(null);
-  const { openSlideout } = useSlideout();
-
-  const filteredData = useMemo(() => {
-    const dataRowsWithIndex = data.map((item, originalIndex) => ({
-      ...item,
-      originalIndex,
-    }));
-
-    if (!filterText) return dataRowsWithIndex;
-
-    const searchText = filterText.toLowerCase();
-
-    return dataRowsWithIndex.filter((row) => {
-      return config.filterOptions.some((filterKey) => {
-        const value = row[filterKey];
-        return value && value.toString().toLowerCase().includes(searchText);
-      });
-    });
-  }, [data, filterText, config.filterOptions]);
-
-  const handleEditClick = (rowId) => {
-    if (entryType && rowId) {
-      openSlideout(entryType, rowId);
-    }
-  };
-
-  const TableRow = memo(({ row }) => (
+const TableRow = memo(
+  ({ row, config, editingCell, setEditingCell, onEditClick }) => (
     <div
-      key={row.id}
       className={classNames(
         styles[config.gridClass],
         styles.tableRow,
@@ -70,12 +37,49 @@ export default function EntryTable({
       <button
         type="button"
         className={styles.editBtn}
-        onClick={() => handleEditClick(row.id)}
+        onClick={() => onEditClick(row.id)}
       >
         <FaPenToSquare className={styles.editIcon} />
       </button>
     </div>
-  ));
+  )
+);
+
+export default function EntryTable({
+  data,
+  config,
+  filterText = "",
+  entryType,
+}) {
+  const [editingCell, setEditingCell] = useState(null);
+  const { openSlideout } = useSlideout();
+
+  const handleEditClick = useCallback(
+    (rowId) => {
+      if (entryType && rowId) {
+        openSlideout(entryType, rowId);
+      }
+    },
+    [entryType, openSlideout]
+  );
+
+  const filteredData = useMemo(() => {
+    const dataRowsWithIndex = data.map((item, originalIndex) => ({
+      ...item,
+      originalIndex,
+    }));
+
+    if (!filterText) return dataRowsWithIndex;
+
+    const searchText = filterText.toLowerCase();
+
+    return dataRowsWithIndex.filter((row) => {
+      return config.filterOptions.some((filterKey) => {
+        const value = row[filterKey];
+        return value && value.toString().toLowerCase().includes(searchText);
+      });
+    });
+  }, [data, filterText, config.filterOptions]);
 
   const columnHeaders = useMemo(
     () =>
@@ -92,8 +96,15 @@ export default function EntryTable({
       >
         {columnHeaders}
       </div>
-      {filteredData.map((row, index) => (
-        <TableRow key={`${row.id}-${index}`} row={row} />
+      {filteredData.map((row) => (
+        <TableRow
+          key={row.id}
+          row={row}
+          config={config}
+          editingCell={editingCell}
+          setEditingCell={setEditingCell}
+          onEditClick={handleEditClick}
+        />
       ))}
     </section>
   );

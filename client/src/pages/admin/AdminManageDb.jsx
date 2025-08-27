@@ -33,16 +33,6 @@ function AdminManageDbContent() {
   const [sortBy, setSortBy] = useState("added");
   const [sortDirection, setSortDirection] = useState("asc");
   const [filterText, setFilterText] = useState("");
-  const [refreshKey, setRefreshKey] = useState(0);
-
-  const [urlTable, setUrlTable] = useState(currentTable);
-
-  useEffect(() => {
-    if (currentTable !== urlTable) {
-      setUrlTable(currentTable);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTable]);
 
   useEffect(() => {
     setSortBy("added");
@@ -51,11 +41,7 @@ function AdminManageDbContent() {
   }, [currentTable]);
 
   const { tableData, totalEntries, loading, error, refreshTableData } =
-    useAdminTableData(currentTable, sortBy, sortDirection, refreshKey);
-
-  const handleSlideoutDelete = useCallback(() => {
-    refreshTableData();
-  }, [refreshTableData]);
+    useAdminTableData(currentTable, sortBy, sortDirection);
 
   const currentConfig = useMemo(
     () => dbEntryConfigs[currentTable],
@@ -68,13 +54,16 @@ function AdminManageDbContent() {
     return `Manage Database - ${tableName}`;
   }, [currentTable]);
 
+  const handleSlideoutDelete = useCallback(() => {
+    refreshTableData();
+  }, [refreshTableData]);
+
   const handleTableChange = useCallback(
     (newTable) => {
-      if (newTable === urlTable) return;
-      setUrlTable(newTable);
+      if (newTable === currentTable) return;
       navigate(`/admin/manage-db/${newTable}`, { replace: false });
     },
-    [navigate, urlTable]
+    [navigate, currentTable]
   );
 
   const handleSortChange = useCallback((sort, direction) => {
@@ -122,7 +111,7 @@ function AdminManageDbContent() {
           onSortSelectChange={handleSortChange}
           sortBy={sortBy}
           sortDirection={sortDirection}
-          selectedTable={urlTable}
+          selectedTable={currentTable}
           onTableChange={handleTableChange}
           filterText={filterText}
         />
