@@ -11,6 +11,7 @@ const SlideoutImageInput = memo(function SlideoutImageInput({
   const [fileName, setFileName] = useState("No file selected.");
   const [imageSrc, setImageSrc] = useState(placeholderImage);
   const [hasFile, setHasFile] = useState(false);
+  const [hasChanged, setHasChanged] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -27,6 +28,9 @@ const SlideoutImageInput = memo(function SlideoutImageInput({
       setFileName("No file selected.");
       setImageSrc(placeholderImage);
       setHasFile(false);
+      if (!hasChanged) {
+        setHasChanged(true);
+      }
       if (onChange) onChange();
       return;
     }
@@ -50,6 +54,9 @@ const SlideoutImageInput = memo(function SlideoutImageInput({
       setFileName(file.name);
       setImageSrc(objectUrl);
       setHasFile(true);
+      if (!hasChanged) {
+        setHasChanged(true);
+      }
       if (onChange) onChange();
     };
   };
@@ -84,7 +91,7 @@ const SlideoutImageInput = memo(function SlideoutImageInput({
               ref={fileInputRef}
               className={styles.input}
               type="file"
-              name={id}
+              name={hasChanged ? id : undefined}
               accept="image/*"
               required={!hasFile}
               onChange={handleFileChange}

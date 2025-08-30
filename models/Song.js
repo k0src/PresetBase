@@ -437,6 +437,7 @@ class Song extends Entry {
         }
       }
 
+      // Add audio field
       if ("presets" in data) {
         await DB.run("DELETE FROM song_presets WHERE song_id = ?", [id]);
         for (const preset of data.presets || []) {

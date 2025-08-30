@@ -9,6 +9,7 @@ const SlideoutGenreColorPicker = memo(function SlideoutGenreColorPicker({
   onChange,
 }) {
   const [color, setColor] = useState(value || "#ffffff");
+  const [hasChanged, setHasChanged] = useState(false);
 
   useEffect(() => {
     setColor(value || "#ffffff");
@@ -16,6 +17,9 @@ const SlideoutGenreColorPicker = memo(function SlideoutGenreColorPicker({
 
   const handleColorChange = (newColor) => {
     setColor(newColor);
+    if (!hasChanged) {
+      setHasChanged(true);
+    }
     if (onChange) {
       onChange();
     }
@@ -36,7 +40,7 @@ const SlideoutGenreColorPicker = memo(function SlideoutGenreColorPicker({
         color={color}
         onChange={handleColorChange}
         prefixed
-        name={id}
+        name={hasChanged ? id : undefined}
       />
     </div>
   );

@@ -18,6 +18,7 @@ const SlideoutList = memo(function SlideoutList({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [items, setItems] = useState(listItems || []);
+  const [hasChanged, setHasChanged] = useState(false);
   const dropdownRef = useRef(null);
 
   const { idField, labelField, inputField } = dataFields;
@@ -30,11 +31,14 @@ const SlideoutList = memo(function SlideoutList({
     (index) => {
       const newItems = items.filter((_, i) => i !== index);
       setItems(newItems);
+      if (!hasChanged) {
+        setHasChanged(true);
+      }
       if (onChange) {
         onChange();
       }
     },
-    [items, onChange]
+    [items, hasChanged, onChange]
   );
 
   const handleInputChange = useCallback(
@@ -43,12 +47,15 @@ const SlideoutList = memo(function SlideoutList({
       if (hasInput) {
         newItems[index] = { ...newItems[index], [inputField]: value };
         setItems(newItems);
+        if (!hasChanged) {
+          setHasChanged(true);
+        }
         if (onChange) {
           onChange();
         }
       }
     },
-    [items, hasInput, inputField, onChange]
+    [items, hasInput, inputField, hasChanged, onChange]
   );
 
   const handleToggleDropdown = useCallback(() => {
@@ -72,6 +79,9 @@ const SlideoutList = memo(function SlideoutList({
 
       if (!items.find((item) => item[idField] === newItem[idField])) {
         setItems([...items, newItem]);
+        if (!hasChanged) {
+          setHasChanged(true);
+        }
         if (onChange) {
           onChange();
         }
@@ -79,7 +89,7 @@ const SlideoutList = memo(function SlideoutList({
 
       setIsOpen(false);
     },
-    [idField, labelField, inputField, hasInput, items, onChange]
+    [idField, labelField, inputField, hasInput, items, hasChanged, onChange]
   );
 
   return (
@@ -149,13 +159,13 @@ const SlideoutList = memo(function SlideoutList({
           <div key={`hidden-${item[idField]}-${index}`}>
             <input
               type="hidden"
-              name={`${id}[${index}][${idField}]`}
+              name={hasChanged ? `${id}[${index}][${idField}]` : undefined}
               value={item[idField] ?? ""}
             />
             {hasInput && (
               <input
                 type="hidden"
-                name={`${id}[${index}][${inputField}]`}
+                name={hasChanged ? `${id}[${index}][${inputField}]` : undefined}
                 value={item[inputField] ?? ""}
               />
             )}

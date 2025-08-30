@@ -16,6 +16,7 @@ const SlideoutSelector = memo(function SlideoutSelector({
 }) {
   const [isOpen, setIsOpen] = useState(false);
   const [selectedValue, setSelectedValue] = useState(value || {});
+  const [hasChanged, setHasChanged] = useState(false);
   const dropdownRef = useRef(null);
 
   const { idField, labelField } = dataFields;
@@ -39,13 +40,17 @@ const SlideoutSelector = memo(function SlideoutSelector({
         [labelField]: selectedItem.label,
       });
 
+      if (!hasChanged) {
+        setHasChanged(true);
+      }
+
       if (onChange) {
         onChange();
       }
 
       setIsOpen(false);
     },
-    [idField, labelField, onChange]
+    [idField, labelField, hasChanged, onChange]
   );
 
   return (
@@ -53,7 +58,11 @@ const SlideoutSelector = memo(function SlideoutSelector({
       <span className={styles.labelText}>{label}</span>
 
       <div>
-        <input type="hidden" name={id} value={selectedValue[idField] ?? ""} />
+        <input
+          type="hidden"
+          name={hasChanged ? id : undefined}
+          value={selectedValue[idField] ?? ""}
+        />
         <div
           className={classNames(styles.textContainer, {
             [styles.show]: isOpen,
