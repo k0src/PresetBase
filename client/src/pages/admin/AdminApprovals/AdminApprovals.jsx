@@ -46,7 +46,7 @@ export default function AdminApprovals() {
         <title>Approve Submissions</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.submitHeader}>
           <h1 className={styles.headingPrimary}>Approve Pending Submissions</h1>
         </section>

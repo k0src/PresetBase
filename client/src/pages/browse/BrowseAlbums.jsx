@@ -57,7 +57,7 @@ export default function BrowseAlbums() {
         <title>Browse Albums</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="albums"
           totalEntries={totalEntries}

@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Artist from "../../models/Artist.js";
+import ClickManager from "../../models/ClickManager.js";
 
-const ClickManager = require("../../models/ClickManager.js");
-const Artist = require("../../models/Artist.js");
+const router = express.Router();
 
 router.get("/:id", async (req, res) => {
   const artistId = req.params.id;
@@ -74,4 +74,4 @@ router.get("/:id/favorite-synth", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

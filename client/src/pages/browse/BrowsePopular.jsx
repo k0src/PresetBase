@@ -55,7 +55,7 @@ export default function BrowsePopular() {
         <title>Popular Songs</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="popular"
           filterPlaceholder="Filter songs..."

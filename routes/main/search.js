@@ -1,7 +1,7 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import SearchManager from "../../models/SearchManager.js";
 
-const SearchManager = require("../../models/SearchManager.js");
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const searchQuery = req.query.query?.toLowerCase().trim();
@@ -22,4 +22,4 @@ router.get("/", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

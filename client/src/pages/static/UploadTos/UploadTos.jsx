@@ -11,7 +11,7 @@ export default function UploadTos() {
         <title>Upload Terms of Service</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.copyrightHeader}>
           <h1 class="heading-primary">Upload Terms of Service</h1>
         </section>

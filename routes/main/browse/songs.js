@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Song from "../../../models/Song.js";
+import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
 
-const Song = require("../../../models/Song.js");
-const { sortKeys, sortDirections } = require("../../../util/UTIL.js");
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const sortKey = sortKeys.songs[req.query.sort] || sortKeys.songs.added;
@@ -97,4 +97,4 @@ router.get("/recent", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

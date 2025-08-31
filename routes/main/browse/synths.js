@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Synth from "../../../models/Synth.js";
+import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
 
-const Synth = require("../../../models/Synth.js");
-const { sortKeys, sortDirections } = require("../../../util/UTIL.js");
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const sortKey = sortKeys.synths[req.query.sort] || sortKeys.synths.added;
@@ -31,4 +31,4 @@ router.get("/total-entries", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

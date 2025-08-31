@@ -1,7 +1,7 @@
 // Click Manager for PresetBase
-const DB = require("./DB.js");
+import DB from "./DB.js";
 
-class ClickManager {
+export default class ClickManager {
   static #tables = {
     albums: { tableName: "album_clicks", idColumn: "album_id" },
     artists: { tableName: "artist_clicks", idColumn: "artist_id" },
@@ -30,5 +30,3 @@ class ClickManager {
     await DB.run(query, [entryId, now]);
   }
 }
-
-module.exports = ClickManager;

@@ -68,7 +68,7 @@ export default memo(function ArtistPage() {
   }
 
   return (
-    <ContentContainer isAuth={true} userIsAdmin={true}>
+    <ContentContainer>
       {loading ? (
         <ComponentLoader />
       ) : (

@@ -72,7 +72,7 @@ export default function BrowsePage() {
         <title>Browse</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.browseHeader}>
           <h1 className={styles.headingPrimary}>Browse</h1>
           <span className={styles.totalEntriesText}>

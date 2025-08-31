@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Synth from "../../models/Synth.js";
+import ClickManager from "../../models/ClickManager.js";
 
-const ClickManager = require("../../models/ClickManager.js");
-const Synth = require("../../models/Synth.js");
+const router = express.Router();
 
 router.get("/:id", async (req, res) => {
   const synthId = req.params.id;
@@ -40,4 +40,4 @@ router.get("/:id/related", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

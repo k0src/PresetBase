@@ -54,7 +54,7 @@ export default function BrowseRecent() {
         <title>Recent Songs</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="recent"
           filterPlaceholder="Filter songs..."

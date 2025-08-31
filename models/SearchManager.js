@@ -1,7 +1,7 @@
 // Search Manager model for PresetBase
-const DB = require("./DB.js");
+import DB from "./DB.js";
 
-class SearchManager {
+export default class SearchManager {
   static async getSearchResults(searchQuery) {
     const queries = {
       totalResults: `
@@ -186,5 +186,3 @@ class SearchManager {
     }
   }
 }
-
-module.exports = SearchManager;

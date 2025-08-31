@@ -57,7 +57,7 @@ export default function BrowseGenres() {
         <title>Browse Genres</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="genres"
           totalEntries={totalEntries}

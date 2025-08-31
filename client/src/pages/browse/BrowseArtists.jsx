@@ -57,7 +57,7 @@ export default function BrowseArtists() {
         <title>Browse Artists</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="artists"
           totalEntries={totalEntries}

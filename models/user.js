@@ -1,81 +1,11 @@
-const { dbGet, dbRun, dbAll, formatDate } = require("./UTIL");
+// User model for PresetBase
+import DB from "./DB.js";
+import bcrypt from "bcrypt";
 
-class User {
-  constructor(
-    id = null,
-    email,
-    username,
-    authenticated_with = null,
-    is_admin = false,
-    banned = false
-  ) {
-    this.id = id;
-    this.email = email;
-    this.username = username;
-    this.authenticated_with = authenticated_with;
-    this.is_admin = is_admin;
-    this.banned = banned;
-  }
-
-  static async getUserById(id) {
-    try {
-      const user = await dbGet(`SELECT * FROM users WHERE id = ?`, [id]);
-      if (!user) return null;
-      return new User(
-        user.id,
-        user.email,
-        user.username,
-        user.authenticated_with,
-        user.is_admin === "t",
-        user.banned === "t"
-      );
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async getUserByEmail(email) {
-    try {
-      const user = await dbGet(`SELECT * FROM users WHERE email = ?`, [email]);
-      if (!user) return null;
-      return new User(
-        user.id,
-        user.email,
-        user.username,
-        user.authenticated_with,
-        user.is_admin === "t",
-        user.banned === "t"
-      );
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async deleteUserById(id) {
-    try {
-      await dbRun(`DELETE FROM users WHERE id = ?`, [id]);
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async createUser({ email, username, authenticated_with = null }) {
-    try {
-      const now = new Date().toISOString();
-      const id = await dbRun(
-        `INSERT INTO users 
-            (email, username, authenticated_with, timestamp, is_admin, banned) 
-        VALUES (?, ?, ?, ?, ?, ?)`,
-        [email, username, authenticated_with, now, "f", "f"]
-      );
-      return new User(id, email, username, authenticated_with);
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
+export default class User {
+  static #verifyEmail(email) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
   }
 
   static #verifyUsername(username) {
@@ -83,246 +13,372 @@ class User {
     return usernameRegex.test(username);
   }
 
-  static async setUsername(id, newUsername) {
-    try {
-      if (!User.#verifyUsername(newUsername)) {
-        throw new Error("Invalid username format");
-      }
-
-      await dbRun(`UPDATE users SET username = ? WHERE id = ?`, [
-        newUsername,
-        id,
-      ]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
+  static async create({ username, email, password }) {
+    if (
+      !username ||
+      username.length < 3 ||
+      username.length > 50 ||
+      !User.#verifyUsername(username)
+    ) {
+      throw new Error("Username must be between 3 and 50 characters");
     }
-  }
 
-  async setUsername(newUsername) {
-    try {
-      if (!User.#verifyUsername(newUsername)) {
-        throw new Error("Invalid username format");
-      }
-
-      await dbRun(`UPDATE users SET username = ? WHERE id = ?`, [
-        newUsername,
-        this.id,
-      ]);
-      this.username = newUsername;
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    if (!email || !User.#verifyEmail(email)) {
+      throw new Error("Invalid email address");
     }
-  }
 
-  static async getUserTimestamp(id) {
-    try {
-      const user = await dbGet(`SELECT timestamp FROM users WHERE id = ?`, [
-        id,
-      ]);
-      return user ? user.timestamp : null;
-    } catch (err) {
-      console.error(err);
-      throw err;
+    if (!password || password.length < 8) {
+      throw new Error("Password must be at least 8 characters");
     }
-  }
 
-  static async setAdmin(id) {
+    const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+    const password_hash = await bcrypt.hash(password, saltRounds);
+
+    const now = new Date().toISOString();
+
     try {
-      await dbRun(`UPDATE users SET is_admin = 't' WHERE id = ?`, [id]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async unsetAdmin(id) {
-    try {
-      await dbRun(`UPDATE users SET is_admin = 'f' WHERE id = ?`, [id]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  async isAdmin() {
-    return !!this.is_admin;
-  }
-
-  static async #deleteAllUserData(id) {
-    try {
-      await dbRun(`DELETE FROM user_submissions WHERE user_id = ?`, [id]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async deleteAccountById(id) {
-    try {
-      await dbRun(`DELETE FROM users WHERE id = ?`, [id]);
-      await User.#deleteAllUserData(id);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async getUserSubmissions(id) {
-    try {
-      const query = `
-        SELECT
-        songs.title AS song_title,
-        songs.id AS song_id,
-        songs.image_url AS song_image,
-        artists.name AS artist_name,
-        song_presets.timestamp,
-        json_group_array(
-          json_object(
-            'synth_name', synths.synth_name,
-            'preset_name', presets.preset_name
-          )
-        ) AS presets
-        FROM presets
-        LEFT JOIN preset_synths ON 
-          presets.id = preset_synths.preset_id
-        LEFT JOIN synths ON 
-          preset_synths.synth_id = synths.id
-        LEFT JOIN song_presets ON 
-          presets.id = song_presets.preset_id
-        LEFT JOIN songs ON 
-          song_presets.song_id = songs.id
-        LEFT JOIN song_artists ON 
-          songs.id = song_artists.song_id
-        LEFT JOIN artists ON 
-          song_artists.artist_id = artists.id
-        LEFT JOIN user_submissions ON 
-          song_presets.id = user_submissions.submission_id
-        WHERE song_artists.role = 'Main' AND user_submissions.user_id = ?
-        GROUP BY songs.id`;
-
-      const submission = await dbAll(query, [id]);
-      return submission.map((s) => ({
-        song_title: s.song_title,
-        song_id: s.song_id,
-        song_image: s.song_image,
-        artist_name: s.artist_name,
-        timestamp: s.timestamp,
-        presets: JSON.parse(s.presets || "[]"),
-      }));
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  static async getUserPendingSubmissions(id) {
-    try {
-      const submissions = await dbAll(
-        `SELECT
-          id, 
-          data,
-          submitted_at 
-        FROM pending_submissions 
-        WHERE user_id = ?`,
-        [id]
+      const userId = await DB.run(
+        `INSERT INTO users 
+        (username, email, password_hash, authenticated_with, is_admin, banned, timestamp)
+        VALUES (?, ?, ?, 'PresetBase', 'f', 'f', ?)`,
+        [
+          username.toLowerCase().trim(),
+          email.toLowerCase().trim(),
+          password_hash,
+          now,
+        ]
       );
-
-      return submissions.map((s) => ({
-        id: s.id,
-        data: JSON.parse(s.data),
-        submitted_at: s.submitted_at,
-      }));
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
-
-  // Returns user data as object
-  static async getUserData(id) {
-    try {
-      const user = await User.getUserById(id);
-      if (!user) {
-        throw new Error("User not found");
-      }
-
-      const timestamp = await User.getUserTimestamp(id);
-      const submissions = await User.getUserSubmissions(id);
-      const pendingSubmissions = await User.getUserPendingSubmissions(id);
 
       return {
-        id: user.id,
-        email: user.email,
-        username: user.username,
-        authenticated_with: user.authenticated_with,
-        is_admin: user.is_admin,
-        banned: user.banned,
-        timestamp,
-        submissions,
-        pendingSubmissions,
+        id: userId,
+        username: username.toLowerCase().trim(),
+        email: email.toLowerCase().trim(),
+        timestamp: now,
       };
     } catch (err) {
-      console.error(err);
-      throw err;
+      throw new Error(`Failed to create user: ${err.message}`);
     }
   }
 
-  // Returns all user data including submissions and pending submissions, as objects
-  static async getAllUsersData(sortKey = null, sortDirection = "ASC") {
+  static async getById(id) {
     try {
-      const users = await dbAll(
-        `SELECT * FROM users ORDER BY ${sortKey} ${sortDirection}`
-      );
+      const user = await DB.get(`SELECT * FROM users WHERE id = ?`, [id]);
+      if (!user) return null;
+      return user;
+    } catch (err) {
+      throw new Error(`Failed to get user by ID: ${err.message}`);
+    }
+  }
 
-      for (const user of users) {
-        user.submissions = await User.getUserSubmissions(user.id);
-        user.pendingSubmissions = await User.getUserPendingSubmissions(user.id);
+  static async getByEmail(email) {
+    try {
+      const user = await DB.get(`SELECT * FROM users WHERE email = ?`, [
+        email.toLowerCase().trim(),
+      ]);
+      if (!user) return null;
+      return user;
+    } catch (err) {
+      throw new Error(`Failed to get user by email: ${err.message}`);
+    }
+  }
+
+  static async getByUsername(username) {
+    try {
+      const user = await DB.get(`SELECT * FROM users WHERE username = ?`, [
+        username.toLowerCase().trim(),
+      ]);
+      if (!user) return null;
+      return user;
+    } catch (err) {
+      throw new Error(`Failed to get user by username: ${err.message}`);
+    }
+  }
+
+  static async updatePassword(id, newPassword) {
+    if (!newPassword || newPassword.length < 8) {
+      throw new Error("Password must be at least 8 characters");
+    }
+
+    const saltRounds = parseInt(process.env.BCRYPT_ROUNDS) || 12;
+    const password_hash = await bcrypt.hash(newPassword, saltRounds);
+
+    try {
+      await DB.run(`UPDATE users SET password_hash = ? WHERE id = ?`, [
+        password_hash,
+        id,
+      ]);
+    } catch (err) {
+      throw new Error(`Failed to update password: ${err.message}`);
+    }
+  }
+
+  static async updateUsername(id, newUsername) {
+    if (
+      !newUsername ||
+      newUsername.length < 3 ||
+      newUsername.length > 50 ||
+      !User.#verifyUsername(newUsername)
+    ) {
+      throw new Error("Username must be between 3 and 50 characters");
+    }
+
+    try {
+      await DB.run(`UPDATE users SET username = ? WHERE id = ?`, [
+        newUsername.toLowerCase().trim(),
+        id,
+      ]);
+    } catch (err) {
+      throw new Error(`Failed to update username: ${err.message}`);
+    }
+  }
+
+  static async updateEmail(id, newEmail) {
+    if (!newEmail || !User.#verifyEmail(newEmail)) {
+      throw new Error("Invalid email address");
+    }
+
+    try {
+      await DB.run(`UPDATE users SET email = ? WHERE id = ?`, [
+        newEmail.toLowerCase().trim(),
+        id,
+      ]);
+    } catch (err) {
+      throw new Error(`Failed to update email: ${err.message}`);
+    }
+  }
+
+  static async verifyPassword(password, hash) {
+    try {
+      if (!password || !hash) return false;
+      return await bcrypt.compare(password, hash);
+    } catch (err) {
+      throw new Error(`Failed to verify password: ${err.message}`);
+    }
+  }
+
+  static async delete(id) {
+    try {
+      await DB.run(`DELETE FROM users WHERE id = ?`, [id]);
+      // await User.#deleteAllUserData(id);
+    } catch (err) {
+      throw new Error(`Failed to delete user: ${err.message}`);
+    }
+  }
+
+  static async update(id, updates) {
+    const allowedFields = ["username", "email"];
+
+    try {
+      for (const [field, value] of Object.keys(updates)) {
+        if (allowedFields.includes(field) && value !== undefined) {
+          if (field === "username") {
+            await User.updateUsername(id, value);
+          }
+        } else if (field === "email") {
+          await User.updateEmail(id, value);
+        }
       }
 
-      return users;
+      return await User.getById(id);
     } catch (err) {
-      console.error(err);
-      throw err;
+      throw new Error(`Failed to update user: ${err.message}`);
     }
   }
 
-  static async exists(id) {
-    try {
-      const user = await dbGet(`SELECT id FROM users WHERE id = ?`, [id]);
-      return !!user;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
+  // static async #deleteAllUserData(id) {
+  //   try {
+  //     await DB.run(`DELETE FROM user_submissions WHERE user_id = ?`, [id]);
+  //   } catch (err) {
+  //     throw new Error(`Failed to delete user data: ${err.message}`);
+  //   }
+  // }
 
-  static async banUser(id) {
-    try {
-      await dbRun(`UPDATE users SET banned = 't' WHERE id = ?`, [id]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
+  // static async deleteById(id) {
+  //   try {
+  //     await DB.run(`DELETE FROM users WHERE id = ?`, [id]);
+  //     await User.#deleteAllUserData(id);
+  //   } catch (err) {
+  //     throw new Error(`Failed to delete user: ${err.message}`);
+  //   }
+  // }
 
-  static async unbanUser(id) {
-    try {
-      await dbRun(`UPDATE users SET banned = 'f' WHERE id = ?`, [id]);
-      return true;
-    } catch (err) {
-      console.error(err);
-      throw err;
-    }
-  }
+  // static async setAdmin(id) {
+  //   try {
+  //     await DB.run(`UPDATE users SET is_admin = 't' WHERE id = ?`, [id]);
+  //     return true;
+  //   } catch (err) {
+  //     throw new Error(`Failed to set admin: ${err.message}`);
+  //   }
+  // }
+
+  // static async unsetAdmin(id) {
+  //   try {
+  //     await DB.run(`UPDATE users SET is_admin = 'f' WHERE id = ?`, [id]);
+  //     return true;
+  //   } catch (err) {
+  //     throw new Error(`Failed to unset admin: ${err.message}`);
+  //   }
+  // }
+
+  // static async isAdmin(id) {
+  //   try {
+  //     const user = await DB.get(`SELECT is_admin FROM users WHERE id = ?`, [
+  //       id,
+  //     ]);
+  //     return user ? user.is_admin === "t" : false;
+  //   } catch (err) {
+  //     throw new Error(`Failed to check admin status: ${err.message}`);
+  //   }
+  // }
+
+  // static async getUserSubmissions(id) {
+  //   try {
+  //     const query = `
+  //       SELECT
+  //       songs.title AS song_title,
+  //       songs.id AS song_id,
+  //       songs.image_url AS song_image,
+  //       artists.name AS artist_name,
+  //       song_presets.timestamp,
+  //       json_group_array(
+  //         json_object(
+  //           'synth_name', synths.synth_name,
+  //           'preset_name', presets.preset_name
+  //         )
+  //       ) AS presets
+  //       FROM presets
+  //       LEFT JOIN preset_synths ON
+  //         presets.id = preset_synths.preset_id
+  //       LEFT JOIN synths ON
+  //         preset_synths.synth_id = synths.id
+  //       LEFT JOIN song_presets ON
+  //         presets.id = song_presets.preset_id
+  //       LEFT JOIN songs ON
+  //         song_presets.song_id = songs.id
+  //       LEFT JOIN song_artists ON
+  //         songs.id = song_artists.song_id
+  //       LEFT JOIN artists ON
+  //         song_artists.artist_id = artists.id
+  //       LEFT JOIN user_submissions ON
+  //         song_presets.id = user_submissions.submission_id
+  //       WHERE song_artists.role = 'Main' AND user_submissions.user_id = ?
+  //       GROUP BY songs.id`;
+
+  //     const submission = await dbAll(query, [id]);
+  //     return submission.map((s) => ({
+  //       song_title: s.song_title,
+  //       song_id: s.song_id,
+  //       song_image: s.song_image,
+  //       artist_name: s.artist_name,
+  //       timestamp: s.timestamp,
+  //       presets: JSON.parse(s.presets || "[]"),
+  //     }));
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
+
+  // static async getUserPendingSubmissions(id) {
+  //   try {
+  //     const submissions = await dbAll(
+  //       `SELECT
+  //         id,
+  //         data,
+  //         submitted_at
+  //       FROM pending_submissions
+  //       WHERE user_id = ?`,
+  //       [id]
+  //     );
+
+  //     return submissions.map((s) => ({
+  //       id: s.id,
+  //       data: JSON.parse(s.data),
+  //       submitted_at: s.submitted_at,
+  //     }));
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
+
+  // // Returns user data as object
+  // static async getUserData(id) {
+  //   try {
+  //     const user = await User.getUserById(id);
+  //     if (!user) {
+  //       throw new Error("User not found");
+  //     }
+
+  //     const timestamp = await User.getUserTimestamp(id);
+  //     const submissions = await User.getUserSubmissions(id);
+  //     const pendingSubmissions = await User.getUserPendingSubmissions(id);
+
+  //     return {
+  //       id: user.id,
+  //       email: user.email,
+  //       username: user.username,
+  //       authenticated_with: user.authenticated_with,
+  //       is_admin: user.is_admin,
+  //       banned: user.banned,
+  //       timestamp,
+  //       submissions,
+  //       pendingSubmissions,
+  //     };
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
+
+  // // Returns all user data including submissions and pending submissions, as objects
+  // static async getAllUsersData(sortKey = null, sortDirection = "ASC") {
+  //   try {
+  //     const users = await dbAll(
+  //       `SELECT * FROM users ORDER BY ${sortKey} ${sortDirection}`
+  //     );
+
+  //     for (const user of users) {
+  //       user.submissions = await User.getUserSubmissions(user.id);
+  //       user.pendingSubmissions = await User.getUserPendingSubmissions(user.id);
+  //     }
+
+  //     return users;
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
+
+  // static async exists(id) {
+  //   try {
+  //     const user = await dbGet(`SELECT id FROM users WHERE id = ?`, [id]);
+  //     return !!user;
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
+
+  // static async banUser(id) {
+  //   try {
+  //     await dbRun(`UPDATE users SET banned = 't' WHERE id = ?`, [id]);
+  //     return true;
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
+
+  // static async unbanUser(id) {
+  //   try {
+  //     await dbRun(`UPDATE users SET banned = 'f' WHERE id = ?`, [id]);
+  //     return true;
+  //   } catch (err) {
+  //     console.error(err);
+  //     throw err;
+  //   }
+  // }
 }
 
-module.exports = User;
+// module.exports = User;

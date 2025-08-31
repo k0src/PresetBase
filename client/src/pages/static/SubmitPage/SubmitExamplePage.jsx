@@ -22,7 +22,7 @@ export default function SubmitExamplePage() {
         <title>Example Submission</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.submitHeader}>
           <h1 className={styles.headingPrimary}>Submit</h1>
         </section>

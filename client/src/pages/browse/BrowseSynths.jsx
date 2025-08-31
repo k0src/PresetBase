@@ -57,7 +57,7 @@ export default function BrowseSynths() {
         <title>Browse Synths</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="synths"
           totalEntries={totalEntries}

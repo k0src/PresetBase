@@ -1,15 +1,20 @@
 // Admin Manager model for PresetBase
-const DB = require("./DB.js");
-const fs = require("fs").promises;
-const path = require("path");
-const Song = require("./Song.js");
-const Artist = require("./Artist.js");
-const Album = require("./Album.js");
-const Synth = require("./Synth.js");
-const Preset = require("./Preset.js");
-const Genre = require("./Genre.js");
+import DB from "./DB.js";
+import fs from "fs/promises";
+import path from "path";
+import Song from "./Song.js";
+import Artist from "./Artist.js";
+import Album from "./Album.js";
+import Synth from "./Synth.js";
+import Preset from "./Preset.js";
+import Genre from "./Genre.js";
+import dotenv from "dotenv";
 
-class AdminManager {
+dotenv.config();
+
+const UPLOAD_DIR = process.env.UPLOAD_DIR || "public/uploads";
+
+export default class AdminManager {
   static #models = {
     songs: Song,
     artists: Artist,
@@ -78,24 +83,8 @@ class AdminManager {
     }
 
     try {
-      const pendingPath = path.join(
-        __dirname,
-        "..",
-        "public",
-        "uploads",
-        type,
-        "pending",
-        filename
-      );
-      const approvedPath = path.join(
-        __dirname,
-        "..",
-        "public",
-        "uploads",
-        type,
-        "approved",
-        filename
-      );
+      const pendingPath = path.join(UPLOAD_DIR, type, "pending", filename);
+      const approvedPath = path.join(UPLOAD_DIR, type, "approved", filename);
 
       await fs.rename(pendingPath, approvedPath);
     } catch (err) {
@@ -110,22 +99,7 @@ class AdminManager {
     }
 
     try {
-      const filePath = path.join(
-        __dirname,
-        "..",
-        "public",
-        "uploads",
-        type,
-        "pending",
-        fileName
-      );
-
-      try {
-        await fs.access(filePath);
-      } catch {
-        throw new Error(`File does not exist: ${fileName}`);
-      }
-
+      const filePath = path.join(UPLOAD_DIR, type, "pending", fileName);
       await fs.unlink(filePath);
     } catch (err) {
       throw new Error(`Failed to delete ${fileName}: ${err.message}`);
@@ -908,5 +882,3 @@ class AdminManager {
     }
   }
 }
-
-module.exports = AdminManager;

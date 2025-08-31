@@ -55,7 +55,7 @@ export default function BrowseHot() {
         <title>Hot Songs</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="hot"
           filterPlaceholder="Filter songs..."

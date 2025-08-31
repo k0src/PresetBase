@@ -57,7 +57,7 @@ export default function BrowsePresets() {
         <title>Browse Presets</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <BrowseHeader
           entryType="presets"
           totalEntries={totalEntries}

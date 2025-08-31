@@ -59,7 +59,7 @@ export default memo(function AlbumPage() {
   }
 
   return (
-    <ContentContainer isAuth={true} userIsAdmin={true}>
+    <ContentContainer>
       {loading ? (
         <ComponentLoader />
       ) : (

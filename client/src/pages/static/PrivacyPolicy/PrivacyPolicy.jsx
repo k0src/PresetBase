@@ -11,7 +11,7 @@ export default function PrivacyPolicy() {
         <title>Privacy Policy</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.ppHeader}>
           <h1 className={styles.headingPrimary}>Privacy Policy</h1>
         </section>

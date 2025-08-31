@@ -1,7 +1,7 @@
 // Base DB entry model for PresetBase
-const DB = require("./DB.js");
+import DB from "./DB.js";
 
-class Entry {
+export default class Entry {
   async save() {
     throw new Error("Method 'save()' must be implemented.");
   }
@@ -19,7 +19,7 @@ class Entry {
     throw new Error("Method 'create()' must be implemented.");
   }
 
-  static async getById(idi) {
+  static async getById(id) {
     throw new Error("Method 'getById()' must be implemented.");
   }
 
@@ -55,5 +55,3 @@ class Entry {
     throw new Error("Method 'getAll()' must be implemented.");
   }
 }
-
-module.exports = Entry;

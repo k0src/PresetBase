@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
+import { useAuth } from "../../contexts/AuthContext";
 
 import SearchBoxSmall from "../../components/SearchBox/SearchBoxSmall/SearchBoxSmall";
 import SearchBoxMobile from "../../components/SearchBox/SearchBoxMobile/SearchBoxMobile";
@@ -15,7 +16,7 @@ import {
 } from "react-icons/fa6";
 import NavbarLogo from "../../assets/images/logo-app.webp";
 
-export default function Navbar({ isAuth, userIsAdmin }) {
+export default function Navbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const toggleMobileNav = () => setMobileNavOpen((prevState) => !prevState);
 
@@ -100,7 +101,7 @@ export default function Navbar({ isAuth, userIsAdmin }) {
           >
             <FaBook className={styles.navbarIcon} />
           </a>
-          <Link to={isAuth ? "/account-info" : "/login"}>
+          <Link to="/login">
             <FaCircleUser className={styles.navbarIcon} />
           </Link>
         </div>
@@ -133,17 +134,9 @@ export default function Navbar({ isAuth, userIsAdmin }) {
           <Link to="/submit" className={styles.mobileNavLink}>
             Submit
           </Link>
-          <Link
-            to={isAuth ? "/account-info" : "/login"}
-            className={styles.mobileNavLink}
-          >
+          <Link to="/login" className={styles.mobileNavLink}>
             My Account
           </Link>
-          {userIsAdmin && (
-            <Link to="/admin" className={styles.mobileNavLink}>
-              Admin
-            </Link>
-          )}
           <SearchBoxMobile />
         </div>
       )}

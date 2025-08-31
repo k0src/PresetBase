@@ -1,14 +1,15 @@
-const express = require("express");
+import express from "express";
+import DB from "../../models/DB.js";
+import multer from "../../middleware/multer.js";
+import AdminManager from "../../models/AdminManager.js";
+
 const router = express.Router();
-const { dbAll, dbGet } = require("../../util/UTIL.js");
-const multer = require("../../middleware/multer.js");
-const AdminManager = require("../../models/AdminManager.js");
 
 router.get("/pending-submissions", async (req, res) => {
   try {
     // add support for user id later - dummy ID 1
     // this should be in the AdminManager
-    const pendingSubmissionsData = await dbAll(
+    const pendingSubmissionsData = await DB.all(
       "SELECT id, data, submitted_at, user_id FROM pending_submissions"
     );
 
@@ -146,4 +147,4 @@ router.post("/upload", multer, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

@@ -105,7 +105,7 @@ function AdminManageDbContent() {
         <title>{pageTitle}</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <ManageDbHeader
           entryType={currentTable}
           totalEntries={totalEntries}

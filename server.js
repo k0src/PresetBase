@@ -1,131 +1,122 @@
-const express = require("express");
-const app = express();
-const path = require("path");
-const session = require("express-session");
-// const passport = require("passport");
-const SQLiteStore = require("connect-sqlite3")(session);
-require("dotenv").config();
+import express from "express";
+import cors from "cors";
+import helmet from "helmet";
+import rateLimit, { ipKeyGenerator } from "express-rate-limit";
+import dotenv from "dotenv";
+import path from "path";
 
+dotenv.config();
+
+if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
+  console.error("Missing required JWT environment variables");
+  process.exit(1);
+}
+
+const app = express();
 const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === "production";
+const PROJECT_ROOT = process.env.PROJECT_ROOT || ".";
 
-/* ----------------------------- Passport Config ---------------------------- */
-// require("./config/passport");
-// This needs to be set up later - consume via context api or redux, context api is prob fine
-
-/* -------------------------------- Sessions -------------------------------- */
+app.use(helmet());
 app.use(
-  session({
-    store: new SQLiteStore({
-      db: "sessions.sqlite",
-      dir: path.join(__dirname, "db"),
-    }),
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-      maxAge: 1000 * 60 * 60 * 24 * 7,
-      secure: isProd,
-      httpOnly: true,
-      sameSite: "strict",
-    },
+  cors({
+    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    credentials: true,
   })
 );
 
-/* ------------------------------- Middleware ------------------------------- */
-// Enable when Google OAuth integration is added via API
-// app.use(passport.initialize());
-// app.use(passport.session());
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 100,
+  message: "Too many requests from this IP, please try again later.",
+  keyGenerator: ipKeyGenerator,
+});
+app.use("/api/", limiter);
 
-// FOR TESTING - DELETE ME
-app.set("view engine", "ejs");
-app.set("views", path.join(__dirname, "views"));
-app.use(express.static(path.join(__dirname, "public")));
-
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-/* ----------------------------------- API ---------------------------------- */
-// CHANGE ME
-const apiRoutes = require("./routes/api/api");
-app.use("/api", apiRoutes);
+import { securityHeaders, validateInput } from "./middleware/security.js";
 
-/* ------------------------------ Auth/Account ------------------------------ */
-// const authRoutes = require("./routes/auth/auth");
-// app.use("/auth", authRoutes);
-// const loginRoutes = require("./routes/auth/login");
-// app.use("/login", loginRoutes);
-// const accountInfoRoutes = require("./routes/auth/account-info");
-// app.use("/account-info", accountInfoRoutes);
+app.use(securityHeaders);
+app.use(validateInput);
 
-/* --------------------------- Static Asset Routes -------------------------- */
-if (isProd) {
-  app.use(express.static(path.join(__dirname, "client/dist")));
-}
-
-/* ---------------------------- API Domain Routes --------------------------- */
-// const homeRoutes = require("./routes/main/index");
-// app.use("/", homeRoutes);
-// const aboutRoutes = require("./routes/main/about");
-// app.use("/about", aboutRoutes);
-const statsRoutes = require("./routes/main/stats");
-app.use("/api/stats", statsRoutes);
-const searchRoutes = require("./routes/main/search");
-app.use("/api/search", searchRoutes);
-const submitRoute = require("./routes/main/submit");
-app.use("/api/submit", submitRoute);
-
-const songRoutes = require("./routes/entries/song");
-app.use("/api/song", songRoutes);
-const synthRoutes = require("./routes/entries/synth");
-app.use("/api/synth", synthRoutes);
-const artistsRoutes = require("./routes/entries/artist");
-app.use("/api/artist", artistsRoutes);
-const albumsRoutes = require("./routes/entries/album");
-app.use("/api/album", albumsRoutes);
-
-// const browseRoute = require("./routes/main/browse");
-// app.use("/browse", browseRoute);
-const browseSongsRoute = require("./routes/main/browse/songs");
-app.use("/api/browse/songs", browseSongsRoute);
-const browseArtistsRoute = require("./routes/main/browse/artists");
-app.use("/api/browse/artists", browseArtistsRoute);
-const browseAlbumsRoute = require("./routes/main/browse/albums");
-app.use("/api/browse/albums", browseAlbumsRoute);
-const browseSynthsRoute = require("./routes/main/browse/synths");
-app.use("/api/browse/synths", browseSynthsRoute);
-const browsePresetsRoute = require("./routes/main/browse/presets");
-app.use("/api/browse/presets", browsePresetsRoute);
-const browseGenresRoutes = require("./routes/main/browse/genres");
-app.use("/api/browse/genres", browseGenresRoutes);
-// const popularRoute = require("./routes/main/browse/popular");
-// app.use("/browse/popular", popularRoute);
-// const hotRoute = require("./routes/main/browse/hot");
-// app.use("/browse/hot", hotRoute);
-// const recentlyAddedRoute = require("./routes/main/browse/recent");
-// app.use("/browse/recent", recentlyAddedRoute);
-
-const adminRoute = require("./routes/admin/admin");
-app.use("/api/admin", adminRoute);
-// const adminApprovalsRoute = require("./routes/admin/approvals");
-// app.use("/admin/approvals", adminApprovalsRoute);
-// const adminUploadRoute = require("./routes/admin/upload");
-// app.use("/admin/upload", adminUploadRoute);
-// const adminTagEditor = require("./routes/admin/tag-editor");
-// app.use("/admin/tag-editor", adminTagEditor);
-// const adminAnnouncements = require("./routes/admin/announcements");
-// app.use("/admin/announcements", adminAnnouncements);
-// const adminManageUsers = require("./routes/admin/manage-users");
-// app.use("/admin/manage-users", adminManageUsers);
-// const adminManageDb = require("./routes/admin/manage-db");
-// app.use("/admin/manage-db", adminManageDb);
+app.use(express.static(path.join(PROJECT_ROOT, "public")));
 
 if (isProd) {
+  app.use(express.static(path.join(PROJECT_ROOT, "client/dist")));
+
   app.get("/*", (req, res) => {
-    res.sendFile(path.join(__dirname, "client/dist/index.html"));
+    res.sendFile(path.join(PROJECT_ROOT, "client/dist/index.html"));
   });
 }
-
-app.listen(PORT, () => {
-  console.log(`Server running on http://localhost:${PORT}`);
+app.get("/health", (req, res) => {
+  res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
+
+// API routes
+import apiRoutes from "./routes/api/api.js";
+app.use("/api", apiRoutes);
+
+// Auth routes
+import authRoutes from "./routes/auth/auth.js";
+app.use("/api/auth", authRoutes);
+
+// Main routes
+import statsRoutes from "./routes/main/stats.js";
+app.use("/api/stats", statsRoutes);
+
+import searchRoutes from "./routes/main/search.js";
+app.use("/api/search", searchRoutes);
+
+import submitRoute from "./routes/main/submit.js";
+app.use("/api/submit", submitRoute);
+
+// Entry routes
+import songRoutes from "./routes/entries/song.js";
+app.use("/api/song", songRoutes);
+
+import synthRoutes from "./routes/entries/synth.js";
+app.use("/api/synth", synthRoutes);
+
+import artistsRoutes from "./routes/entries/artist.js";
+app.use("/api/artist", artistsRoutes);
+
+import albumsRoutes from "./routes/entries/album.js";
+app.use("/api/album", albumsRoutes);
+
+// Browse routes
+import browseSongsRoute from "./routes/main/browse/songs.js";
+app.use("/api/browse/songs", browseSongsRoute);
+
+import browseArtistsRoute from "./routes/main/browse/artists.js";
+app.use("/api/browse/artists", browseArtistsRoute);
+
+import browseAlbumsRoute from "./routes/main/browse/albums.js";
+app.use("/api/browse/albums", browseAlbumsRoute);
+
+import browseSynthsRoute from "./routes/main/browse/synths.js";
+app.use("/api/browse/synths", browseSynthsRoute);
+
+import browsePresetsRoute from "./routes/main/browse/presets.js";
+app.use("/api/browse/presets", browsePresetsRoute);
+
+import browseGenresRoutes from "./routes/main/browse/genres.js";
+app.use("/api/browse/genres", browseGenresRoutes);
+
+// Admin routes
+import adminRoute from "./routes/admin/admin.js";
+app.use("/api/admin", adminRoute);
+
+async function startServer() {
+  try {
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (err) {
+    console.error("Failed to start server:", err.message);
+    process.exit(1);
+  }
+}
+
+startServer();

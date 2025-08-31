@@ -12,6 +12,7 @@
   "dependencies": {
     "@babel/runtime": "^7.28.2",
     "@uiw/react-heat-map": "^2.3.3",
+    "axios": "^1.11.0",
     "chart.js": "^4.5.0",
     "classnames": "^2.5.1",
     "dayjs": "^1.11.13",

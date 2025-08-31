@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Song from "../../models/Song.js";
+import ClickManager from "../../models/ClickManager.js";
 
-const ClickManager = require("../../models/ClickManager.js");
-const Song = require("../../models/Song.js");
+const router = express.Router();
 
 router.get("/:id", async (req, res) => {
   const songId = req.params.id;
@@ -40,4 +40,4 @@ router.get("/:id/related", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

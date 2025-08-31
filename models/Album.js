@@ -1,8 +1,8 @@
 // Album DB entry model for PresetBase
-const DB = require("./DB.js");
-const Entry = require("./Entry.js");
+import DB from "./DB.js";
+import Entry from "./Entry.js";
 
-class Album extends Entry {
+export default class Album extends Entry {
   #id;
   #title;
   #genre;
@@ -456,5 +456,3 @@ class Album extends Entry {
     }
   }
 }
-
-module.exports = Album;

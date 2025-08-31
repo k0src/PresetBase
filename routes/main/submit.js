@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
-const multer = require("../../middleware/multer.js");
+import express from "express";
+import multer from "../../middleware/multer.js";
+import UserSubmissionManager from "../../models/UserSubmissionManager.js";
 
-const UserSubmissionManager = require("../../models/UserSubmissionManager.js");
+const router = express.Router();
 
 router.post("/", multer, async (req, res) => {
   try {
@@ -20,4 +20,4 @@ router.post("/", multer, async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

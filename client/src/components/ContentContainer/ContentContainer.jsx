@@ -4,11 +4,11 @@ import ScrollToTop from "../ScrollToTop/ScrollToTop";
 
 import styles from "./ContentContainer.module.css";
 
-export default function ContentContainer({ children, isAuth, userIsAdmin }) {
+export default function ContentContainer({ children }) {
   return (
     <>
       <div className={styles.pageWrapper}>
-        <Navbar isAuth={isAuth} userIsAdmin={userIsAdmin} />
+        <Navbar />
         <div className={styles.contentWrapper}>
           <main className={styles.container}>{children}</main>
         </div>

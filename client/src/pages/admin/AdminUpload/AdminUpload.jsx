@@ -11,7 +11,7 @@ export default function AdminUpload() {
         <title>Upload Entry</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.submitHeader}>
           <h1 className={styles.headingPrimary}>Upload</h1>
         </section>

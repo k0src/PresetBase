@@ -43,7 +43,7 @@ export default function AboutPage() {
         <title>About PresetBase</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.aboutHeader}>
           <h1 className={styles.headingPrimary}>About PresetBase</h1>
           <p className={styles.bodyText}>

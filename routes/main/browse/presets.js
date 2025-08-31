@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Preset from "../../../models/Preset.js";
+import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
 
-const Preset = require("../../../models/Preset.js");
-const { sortKeys, sortDirections } = require("../../../util/UTIL.js");
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const sortKey = sortKeys.presets[req.query.sort] || sortKeys.presets.added;
@@ -31,4 +31,4 @@ router.get("/total-entries", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

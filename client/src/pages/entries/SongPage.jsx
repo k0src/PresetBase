@@ -69,7 +69,7 @@ export default memo(function SongPage() {
   }
 
   return (
-    <ContentContainer isAuth={true} userIsAdmin={true}>
+    <ContentContainer>
       {loading ? (
         <ComponentLoader />
       ) : (

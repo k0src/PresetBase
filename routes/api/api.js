@@ -1,10 +1,13 @@
-const express = require("express");
+// FIX ME
+
+import express from "express";
+import Synth from "../../models/Synth.js";
+import Song from "../../models/Song.js";
+import Genre from "../../models/Genre.js";
+import Preset from "../../models/Preset.js";
+import DB from "../../models/DB.js";
+
 const router = express.Router();
-const { dbAll, dbGet } = require("../../util/UTIL.js");
-const Song = require("../../models/Song.js");
-const Genre = require("../../models/Genre.js");
-const Synth = require("../../models/Synth.js");
-const Preset = require("../../models/Preset.js");
 
 router.get("/latest-entry", async (req, res) => {
   try {
@@ -133,7 +136,7 @@ router.get("/autofill/data/:type", async (req, res) => {
   };
 
   try {
-    const data = await dbAll(queries[type], [`%${query}%`]);
+    const data = await DB.all(queries[type], [`%${query}%`]);
     return res.json(data);
   } catch (err) {
     console.error(err);
@@ -258,7 +261,7 @@ router.get("/autofill/suggestions/:type", async (req, res) => {
   };
 
   try {
-    const results = await dbAll(queries[type], [`%${query}%`, limitNum]);
+    const results = await DB.all(queries[type], [`%${query}%`, limitNum]);
     return res.json(results);
   } catch (err) {
     console.error(err);
@@ -304,7 +307,7 @@ router.get("/entry-names", async (req, res) => {
     LIMIT ?`;
 
   try {
-    const results = await dbAll(q, [`%${query}%`, limitNum]);
+    const results = await DB.all(q, [`%${query}%`, limitNum]);
     return res.json(results);
   } catch (err) {
     console.error(err);
@@ -331,7 +334,7 @@ router.get("/checktags", async (req, res) => {
   `;
 
   try {
-    const result = await dbAll(q, [name, slug]);
+    const result = await DB.all(q, [name, slug]);
     return res.json(result[0]);
   } catch (err) {
     return res.status(500).render("static/db-error", {
@@ -351,7 +354,7 @@ router.get("/total-entries", async (req, res) => {
         (SELECT COUNT(*) FROM synths) AS synths,
         (SELECT COUNT(*) FROM presets) AS presets`;
   try {
-    const totalEntries = await dbGet(query);
+    const totalEntries = await DB.get(query);
     return res.json({ data: totalEntries });
   } catch (err) {
     console.error(err);
@@ -373,7 +376,7 @@ router.get("/number-entries", async (req, res) => {
     ) AS total_count`;
 
   try {
-    const totalCount = await dbGet(query);
+    const totalCount = await DB.get(query);
     return res.json({ data: totalCount.total_count });
   } catch (err) {
     console.error(err);
@@ -393,7 +396,7 @@ router.get("/submissions-per-day", async (req, res) => {
     WHERE timestamp IS NOT NULL`;
 
   try {
-    const avgSubmissions = await dbGet(query);
+    const avgSubmissions = await DB.get(query);
     return res.json(avgSubmissions.avg_submissions_per_day);
   } catch (err) {
     console.error(err);
@@ -403,4 +406,4 @@ router.get("/submissions-per-day", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

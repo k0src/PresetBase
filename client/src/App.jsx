@@ -1,5 +1,8 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
+import { AuthProvider } from "./contexts/AuthContext";
+import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+
 import HomePage from "./pages/static/HomePage/HomePage";
 import AboutPage from "./pages/static/AboutPage/AboutPage";
 import PrivacyPolicy from "./pages/static/PrivacyPolicy/PrivacyPolicy";
@@ -26,8 +29,8 @@ import BrowsePopular from "./pages/browse/BrowsePopular";
 import BrowseHot from "./pages/browse/BrowseHot";
 import BrowseRecent from "./pages/browse/BrowseRecent";
 
-// import Auth from "./pages/auth/Auth";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage/RegisterPage";
 // import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
 
 import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
@@ -39,52 +42,76 @@ import NotFound from "./pages/static/NotFound/NotFound";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        {/* Static routes */}
-        <Route path="/" element={<HomePage />} />
-        <Route path="/about-us" element={<AboutPage />} />
-        <Route path="/privacy-policy" element={<PrivacyPolicy />} />
-        <Route path="/copyright" element={<Copyright />} />
-        <Route path="/upload-tos" element={<UploadTos />} />
-        <Route path="/stats" element={<StatsPage />} />
-        <Route path="/search" element={<SearchPage />} />
-        <Route path="/submit" element={<SubmitPage />} />
-        <Route path="/submit/example" element={<SubmitExamplePage />} />
+    <AuthProvider>
+      <Router>
+        <Routes>
+          {/* Static routes */}
+          <Route path="/" element={<HomePage />} />
+          <Route path="/about-us" element={<AboutPage />} />
+          <Route path="/privacy-policy" element={<PrivacyPolicy />} />
+          <Route path="/copyright" element={<Copyright />} />
+          <Route path="/upload-tos" element={<UploadTos />} />
+          <Route path="/stats" element={<StatsPage />} />
+          <Route path="/search" element={<SearchPage />} />
 
-        {/* Entry routes */}
-        <Route path="/song/:id" element={<SongPage />} />
-        <Route path="/album/:id" element={<AlbumPage />} />
-        <Route path="/artist/:id" element={<ArtistPage />} />
-        <Route path="/synth/:id" element={<SynthPage />} />
+          <Route
+            path="/submit"
+            element={
+              <ProtectedRoute>
+                <SubmitPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/submit/example"
+            element={
+              <ProtectedRoute>
+                <SubmitExamplePage />
+              </ProtectedRoute>
+            }
+          />
+          {/* <Route
+            path="/me"
+            element={
+              <ProtectedRoute>
+                <AccountInfoPage />
+              </ProtectedRoute>
+            }
+          /> */}
 
-        {/* Browse routes */}
-        <Route path="/browse" element={<BrowsePage />} />
-        <Route path="/browse/songs" element={<BrowseSongs />} />
-        <Route path="/browse/artists" element={<BrowseArtists />} />
-        <Route path="/browse/albums" element={<BrowseAlbums />} />
-        <Route path="/browse/synths" element={<BrowseSynths />} />
-        <Route path="/browse/presets" element={<BrowsePresets />} />
-        <Route path="/browse/genres" element={<BrowseGenres />} />
-        <Route path="/browse/popular" element={<BrowsePopular />} />
-        <Route path="/browse/hot" element={<BrowseHot />} />
-        <Route path="/browse/recent" element={<BrowseRecent />} />
+          {/* Entry routes */}
+          <Route path="/song/:id" element={<SongPage />} />
+          <Route path="/album/:id" element={<AlbumPage />} />
+          <Route path="/artist/:id" element={<ArtistPage />} />
+          <Route path="/synth/:id" element={<SynthPage />} />
 
-        {/* Auth routes */}
-        {/* <Route path="/auth" element={<Auth />} /> */}
-        <Route path="/login" element={<LoginPage />} />
-        {/* <Route path="/account-info" element={<AccountInfoPage />} /> */}
+          {/* Browse routes */}
+          <Route path="/browse" element={<BrowsePage />} />
+          <Route path="/browse/songs" element={<BrowseSongs />} />
+          <Route path="/browse/artists" element={<BrowseArtists />} />
+          <Route path="/browse/albums" element={<BrowseAlbums />} />
+          <Route path="/browse/synths" element={<BrowseSynths />} />
+          <Route path="/browse/presets" element={<BrowsePresets />} />
+          <Route path="/browse/genres" element={<BrowseGenres />} />
+          <Route path="/browse/popular" element={<BrowsePopular />} />
+          <Route path="/browse/hot" element={<BrowseHot />} />
+          <Route path="/browse/recent" element={<BrowseRecent />} />
 
-        {/* Admin routes */}
-        <Route path="/admin/approvals" element={<AdminApprovals />} />
-        <Route path="/admin/upload" element={<AdminUpload />} />
-        {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
-        <Route path="/admin/manage-db" element={<AdminManageDb />} />
-        <Route path="/admin/manage-db/:table" element={<AdminManageDb />} />
+          {/* Auth routes */}
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
 
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+          {/* Admin routes */}
+          <Route path="/admin/approvals" element={<AdminApprovals />} />
+          <Route path="/admin/upload" element={<AdminUpload />} />
+          {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
+          <Route path="/admin/manage-db" element={<AdminManageDb />} />
+          <Route path="/admin/manage-db/:table" element={<AdminManageDb />} />
+
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </AuthProvider>
   );
 }
 

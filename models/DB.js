@@ -1,6 +1,6 @@
-const db = require("../db/db");
+import db from "../db/db.js";
 
-class DB {
+export default class DB {
   static all(query, params = []) {
     return new Promise((resolve, reject) => {
       db.all(query, params, (err, rows) => {
@@ -40,5 +40,3 @@ class DB {
     await this.run("ROLLBACK");
   }
 }
-
-module.exports = DB;

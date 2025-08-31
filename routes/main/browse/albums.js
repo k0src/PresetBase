@@ -1,8 +1,8 @@
-const express = require("express");
-const router = express.Router();
+import express from "express";
+import Album from "../../../models/Album.js";
+import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
 
-const Album = require("../../../models/Album.js");
-const { sortKeys, sortDirections } = require("../../../util/UTIL.js");
+const router = express.Router();
 
 router.get("/", async (req, res) => {
   const sortKey = sortKeys.albums[req.query.sort] || sortKeys.albums.added;
@@ -31,4 +31,4 @@ router.get("/total-entries", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

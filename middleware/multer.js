@@ -1,8 +1,12 @@
-const multer = require("multer");
-const path = require("path");
-const nanoid = require("nanoid").nanoid;
+import multer from "multer";
+import { nanoid } from "nanoid";
+import dotenv from "dotenv";
 
-const MAX_UPLOAD_SIZE = 1024 * 1024 * 8;
+dotenv.config();
+
+const UPLOAD_DIR = process.env.UPLOAD_DIR || "./public/uploads";
+const MAX_FILE_SIZE =
+  parseInt(process.env.MAX_FILE_SIZE, 10) || 1024 * 1024 * 8;
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -10,24 +14,25 @@ const storage = multer.diskStorage({
     const isAudio = file.mimetype === "audio/mpeg";
 
     if (isImage) {
-      cb(null, path.join(__dirname, "../public/uploads/images/pending/"));
+      cb(null, `${UPLOAD_DIR}/images/pending`);
     } else if (isAudio) {
-      cb(null, path.join(__dirname, "../public/uploads/audio/pending/"));
+      cb(null, `${UPLOAD_DIR}/audio/pending`);
     } else {
       cb(new Error("Unsupported file type"), null);
     }
   },
   filename: (req, file, cb) => {
-    cb(null, nanoid() + "-" + file.originalname);
+    cb(null, `${nanoid()}-${file.originalname}`);
   },
 });
 
 const fileFilter = (req, file, cb) => {
-  const isImage =
-    file.mimetype === "image/png" ||
-    file.mimetype === "image/jpg" ||
-    file.mimetype === "image/jpeg" ||
-    file.mimetype === "image/webp";
+  const isImage = [
+    "image/png",
+    "image/jpg",
+    "image/jpeg",
+    "image/webp",
+  ].includes(file.mimetype);
 
   const isAudio = file.mimetype === "audio/mpeg";
 
@@ -42,8 +47,8 @@ const fileFilter = (req, file, cb) => {
 
 const upload = multer({
   storage,
-  limits: { fileSize: MAX_UPLOAD_SIZE },
+  limits: { fileSize: MAX_FILE_SIZE },
   fileFilter,
 });
 
-module.exports = upload.any();
+export default upload.any();

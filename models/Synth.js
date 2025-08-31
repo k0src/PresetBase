@@ -1,8 +1,8 @@
 // Synth DB entry model for PresetBase
-const DB = require("./DB.js");
-const Entry = require("./Entry.js");
+import DB from "./DB.js";
+import Entry from "./Entry.js";
 
-class Synth extends Entry {
+export default class Synth extends Entry {
   #id;
   #synthName;
   #manufacturer;
@@ -489,5 +489,3 @@ class Synth extends Entry {
     }
   }
 }
-
-module.exports = Synth;

@@ -21,8 +21,8 @@ export default function SubmitPage() {
           <strong>Your submission has been successfully received!</strong> All
           submissions are manually reviewed and approved. You can monitor the
           status of your submission by visiting the{" "}
-          <Link to="/account-info">"My Submissions"</Link> section within your
-          account page.
+          <Link to="/me">"My Submissions"</Link> section within your account
+          page.
         </>
       ),
     });
@@ -34,7 +34,7 @@ export default function SubmitPage() {
         <title>Submit Entry</title>
       </Helmet>
 
-      <ContentContainer isAuth={true} userIsAdmin={true}>
+      <ContentContainer>
         <section className={styles.submitHeader}>
           <h1 className={styles.headingPrimary}>Submit</h1>
         </section>

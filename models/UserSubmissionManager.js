@@ -1,9 +1,14 @@
 // User Submission Manager model for PresetBase
-const DB = require("./DB.js");
-const fs = require("fs").promises;
-const path = require("path");
+import DB from "./DB.js";
+import fs from "fs/promises";
+import path from "path";
+import dotenv from "dotenv";
 
-class UserSubmissionManager {
+dotenv.config();
+
+const UPLOAD_DIR = process.env.UPLOAD_DIR || "public/uploads";
+
+export default class UserSubmissionManager {
   static #attachFileDataToFormData({ formData, fileData }) {
     if (!fileData.length) return formData;
 
@@ -88,16 +93,7 @@ class UserSubmissionManager {
     }
 
     try {
-      const filePath = path.join(
-        __dirname,
-        "..",
-        "public",
-        "uploads",
-        type,
-        "pending",
-        fileName
-      );
-
+      const filePath = path.join(UPLOAD_DIR, type, "pending", fileName);
       await fs.unlink(filePath);
     } catch (err) {
       throw new Error(`Failed to delete ${fileName}: ${err.message}`);
@@ -262,5 +258,3 @@ class UserSubmissionManager {
     }
   }
 }
-
-module.exports = UserSubmissionManager;
