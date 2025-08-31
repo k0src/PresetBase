@@ -169,13 +169,13 @@ export default class User {
     const allowedFields = ["username", "email"];
 
     try {
-      for (const [field, value] of Object.keys(updates)) {
+      for (const [field, value] of Object.entries(updates)) {
         if (allowedFields.includes(field) && value !== undefined) {
           if (field === "username") {
             await User.updateUsername(id, value);
+          } else if (field === "email") {
+            await User.updateEmail(id, value);
           }
-        } else if (field === "email") {
-          await User.updateEmail(id, value);
         }
       }
 

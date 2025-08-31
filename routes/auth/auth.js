@@ -244,6 +244,9 @@ router.get("/me", authenticateToken, async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        timestamp: user.timestamp,
+        authenticated_with: user.authenticated_with,
+        is_admin: user.is_admin,
       },
     });
   } catch (error) {
@@ -320,7 +323,7 @@ router.put("/password", authenticateToken, async (req, res) => {
       });
     }
 
-    const user = await User.getByEmail(req.user.email);
+    const user = await User.getById(req.user.id);
     const isValidPassword = await User.verifyPassword(
       currentPassword,
       user.password_hash

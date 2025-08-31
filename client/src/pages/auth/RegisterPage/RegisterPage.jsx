@@ -210,7 +210,7 @@ export default function RegisterPage() {
                         <button
                           type="button"
                           className={styles.passwordToggle}
-                          onClick={() => setShowPassword(!showPassword)}
+                          onClick={() => setShowPassword((prev) => !prev)}
                         >
                           {showPassword ? (
                             <FaEyeSlash className={styles.eyeIcon} />
@@ -253,7 +253,11 @@ export default function RegisterPage() {
                       type="submit"
                       className={styles.loginBtn}
                       disabled={
-                        loading || !formData.email || !formData.password
+                        loading ||
+                        !formData.email ||
+                        !formData.password ||
+                        !formData.username ||
+                        !formData.confirmPassword
                       }
                     >
                       Sign Up

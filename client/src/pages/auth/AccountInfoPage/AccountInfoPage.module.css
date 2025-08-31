@@ -1,0 +1,178 @@
+.infoHeader {
+  padding: 3.2rem 0 2rem 0;
+}
+
+.headingPrimary {
+  font-family: "Sora", sans-serif;
+  font-weight: 600;
+  font-size: 3.2rem;
+}
+
+.headingSecondary {
+  color: #899096;
+  font-size: 2rem;
+}
+
+.userInfoSection {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.userInfoInputSection {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+}
+
+.userInfoHead {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.userInfoText {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.4rem;
+  color: #899096;
+}
+
+.userInfoForm {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.error {
+  background-color: #c25c5c;
+  width: 100%;
+  color: #e3e5e4;
+  padding: 1.2rem 0;
+  font-size: 1.2rem;
+  border-radius: 0.4rem;
+  text-align: center;
+}
+
+.success {
+  background-color: #5a7f71;
+  width: 100%;
+  color: #e3e5e4;
+  padding: 1.2rem 0;
+  font-size: 1.2rem;
+  border-radius: 0.4rem;
+  text-align: center;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+  width: 100%;
+}
+
+.label {
+  font-size: 1.4rem;
+  color: #899096;
+}
+
+.userInput {
+  font-family: "Geist", sans-serif;
+  color: #e3e5e4;
+  width: 100%;
+  padding: 1.2rem 0.8rem;
+  font-size: 1.4rem;
+  background-color: #171b1f;
+  border: 0.2rem solid #2d343a;
+  border-radius: 0.4rem;
+}
+
+.userInput:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.inputError {
+  border-color: #c25c5c;
+}
+
+.passwordInput {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.passwordToggle {
+  position: absolute;
+  right: 1.2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #899096;
+  font-size: 1.6rem;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color 0.2s ease;
+}
+
+.passwordToggle:hover {
+  color: #e3e5e4;
+}
+
+.eyeIcon {
+  font-size: 1.6rem;
+}
+
+.fieldError {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 1.2rem;
+  color: #c25c5c;
+  margin-top: 0.4rem;
+}
+
+.applyChangesBtn {
+  cursor: pointer;
+  font-family: "Geist", sans-serif;
+  font-size: 1.4rem;
+  color: #e3e5e4;
+  width: 100%;
+  border: none;
+  border-radius: 0.4rem;
+  background-color: #5a7f71;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+  padding: 1.2rem 1.6rem;
+  transition: background-color 0.2s ease;
+}
+
+.applyChangesBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.applyChangesBtn:hover {
+  background-color: #73988a;
+}
+
+.applyChangesBtn:disabled:hover {
+  background-color: #5a7f71;
+}
+
+.userInfoHr {
+  margin-top: 3.2rem;
+  width: 100%;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.4rem;
+  color: #2d343a;
+}
+
+.userInfoTitle {
+  font-size: 1.6rem;
+}

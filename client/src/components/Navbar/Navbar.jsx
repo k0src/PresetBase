@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link, NavLink } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
+import classNames from "classnames";
 
 import SearchBoxSmall from "../../components/SearchBox/SearchBoxSmall/SearchBoxSmall";
 import SearchBoxMobile from "../../components/SearchBox/SearchBoxMobile/SearchBoxMobile";
@@ -18,6 +19,7 @@ import NavbarLogo from "../../assets/images/logo-app.webp";
 
 export default function Navbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const { isAuthenticated } = useAuth();
   const toggleMobileNav = () => setMobileNavOpen((prevState) => !prevState);
 
   return (
@@ -101,7 +103,7 @@ export default function Navbar() {
           >
             <FaBook className={styles.navbarIcon} />
           </a>
-          <Link to="/login">
+          <Link to={isAuthenticated ? "/me" : "/login"}>
             <FaCircleUser className={styles.navbarIcon} />
           </Link>
         </div>
@@ -134,8 +136,11 @@ export default function Navbar() {
           <Link to="/submit" className={styles.mobileNavLink}>
             Submit
           </Link>
-          <Link to="/login" className={styles.mobileNavLink}>
-            My Account
+          <Link
+            to={isAuthenticated ? "/me" : "/login"}
+            className={styles.mobileNavLink}
+          >
+            {isAuthenticated ? "My Account" : "Login"}
           </Link>
           <SearchBoxMobile />
         </div>

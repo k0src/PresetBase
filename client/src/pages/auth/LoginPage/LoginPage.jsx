@@ -129,7 +129,7 @@ export default function LoginPage() {
                       <button
                         type="button"
                         className={styles.passwordToggle}
-                        onClick={() => setShowPassword(!showPassword)}
+                        onClick={() => setShowPassword((prev) => !prev)}
                       >
                         {showPassword ? (
                           <FaEyeSlash className={styles.eyeIcon} />

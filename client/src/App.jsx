@@ -31,7 +31,7 @@ import BrowseRecent from "./pages/browse/BrowseRecent";
 
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage/RegisterPage";
-// import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
+import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
 
 import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
@@ -70,14 +70,14 @@ function App() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
+          <Route
             path="/me"
             element={
               <ProtectedRoute>
                 <AccountInfoPage />
               </ProtectedRoute>
             }
-          /> */}
+          />
 
           {/* Entry routes */}
           <Route path="/song/:id" element={<SongPage />} />
