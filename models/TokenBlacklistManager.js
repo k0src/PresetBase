@@ -5,7 +5,7 @@ export default class TokenBlacklistManager {
     try {
       await DB.run(
         `INSERT INTO token_blacklist (jti, expires_at) 
-      VALUES (?, ?) ON CONFLICT (jti) DO NOTHING`,
+        VALUES (?, ?) ON CONFLICT (jti) DO NOTHING`,
         [jti, expiresAt]
       );
     } catch (err) {
@@ -17,7 +17,7 @@ export default class TokenBlacklistManager {
     try {
       const result = await DB.get(
         `SELECT 1 FROM token_blacklist WHERE jti = ? 
-      AND expires_at > CURRENT_TIMESTAMP LIMIT 1`,
+        AND expires_at > CURRENT_TIMESTAMP LIMIT 1`,
         [jti]
       );
       return !!result;

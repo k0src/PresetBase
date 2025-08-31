@@ -227,6 +227,25 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
+  const deleteAccount = useCallback(async () => {
+    try {
+      const refreshToken = localStorage.getItem("refreshToken");
+      if (refreshToken) {
+        await authAPI.deleteAccount(refreshToken);
+      }
+      localStorage.removeItem("accessToken");
+      localStorage.removeItem("refreshToken");
+      authAPI.clearTokens();
+      dispatch({ type: "LOGOUT" });
+      return { success: true };
+    } catch (err) {
+      console.error("Account deletion error:", err);
+      const errorMessage =
+        err.response?.data?.error?.message || "Account deletion failed";
+      return { success: false, message: errorMessage };
+    }
+  }, []);
+
   const clearError = useCallback(() => {
     dispatch({ type: "CLEAR_ERROR" });
   }, []);
@@ -238,6 +257,7 @@ export function AuthProvider({ children }) {
     logout,
     updateUserProfile,
     changePassword,
+    deleteAccount,
     clearError,
   };
 

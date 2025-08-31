@@ -168,6 +168,13 @@ export const authAPI = {
     });
     return response.data;
   },
+
+  async deleteAccount(refreshToken) {
+    const response = await api.delete("/auth/me", {
+      data: { refreshToken },
+    });
+    return response.data;
+  },
 };
 
 export async function getTotalEntries() {

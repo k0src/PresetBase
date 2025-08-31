@@ -355,6 +355,47 @@ router.put("/password", authenticateToken, async (req, res) => {
   }
 });
 
+router.delete("/me", authenticateToken, async (req, res) => {
+  try {
+    const { refreshToken } = req.body;
+    if (!refreshToken) {
+      return res.status(400).json({
+        error: {
+          code: "MISSING_REFRESH_TOKEN",
+          message: "Refresh token is required",
+        },
+      });
+    }
+
+    const decodedAccess = verifyAccessToken(req.token);
+    const decodedRefresh = verifyRefreshToken(refreshToken);
+
+    await TokenBlacklistManager.addToBlacklist(
+      decodedAccess.jti,
+      new Date(decodedAccess.exp * 1000)
+    );
+    await TokenBlacklistManager.addToBlacklist(
+      decodedRefresh.jti,
+      new Date(decodedRefresh.exp * 1000)
+    );
+
+    await User.delete(req.user.id);
+
+    res.json({
+      message: "Account deleted successfully",
+    });
+  } catch (err) {
+    console.error("Account deletion error:", err);
+
+    return res.status(500).json({
+      error: {
+        code: "ACCOUNT_DELETION_FAILED",
+        message: "Failed to delete account",
+      },
+    });
+  }
+});
+
 // update user profile
 
 // const passport = require("passport");

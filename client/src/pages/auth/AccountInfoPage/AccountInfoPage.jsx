@@ -28,6 +28,8 @@ export default function AccountInfoPage() {
   const [updateLoading, setUpdateLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const {
     isAuthenticated,
@@ -36,6 +38,8 @@ export default function AccountInfoPage() {
     user,
     clearError,
     updateUserProfile,
+    logout,
+    deleteAccount,
   } = useAuth();
 
   useEffect(() => {
@@ -187,6 +191,38 @@ export default function AccountInfoPage() {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } catch (err) {
+      console.error("Logout error:", err);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeleteLoading(true);
+    setErrorMessage("");
+    setSuccessMessage("");
+    clearError();
+
+    const result = await deleteAccount();
+
+    setDeleteLoading(false);
+
+    if (!result.success) {
+      setErrorMessage(result.message || "Failed to delete account");
+      setShowDeleteConfirm(false);
+    }
+  };
+
+  const confirmDeleteAccount = () => {
+    setShowDeleteConfirm(true);
+  };
+
+  const cancelDeleteAccount = () => {
+    setShowDeleteConfirm(false);
+  };
+
   return (
     <>
       <Helmet>
@@ -292,6 +328,54 @@ export default function AccountInfoPage() {
           </section>
         </div>
         <hr className={styles.userInfoHr} />
+
+        <div className={styles.actions}>
+          <button
+            type="button"
+            className={styles.logOutBtn}
+            onClick={handleLogout}
+          >
+            Log Out
+          </button>
+          <button
+            type="button"
+            className={styles.deleteBtn}
+            onClick={confirmDeleteAccount}
+            disabled={deleteLoading}
+          >
+            {deleteLoading ? "Deleting..." : "Delete Account"}
+          </button>
+        </div>
+
+        {showDeleteConfirm && (
+          <div className={styles.confirmDialog}>
+            <div className={styles.confirmContent}>
+              <h3>Confirm Account Deletion</h3>
+              <p>
+                Are you sure you want to delete your account? This action cannot
+                be undone and all your data will be permanently lost.
+              </p>
+              <div className={styles.confirmButtons}>
+                <button
+                  type="button"
+                  className={styles.cancelBtn}
+                  onClick={cancelDeleteAccount}
+                  disabled={deleteLoading}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className={styles.confirmDeleteBtn}
+                  onClick={handleDeleteAccount}
+                  disabled={deleteLoading}
+                >
+                  {deleteLoading ? "Deleting..." : "Yes, Delete Account"}
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
       </ContentContainer>
     </>
   );

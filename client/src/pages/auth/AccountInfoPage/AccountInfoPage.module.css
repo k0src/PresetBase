@@ -135,24 +135,39 @@
   margin-top: 0.4rem;
 }
 
-.applyChangesBtn {
+.applyChangesBtn,
+.deleteBtn,
+.logOutBtn {
   cursor: pointer;
   font-family: "Geist", sans-serif;
   font-size: 1.4rem;
-  color: #e3e5e4;
   width: 100%;
   border: none;
   border-radius: 0.4rem;
-  background-color: #5a7f71;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.8rem;
   padding: 1.2rem 1.6rem;
+  color: #e3e5e4;
   transition: background-color 0.2s ease;
 }
 
-.applyChangesBtn:disabled {
+.deleteBtn {
+  background-color: #c25c5c;
+}
+
+.applyChangesBtn {
+  background-color: #5a7f71;
+}
+
+.logOutBtn {
+  background-color: #899096;
+}
+
+.deleteBtn:disabled,
+.applyChangesBtn:disabled,
+.logOutBtn:disabled {
   cursor: not-allowed;
   opacity: 0.5;
 }
@@ -165,8 +180,24 @@
   background-color: #5a7f71;
 }
 
+.deleteBtn:hover {
+  background-color: #c86c6c;
+}
+
+.deleteBtn:disabled:hover {
+  background-color: #c25c5c;
+}
+
+.logOutBtn:hover {
+  background-color: #7b8287;
+}
+
+.logOutBtn:disabled:hover {
+  background-color: #899096;
+}
+
 .userInfoHr {
-  margin-top: 3.2rem;
+  margin: 3.2rem 0;
   width: 100%;
   border: 0.1rem solid #2d343a;
   border-radius: 0.4rem;
@@ -175,4 +206,95 @@
 
 .userInfoTitle {
   font-size: 1.6rem;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.confirmDialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmContent {
+  background-color: #1a1d23;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 2.4rem;
+  max-width: 50rem;
+  width: 90%;
+  text-align: center;
+}
+
+.confirmContent h3 {
+  font-weight: 600;
+  font-size: 2rem;
+  margin-bottom: 1.6rem;
+  color: #c25c5c;
+}
+
+.confirmContent p {
+  font-size: 1.4rem;
+  color: #899096;
+  margin-bottom: 2.4rem;
+  line-height: 1.5;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+.cancelBtn {
+  font-family: "Geist", sans-serif;
+  background-color: #899096;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background-color: #7b8287;
+}
+
+.cancelBtn:disabled {
+  background-color: #5a5f63;
+  cursor: not-allowed;
+}
+
+.confirmDeleteBtn {
+  font-family: "Geist", sans-serif;
+  background-color: #c25c5c;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirmDeleteBtn:hover {
+  background-color: #a84d4d;
+}
+
+.confirmDeleteBtn:disabled {
+  background-color: #8a4242;
+  cursor: not-allowed;
 }
