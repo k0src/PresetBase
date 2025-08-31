@@ -1,8 +1,14 @@
-const fs = require("fs").promises;
-const path = require("path");
+import fs from "fs/promises";
+import path from "path";
+import dotenv from "dotenv";
+import { pathToFileURL } from "url";
 
-const projectRoot = path.resolve(__dirname, "..");
-require("dotenv").config({ path: path.join(projectRoot, ".env") });
+dotenv.config();
+
+const projectRoot = process.env.PROJECT_ROOT || ".";
+const dbPath =
+  process.env.DB_PATH || path.join(projectRoot, "db", "presetbase.sqlite");
+const backupsDir = path.join(projectRoot, "db", "backups");
 
 async function stopDevServer() {
   console.log("Manually stop the dev server (Ctrl+C) before continuing");
@@ -23,11 +29,8 @@ async function stopDevServer() {
   });
 }
 
-async function backupDatabase() {
+export async function backupDatabase() {
   try {
-    const sourceDb = path.join(__dirname, "..", "db", "presetbase.sqlite");
-    const backupsDir = path.join(__dirname, "..", "db", "backups");
-
     const now = new Date();
     const timestamp = now.toISOString().replace(/:/g, "-").replace(/\..+/, "");
 
@@ -35,20 +38,13 @@ async function backupDatabase() {
     const backupPath = path.join(backupsDir, backupFileName);
 
     try {
-      await fs.access(sourceDb);
-    } catch (error) {
-      throw new Error(`Source database '${sourceDb}' not found`);
+      await fs.access(dbPath);
+    } catch {
+      throw new Error(`Source database '${dbPath}' not found`);
     }
 
-    try {
-      await fs.mkdir(backupsDir, { recursive: true });
-    } catch (error) {
-      if (error.code !== "EEXIST") {
-        throw error;
-      }
-    }
-
-    await fs.copyFile(sourceDb, backupPath);
+    await fs.mkdir(backupsDir, { recursive: true });
+    await fs.copyFile(dbPath, backupPath);
 
     console.log("Database backup completed successfully");
     console.log(`Backup saved to: ${backupPath}`);
@@ -59,16 +55,13 @@ async function backupDatabase() {
   }
 }
 
-async function restoreDatabase() {
+export async function restoreDatabase() {
   try {
-    const sourceDb = path.join(__dirname, "..", "db", "presetbase.sqlite");
-    const backupsDir = path.join(__dirname, "..", "db", "backups");
-
     await stopDevServer();
 
     try {
       await fs.access(backupsDir);
-    } catch (error) {
+    } catch {
       throw new Error(`Backups directory '${backupsDir}' not found`);
     }
 
@@ -92,13 +85,9 @@ async function restoreDatabase() {
           /T(\d{2})-(\d{2})-(\d{2})/,
           "T$1:$2:$3"
         );
-        return {
-          filename,
-          timestamp,
-          date: new Date(dateStr),
-        };
+        return { filename, date: new Date(dateStr) };
       })
-      .filter((item) => item !== null && !isNaN(item.date.getTime()))
+      .filter((item) => item && !isNaN(item.date.getTime()))
       .sort((a, b) => b.date - a.date);
 
     if (sortedBackups.length === 0) {
@@ -115,19 +104,19 @@ async function restoreDatabase() {
     console.log(`Backup date: ${mostRecentBackup.date.toLocaleString()}`);
 
     try {
-      await fs.access(sourceDb);
-      await fs.unlink(sourceDb);
+      await fs.access(dbPath);
+      await fs.unlink(dbPath);
     } catch (error) {
       if (error.code !== "ENOENT") {
         throw new Error(`Error accessing source database: ${error.message}`);
       }
     }
 
-    await fs.copyFile(backupPath, sourceDb);
+    await fs.copyFile(backupPath, dbPath);
 
     console.log("Database restore completed successfully");
     console.log(`Restored from: ${backupPath}`);
-    console.log(`Restored size: ${(await fs.stat(sourceDb)).size} bytes`);
+    console.log(`Restored size: ${(await fs.stat(dbPath)).size} bytes`);
     console.log("Restart the dev server with npm run dev");
   } catch (error) {
     console.error("Restore failed:", error.message);
@@ -135,7 +124,7 @@ async function restoreDatabase() {
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   const args = process.argv.slice(2);
 
   if (args.length !== 1) {
@@ -157,5 +146,3 @@ if (require.main === module) {
       process.exit(1);
   }
 }
-
-module.exports = { backupDatabase, restoreDatabase };

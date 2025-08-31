@@ -113,6 +113,7 @@ export default function ApprovalsForm({ submission, onUpdate }) {
         className={styles.approvalsForm}
       >
         <input type="hidden" name="entryId" value={submission.id} />
+        <input type="hidden" name="userId" value={submission.userId} />
 
         <legend className={styles.legend}>Song Information</legend>
         <fieldset className={styles.fieldset}>

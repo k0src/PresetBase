@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { submitData } from "../../../api/api";
 import { uploadEntry } from "../../../api/admin";
 import { useSubmitForm } from "../../../hooks/useSubmitForm";
+import { useAuth } from "../../../contexts/AuthContext";
 
 import FormInput from "../FormInput/FormInput";
 import FormInputAutofill from "../FormInputAutofill/FormInputAutofill";
@@ -25,6 +26,12 @@ export default function SubmitForm({
 
   const songImageRef = useRef(null);
   const albumImageRef = useRef(null);
+
+  const { isAuthenticated, user, loading } = useAuth();
+
+  if (!loading && !isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
 
   const {
     artists,
@@ -92,6 +99,7 @@ export default function SubmitForm({
         encType="multipart/form-data"
         ref={(formRef) => (SubmitForm.formRef = formRef)}
       >
+        <input type="hidden" name="userId" value={user ? user.id : ""} />
         <legend className={styles.legend}>Song Information</legend>
         <fieldset className={styles.fieldset}>
           <FormSection type="songTitle" className={styles.formSection}>

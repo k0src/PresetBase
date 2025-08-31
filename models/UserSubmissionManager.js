@@ -228,8 +228,7 @@ export default class UserSubmissionManager {
   }
 
   static async processSubmission({ formData, fileData }) {
-    // const userId = formData.userId;
-    const userId = 1;
+    const userId = formData.userId;
     const now = new Date().toISOString();
 
     const rawData = UserSubmissionManager.#attachFileDataToFormData({

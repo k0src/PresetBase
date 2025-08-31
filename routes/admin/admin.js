@@ -7,19 +7,23 @@ const router = express.Router();
 
 router.get("/pending-submissions", async (req, res) => {
   try {
-    // add support for user id later - dummy ID 1
-    // this should be in the AdminManager
-    const pendingSubmissionsData = await DB.all(
-      "SELECT id, data, submitted_at, user_id FROM pending_submissions"
-    );
+    const pendingSubmissionsData = await DB.all(`
+      SELECT
+        pending_submissions.id,
+        pending_submissions.data,
+        pending_submissions.submitted_at,
+        pending_submissions.user_id,
+        users.username
+      FROM pending_submissions
+      LEFT JOIN users ON pending_submissions.user_id = users.id`);
 
     if (pendingSubmissionsData) {
       const submissions = pendingSubmissionsData.map((submission) => ({
         id: submission.id,
         data: JSON.parse(submission.data),
         submittedAt: submission.submitted_at,
-        userId: 1,
-        username: "Test",
+        userId: submission.user_id,
+        username: submission.username,
       }));
       res.json(submissions);
     }

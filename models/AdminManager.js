@@ -410,7 +410,14 @@ export default class AdminManager {
             ]
           );
 
-          // add user info
+          if (submissionId) {
+            await DB.run(
+              `INSERT INTO user_submissions
+                (user_id, submission_id)
+              VALUES (?, ?)`,
+              [submissionData.userId || null, submissionId]
+            );
+          }
         }
       }
 
@@ -588,6 +595,8 @@ export default class AdminManager {
         pendingSubmissionData,
         finalSubmissionData
       );
+
+      console.log(finalSubmissionData);
 
       // Add entry to database
       await AdminManager.#insertSubmissionDataIntoDb(

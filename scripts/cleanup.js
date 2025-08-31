@@ -1,11 +1,16 @@
-const fs = require("fs").promises;
-const path = require("path");
-const sqlite3 = require("sqlite3").verbose();
-require("dotenv").config();
+import fs from "fs/promises";
+import path from "path";
+import sqlite3 from "sqlite3";
+import dotenv from "dotenv";
+import { pathToFileURL } from "url";
 
-const projectRoot = path.resolve(__dirname, "..");
-require("dotenv").config({ path: path.join(projectRoot, ".env") });
+dotenv.config();
+
+sqlite3.verbose();
+
+const projectRoot = process.env.PROJECT_ROOT || ".";
 const dbPath = path.resolve(projectRoot, process.env.DB_PATH);
+const uploadDir = process.env.UPLOAD_DIR || "./uploads";
 
 function connectToDatabase() {
   return new Promise((resolve, reject) => {
@@ -23,18 +28,14 @@ function connectToDatabase() {
 function dbGet(db, sql) {
   return new Promise((resolve, reject) => {
     db.all(sql, [], (err, rows) => {
-      if (err) {
-        reject(err);
-      } else {
-        resolve(rows);
-      }
+      if (err) reject(err);
+      else resolve(rows);
     });
   });
 }
 
 async function getAllUsedImageFiles(db) {
   const usedFiles = new Set();
-
   const tables = ["albums", "artists", "songs", "synths"];
 
   for (const table of tables) {
@@ -44,37 +45,30 @@ async function getAllUsedImageFiles(db) {
         `SELECT image_url FROM ${table} WHERE image_url IS NOT NULL AND image_url != ''`
       );
       rows.forEach((row) => {
-        if (row.image_url) {
-          usedFiles.add(row.image_url);
-        }
+        if (row.image_url) usedFiles.add(row.image_url);
       });
       console.log(`Found ${rows.length} image files in ${table} table`);
     } catch (error) {
       console.error(`Error querying ${table}:`, error.message);
     }
   }
-
   return usedFiles;
 }
 
 async function getAllUsedAudioFiles(db) {
   const usedFiles = new Set();
-
   try {
     const rows = await dbGet(
       db,
       `SELECT audio_url FROM song_presets WHERE audio_url IS NOT NULL AND audio_url != ''`
     );
     rows.forEach((row) => {
-      if (row.audio_url) {
-        usedFiles.add(row.audio_url);
-      }
+      if (row.audio_url) usedFiles.add(row.audio_url);
     });
     console.log(`Found ${rows.length} audio files in song_presets table`);
   } catch (error) {
     console.error("Error querying song_presets:", error.message);
   }
-
   return usedFiles;
 }
 
@@ -125,27 +119,13 @@ function formatBytes(bytes) {
   return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
 
-async function cleanupUnusedFiles() {
+export async function cleanupUnusedFiles() {
   let db;
-
   try {
     db = await connectToDatabase();
 
-    const projectRoot = path.resolve(__dirname, "..");
-    const imageDir = path.join(
-      projectRoot,
-      "public",
-      "uploads",
-      "images",
-      "approved"
-    );
-    const audioDir = path.join(
-      projectRoot,
-      "public",
-      "uploads",
-      "audio",
-      "approved"
-    );
+    const imageDir = path.join(uploadDir, "images", "approved");
+    const audioDir = path.join(uploadDir, "audio", "approved");
 
     const [usedImageFiles, usedAudioFiles] = await Promise.all([
       getAllUsedImageFiles(db),
@@ -188,18 +168,13 @@ async function cleanupUnusedFiles() {
   } finally {
     if (db) {
       db.close((err) => {
-        if (err) {
-          console.error("Error closing database:", err.message);
-        } else {
-          console.log("Database connection closed.");
-        }
+        if (err) console.error("Error closing database:", err.message);
+        else console.log("Database connection closed.");
       });
     }
   }
 }
 
-if (require.main === module) {
+if (import.meta.url === pathToFileURL(process.argv[1]).href) {
   cleanupUnusedFiles();
 }
-
-module.exports = cleanupUnusedFiles;
