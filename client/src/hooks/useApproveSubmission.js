@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { approveSubmission, denySubmission } from "../api/admin.js";
+import { adminAPI } from "../api/admin.js";
 
 export function useApproveSubmission() {
   const [isProcessing, setIsProcessing] = useState(false);
@@ -17,7 +17,7 @@ export function useApproveSubmission() {
 
     try {
       const formData = collectFormData(formElement, submissionId);
-      await approveSubmission(formData);
+      await adminAPI.approveSubmission(formData);
 
       if (onSuccess) {
         onSuccess(submissionId);
@@ -35,7 +35,7 @@ export function useApproveSubmission() {
     setError(null);
 
     try {
-      await denySubmission(submissionId);
+      await adminAPI.denySubmission(submissionId);
 
       if (onSuccess) {
         onSuccess(submissionId);

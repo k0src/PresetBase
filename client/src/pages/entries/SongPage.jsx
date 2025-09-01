@@ -1,5 +1,5 @@
 import { useAsyncData } from "../../hooks/useAsyncData";
-import { getSongById, getRelatedSongs } from "../../api/entries/songs";
+import { entryAPI } from "../../api/entry";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -20,8 +20,8 @@ export default memo(function SongPage() {
 
   const { data, loading, error } = useAsyncData(
     {
-      song: () => getSongById(id),
-      moreSongs: () => getRelatedSongs(id, 5),
+      song: () => entryAPI.getSong(id),
+      moreSongs: () => entryAPI.getRelatedSongs(id, 5),
     },
     [id],
     { cacheKey: `song-${id}` }

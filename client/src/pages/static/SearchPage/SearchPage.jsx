@@ -1,5 +1,5 @@
 import { useAsyncData } from "../../../hooks/useAsyncData.js";
-import { searchDatabase } from "../../../api/api";
+import { generalAPI } from "../../../api/general";
 
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -17,7 +17,7 @@ export default memo(function SearchPage() {
 
   const { data, loading, error } = useAsyncData(
     {
-      search: () => searchDatabase(query),
+      search: () => generalAPI.searchDatabase(query),
     },
     [query],
     { cacheKey: `search-${query}`, ttl: 1000 * 60 }

@@ -1,5 +1,5 @@
 import { useAsyncData } from "../../hooks/useAsyncData";
-import { getAlbumById, getRelatedAlbums } from "../../api/entries/albums";
+import { entryAPI } from "../../api/entry";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -19,8 +19,8 @@ export default memo(function AlbumPage() {
 
   const { data, loading, error } = useAsyncData(
     {
-      album: () => getAlbumById(id),
-      moreAlbums: () => getRelatedAlbums(id, 5),
+      album: () => entryAPI.getAlbum(id),
+      moreAlbums: () => entryAPI.getRelatedAlbums(id, 5),
     },
     [id],
     { cacheKey: `album-${id}` }

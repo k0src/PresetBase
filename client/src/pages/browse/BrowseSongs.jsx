@@ -1,4 +1,4 @@
-import { getSongsData, getTotalSongEntries } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,8 +19,8 @@ export default function BrowseSongs() {
 
   const { data, loading, error } = useAsyncData(
     {
-      songs: () => getSongsData(sortBy, sortDirection),
-      total: () => getTotalSongEntries(),
+      songs: () => browseAPI.getSongs(sortBy, sortDirection),
+      total: () => browseAPI.getTotalSongEntries(),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseSongs-${sortBy}-${sortDirection}` }

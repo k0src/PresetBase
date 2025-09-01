@@ -13,8 +13,7 @@ export default function HomePage() {
         <title>PresetBase</title>
       </Helmet>
 
-      {/* FIX ME! */}
-      <Navbar isAuth={true} userIsAdmin={true} pathUrl={"/"} />
+      <Navbar />
       <main className={styles.container}>
         <div className={styles.splashContainer}>
           <img

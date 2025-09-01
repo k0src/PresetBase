@@ -1,8 +1,8 @@
 import { useState, useRef } from "react";
 import { Link } from "react-router-dom";
 
-import { submitData } from "../../../api/api";
-import { uploadEntry } from "../../../api/admin";
+import { generalAPI } from "../../../api/general";
+import { adminAPI } from "../../../api/admin";
 import { useSubmitForm } from "../../../hooks/useSubmitForm";
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -69,9 +69,9 @@ export default function SubmitForm({
       const formData = collectFormData(e.target);
 
       if (mode === "submit") {
-        await submitData(formData);
+        await generalAPI.submitData(formData);
       } else if (mode === "upload") {
-        await uploadEntry(formData);
+        await adminAPI.uploadEntry(formData);
       }
 
       // Reset form

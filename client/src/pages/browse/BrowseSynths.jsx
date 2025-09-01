@@ -1,4 +1,4 @@
-import { getSynthsData, getTotalSynthEntries } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,8 +19,8 @@ export default function BrowseSynths() {
 
   const { data, loading, error } = useAsyncData(
     {
-      synths: () => getSynthsData(sortBy, sortDirection),
-      total: () => getTotalSynthEntries(),
+      synths: () => browseAPI.getSynths(sortBy, sortDirection),
+      total: () => browseAPI.getTotalSynthEntries(),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseSynths-${sortBy}-${sortDirection}` }

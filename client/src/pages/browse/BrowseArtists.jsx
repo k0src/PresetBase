@@ -1,4 +1,4 @@
-import { getArtistsData, getTotalArtistEntries } from "../../api/browse";
+import { browseAPI } from "../../api/browse";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,8 +19,8 @@ export default function BrowseArtists() {
 
   const { data, loading, error } = useAsyncData(
     {
-      artists: () => getArtistsData(sortBy, sortDirection),
-      total: () => getTotalArtistEntries(),
+      artists: () => browseAPI.getArtists(sortBy, sortDirection),
+      total: () => browseAPI.getTotalArtistEntries(),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseArtists-${sortBy}-${sortDirection}` }

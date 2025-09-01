@@ -1,35 +1,33 @@
-export async function getTopPresetsData() {
-  const res = await fetch("/api/stats/top-presets");
-  if (!res.ok) throw new Error("Failed to fetch top presets data");
-  return res.json();
-}
+import api from "./api";
 
-export async function getPresetsPerSynthData() {
-  const res = await fetch("/api/stats/presets-per-synth");
-  if (!res.ok) throw new Error("Failed to fetch presets per synth data");
-  return res.json();
-}
+export const statsAPI = {
+  async getTopPresets() {
+    const response = await api.get("/stats/top-presets");
+    return response.data;
+  },
 
-export async function getTopSynthsData() {
-  const res = await fetch("/api/stats/top-synths");
-  if (!res.ok) throw new Error("Failed to fetch top synths data");
-  return res.json();
-}
+  async getPresetsPerSynth() {
+    const response = await api.get("/stats/presets-per-synth");
+    return response.data;
+  },
 
-export async function getSynthTimeData() {
-  const res = await fetch("/api/stats/synth-time-data");
-  if (!res.ok) throw new Error("Failed to fetch synth time data");
-  return res.json();
-}
+  async getTopSynths() {
+    const response = await api.get("/stats/top-synths");
+    return response.data;
+  },
 
-export async function getHeatmapData() {
-  const res = await fetch("/api/stats/heatmap-data");
-  if (!res.ok) throw new Error("Failed to fetch heatmap data");
-  return res.json();
-}
+  async getSynthTimeData() {
+    const response = await api.get("/stats/synth-time-data");
+    return response.data;
+  },
 
-export async function getCommunityStats() {
-  const res = await fetch("/api/stats/community-stats");
-  if (!res.ok) throw new Error("Failed to fetch community stats");
-  return res.json();
-}
+  async getHeatmapData() {
+    const response = await api.get("/stats/heatmap-data");
+    return response.data;
+  },
+
+  async getCommunityStats() {
+    const response = await api.get("/stats/community-stats");
+    return response.data;
+  },
+};

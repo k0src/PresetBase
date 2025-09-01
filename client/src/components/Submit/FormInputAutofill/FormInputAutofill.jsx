@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 
-import { getAutofillSuggestions } from "../../../api/api";
+import { generalAPI } from "../../../api/general";
 import { useFormSection } from "../FormSection/FormSection";
 import AutofillDropdown from "../../AutofillDropdown/AutofillDropdown";
 import styles from "./FormInputAutofill.module.css";
@@ -74,7 +74,7 @@ export default function FormInputAutofill({
       abortController.current = new AbortController();
 
       try {
-        const data = await getAutofillSuggestions(
+        const data = await generalAPI.getAutofillSuggestions(
           autofillType,
           q,
           autofillLimit

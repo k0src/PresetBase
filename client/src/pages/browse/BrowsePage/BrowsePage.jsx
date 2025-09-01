@@ -1,15 +1,5 @@
-import {
-  getNumberEntries,
-  getLatestEntry,
-  getTopGenres,
-  getTopSynths,
-  getTopPresets,
-} from "../../../api/api";
-import {
-  getHotSongsData,
-  getRecentSongsData,
-  getPopularSongsData,
-} from "../../../api/browse";
+import { generalAPI } from "../../../api/general.js";
+import { browseAPI } from "../../../api/browse.js";
 import { useAsyncData } from "../../../hooks/useAsyncData";
 
 import { Helmet } from "react-helmet-async";
@@ -31,14 +21,14 @@ import styles from "./BrowsePage.module.css";
 export default function BrowsePage() {
   const { data, loading, error } = useAsyncData(
     {
-      numberEntries: () => getNumberEntries(),
-      hotSongs: () => getHotSongsData(null, "DESC", 9),
-      latestEntry: () => getLatestEntry(),
-      topGenres: () => getTopGenres(6),
-      topSynths: () => getTopSynths(6),
-      recentSongs: () => getRecentSongsData(null, "DESC", 6),
-      popularSongs: () => getPopularSongsData(null, "DESC", 6),
-      topPresets: () => getTopPresets(10),
+      numberEntries: () => generalAPI.getNumberEntries(),
+      hotSongs: () => browseAPI.getHotSongs(null, "DESC", 9),
+      latestEntry: () => generalAPI.getLatestEntry(),
+      topGenres: () => generalAPI.getTopGenres(6),
+      topSynths: () => generalAPI.getTopSynths(6),
+      recentSongs: () => browseAPI.getRecentSongs(null, "DESC", 6),
+      popularSongs: () => browseAPI.getPopularSongs(null, "DESC", 6),
+      topPresets: () => generalAPI.getTopPresets(10),
     },
     [],
     { cacheKey: "browsePageData" }

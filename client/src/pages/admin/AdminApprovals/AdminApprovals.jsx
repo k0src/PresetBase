@@ -1,7 +1,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { Helmet } from "react-helmet-async";
 
-import { getPendingSubmissions } from "../../../api/admin.js";
+import { adminAPI } from "../../../api/admin.js";
 import { useAsyncData } from "../../../hooks/useAsyncData.js";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
@@ -14,7 +14,7 @@ export default function AdminApprovals() {
   const [submissions, setSubmissions] = useState([]);
 
   const { data, loading, error } = useAsyncData({
-    submissions: () => getPendingSubmissions(),
+    submissions: () => adminAPI.getPendingSubmissions(),
   });
 
   useEffect(() => {

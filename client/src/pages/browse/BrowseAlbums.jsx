@@ -1,4 +1,4 @@
-import { getAlbumsData, getTotalAlbumEntries } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,8 +19,8 @@ export default function BrowseAlbums() {
 
   const { data, loading, error } = useAsyncData(
     {
-      albums: () => getAlbumsData(sortBy, sortDirection),
-      total: () => getTotalAlbumEntries(),
+      albums: () => browseAPI.getAlbums(sortBy, sortDirection),
+      total: () => browseAPI.getTotalAlbumEntries(),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseAlbums-${sortBy}-${sortDirection}` }

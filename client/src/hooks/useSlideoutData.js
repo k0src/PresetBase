@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from "react";
 import { useSlideout } from "../contexts/SlideoutContext";
-import { getEntryData, updateEntry, deleteEntry } from "../api/admin";
+import { adminAPI } from "../api/admin";
 
 export function useSlideoutData() {
   const {
@@ -26,7 +26,7 @@ export function useSlideoutData() {
 
     try {
       setLoading(true);
-      const entryData = await getEntryData(entryType, entryId);
+      const entryData = await adminAPI.getEntryData(entryType, entryId);
       setData(entryData);
     } catch (err) {
       console.error("Failed to fetch entry data:", err);
@@ -48,7 +48,7 @@ export function useSlideoutData() {
 
       try {
         setLoading(true);
-        await updateEntry(entryType, entryId, formData);
+        await adminAPI.updateEntry(entryType, entryId, formData);
         resetChanges();
         setMadeChanges();
         await fetchSlideoutData();
@@ -82,7 +82,7 @@ export function useSlideoutData() {
     if (!confirmed) return false;
 
     try {
-      await deleteEntry(entryType, entryId);
+      await adminAPI.deleteEntry(entryType, entryId);
       closeSlideout();
       return true;
     } catch (err) {

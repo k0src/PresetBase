@@ -1,44 +1,31 @@
 import { useMemo, useCallback } from "react";
 import { useAsyncData } from "./useAsyncData";
-import {
-  getSongsData,
-  getArtistsData,
-  getAlbumsData,
-  getSynthsData,
-  getPresetsData,
-  getGenresData,
-  getTotalSongEntries,
-  getTotalArtistEntries,
-  getTotalAlbumEntries,
-  getTotalSynthEntries,
-  getTotalPresetEntries,
-  getTotalGenreEntries,
-} from "../api/browse";
+import { browseAPI } from "../api/browse";
 
 const dataFetchers = {
   songs: {
-    data: getSongsData,
-    total: getTotalSongEntries,
+    data: browseAPI.getSongs,
+    total: browseAPI.getTotalSongEntries,
   },
   artists: {
-    data: getArtistsData,
-    total: getTotalArtistEntries,
+    data: browseAPI.getArtists,
+    total: browseAPI.getTotalArtistEntries,
   },
   albums: {
-    data: getAlbumsData,
-    total: getTotalAlbumEntries,
+    data: browseAPI.getAlbums,
+    total: browseAPI.getTotalAlbumEntries,
   },
   synths: {
-    data: getSynthsData,
-    total: getTotalSynthEntries,
+    data: browseAPI.getSynths,
+    total: browseAPI.getTotalSynthEntries,
   },
   presets: {
-    data: getPresetsData,
-    total: getTotalPresetEntries,
+    data: browseAPI.getPresets,
+    total: browseAPI.getTotalPresetEntries,
   },
   genres: {
-    data: getGenresData,
-    total: getTotalGenreEntries,
+    data: browseAPI.getGenres,
+    total: browseAPI.getTotalGenreEntries,
   },
 };
 

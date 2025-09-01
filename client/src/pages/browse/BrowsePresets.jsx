@@ -1,4 +1,4 @@
-import { getPresetsData, getTotalPresetEntries } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,8 +19,8 @@ export default function BrowsePresets() {
 
   const { data, loading, error } = useAsyncData(
     {
-      presets: () => getPresetsData(sortBy, sortDirection),
-      total: () => getTotalPresetEntries(),
+      presets: () => browseAPI.getPresets(sortBy, sortDirection),
+      total: () => browseAPI.getTotalPresetEntries(),
     },
     [sortBy, sortDirection],
     { cacheKey: `browsePresets-${sortBy}-${sortDirection}` }

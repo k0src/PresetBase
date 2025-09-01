@@ -1,21 +1,14 @@
 import { useState, useCallback } from "react";
 import { dbEntryConfigs } from "../components/Admin/ManageDb/dbEntryConfigs";
-import {
-  getSongsData,
-  getArtistsData,
-  getAlbumsData,
-  getSynthsData,
-  getPresetsData,
-  getGenresData,
-} from "../api/browse";
+import { browseAPI } from "../api/browse";
 
 const dataFetchers = {
-  songs: getSongsData,
-  artists: getArtistsData,
-  albums: getAlbumsData,
-  synths: getSynthsData,
-  presets: getPresetsData,
-  genres: getGenresData,
+  songs: browseAPI.getSongs,
+  artists: browseAPI.getArtists,
+  albums: browseAPI.getAlbums,
+  synths: browseAPI.getSynths,
+  presets: browseAPI.getPresets,
+  genres: browseAPI.getGenres,
 };
 
 export function useCSVDownloader(

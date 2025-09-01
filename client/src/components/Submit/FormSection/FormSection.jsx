@@ -1,5 +1,5 @@
 import { createContext, useContext, useCallback, useRef, useMemo } from "react";
-import { getAutofillData } from "../../../api/api";
+import { generalAPI } from "../../../api/general";
 
 const FormSectionContext = createContext(null);
 
@@ -144,7 +144,7 @@ export default function FormSection({ children, type, className }) {
       if (!type || !query?.trim()) return false;
 
       try {
-        const results = await getAutofillData(type, query);
+        const results = await generalAPI.getAutofillData(type, query);
 
         // Autofill only if we get exactly one result
         if (!results || results.length !== 1) return false;

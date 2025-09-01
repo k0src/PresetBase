@@ -19,15 +19,8 @@ export function useStatsData() {
         setLoading(true);
         setError(null);
 
-        const { getTotalEntries } = await import("../api/api");
-        const {
-          getTopPresetsData,
-          getPresetsPerSynthData,
-          getTopSynthsData,
-          getSynthTimeData,
-          getCommunityStats,
-          getHeatmapData,
-        } = await import("../api/stats");
+        const { generalAPI } = await import("../api/general");
+        const { statsAPI } = await import("../api/stats");
 
         const [
           totalEntriesData,
@@ -38,13 +31,13 @@ export function useStatsData() {
           communityStatsResult,
           heatmapResult,
         ] = await Promise.all([
-          getTotalEntries(),
-          getTopPresetsData(),
-          getPresetsPerSynthData(),
-          getTopSynthsData(),
-          getSynthTimeData(),
-          getCommunityStats(),
-          getHeatmapData(),
+          generalAPI.getTotalEntries(),
+          statsAPI.getTopPresets(),
+          statsAPI.getPresetsPerSynth(),
+          statsAPI.getTopSynths(),
+          statsAPI.getSynthTimeData(),
+          statsAPI.getCommunityStats(),
+          statsAPI.getHeatmapData(),
         ]);
 
         setTotalEntries(totalEntriesData.data);
@@ -67,8 +60,8 @@ export function useStatsData() {
 
   const refetchHeatmapData = async (year) => {
     try {
-      const { getHeatmapData } = await import("../api/stats");
-      const result = await getHeatmapData();
+      const { statsAPI } = await import("../api/stats");
+      const result = await statsAPI.getHeatmapData();
       setHeatmapData(result);
       setCurrentYear(year);
     } catch (err) {

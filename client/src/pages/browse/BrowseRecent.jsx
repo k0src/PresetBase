@@ -1,4 +1,4 @@
-import { getRecentSongsData } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -18,7 +18,7 @@ export default function BrowseRecent() {
 
   const { data, loading, error } = useAsyncData(
     {
-      songs: () => getRecentSongsData(sortBy, sortDirection),
+      songs: () => browseAPI.getRecentSongs(sortBy, sortDirection),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseRecent-${sortBy}-${sortDirection}` }

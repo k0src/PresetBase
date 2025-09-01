@@ -126,7 +126,6 @@ api.interceptors.response.use(
   }
 );
 
-/* -------------------------------- Auth API -------------------------------- */
 export const authAPI = {
   setTokens,
   clearTokens,
@@ -193,76 +192,5 @@ export const authAPI = {
     return response.data;
   },
 };
-
-export async function getTotalEntries() {
-  const res = await fetch("/api/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total entries");
-  return res.json();
-}
-
-export async function getNumberEntries() {
-  const res = await fetch("/api/number-entries");
-  if (!res.ok) throw new Error("Failed to fetch total number of entries");
-  return res.json();
-}
-
-export async function searchDatabase(query) {
-  const res = await fetch(`/api/search?query=${encodeURIComponent(query)}`);
-  if (!res.ok) throw new Error("Failed to search database");
-  return res.json();
-}
-
-export async function submitData(data) {
-  const res = await fetch("/api/submit", {
-    method: "POST",
-    body: data,
-  });
-  if (!res.ok) throw new Error("Failed to submit data");
-  return res.json();
-}
-
-export async function getAutofillSuggestions(type, query, limit = 5) {
-  const res = await fetch(
-    `/api/autofill/suggestions/${encodeURIComponent(
-      type
-    )}?query=${encodeURIComponent(query)}&limit=${limit}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch autofill suggestions");
-  return res.json();
-}
-
-export async function getAutofillData(type, query) {
-  const res = await fetch(
-    `/api/autofill/data/${encodeURIComponent(type)}?query=${encodeURIComponent(
-      query
-    )}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch autofill data");
-  return res.json();
-}
-
-export async function getLatestEntry() {
-  const res = await fetch("/api/latest-entry");
-  if (!res.ok) throw new Error("Failed to fetch latest entry");
-  return res.json();
-}
-
-export async function getTopGenres(limit = null) {
-  const res = await fetch(`/api/top-genres?limit=${limit}`);
-  if (!res.ok) throw new Error("Failed to fetch top genres");
-  return res.json();
-}
-
-export async function getTopSynths(limit = null) {
-  const res = await fetch(`/api/top-synths?limit=${limit}`);
-  if (!res.ok) throw new Error("Failed to fetch top synths");
-  return res.json();
-}
-
-export async function getTopPresets(limit = null) {
-  const res = await fetch(`/api/top-presets?limit=${limit}`);
-  if (!res.ok) throw new Error("Failed to fetch top presets");
-  return res.json();
-}
 
 export default api;

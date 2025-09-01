@@ -1,4 +1,4 @@
-import { getHotSongsData } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,7 +19,7 @@ export default function BrowseHot() {
 
   const { data, loading, error } = useAsyncData(
     {
-      songs: () => getHotSongsData(sortBy, sortDirection),
+      songs: () => browseAPI.getHotSongs(sortBy, sortDirection),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseHot-${sortBy}-${sortDirection}` }

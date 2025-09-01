@@ -1,10 +1,5 @@
 import { useAsyncData } from "../../hooks/useAsyncData";
-import {
-  getArtistById,
-  getTotalSongs,
-  getAlbums,
-  getFavoriteSynth,
-} from "../../api/entries/artists";
+import { entryAPI } from "../../api/entry";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -24,10 +19,10 @@ export default memo(function ArtistPage() {
 
   const { data, loading, error } = useAsyncData(
     {
-      artist: () => getArtistById(id),
-      totalSongs: () => getTotalSongs(id, 5),
-      albums: () => getAlbums(id, 5),
-      favoriteSynth: () => getFavoriteSynth(id),
+      artist: () => entryAPI.getArtist(id),
+      totalSongs: () => getArtistTotalSongs(id, 5),
+      albums: () => getArtistAlbums(id, 5),
+      favoriteSynth: () => getArtistFavoriteSynth(id),
     },
     [id],
     { cacheKey: `artist-${id}` }

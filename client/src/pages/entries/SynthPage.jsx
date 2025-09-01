@@ -1,5 +1,5 @@
 import { useAsyncData } from "../../hooks/useAsyncData";
-import { getSynthById, getRelatedSynths } from "../../api/entries/synths";
+import { entryAPI } from "../../api/entry";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
@@ -19,8 +19,8 @@ export default memo(function SynthPage() {
 
   const { data, loading, error } = useAsyncData(
     {
-      synth: () => getSynthById(id),
-      moreSynths: () => getRelatedSynths(id, 5),
+      synth: () => entryAPI.getSynth(id),
+      moreSynths: () => entryAPI.getRelatedSynths(id, 5),
     },
     [id],
     { cacheKey: `synth-${id}` }

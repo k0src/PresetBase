@@ -1,5 +1,5 @@
 import { memo, useState, useCallback, useRef, useEffect } from "react";
-import { getFieldData } from "../../../../../api/admin";
+import { adminAPI } from "../../../../../api/admin";
 
 import AutofillDropdown from "../../../../AutofillDropdown/AutofillDropdown";
 import styles from "./SlideoutDropdown.module.css";
@@ -67,7 +67,7 @@ const SearchDropdown = memo(function SearchDropdown({
 
       try {
         setLoading(true);
-        const results = await getFieldData(searchTable, query, 7);
+        const results = await adminAPI.getFieldData(searchTable, query, 7);
         setSuggestions(results);
       } catch (error) {
         console.error("Failed to fetch suggestions:", error);

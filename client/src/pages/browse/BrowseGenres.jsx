@@ -1,4 +1,4 @@
-import { getGenresData, getTotalGenreEntries } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,8 +19,8 @@ export default function BrowseGenres() {
 
   const { data, loading, error } = useAsyncData(
     {
-      genres: () => getGenresData(sortBy, sortDirection),
-      total: () => getTotalGenreEntries(),
+      genres: () => browseAPI.getGenres(sortBy, sortDirection),
+      total: () => browseAPI.getTotalGenreEntries(),
     },
     [sortBy, sortDirection],
     { cacheKey: `browseGenres-${sortBy}-${sortDirection}` }

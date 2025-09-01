@@ -1,130 +1,103 @@
-/* ---------------------------------- Songs --------------------------------- */
-export async function getSongsData(
-  sort = null,
-  direction = "ASC",
-  limit = null
-) {
-  const res = await fetch(
-    `/api/browse/songs?sort=${sort}&direction=${direction}&limit=${limit}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch songs data");
-  return res.json();
-}
+import api from "./api";
 
-export async function getTotalSongEntries() {
-  const res = await fetch("/api/browse/songs/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total song entries");
-  return res.json();
-}
+export const browseAPI = {
+  // Songs
+  async getSongs(sort = null, direction = "ASC", limit = null) {
+    const response = await api.get("/browse/songs", {
+      params: { sort, direction, limit },
+    });
+    return response.data;
+  },
 
-/* -------------------------- Popular, Hot, Recent -------------------------- */
-export async function getPopularSongsData(
-  sort = null,
-  direction = "DESC",
-  limit = null
-) {
-  const res = await fetch(
-    `/api/browse/songs/popular?sort=${sort}&direction=${direction}&limit=${limit}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch popular songs");
-  return res.json();
-}
+  async getTotalSongEntries() {
+    const response = await api.get("/browse/songs/total-entries");
+    return response.data;
+  },
 
-export async function getHotSongsData(
-  sort = null,
-  direction = "DESC",
-  limit = null
-) {
-  const res = await fetch(
-    `/api/browse/songs/hot?sort=${sort}&direction=${direction}&limit=${limit}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch hot songs");
-  return res.json();
-}
+  // Popular, Hot, Recent
+  async getPopularSongs(sort = null, direction = "DESC", limit = null) {
+    const response = await api.get("/browse/songs/popular", {
+      params: { sort, direction, limit },
+    });
+    return response.data;
+  },
 
-export async function getRecentSongsData(
-  sort = null,
-  direction = "DESC",
-  limit = null
-) {
-  const res = await fetch(
-    `/api/browse/songs/recent?sort=${sort}&direction=${direction}&limit=${limit}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch recent songs");
-  return res.json();
-}
+  async getHotSongs(sort = null, direction = "DESC", limit = null) {
+    const response = await api.get("/browse/songs/hot", {
+      params: { sort, direction, limit },
+    });
+    return response.data;
+  },
 
-/* --------------------------------- Artists -------------------------------- */
-export async function getArtistsData(sort = null, direction = "ASC") {
-  const res = await fetch(
-    `/api/browse/artists?sort=${sort}&direction=${direction}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch artists data");
-  return res.json();
-}
+  async getRecentSongs(sort = null, direction = "DESC", limit = null) {
+    const response = await api.get("/browse/songs/recent", {
+      params: { sort, direction, limit },
+    });
+    return response.data;
+  },
 
-export async function getTotalArtistEntries() {
-  const res = await fetch("/api/browse/artists/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total artist entries");
-  return res.json();
-}
+  // Artists
+  async getArtists(sort = null, direction = "ASC") {
+    const response = await api.get("/browse/artists", {
+      params: { sort, direction },
+    });
+    return response.data;
+  },
 
-/* --------------------------------- Albums --------------------------------- */
-export async function getAlbumsData(sort = null, direction = "ASC") {
-  const res = await fetch(
-    `/api/browse/albums?sort=${sort}&direction=${direction}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch albums data");
-  return res.json();
-}
+  async getTotalArtistEntries() {
+    const response = await api.get("/browse/artists/total-entries");
+    return response.data;
+  },
 
-export async function getTotalAlbumEntries() {
-  const res = await fetch("/api/browse/albums/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total album entries");
-  return res.json();
-}
+  // Albums
+  async getAlbums(sort = null, direction = "ASC") {
+    const response = await api.get("/browse/albums", {
+      params: { sort, direction },
+    });
+    return response.data;
+  },
 
-/* --------------------------------- Synths --------------------------------- */
-export async function getSynthsData(sort = null, direction = "ASC") {
-  const res = await fetch(
-    `/api/browse/synths?sort=${sort}&direction=${direction}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch synths data");
-  return res.json();
-}
+  async getTotalAlbumEntries() {
+    const response = await api.get("/browse/albums/total-entries");
+    return response.data;
+  },
 
-export async function getTotalSynthEntries() {
-  const res = await fetch("/api/browse/synths/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total synth entries");
-  return res.json();
-}
+  // Synths
+  async getSynths(sort = null, direction = "ASC") {
+    const response = await api.get("/browse/synths", {
+      params: { sort, direction },
+    });
+    return response.data;
+  },
 
-/* --------------------------------- Presets -------------------------------- */
-export async function getPresetsData(sort = null, direction = "ASC") {
-  const res = await fetch(
-    `/api/browse/presets?sort=${sort}&direction=${direction}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch presets data");
-  return res.json();
-}
+  async getTotalSynthEntries() {
+    const response = await api.get("/browse/synths/total-entries");
+    return response.data;
+  },
 
-export async function getTotalPresetEntries() {
-  const res = await fetch("/api/browse/presets/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total preset entries");
-  return res.json();
-}
+  // Presets
+  async getPresets(sort = null, direction = "ASC") {
+    const response = await api.get("/browse/presets", {
+      params: { sort, direction },
+    });
+    return response.data;
+  },
 
-/* --------------------------------- Genres --------------------------------- */
-export async function getGenresData(sort = null, direction = "ASC") {
-  const res = await fetch(
-    `/api/browse/genres?sort=${sort}&direction=${direction}`
-  );
-  if (!res.ok) throw new Error("Failed to fetch genres data");
-  return res.json();
-}
+  async getTotalPresetEntries() {
+    const response = await api.get("/browse/presets/total-entries");
+    return response.data;
+  },
 
-export async function getTotalGenreEntries() {
-  const res = await fetch("/api/browse/genres/total-entries");
-  if (!res.ok) throw new Error("Failed to fetch total genre entries");
-  return res.json();
-}
+  // Genres
+  async getGenres(sort = null, direction = "ASC") {
+    const response = await api.get("/browse/genres", {
+      params: { sort, direction },
+    });
+    return response.data;
+  },
+
+  async getTotalGenreEntries() {
+    const response = await api.get("/browse/genres/total-entries");
+    return response.data;
+  },
+};

@@ -1,4 +1,4 @@
-import { getPopularSongsData } from "../../api/browse.js";
+import { browseAPI } from "../../api/browse.js";
 import { entryConfigs } from "./entryConfigs.js";
 import { useAsyncData } from "../../hooks/useAsyncData.js";
 
@@ -19,7 +19,7 @@ export default function BrowsePopular() {
 
   const { data, loading, error } = useAsyncData(
     {
-      songs: () => getPopularSongsData(sortBy, sortDirection),
+      songs: () => browseAPI.getPopularSongs(sortBy, sortDirection),
     },
     [sortBy, sortDirection],
     { cacheKey: `browsePopular-${sortBy}-${sortDirection}` }

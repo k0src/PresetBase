@@ -6,7 +6,7 @@ import GitHubRepoCard from "../../../components/GitHubRepoCard/GitHubRepoCard";
 import DbStatsCards from "../../../components/Stats/DbStatsCards/DbStatsCards";
 import PageLoader from "../../../components/PageLoader/PageLoader";
 import DbError from "../../../components/DbError/DbError";
-import { getTotalEntries } from "../../../api/api";
+import { generalAPI } from "../../../api/general";
 import styles from "./AboutPage.module.css";
 
 import SplashImg from "../../../assets/images/about-us-hero.webp";
@@ -21,7 +21,7 @@ export default function AboutPage() {
       try {
         setLoading(true);
         setError(null);
-        const totalEntriesData = await getTotalEntries();
+        const totalEntriesData = await generalAPI.getTotalEntries();
         setTotalEntries(totalEntriesData.data);
       } catch (err) {
         console.error("Error fetching total entries:", err);
