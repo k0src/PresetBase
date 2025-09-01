@@ -249,9 +249,9 @@ export default function AccountInfoPage() {
               <span className={styles.userInfoText}>&bull;</span>
               <span className={styles.userInfoText}>
                 <FaLock />
-                Authenticated with: {user?.authenticated_with || "PresetBase"}
+                Authenticated with: {user?.authenticatedWith || "PresetBase"}
               </span>
-              {user?.is_admin === "t" && (
+              {user?.isAdmin === "t" && (
                 <>
                   <span className={styles.userInfoText}>&bull;</span>
                   <span className={styles.userInfoText}>

@@ -1,68 +1,45 @@
+import api from "./api";
+
 export async function getPendingSubmissions() {
-  const res = await fetch("/api/admin/pending-submissions");
-  if (!res.ok) throw new Error("Failed to fetch pending submissions");
-  return res.json();
+  const res = await api.get("/admin/pending-submissions");
+  return res.data;
 }
 
 export async function approveSubmission(submission) {
-  const res = await fetch("/api/admin/approve-submission", {
-    method: "POST",
-    body: submission,
-  });
-  if (!res.ok) throw new Error("Failed to approve submission");
-  return res.json();
+  const res = await api.post("/admin/approve-submission", submission);
+  return res.data;
 }
 
 export async function denySubmission(submissionId) {
-  const res = await fetch("/api/admin/deny-submission", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ submissionId }),
-  });
-  if (!res.ok) throw new Error("Failed to deny submission");
-  return res.json();
+  const res = await api.post("/admin/deny-submission", { submissionId });
+  return res.data;
 }
 
 export async function uploadEntry(data) {
-  const res = await fetch("/api/admin/upload", {
-    method: "POST",
-    body: data,
-  });
-  if (!res.ok) throw new Error("Failed to upload entry");
-  return res.json();
+  const res = await api.post("/admin/upload", data);
+  return res.data;
 }
 
 export async function getEntryData(table, id) {
-  const res = await fetch(`/api/admin/entry/${table}/${id}`);
-  if (!res.ok) throw new Error("Failed to fetch entry data");
-  return res.json();
+  const res = await api.get(`/admin/entry/${table}/${id}`);
+  return res.data;
 }
 
 export async function updateEntry(table, id, data) {
-  const res = await fetch(`/api/admin/entry/${table}/${id}`, {
-    method: "PUT",
-    body: data,
-  });
-  if (!res.ok) throw new Error("Failed to update entry");
-  return res.json();
+  const res = await api.put(`/admin/entry/${table}/${id}`, data);
+  return res.data;
 }
 
 export async function deleteEntry(table, id) {
-  const res = await fetch(`/api/admin/entry/${table}/${id}`, {
-    method: "DELETE",
-  });
-  if (!res.ok) throw new Error("Failed to delete entry");
-  return res.json();
+  const res = await api.delete(`/admin/entry/${table}/${id}`);
+  return res.data;
 }
 
 export async function getFieldData(table, query = "", limit = 10) {
-  const res = await fetch(
-    `/api/admin/field-data/${table}?query=${encodeURIComponent(
+  const res = await api.get(
+    `/admin/field-data/${table}?query=${encodeURIComponent(
       query
     )}&limit=${limit}`
   );
-  if (!res.ok) throw new Error("Failed to fetch field data");
-  return res.json();
+  return res.data;
 }

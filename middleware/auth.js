@@ -40,6 +40,7 @@ export async function authenticateToken(req, res, next) {
       id: user.id,
       username: user.username,
       email: user.email,
+      isAdmin: user.isAdmin,
     };
     req.token = token;
 

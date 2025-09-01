@@ -87,7 +87,7 @@ router.post("/login", authRateLimit, async (req, res) => {
 
     const isValidPassword = await User.verifyPassword(
       password,
-      user.password_hash
+      user.passwordHash
     );
     if (!isValidPassword) {
       return res.status(401).json({
@@ -109,6 +109,7 @@ router.post("/login", authRateLimit, async (req, res) => {
         id: user.id,
         username: user.username,
         email: user.email,
+        isAdmin: user.isAdmin,
       },
       ...tokens,
     });
@@ -245,8 +246,8 @@ router.get("/me", authenticateToken, async (req, res) => {
         username: user.username,
         email: user.email,
         timestamp: user.timestamp,
-        authenticated_with: user.authenticated_with,
-        is_admin: user.is_admin,
+        authenticatedWith: user.authenticatedWith,
+        isAdmin: user.isAdmin,
       },
     });
   } catch (error) {
@@ -286,7 +287,7 @@ router.put("/me", authenticateToken, async (req, res) => {
         id: updatedUser.id,
         username: updatedUser.username,
         email: updatedUser.email,
-        updated_at: updatedUser.updated_at,
+        timestamp: updatedUser.timestamp,
       },
     });
   } catch (err) {
@@ -326,7 +327,7 @@ router.put("/password", authenticateToken, async (req, res) => {
     const user = await User.getById(req.user.id);
     const isValidPassword = await User.verifyPassword(
       currentPassword,
-      user.password_hash
+      user.passwordHash
     );
 
     if (!isValidPassword) {

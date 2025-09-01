@@ -2,8 +2,24 @@ import express from "express";
 import DB from "../../models/DB.js";
 import multer from "../../middleware/multer.js";
 import AdminManager from "../../models/AdminManager.js";
+import { authenticateToken } from "../../middleware/auth.js";
 
 const router = express.Router();
+
+const requireAdmin = (req, res, next) => {
+  if (!req.user || !req.user.isAdmin || req.user.isAdmin !== "t") {
+    return res.status(404).json({
+      error: {
+        code: "NOT_FOUND",
+        message: "Resource not found",
+      },
+    });
+  }
+  next();
+};
+
+router.use(authenticateToken);
+router.use(requireAdmin);
 
 router.get("/pending-submissions", async (req, res) => {
   try {
@@ -18,13 +34,14 @@ router.get("/pending-submissions", async (req, res) => {
       LEFT JOIN users ON pending_submissions.user_id = users.id`);
 
     if (pendingSubmissionsData) {
-      const submissions = pendingSubmissionsData.map((submission) => ({
-        id: submission.id,
-        data: JSON.parse(submission.data),
-        submittedAt: submission.submitted_at,
-        userId: submission.user_id,
-        username: submission.username,
-      }));
+      const submissions =
+        pendingSubmissionsData.map((submission) => ({
+          id: submission.id,
+          data: JSON.parse(submission.data),
+          submittedAt: submission.submitted_at,
+          userId: submission.user_id,
+          username: submission.username,
+        })) || [];
       res.json(submissions);
     }
   } catch (err) {

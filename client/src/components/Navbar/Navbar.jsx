@@ -19,7 +19,7 @@ import NavbarLogo from "../../assets/images/logo-app.webp";
 
 export default function Navbar() {
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const toggleMobileNav = () => setMobileNavOpen((prevState) => !prevState);
 
   return (
@@ -75,15 +75,17 @@ export default function Navbar() {
                 Submit
               </NavLink>
             </li>
-            <NavbarMenu
-              title="Admin"
-              menuItems={[
-                { title: "Approvals", link: "/admin/approvals" },
-                { title: "Upload", link: "/admin/upload" },
-                { title: "Manage Users", link: "/admin/manage-users" },
-                { title: "Manage Database", link: "/admin/manage-db" },
-              ]}
-            />
+            {isAuthenticated && user?.isAdmin === "t" && (
+              <NavbarMenu
+                title="Admin"
+                menuItems={[
+                  { title: "Approvals", link: "/admin/approvals" },
+                  { title: "Upload", link: "/admin/upload" },
+                  { title: "Manage Users", link: "/admin/manage-users" },
+                  { title: "Manage Database", link: "/admin/manage-db" },
+                ]}
+              />
+            )}
           </ul>
         </div>
 

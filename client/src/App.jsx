@@ -2,6 +2,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute/ProtectedRoute";
+import AdminRoute from "./components/AdminRoute/AdminRoute";
 
 import HomePage from "./pages/static/HomePage/HomePage";
 import AboutPage from "./pages/static/AboutPage/AboutPage";
@@ -101,12 +102,47 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
 
-          {/* Admin routes */}
-          <Route path="/admin/approvals" element={<AdminApprovals />} />
-          <Route path="/admin/upload" element={<AdminUpload />} />
+          <Route
+            path="/admin"
+            element={
+              <AdminRoute>
+                <AdminApprovals />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/approvals"
+            element={
+              <AdminRoute>
+                <AdminApprovals />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/upload"
+            element={
+              <AdminRoute>
+                <AdminUpload />
+              </AdminRoute>
+            }
+          />
           {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
-          <Route path="/admin/manage-db" element={<AdminManageDb />} />
-          <Route path="/admin/manage-db/:table" element={<AdminManageDb />} />
+          <Route
+            path="/admin/manage-db"
+            element={
+              <AdminRoute>
+                <AdminManageDb />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-db/:table"
+            element={
+              <AdminRoute>
+                <AdminManageDb />
+              </AdminRoute>
+            }
+          />
 
           <Route path="*" element={<NotFound />} />
         </Routes>

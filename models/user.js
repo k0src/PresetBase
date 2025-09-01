@@ -54,6 +54,9 @@ export default class User {
         username: username.toLowerCase().trim(),
         email: email.toLowerCase().trim(),
         timestamp: now,
+        authenticatedWith: "PresetBase",
+        isAdmin: "f",
+        banned: "f",
       };
     } catch (err) {
       throw new Error(`Failed to create user: ${err.message}`);
@@ -64,7 +67,17 @@ export default class User {
     try {
       const user = await DB.get(`SELECT * FROM users WHERE id = ?`, [id]);
       if (!user) return null;
-      return user;
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        passwordHash: user.password_hash,
+        timestamp: user.timestamp,
+        authenticatedWith: user.authenticated_with,
+        isAdmin: user.is_admin,
+        banned: user.banned,
+      };
     } catch (err) {
       throw new Error(`Failed to get user by ID: ${err.message}`);
     }
@@ -76,7 +89,17 @@ export default class User {
         email.toLowerCase().trim(),
       ]);
       if (!user) return null;
-      return user;
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        passwordHash: user.password_hash,
+        timestamp: user.timestamp,
+        authenticatedWith: user.authenticated_with,
+        isAdmin: user.is_admin,
+        banned: user.banned,
+      };
     } catch (err) {
       throw new Error(`Failed to get user by email: ${err.message}`);
     }
@@ -88,7 +111,17 @@ export default class User {
         username.toLowerCase().trim(),
       ]);
       if (!user) return null;
-      return user;
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        passwordHash: user.password_hash,
+        timestamp: user.timestamp,
+        authenticatedWith: user.authenticated_with,
+        isAdmin: user.is_admin,
+        banned: user.banned,
+      };
     } catch (err) {
       throw new Error(`Failed to get user by username: ${err.message}`);
     }
