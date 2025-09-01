@@ -6,6 +6,7 @@ import SectionInputs from "./Sections/SectionInputs";
 import SectionSelectors from "./Sections/SectionSelectors";
 import SectionLists from "./Sections/SectionLists";
 import SectionColorPickers from "./Sections/SectionColorPickers";
+import SectionToggles from "./Sections/SectionToggles";
 
 import styles from "./SlideoutInputSection.module.css";
 
@@ -39,6 +40,16 @@ const SlideoutInputSection = memo(function SlideoutInputSection({
           id={config.imageInput.key}
           onChange={handleInputChange}
         />
+      )}
+
+      {config.toggles && (
+        <div className={styles.toggles}>
+          <SectionToggles
+            toggles={config.toggles}
+            data={data}
+            handleToggleChange={handleInputChange}
+          />
+        </div>
       )}
 
       {config.colorPickers && (

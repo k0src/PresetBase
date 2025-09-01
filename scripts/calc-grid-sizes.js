@@ -1,17 +1,27 @@
 #!/usr/bin/env node
 
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+import sqlite3 from "sqlite3";
+import path from "path";
+import dotenv from "dotenv";
 
-// Load .env from project root
-const projectRoot = path.resolve(__dirname, "..");
-require("dotenv").config({ path: path.join(projectRoot, ".env") });
+// Load environment variables
+dotenv.config();
 
-const dbPath = path.resolve(projectRoot, process.env.DB_PATH);
+// Debug environment variables
+console.log("DB_PATH:", process.env.DB_PATH);
+console.log("Current working directory:", process.cwd());
+
+const sqlite = sqlite3.verbose();
+const dbPath = process.env.DB_PATH;
+
+if (!dbPath) {
+  console.error("❌ DB_PATH environment variable is not set");
+  process.exit(1);
+}
 
 function connectToDatabase() {
   return new Promise((resolve, reject) => {
-    const db = new sqlite3.Database(dbPath, sqlite3.OPEN_READONLY, (err) => {
+    const db = new sqlite.Database(dbPath, sqlite.OPEN_READONLY, (err) => {
       if (err) {
         reject(err);
       } else {
@@ -269,9 +279,10 @@ async function calculateOptimalGrids() {
   }
 }
 
-// Main execution
-if (require.main === module) {
-  calculateOptimalGrids();
+// Main execution - simplified check
+if (process.argv[1].endsWith(import.meta.url.split("/").pop())) {
+  console.log("🚀 Starting grid calculator...");
+  calculateOptimalGrids().catch(console.error);
 }
 
-module.exports = calculateOptimalGrids;
+export default calculateOptimalGrids;

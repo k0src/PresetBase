@@ -37,7 +37,7 @@ import OAuthSuccessPage from "./pages/auth/OAuthSuccessPage/OAuthSuccessPage";
 
 import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
-// import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
+import AdminManageUsers from "./pages/admin/AdminManageUsers/AdminManageUsers";
 import AdminManageDb from "./pages/admin/AdminManageDb";
 
 import NotFound from "./pages/static/NotFound/NotFound";
@@ -128,12 +128,19 @@ function App() {
               </AdminRoute>
             }
           />
-          {/* <Route path="/admin/manage-users" element={<AdminManageUsers />} /> */}
           <Route
             path="/admin/manage-db"
             element={
               <AdminRoute>
                 <AdminManageDb />
+              </AdminRoute>
+            }
+          />
+          <Route
+            path="/admin/manage-users"
+            element={
+              <AdminRoute>
+                <AdminManageUsers />
               </AdminRoute>
             }
           />

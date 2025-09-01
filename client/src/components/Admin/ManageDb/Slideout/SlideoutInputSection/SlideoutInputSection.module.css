@@ -9,3 +9,9 @@
   display: flex;
   justify-content: space-between;
 }
+
+.toggles {
+  display: flex;
+  align-items: center;
+  gap: 1.4rem;
+}

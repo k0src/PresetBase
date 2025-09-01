@@ -3,11 +3,18 @@ import DB from "../../models/DB.js";
 import multer from "../../middleware/multer.js";
 import AdminManager from "../../models/AdminManager.js";
 import { authenticateToken } from "../../middleware/auth.js";
+import { sortKeys, sortDirections } from "../../util/sortConfig.js";
+import User from "../../models/User.js";
 
 const router = express.Router();
 
 const requireAdmin = (req, res, next) => {
-  if (!req.user || !req.user.isAdmin || req.user.isAdmin !== "t") {
+  if (
+    !req.user ||
+    !req.user.isAdmin ||
+    req.user.isAdmin !== "t" ||
+    req.user.banned === "t"
+  ) {
     return res.status(404).json({
       error: {
         code: "NOT_FOUND",
@@ -160,6 +167,24 @@ router.post("/upload", multer, async (req, res) => {
     });
 
     res.status(200).json({ message: "Entry uploaded successfully" });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.get("/users", async (req, res) => {
+  const sortKey = sortKeys.users[req.query.sort] || sortKeys.users.added;
+  const sortDirection = sortDirections[req.query.direction] || "ASC";
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
+
+  try {
+    const usersData = await User.getAll(sortKey, sortDirection, limit);
+    res.json({ data: usersData });
   } catch (err) {
     console.error(err);
     return res

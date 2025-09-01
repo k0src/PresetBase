@@ -1,0 +1,62 @@
+.slideoutToggle {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.labelText {
+  font-size: 1.4rem;
+  line-height: 1.1;
+  color: #899096;
+  user-select: none;
+}
+
+.toggleContainer {
+  position: relative;
+  width: 5.2rem;
+  height: 2.8rem;
+  border-radius: 1.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 0.2rem solid #2d343a;
+  background-color: #171b1f;
+}
+
+.toggleContainer.on {
+  background-color: #2d5c3f;
+  border-color: #4a8f68;
+}
+
+.toggleContainer.off {
+  background-color: #171b1f;
+  border-color: #2d343a;
+}
+
+.toggleSwitch {
+  position: absolute;
+  top: 0.2rem;
+  left: 0.2rem;
+  width: 2rem;
+  height: 2rem;
+  background-color: #e3e5e4;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+}
+
+.toggleContainer.on .toggleSwitch {
+  transform: translateX(2.4rem);
+  background-color: #5cb85c;
+}
+
+.toggleContainer.off .toggleSwitch {
+  transform: translateX(0);
+  background-color: #6c757d;
+}
+
+.toggleContainer:hover {
+  opacity: 0.9;
+}
+
+.toggleContainer:active {
+  transform: scale(0.98);
+}

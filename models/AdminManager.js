@@ -8,6 +8,7 @@ import Album from "./Album.js";
 import Synth from "./Synth.js";
 import Preset from "./Preset.js";
 import Genre from "./Genre.js";
+import User from "./User.js";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -22,6 +23,7 @@ export default class AdminManager {
     synths: Synth,
     presets: Preset,
     genres: Genre,
+    users: User,
   };
 
   static #attachFileDataToFormData({ formData, fileData }) {
@@ -819,6 +821,8 @@ export default class AdminManager {
         fileData,
       });
       const sanitizedData = await AdminManager.#sanitizeSubmissionData(rawData);
+
+      console.log(sanitizedData);
 
       await Model.updateById(entryId, sanitizedData);
 

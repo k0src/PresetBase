@@ -59,6 +59,12 @@ export const sortKeys = {
     songCount: "songCount",
     added: "genre_tags.timestamp",
   },
+  users: {
+    username: "users.username",
+    email: "users.email",
+    authenticatedWith: "users.authenticated_with",
+    added: "users.timestamp",
+  },
 };
 
 export const sortDirections = {

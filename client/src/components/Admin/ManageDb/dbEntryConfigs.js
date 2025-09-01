@@ -104,4 +104,23 @@ export const dbEntryConfigs = {
     ],
     filterOptions: ["name"],
   },
+  users: {
+    gridClass: "gridLayoutUsers",
+    columns: [
+      { key: "id", label: "#" },
+      { key: "username", label: "Username" },
+      { key: "email", label: "Email" },
+      { key: "authenticatedWith", label: "Authenticated With" },
+      { key: "isAdmin", label: "Is Admin" },
+      { key: "banned", label: "Banned" },
+      { key: "timestamp", label: "Date Added" },
+    ],
+    sortOptions: [
+      { value: "username", label: "Username" },
+      { value: "email", label: "Email" },
+      { value: "authenticatedWith", label: "Authenticated With" },
+      { value: "added", label: "Date Joined" },
+    ],
+    filterOptions: ["username", "email"],
+  },
 };

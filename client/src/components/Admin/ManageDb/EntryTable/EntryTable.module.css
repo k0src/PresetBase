@@ -40,6 +40,13 @@
   gap: 1.4rem;
 }
 
+.gridLayoutUsers {
+  display: grid;
+  grid-template-columns: 2.8rem 5fr 6fr 6fr 3fr 3fr 9fr 2.4rem;
+  align-items: center;
+  gap: 1.4rem;
+}
+
 .tableColumns {
   color: #899096;
   font-size: 1.3rem;

@@ -1,6 +1,6 @@
 export const slideoutConfigs = {
   songs: {
-    title: "Edit Song",
+    title: "Song",
     fields: [
       { key: "id", label: "Song ID" },
       { key: "timestamp", label: "Date Added" },
@@ -48,7 +48,7 @@ export const slideoutConfigs = {
     ],
   },
   artists: {
-    title: "Edit Artist",
+    title: "Artist",
     fields: [
       { key: "id", label: "Artist ID" },
       { key: "timestamp", label: "Date Added" },
@@ -74,7 +74,7 @@ export const slideoutConfigs = {
     ],
   },
   albums: {
-    title: "Edit Album",
+    title: "Album",
     fields: [
       { key: "id", label: "Album ID" },
       { key: "timestamp", label: "Date Added" },
@@ -96,7 +96,7 @@ export const slideoutConfigs = {
     ],
   },
   synths: {
-    title: "Edit Synth",
+    title: "Synth",
     fields: [
       { key: "id", label: "Synth ID" },
       { key: "timestamp", label: "Date Added" },
@@ -119,7 +119,7 @@ export const slideoutConfigs = {
     ],
   },
   presets: {
-    title: "Edit Preset",
+    title: "Preset",
     fields: [
       { key: "id", label: "Preset ID" },
       { key: "timestamp", label: "Date Added" },
@@ -139,7 +139,7 @@ export const slideoutConfigs = {
     ],
   },
   genres: {
-    title: "Edit Genre",
+    title: "Genre",
     fields: [
       { key: "id", label: "Genre ID" },
       { key: "timestamp", label: "Date Added" },
@@ -152,6 +152,22 @@ export const slideoutConfigs = {
       { key: "textColor", label: "Text Color" },
       { key: "backgroundColor", label: "Background Color" },
       { key: "borderColor", label: "Border Color" },
+    ],
+  },
+  users: {
+    title: "User",
+    fields: [
+      { key: "id", label: "ID" },
+      { key: "timestamp", label: "Joined" },
+      { key: "authenticatedWith", label: "Authenticated With" },
+    ],
+    inputs: [
+      { key: "username", label: "Username" },
+      { key: "email", label: "Email" },
+    ],
+    toggles: [
+      { key: "isAdmin", label: "Admin" },
+      { key: "banned", label: "Banned" },
     ],
   },
 };

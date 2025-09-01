@@ -63,4 +63,11 @@ export const adminAPI = {
     });
     return res.data;
   },
+
+  async getUsers(sort = null, direction = "ASC", limit = null) {
+    const response = await api.get("/admin/users", {
+      params: { sort, direction, limit },
+    });
+    return response.data;
+  },
 };

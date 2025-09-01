@@ -95,7 +95,7 @@ const AdminSlideout = memo(function AdminSlideout({ onDelete }) {
       >
         <header className={styles.header}>
           <h2 className={styles.headingSecondary}>
-            {config?.title || "Edit Entry"}
+            {"Edit " + config?.title || "Edit Entry"}
           </h2>
           <button
             type="button"
@@ -150,7 +150,7 @@ const AdminSlideout = memo(function AdminSlideout({ onDelete }) {
                     className={styles.deleteBtn}
                     onClick={handleDelete}
                   >
-                    Delete Entry
+                    {"Delete " + config?.title || "Delete Entry"}
                   </button>
                 </div>
               </div>

@@ -41,8 +41,19 @@ export async function authenticateToken(req, res, next) {
       username: user.username,
       email: user.email,
       isAdmin: user.isAdmin,
+      banned: user.banned,
     };
     req.token = token;
+
+    if (user.banned === "t") {
+      return res.status(403).json({
+        error: {
+          code: "USER_BANNED",
+          message:
+            "Your account has been banned. Please contact support for assistance.",
+        },
+      });
+    }
 
     next();
   } catch (error) {

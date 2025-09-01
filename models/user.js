@@ -130,6 +130,26 @@ export default class User {
     }
   }
 
+  static async getFullDataById(id) {
+    try {
+      const user = await DB.get(`SELECT * FROM users WHERE id = ?`, [id]);
+      if (!user) return null;
+
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        passwordHash: user.password_hash,
+        timestamp: user.timestamp,
+        authenticatedWith: user.authenticated_with,
+        isAdmin: user.is_admin,
+        banned: user.banned,
+      };
+    } catch (err) {
+      throw new Error(`Failed to get user by ID: ${err.message}`);
+    }
+  }
+
   static async getByEmail(email) {
     try {
       const user = await DB.get(`SELECT * FROM users WHERE email = ?`, [
@@ -239,9 +259,66 @@ export default class User {
   static async delete(id) {
     try {
       await DB.run(`DELETE FROM users WHERE id = ?`, [id]);
-      // await User.#deleteAllUserData(id);
+      await DB.run(`DELETE FROM pending_submissions WHERE user_id = ?`, [id]);
     } catch (err) {
       throw new Error(`Failed to delete user: ${err.message}`);
+    }
+  }
+
+  static async deleteById(id) {
+    try {
+      await DB.run(`DELETE FROM users WHERE id = ?`, [id]);
+      await DB.run(`DELETE FROM pending_submissions WHERE user_id = ?`, [id]);
+    } catch (err) {
+      throw new Error(`Failed to delete user: ${err.message}`);
+    }
+  }
+
+  static async updateById(id, data) {
+    try {
+      await DB.beginTransaction();
+
+      // Update main song data
+      const fields = [];
+      const params = [];
+
+      if (data.username) {
+        fields.push("username = ?");
+        params.push(data.username);
+      }
+
+      if (data.email) {
+        fields.push("email = ?");
+        params.push(data.email);
+      }
+
+      if (data.authenticatedWith) {
+        fields.push("authenticated_with = ?");
+        params.push(data.authenticatedWith);
+      }
+
+      if (data.isAdmin) {
+        fields.push("is_admin = ?");
+        params.push(data.isAdmin);
+      }
+
+      if (data.banned) {
+        fields.push("banned = ?");
+        params.push(data.banned);
+      }
+
+      if (fields.length > 0) {
+        params.push(id);
+        await DB.run(
+          `UPDATE users SET ${fields.join(", ")} WHERE id = ?`,
+          params
+        );
+      }
+
+      await DB.commit();
+    } catch (err) {
+      await DB.rollback();
+      throw new Error(`Error updating user ${id}: ${err.message}`);
     }
   }
 
@@ -359,22 +436,44 @@ export default class User {
     }
   }
 
-  // static async #deleteAllUserData(id) {
-  //   try {
-  //     await DB.run(`DELETE FROM user_submissions WHERE user_id = ?`, [id]);
-  //   } catch (err) {
-  //     throw new Error(`Failed to delete user data: ${err.message}`);
-  //   }
-  // }
+  // Get all users
+  static async getAll(
+    sort = "users.timestamp",
+    direction = "ASC",
+    limit = null
+  ) {
+    try {
+      // For case-insensitive sorting
+      const textFields = [
+        "users.username",
+        "users.email",
+        "users.authenticated_with",
+      ];
+      const sortClause = textFields.includes(sort)
+        ? `${sort} COLLATE NOCASE ${direction}`
+        : `${sort} ${direction}`;
 
-  // static async deleteById(id) {
-  //   try {
-  //     await DB.run(`DELETE FROM users WHERE id = ?`, [id]);
-  //     await User.#deleteAllUserData(id);
-  //   } catch (err) {
-  //     throw new Error(`Failed to delete user: ${err.message}`);
-  //   }
-  // }
+      const query = `
+        SELECT
+          users.id AS id,
+          users.username AS username,
+          users.email AS email,
+          users.password_hash AS passwordHash,
+          users.is_admin AS isAdmin,
+          users.authenticated_with AS authenticatedWith,
+          users.banned AS banned,
+          users.timestamp AS timestamp
+        FROM users
+        ORDER BY ${sortClause}
+        ${limit ? "LIMIT ?" : ""}`;
+
+      const params = [];
+      if (limit) params.push(limit);
+      return await DB.all(query, params);
+    } catch (err) {
+      throw new Error(`Error fetching all users: ${err.message}`);
+    }
+  }
 
   // static async setAdmin(id) {
   //   try {
