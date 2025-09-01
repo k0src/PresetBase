@@ -57,7 +57,14 @@ export async function authenticateToken(req, res, next) {
 
     next();
   } catch (error) {
-    console.error("Authentication error:", error.message);
+    if (
+      error.message === "Access token expired" ||
+      error.message === "Invalid access token"
+    ) {
+      console.debug("Token refresh needed:", error.message);
+    } else {
+      console.error("Authentication error:", error.message);
+    }
 
     let errorCode = "AUTHENTICATION_FAILED";
     let statusCode = 401;
