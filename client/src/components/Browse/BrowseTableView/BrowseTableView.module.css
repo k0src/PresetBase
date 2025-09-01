@@ -116,120 +116,15 @@
   padding: 1.4rem;
 }
 
-/* --------------------------------- Queries -------------------------------- */
-@media (max-width: 60em) {
-  .rowNumber,
-  .rowTextSecondary,
-  .rowTextTertiary,
-  .rowTextQuaternary {
-    font-size: 1.2rem;
-  }
-
-  .rowTextPrimary {
-    font-size: 1.6rem;
-  }
-
-  .heading-primary {
-    font-size: 2.4rem;
-  }
-}
-
-@media (max-width: 48em) {
-  .rowTitle {
-    gap: 0.6rem;
-  }
-
-  .gridLayoutSongs,
-  .gridLayoutArtists,
-  .gridLayoutAlbums,
-  .gridLayoutSynths,
-  .gridLayoutPresets,
-  .gridLayoutGenres {
-    gap: 1rem;
-  }
-
-  .tableColumns {
-    font-size: 1rem;
-    padding: 1rem;
-  }
-
-  .tableRow {
-    padding: 1rem;
-  }
-
-  .rowTitleContainer {
-    gap: 1.4rem;
-  }
-
-  .rowImg {
-    width: 6.4rem;
-    height: 6.4rem;
-  }
-}
-
-@media (max-width: 35em) {
-  .rowTitle {
-    gap: 0.4rem;
-  }
-
-  .rowNumber {
-    font-size: 1.2rem;
-  }
-
-  .rowTextPrimary {
-    font-size: 1.4rem;
-  }
-
-  .heading-primary {
-    font-size: 2rem;
-  }
-
-  .heading-secondary {
-    font-size: 1.4rem;
-  }
-
-  .gridLayoutSongs,
-  .gridLayoutArtists,
-  .gridLayoutAlbums,
-  .gridLayoutSynths,
-  .gridLayoutPresets,
-  .gridLayoutGenres {
-    grid-template-columns: 1.6rem 1fr;
-  }
-
-  .gridLayoutGenres .rowTextTertiary,
-  .gridLayoutSongs .rowTextSecondary,
-  .gridLayoutSongs .rowTextTertiary,
-  .gridLayoutSongs .rowTextQuaternary,
-  .gridLayoutArtists .rowTextSecondary,
-  .gridLayoutArtists .rowTextTertiary,
-  .gridLayoutArtists .rowTextQuaternary,
-  .gridLayoutAlbums .rowTextSecondary,
-  .gridLayoutAlbums .rowTextTertiary,
-  .gridLayoutAlbums .rowTextQuaternary,
-  .gridLayoutSynths .rowTextSecondary,
-  .gridLayoutSynths .rowTextTertiary,
-  .gridLayoutSynths .rowTextQuaternary,
-  .gridLayoutPresets .rowTextSecondary,
-  .gridLayoutPresets .rowTextTertiary,
-  .gridLayoutPresets .rowTextQuaternary {
-    display: none;
-  }
-
-  .tableColumns {
-    display: none;
-  }
-
-  .tableRow {
-    padding: 1rem;
-  }
-
-  .rowTitleContainer {
-    gap: 1rem;
-  }
-
-  .rowImg {
-    width: 6.4rem;
-    height: 6.4rem;
-  }
+.tag {
+  user-select: none;
+  font-size: 1.2rem;
+  width: fit-content;
+  height: fit-content;
+  padding: 0.6rem 0.8rem;
+  border-radius: 0.8rem;
+  border: 0.1rem solid;
+  background-color: rgba(0, 147, 167, 0.1);
+  border-color: rgba(0, 147, 167, 0.3);
+  color: #0093a7;
 }

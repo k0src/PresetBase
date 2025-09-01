@@ -88,7 +88,7 @@ export default class Album extends Entry {
             'album', albums.title
           )
         ) AS songs
-        
+
         FROM albums
         JOIN album_songs ON albums.id = album_songs.album_id
         JOIN songs ON songs.id = album_songs.song_id
@@ -307,13 +307,21 @@ export default class Album extends Entry {
             'id', artists.id,
             'name', artists.name
           ) AS artist,
-          albums.timestamp AS timestamp
+          albums.timestamp AS timestamp,
+          json_object(
+            'name', genre_tags.name,
+            'textColor', genre_tags.text_color,
+            'bgColor', genre_tags.bg_color,
+            'borderColor', genre_tags.border_color
+          ) AS genreTag
         FROM albums
         LEFT JOIN album_songs ON albums.id = album_songs.album_id
         LEFT JOIN songs ON album_songs.song_id = songs.id
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
         LEFT JOIN artists ON song_artists.artist_id = artists.id
         LEFT JOIN album_clicks ON album_clicks.album_id = albums.id
+        LEFT JOIN album_genres ON albums.id = album_genres.album_id
+        LEFT JOIN genre_tags ON album_genres.genre_id = genre_tags.id
         WHERE song_artists.role = 'Main' AND albums.title NOT LIKE '[SINGLE]'
         GROUP BY albums.id
         ORDER BY ${sortClause}`;
@@ -323,6 +331,7 @@ export default class Album extends Entry {
       if (albumsData) {
         albumsData.forEach((album) => {
           album.artist = JSON.parse(album.artist || "{}");
+          album.genreTag = JSON.parse(album.genreTag || "{}");
         });
       }
 

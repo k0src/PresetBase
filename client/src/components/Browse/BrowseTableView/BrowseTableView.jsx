@@ -2,7 +2,6 @@ import { Link } from "react-router-dom";
 import { memo, useMemo } from "react";
 
 import GenreTag from "../../GenreTag/GenreTag";
-import SynthTag from "../../SynthTag/SynthTag";
 import styles from "./BrowseTableView.module.css";
 import classNames from "classnames";
 
@@ -96,7 +95,7 @@ const BrowseTableView = memo(function BrowseTableView({
       <span className={styles.rowTextTertiary}>
         {song.album.title === "[SINGLE]" ? "Single" : song.album.title}
       </span>
-      <GenreTag genre={song.genre} />
+      <GenreTag genreTag={song.genreTag} />
       <span className={styles.rowTextQuaternary}>{song.year}</span>
     </Link>
   ));
@@ -150,7 +149,7 @@ const BrowseTableView = memo(function BrowseTableView({
         <span className={styles.rowTextPrimary}>{album.title}</span>
       </div>
       <span className={styles.rowTextSecondary}>{album.artist.name}</span>
-      <GenreTag genre={album.genre} />
+      <GenreTag genreTag={album.genreTag} />
       <span className={styles.rowTextQuaternary}>{album.year}</span>
     </Link>
   ));
@@ -178,7 +177,7 @@ const BrowseTableView = memo(function BrowseTableView({
         <span className={styles.rowTextPrimary}>{synth.name}</span>
       </div>
       <span className={styles.rowTextSecondary}>{synth.manufacturer}</span>
-      <SynthTag type={synth.type} />
+      <span className={styles.tag}>{synth.type}</span>
       <span className={styles.rowTextQuaternary}>{synth.year}</span>
     </Link>
   ));
