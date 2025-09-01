@@ -185,6 +185,100 @@ export default class User {
     }
   }
 
+  static async getPendingSubmissions(userId) {
+    try {
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+
+      const submissions = await DB.all(
+        `SELECT * FROM pending_submissions WHERE user_id = ?`,
+        [userId]
+      );
+
+      if (submissions) {
+        for (const submission of submissions) {
+          submission.data = JSON.parse(submission.data);
+        }
+      }
+      return submissions;
+    } catch (err) {
+      throw new Error(`Failed to get pending submissions: ${err.message}`);
+    }
+  }
+
+  static async getApprovedSubmissions(userId) {
+    try {
+      if (!userId) {
+        throw new Error("User ID is required");
+      }
+
+      const submissions = await DB.all(
+        `
+        SELECT
+          songs.title AS songTitle,
+          songs.id AS songId,
+          songs.image_url AS songImage,
+          artists.name AS artistName,
+          song_presets.timestamp,
+          json_group_array(
+            json_object(
+              'synthName', synths.synth_name,
+              'presetName', presets.preset_name
+            )
+          ) AS presets
+        FROM presets
+        LEFT JOIN preset_synths ON
+          presets.id = preset_synths.preset_id
+        LEFT JOIN synths ON
+          preset_synths.synth_id = synths.id
+        LEFT JOIN song_presets ON
+          presets.id = song_presets.preset_id
+        LEFT JOIN songs ON
+          song_presets.song_id = songs.id
+        LEFT JOIN song_artists ON
+          songs.id = song_artists.song_id
+        LEFT JOIN artists ON
+          song_artists.artist_id = artists.id
+        LEFT JOIN user_submissions ON
+          song_presets.id = user_submissions.submission_id
+        WHERE song_artists.role = 'Main' AND user_submissions.user_id = ?
+        GROUP BY songs.id`,
+        [userId]
+      );
+
+      if (submissions) {
+        for (const submission of submissions) {
+          submission.presets = JSON.parse(submission.presets || "[]");
+        }
+      }
+
+      return submissions;
+    } catch (err) {
+      throw new Error(`Failed to get approved submissions: ${err.message}`);
+    }
+  }
+
+  static async deletePendingSubmission(userId, submissionId) {
+    try {
+      // Check for ownership
+      const submission = await DB.get(
+        `SELECT * FROM pending_submissions WHERE id = ? AND user_id = ?`,
+        [submissionId, userId]
+      );
+
+      if (!submission) {
+        throw new Error("Submission not found or does not belong to user");
+      }
+
+      await DB.run(`DELETE FROM pending_submissions WHERE id = ?`, [
+        submissionId,
+      ]);
+    } catch (err) {
+      throw new Error(`Failed to delete pending submission: ${err.message}`);
+    }
+  }
+
   // static async #deleteAllUserData(id) {
   //   try {
   //     await DB.run(`DELETE FROM user_submissions WHERE user_id = ?`, [id]);

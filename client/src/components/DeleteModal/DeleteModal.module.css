@@ -1,0 +1,83 @@
+.confirmDialog {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.confirmContent {
+  background-color: #1a1d23;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 2.4rem;
+  max-width: 50rem;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 1.4rem;
+}
+
+.confirmContentTitle {
+  font-size: 2rem;
+  color: #c25c5c;
+}
+
+.confirmContentText {
+  font-size: 1.4rem;
+  color: #899096;
+  line-height: 1.4;
+}
+
+.confirmButtons {
+  display: flex;
+  gap: 1.2rem;
+  justify-content: center;
+}
+
+.cancelBtn {
+  font-family: "Geist", sans-serif;
+  background-color: #899096;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.cancelBtn:hover {
+  background-color: #7b8287;
+}
+
+.cancelBtn:disabled {
+  background-color: #5a5f63;
+  cursor: not-allowed;
+}
+
+.confirmDeleteBtn {
+  font-family: "Geist", sans-serif;
+  background-color: #c25c5c;
+  color: #fff;
+  border: none;
+  border-radius: 0.4rem;
+  padding: 1rem 2rem;
+  font-size: 1.4rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.confirmDeleteBtn:hover {
+  background-color: #a84d4d;
+}
+
+.confirmDeleteBtn:disabled {
+  background-color: #8a4242;
+  cursor: not-allowed;
+}

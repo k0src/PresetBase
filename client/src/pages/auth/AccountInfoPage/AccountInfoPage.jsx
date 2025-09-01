@@ -5,6 +5,9 @@ import { Navigate } from "react-router-dom";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import UpdatePassword from "./UpdatePassword";
+import UserSubmissions from "../../../components/UserSubmissions/UserSubmissions";
+import ComponentLoader from "../../../components/ComponentLoader/ComponentLoader";
+import DeleteModal from "../../../components/DeleteModal/DeleteModal";
 import styles from "./AccountInfoPage.module.css";
 import classNames from "classnames";
 
@@ -234,99 +237,109 @@ export default function AccountInfoPage() {
           <h1 className={styles.headingPrimary}>Account Information</h1>
         </section>
 
-        <div className={styles.userInfoSection}>
-          <div className={styles.userInfoHead}>
-            <span className={styles.userInfoText}>
-              <FaCalendar />
-              Joined: {formatJoinDate(user?.timestamp)}
-            </span>
-            <span className={styles.userInfoText}>&bull;</span>
-            <span className={styles.userInfoText}>
-              <FaLock />
-              Authenticated with: {user?.authenticated_with || "PresetBase"}
-            </span>
-            {user?.is_admin === "t" && (
-              <>
-                <span className={styles.userInfoText}>&bull;</span>
-                <span className={styles.userInfoText}>
-                  <FaUserShield />
-                  Admin
-                </span>
-              </>
+        {loading ? (
+          <ComponentLoader />
+        ) : (
+          <div className={styles.userInfoSection}>
+            <div className={styles.userInfoHead}>
+              <span className={styles.userInfoText}>
+                <FaCalendar />
+                Joined: {formatJoinDate(user?.timestamp)}
+              </span>
+              <span className={styles.userInfoText}>&bull;</span>
+              <span className={styles.userInfoText}>
+                <FaLock />
+                Authenticated with: {user?.authenticated_with || "PresetBase"}
+              </span>
+              {user?.is_admin === "t" && (
+                <>
+                  <span className={styles.userInfoText}>&bull;</span>
+                  <span className={styles.userInfoText}>
+                    <FaUserShield />
+                    Admin
+                  </span>
+                </>
+              )}
+            </div>
+
+            {(error || errorMessage) && (
+              <div className={styles.error}>{error || errorMessage}</div>
             )}
+            {successMessage && (
+              <div className={styles.success}>{successMessage}</div>
+            )}
+
+            <section className={styles.userInfoInputSection}>
+              <form className={styles.userInfoForm} onSubmit={handleSubmit}>
+                <div className={styles.formGroup}>
+                  <span className={styles.label}>Username</span>
+                  <input
+                    type="text"
+                    name="username"
+                    className={classNames(styles.userInput, {
+                      [styles.inputError]: validationErrors.username,
+                    })}
+                    value={formData.username}
+                    onChange={handleChange}
+                    autoComplete="username"
+                    required
+                  />
+                  {validationErrors.username && (
+                    <div className={styles.fieldError}>
+                      <FaTriangleExclamation />
+                      {validationErrors.username}
+                    </div>
+                  )}
+                </div>
+
+                <div className={styles.formGroup}>
+                  <span className={styles.label}>Email</span>
+                  <input
+                    type="email"
+                    name="email"
+                    className={classNames(styles.userInput, {
+                      [styles.inputError]: validationErrors.email,
+                    })}
+                    value={formData.email}
+                    onChange={handleChange}
+                    autoComplete="email"
+                    required
+                  />
+                  {validationErrors.email && (
+                    <div className={styles.fieldError}>
+                      <FaTriangleExclamation />
+                      {validationErrors.email}
+                    </div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className={styles.applyChangesBtn}
+                  disabled={
+                    updateLoading ||
+                    !formData.email ||
+                    !formData.username ||
+                    !hasChanges()
+                  }
+                >
+                  {updateLoading ? "Saving..." : "Apply Changes"}
+                </button>
+              </form>
+
+              <UpdatePassword
+                onSuccess={handlePasswordSuccess}
+                onError={handlePasswordError}
+              />
+            </section>
           </div>
+        )}
 
-          {(error || errorMessage) && (
-            <div className={styles.error}>{error || errorMessage}</div>
-          )}
-          {successMessage && (
-            <div className={styles.success}>{successMessage}</div>
-          )}
-
-          <section className={styles.userInfoInputSection}>
-            <form className={styles.userInfoForm} onSubmit={handleSubmit}>
-              <div className={styles.formGroup}>
-                <span className={styles.label}>Username</span>
-                <input
-                  type="text"
-                  name="username"
-                  className={classNames(styles.userInput, {
-                    [styles.inputError]: validationErrors.username,
-                  })}
-                  value={formData.username}
-                  onChange={handleChange}
-                  autoComplete="username"
-                  required
-                />
-                {validationErrors.username && (
-                  <div className={styles.fieldError}>
-                    <FaTriangleExclamation />
-                    {validationErrors.username}
-                  </div>
-                )}
-              </div>
-
-              <div className={styles.formGroup}>
-                <span className={styles.label}>Email</span>
-                <input
-                  type="email"
-                  name="email"
-                  className={classNames(styles.userInput, {
-                    [styles.inputError]: validationErrors.email,
-                  })}
-                  value={formData.email}
-                  onChange={handleChange}
-                  autoComplete="email"
-                  required
-                />
-                {validationErrors.email && (
-                  <div className={styles.fieldError}>
-                    <FaTriangleExclamation />
-                    {validationErrors.email}
-                  </div>
-                )}
-              </div>
-
-              <button
-                type="submit"
-                className={styles.applyChangesBtn}
-                disabled={
-                  updateLoading ||
-                  !formData.email ||
-                  !formData.username ||
-                  !hasChanges()
-                }
-              >
-                {updateLoading ? "Saving..." : "Apply Changes"}
-              </button>
-            </form>
-
-            <UpdatePassword
-              onSuccess={handlePasswordSuccess}
-              onError={handlePasswordError}
-            />
-          </section>
+        <div className={styles.submissionsContainer}>
+          <h2 className={styles.headingSecondary}>My Submissions</h2>
+          <UserSubmissions userId={user.id} />
         </div>
+
         <hr className={styles.userInfoHr} />
 
         <div className={styles.actions}>
@@ -347,35 +360,17 @@ export default function AccountInfoPage() {
           </button>
         </div>
 
-        {showDeleteConfirm && (
-          <div className={styles.confirmDialog}>
-            <div className={styles.confirmContent}>
-              <h3>Confirm Account Deletion</h3>
-              <p>
-                Are you sure you want to delete your account? This action cannot
-                be undone and all your data will be permanently lost.
-              </p>
-              <div className={styles.confirmButtons}>
-                <button
-                  type="button"
-                  className={styles.cancelBtn}
-                  onClick={cancelDeleteAccount}
-                  disabled={deleteLoading}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="button"
-                  className={styles.confirmDeleteBtn}
-                  onClick={handleDeleteAccount}
-                  disabled={deleteLoading}
-                >
-                  {deleteLoading ? "Deleting..." : "Yes, Delete Account"}
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <DeleteModal
+          isOpen={showDeleteConfirm}
+          title="Confirm Account Deletion"
+          message="Are you sure you want to delete your account? This action cannot be undone and all your data will be permanently lost."
+          confirmText="Delete Account"
+          cancelText="Cancel"
+          onConfirm={handleDeleteAccount}
+          onCancel={cancelDeleteAccount}
+          isLoading={deleteLoading}
+          loadingText="Deleting..."
+        />
       </ContentContainer>
     </>
   );

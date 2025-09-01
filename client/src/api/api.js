@@ -175,6 +175,23 @@ export const authAPI = {
     });
     return response.data;
   },
+
+  async getUserPendingSubmissions() {
+    const response = await api.get("/auth/me/pending-submissions");
+    return response.data;
+  },
+
+  async getUserApprovedSubmissions() {
+    const response = await api.get("/auth/me/approved-submissions");
+    return response.data;
+  },
+
+  async deletePendingSubmission(submissionId) {
+    const response = await api.delete(
+      `/auth/me/pending-submissions/${submissionId}`
+    );
+    return response.data;
+  },
 };
 
 export async function getTotalEntries() {

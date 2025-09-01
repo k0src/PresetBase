@@ -396,7 +396,64 @@ router.delete("/me", authenticateToken, async (req, res) => {
   }
 });
 
-// update user profile
+router.get("/me/pending-submissions", authenticateToken, async (req, res) => {
+  try {
+    const submissions = await User.getPendingSubmissions(req.user.id);
+    res.json({ data: submissions });
+  } catch (err) {
+    console.error("Error fetching pending submissions:", err);
+    res.status(500).json({
+      error: {
+        code: "PENDING_SUBMISSIONS_FETCH_FAILED",
+        message: "Failed to fetch pending submissions",
+      },
+    });
+  }
+});
+
+router.get("/me/approved-submissions", authenticateToken, async (req, res) => {
+  try {
+    const submissions = await User.getApprovedSubmissions(req.user.id);
+    res.json({ data: submissions });
+  } catch (err) {
+    console.error("Error fetching approved submissions:", err);
+    res.status(500).json({
+      error: {
+        code: "APPROVED_SUBMISSIONS_FETCH_FAILED",
+        message: "Failed to fetch approved submissions",
+      },
+    });
+  }
+});
+
+router.delete(
+  "/me/pending-submissions/:submissionId",
+  authenticateToken,
+  async (req, res) => {
+    try {
+      const submissionId = parseInt(req.params.submissionId);
+      if (isNaN(submissionId)) {
+        return res.status(400).json({
+          error: {
+            code: "INVALID_SUBMISSION_ID",
+            message: "Submission ID must be a valid number",
+          },
+        });
+      }
+
+      await User.deletePendingSubmission(req.user.id, submissionId);
+      res.json({ message: "Pending submission deleted successfully" });
+    } catch (err) {
+      console.error("Error deleting pending submission:", err);
+      res.status(500).json({
+        error: {
+          code: "PENDING_SUBMISSION_DELETION_FAILED",
+          message: "Failed to delete pending submission",
+        },
+      });
+    }
+  }
+);
 
 // const passport = require("passport");
 

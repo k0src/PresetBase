@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 
 // Disable caching in dev mode
-const IS_DEV = true;
+const IS_DEV = process.env.NODE_ENV === "development";
 
 // Key for persistent local storage cache
 const LOCAL_STORAGE_PREFIX = "useAsyncData:";
@@ -52,7 +52,8 @@ const setCachedData = (cacheKey, data, ttl = null) => {
  * @returns {{
  *   data: Object,
  *   loading: boolean,
- *   error: any
+ *   error: any,
+ *   refetch: Function
  * }}
  */
 export function useAsyncData(asyncFns, dependencies = [], options = {}) {
@@ -64,9 +65,43 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
 
   const { cacheKey, ttl = 1000 * 60 * 5, resetOnDepsChange = false } = options; // default: 5 minutes
 
-  useEffect(() => {
+  const fetchData = async (bypassCache = false) => {
     const currentRequestId = ++requestIdRef.current;
 
+    try {
+      setLoading(true);
+      setError(null);
+
+      const fns = Object.entries(asyncFns);
+      const results = await Promise.all(fns.map(([_, fn]) => fn()));
+
+      if (currentRequestId !== requestIdRef.current) return;
+
+      const structuredData = fns.reduce((acc, [key], i) => {
+        acc[key] = results[i];
+        return acc;
+      }, {});
+
+      if (cacheKey && !IS_DEV && !bypassCache) {
+        setCachedData(cacheKey, structuredData, ttl);
+      }
+
+      setData(structuredData);
+    } catch (err) {
+      if (currentRequestId !== requestIdRef.current) return;
+      setError(err);
+    } finally {
+      if (currentRequestId === requestIdRef.current) {
+        setLoading(false);
+      }
+    }
+  };
+
+  const refetch = () => {
+    fetchData(true); // Bypass cache when manually refetching
+  };
+
+  useEffect(() => {
     // Check if dependencies have changed and reset is enabled
     const depsChanged =
       resetOnDepsChange &&
@@ -76,36 +111,6 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
       setData({});
       setError(null);
     }
-
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const fns = Object.entries(asyncFns);
-        const results = await Promise.all(fns.map(([_, fn]) => fn()));
-
-        if (currentRequestId !== requestIdRef.current) return;
-
-        const structuredData = fns.reduce((acc, [key], i) => {
-          acc[key] = results[i];
-          return acc;
-        }, {});
-
-        if (cacheKey && !IS_DEV) {
-          setCachedData(cacheKey, structuredData, ttl);
-        }
-
-        setData(structuredData);
-      } catch (err) {
-        if (currentRequestId !== requestIdRef.current) return;
-        setError(err);
-      } finally {
-        if (currentRequestId === requestIdRef.current) {
-          setLoading(false);
-        }
-      }
-    };
 
     // If dependencies changed and reset is enabled, skip cache and fetch immediately
     if (depsChanged) {
@@ -134,5 +139,5 @@ export function useAsyncData(asyncFns, dependencies = [], options = {}) {
     prevDepsRef.current = dependencies;
   }, dependencies);
 
-  return { data, loading, error };
+  return { data, loading, error, refetch };
 }
