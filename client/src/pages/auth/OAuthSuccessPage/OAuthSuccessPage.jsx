@@ -45,7 +45,6 @@ export default function OAuthSuccessPage() {
           <div className={styles.loginCard}>
             <div className={styles.loaderContainer}>
               <BounceLoader color="#e3e5e4" size={60} />
-              <p>Completing sign in...</p>
             </div>
           </div>
         </section>
