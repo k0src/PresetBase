@@ -1,6 +1,8 @@
 import { memo, useState, useCallback, useRef, useEffect } from "react";
+import { nanoid } from "nanoid";
 
 import SearchDropdown from "../SlideoutDropdown/SlideoutDropdown";
+import SlideoutAudioInput from "../SlideoutAudioInput/SlideoutAudioInput";
 import styles from "./SlideoutList.module.css";
 import classNames from "classnames";
 
@@ -12,6 +14,7 @@ const SlideoutList = memo(function SlideoutList({
   listItems,
   hasInput,
   inputLabel,
+  hasAudio,
   dataFields,
   searchTable,
   onChange,
@@ -21,7 +24,7 @@ const SlideoutList = memo(function SlideoutList({
   const [hasChanged, setHasChanged] = useState(false);
   const dropdownRef = useRef(null);
 
-  const { idField, labelField, inputField } = dataFields;
+  const { idField, labelField, inputField, audioFile } = dataFields;
 
   useEffect(() => {
     setItems(listItems || []);
@@ -57,6 +60,13 @@ const SlideoutList = memo(function SlideoutList({
     },
     [items, hasInput, inputField, hasChanged, onChange]
   );
+
+  const handleAudioChange = useCallback(() => {
+    if (!hasChanged) {
+      setHasChanged(true);
+      if (onChange) onChange();
+    }
+  }, [hasChanged, onChange]);
 
   const handleToggleDropdown = useCallback(() => {
     setIsOpen(true);
@@ -102,35 +112,50 @@ const SlideoutList = memo(function SlideoutList({
             [styles.show]: isOpen,
           })}
         >
-          {items.map((item, index) => (
-            <div
-              key={`${item[idField]}-${index}`}
-              className={
-                hasInput ? styles.listEntryDouble : styles.listEntrySingle
-              }
-            >
-              <div className={styles.listEntryTextWrapper}>
-                <span className={styles.listEntryText}>{item[labelField]}</span>
+          {items.map((item, index) => {
+            let entryClassName = styles.listEntrySingle;
+            if (hasInput && hasAudio) {
+              entryClassName = styles.listEntryAudio;
+            } else if (hasInput) {
+              entryClassName = styles.listEntryDouble;
+            }
+
+            return (
+              <div key={`${item[idField]}-${index}`} className={entryClassName}>
+                <div className={styles.listEntryTextWrapper}>
+                  <span className={styles.listEntryText}>
+                    {item[labelField]}
+                  </span>
+                </div>
+                {hasAudio && (
+                  <SlideoutAudioInput
+                    initialAudio={item[audioFile]}
+                    id={`${id}[${index}][audioUrl]`}
+                    audioSourceId={`${nanoid()}-${id}[${index}][audioUrl]`}
+                    onFileChange={handleAudioChange}
+                  />
+                )}
+                {hasInput && (
+                  <input
+                    type="text"
+                    className={styles.listEntryInput}
+                    placeholder={inputLabel}
+                    value={item[inputField] ?? ""}
+                    required
+                    onChange={(e) => handleInputChange(index, e.target.value)}
+                  />
+                )}
+
+                <button
+                  type="button"
+                  className={styles.removeBtn}
+                  onClick={() => handleRemoveItem(index)}
+                >
+                  <FaXmark className={styles.removeIcon} />
+                </button>
               </div>
-              {hasInput && (
-                <input
-                  type="text"
-                  className={styles.listEntryInput}
-                  placeholder={inputLabel}
-                  value={item[inputField] ?? ""}
-                  required
-                  onChange={(e) => handleInputChange(index, e.target.value)}
-                />
-              )}
-              <button
-                type="button"
-                className={styles.removeBtn}
-                onClick={() => handleRemoveItem(index)}
-              >
-                <FaXmark className={styles.removeIcon} />
-              </button>
-            </div>
-          ))}
+            );
+          })}
 
           {!isOpen && (
             <div className={styles.addBtnContainer}>
@@ -167,6 +192,15 @@ const SlideoutList = memo(function SlideoutList({
                 type="hidden"
                 name={hasChanged ? `${id}[${index}][${inputField}]` : undefined}
                 value={item[inputField] ?? ""}
+              />
+            )}
+            {hasAudio && (
+              <input
+                type="hidden"
+                name={
+                  hasChanged ? `${id}[${index}][songPresetsRowId]` : undefined
+                }
+                value={item.songPresetsRowId ?? ""}
               />
             )}
           </div>

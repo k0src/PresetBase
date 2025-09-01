@@ -38,10 +38,12 @@ export const slideoutConfigs = {
         label: "Presets",
         hasInput: true,
         inputLabel: "Usage Type",
+        hasAudio: true,
         dataFields: {
           idField: "id",
           labelField: "name",
           inputField: "usageType",
+          audioFile: "audioUrl",
         },
         searchTable: "presets",
       },

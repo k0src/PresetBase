@@ -17,6 +17,7 @@ const SectionLists = memo(function SectionLists({
           listItems={data[list.key] || []}
           hasInput={list.hasInput}
           inputLabel={list.inputLabel}
+          hasAudio={list.hasAudio}
           dataFields={list.dataFields}
           searchTable={list.searchTable}
           relationTable={list.relationTable}

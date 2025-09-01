@@ -31,4 +31,5 @@ Desktop.ini
 nodemon.json
 bs-config.js
 uploads/
+fs-backups/
 random/

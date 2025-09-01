@@ -59,21 +59,32 @@
   color: #e3e5e4;
 }
 
+.listEntrySingle,
+.listEntryDouble,
+.listEntryAudio {
+  padding: 1.2rem;
+  border-bottom: 0.1rem solid #2d343a;
+}
+
+.listEntryDouble,
+.listEntryAudio {
+  display: grid;
+  column-gap: 0.8rem;
+  align-items: center;
+}
+
 .listEntrySingle {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 0.1rem solid #2d343a;
-  padding: 1.2rem;
+}
+
+.listEntryAudio {
+  grid-template-columns: 1fr auto 1fr 2.4rem;
 }
 
 .listEntryDouble {
-  display: grid;
   grid-template-columns: 1fr 1fr 2.4rem;
-  column-gap: 0.8rem;
-  align-items: center;
-  border-bottom: 0.1rem solid #2d343a;
-  padding: 1.2rem;
 }
 
 .listEntryTextWrapper {

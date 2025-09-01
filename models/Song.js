@@ -336,6 +336,7 @@ export default class Song extends Entry {
                   'name', presets.preset_name,
                   'usageType', song_presets.usage_type,
                   'audioUrl', song_presets.audio_url,
+                  'songPresetsRowId', song_presets.id,
                   'synth', json_object(
                     'id', synths.id,
                     'name', synths.synth_name,
@@ -437,16 +438,47 @@ export default class Song extends Entry {
         }
       }
 
-      // Add audio field
       if ("presets" in data) {
-        await DB.run("DELETE FROM song_presets WHERE song_id = ?", [id]);
         for (const preset of data.presets || []) {
-          if (preset.id) {
+          // If it has a row ID, then it's old
+          if (preset.songPresetsRowId) {
+            const presetFields = [];
+            const presetParams = [];
+
+            if (preset.usageType) {
+              presetFields.push("usage_type = ?");
+              presetParams.push(preset.usageType);
+            }
+
+            if (preset.audioUrl) {
+              presetFields.push("audio_url = ?");
+              presetParams.push(preset.audioUrl);
+            }
+
+            presetParams.push(preset.songPresetsRowId);
+
+            if (presetFields.length > 0) {
+              await DB.run(
+                `UPDATE song_presets
+                 SET ${presetFields.join(", ")}
+                 WHERE id = ?`,
+                presetParams
+              );
+            }
+          } else {
+            // No row ID = new preset
             await DB.run(
-              `INSERT INTO song_presets
-                (song_id, preset_id, usage_type, verified, timestamp)
-              VALUES (?, ?, ?, ?, ?)`,
-              [id, preset.id, preset.usageType, "t", new Date().toISOString()]
+              `INSERT INTO song_presets 
+                (song_id, preset_id, usage_type, verified, audio_url, timestamp)
+               VALUES (?, ?, ?, ?, ?, ?)`,
+              [
+                id,
+                preset.id,
+                preset.usageType,
+                "t",
+                preset.audioUrl,
+                new Date().toISOString(),
+              ]
             );
           }
         }

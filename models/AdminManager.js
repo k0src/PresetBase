@@ -822,8 +822,6 @@ export default class AdminManager {
       });
       const sanitizedData = await AdminManager.#sanitizeSubmissionData(rawData);
 
-      console.log(sanitizedData);
-
       await Model.updateById(entryId, sanitizedData);
 
       if (sanitizedData.imageUrl) {
@@ -833,11 +831,17 @@ export default class AdminManager {
         });
       }
 
-      if (sanitizedData.audioUrl) {
-        await AdminManager.#approveFile({
-          filename: sanitizedData.audioUrl,
-          type: "audio",
-        });
+      if (table === "songs") {
+        if (sanitizedData.presets && sanitizedData.presets.length > 0) {
+          for (const preset of sanitizedData.presets) {
+            if (preset.audioUrl) {
+              await AdminManager.#approveFile({
+                filename: preset.audioUrl,
+                type: "audio",
+              });
+            }
+          }
+        }
       }
     } catch (err) {
       throw new Error(
