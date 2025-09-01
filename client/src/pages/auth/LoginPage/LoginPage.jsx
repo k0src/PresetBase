@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { useAuth } from "../../../contexts/AuthContext";
 
@@ -16,8 +16,10 @@ export default function LoginPage() {
   });
   const { login, isAuthenticated, loading, error, clearError } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const [oauthError, setOauthError] = useState(null);
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   useEffect(() => {
     if (isAuthenticated) {
@@ -30,11 +32,38 @@ export default function LoginPage() {
   }, []);
 
   useEffect(() => {
+    const error = searchParams.get("error");
     if (error) {
-      const timer = setTimeout(clearError, 5000);
+      switch (error) {
+        case "oauth_failed":
+          setOauthError("Google sign-in failed. Please try again.");
+          break;
+        case "oauth_callback_failed":
+          setOauthError("Google sign-in callback failed. Please try again.");
+          break;
+        case "oauth_token_failed":
+          setOauthError(
+            "Failed to process Google sign-in tokens. Please try again."
+          );
+          break;
+        case "oauth_missing_tokens":
+          setOauthError("Google sign-in tokens missing. Please try again.");
+          break;
+        default:
+          setOauthError("Sign-in failed. Please try again.");
+      }
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
+    if (error || oauthError) {
+      const timer = setTimeout(() => {
+        clearError();
+        setOauthError(null);
+      }, 5000);
       return () => clearTimeout(timer);
     }
-  }, [error]);
+  }, [error, oauthError]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -45,6 +74,9 @@ export default function LoginPage() {
 
     if (error) {
       clearError();
+    }
+    if (oauthError) {
+      setOauthError(null);
     }
   };
 
@@ -90,8 +122,12 @@ export default function LoginPage() {
               ) : (
                 <div className={styles.loginBtnContainer}>
                   <div className={styles.loginServicesContainer}>
-                    {/* fix */}
-                    <a href="/auth/google" className={styles.loginBtn}>
+                    <a
+                      href={`${
+                        import.meta.env.VITE_API_URL || "/api"
+                      }/auth/google`}
+                      className={styles.loginBtn}
+                    >
                       <FaGoogle className={styles.loginIcon} />
                       Continue with Google
                     </a>
@@ -102,7 +138,9 @@ export default function LoginPage() {
                   </div>
 
                   <form className={styles.loginForm} onSubmit={handleSubmit}>
-                    {error && <div className={styles.error}>{error}</div>}
+                    {(error || oauthError) && (
+                      <div className={styles.error}>{error || oauthError}</div>
+                    )}
 
                     <input
                       type="email"

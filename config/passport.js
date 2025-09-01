@@ -1,57 +1,78 @@
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth20").Strategy;
-const User = require("../models/user");
+import passport from "passport";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import User from "../models/User.js";
 
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: "/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
-        const email = profile.emails[0].value;
-        const name = profile.displayName;
+        const { emails, displayName } = profile;
+        const email = emails[0]?.value;
+        const name = displayName;
 
-        let user = await User.getUserByEmail(email);
-        if (!user) {
-          user = await User.createUser({
-            email: email,
-            username: generateUsername(name),
-            authenticated_with: "google",
-          });
+        if (!email) {
+          return done(new Error("No email found in Google profile"), null);
         }
-        return done(null, user);
-      } catch (err) {
-        return done(err, null);
+
+        let user = await User.getByEmail(email);
+
+        if (user) {
+          if (user.authenticatedWith === "Google") {
+            return done(null, user);
+          } else {
+            return done(
+              new Error(
+                "An account with this email already exists. Please sign in with your email and password instead."
+              ),
+              null
+            );
+          }
+        }
+
+        let username = name?.replace(/\s+/g, "_").toLowerCase();
+        if (!username || username.length < 3) {
+          username = email.split("@")[0];
+        }
+
+        let uniqueUsername = username;
+        let counter = 1;
+        while (await User.getByUsername(uniqueUsername)) {
+          uniqueUsername = `${username}_${counter}`;
+          counter++;
+        }
+
+        const newUser = {
+          username: uniqueUsername,
+          email: email.toLowerCase().trim(),
+          authenticatedWith: "Google",
+        };
+
+        const createdUser = await User.createOAuthUser(newUser);
+        return done(null, createdUser);
+      } catch (error) {
+        console.error("Google OAuth error:", error);
+        return done(error, null);
       }
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  console.log("Serializing user:", user);
-
-  if (!user || !user.id) {
-    return done(new Error("Invalid user object"), null);
-  }
   done(null, user.id);
 });
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.getUserById(id);
+    const user = await User.getById(id);
     done(null, user);
-  } catch (err) {
-    done(err, null);
+  } catch (error) {
+    done(error, null);
   }
 });
 
-const generateUsername = function (name) {
-  return (
-    name.toLowerCase().replace(/\s+/g, "_") +
-    "_" +
-    Math.floor(Math.random() * 10000)
-  );
-};
+export default passport;

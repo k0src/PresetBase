@@ -33,6 +33,7 @@ import BrowseRecent from "./pages/browse/BrowseRecent";
 import LoginPage from "./pages/auth/LoginPage/LoginPage";
 import RegisterPage from "./pages/auth/RegisterPage/RegisterPage";
 import AccountInfoPage from "./pages/auth/AccountInfoPage/AccountInfoPage";
+import OAuthSuccessPage from "./pages/auth/OAuthSuccessPage/OAuthSuccessPage";
 
 import AdminApprovals from "./pages/admin/AdminApprovals/AdminApprovals";
 import AdminUpload from "./pages/admin/AdminUpload/AdminUpload";
@@ -101,6 +102,7 @@ function App() {
           {/* Auth routes */}
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
+          <Route path="/auth/oauth-success" element={<OAuthSuccessPage />} />
 
           <Route
             path="/admin"

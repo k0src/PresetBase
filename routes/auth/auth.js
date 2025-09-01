@@ -8,6 +8,7 @@ import {
 import { authRateLimit } from "../../middleware/security.js";
 import { authenticateToken } from "../../middleware/auth.js";
 import TokenBlacklistManager from "../../models/TokenBlacklistManager.js";
+import passport from "../../config/passport.js";
 
 const router = express.Router();
 
@@ -456,28 +457,51 @@ router.delete(
   }
 );
 
-// const passport = require("passport");
+// Google OAuth routes
+router.get(
+  "/google",
+  passport.authenticate("google", {
+    scope: ["profile", "email"],
+  })
+);
 
-// router.get(
-//   "/google",
-//   passport.authenticate("google", { scope: ["profile", "email"] })
-// );
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { session: false }),
+  async (req, res) => {
+    try {
+      const user = req.user;
 
-// router.get(
-//   "/google/callback",
-//   passport.authenticate("google", {
-//     failureRedirect: "/login",
-//   }),
-//   (req, res) => {
-//     res.redirect("/");
-//   }
-// );
+      if (!user) {
+        return res.redirect(
+          `${
+            process.env.CLIENT_URL || "http://localhost:3000"
+          }/login?error=oauth_failed`
+        );
+      }
 
-// router.get("/logout", (req, res) => {
-//   req.logout((err) => {
-//     if (err) console.error(err);
-//     req.session.destroy(() => res.redirect("/"));
-//   });
-// });
+      const tokens = generateTokenPair({
+        userId: user.id,
+        email: user.email,
+      });
+
+      const redirectUrl = new URL(
+        "/auth/oauth-success",
+        process.env.CLIENT_URL || "http://localhost:3000"
+      );
+      redirectUrl.searchParams.set("accessToken", tokens.accessToken);
+      redirectUrl.searchParams.set("refreshToken", tokens.refreshToken);
+
+      res.redirect(redirectUrl.toString());
+    } catch (error) {
+      console.error("OAuth callback error:", error);
+      res.redirect(
+        `${
+          process.env.CLIENT_URL || "http://localhost:3000"
+        }/login?error=oauth_callback_failed`
+      );
+    }
+  }
+);
 
 export default router;

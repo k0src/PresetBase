@@ -4,6 +4,8 @@ import helmet from "helmet";
 import rateLimit, { ipKeyGenerator } from "express-rate-limit";
 import dotenv from "dotenv";
 import path from "path";
+import session from "express-session";
+import passport from "./config/passport.js";
 
 dotenv.config();
 
@@ -20,7 +22,7 @@ const PROJECT_ROOT = process.env.PROJECT_ROOT || ".";
 app.use(helmet());
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:5173",
+    origin: process.env.CLIENT_URL || "http://localhost:5173",
     credentials: true,
   })
 );
@@ -35,6 +37,22 @@ app.use("/api/", limiter);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+
+// Session configuration for passport
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || process.env.JWT_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: isProd,
+      maxAge: 24 * 60 * 60 * 1000,
+    },
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 import { securityHeaders, validateInput } from "./middleware/security.js";
 

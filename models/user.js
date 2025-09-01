@@ -63,6 +63,53 @@ export default class User {
     }
   }
 
+  static async createOAuthUser({ username, email, authenticatedWith }) {
+    if (
+      !username ||
+      username.length < 3 ||
+      username.length > 50 ||
+      !User.#verifyUsername(username)
+    ) {
+      throw new Error("Username must be between 3 and 50 characters");
+    }
+
+    if (!email || !User.#verifyEmail(email)) {
+      throw new Error("Invalid email address");
+    }
+
+    if (!authenticatedWith) {
+      throw new Error("Authentication provider is required");
+    }
+
+    const now = new Date().toISOString();
+
+    try {
+      const userId = await DB.run(
+        `INSERT INTO users 
+        (username, email, password_hash, authenticated_with, is_admin, banned, timestamp)
+        VALUES (?, ?, NULL, ?, 'f', 'f', ?)`,
+        [
+          username.toLowerCase().trim(),
+          email.toLowerCase().trim(),
+          authenticatedWith,
+          now,
+        ]
+      );
+
+      return {
+        id: userId,
+        username: username.toLowerCase().trim(),
+        email: email.toLowerCase().trim(),
+        timestamp: now,
+        authenticatedWith,
+        isAdmin: "f",
+        banned: "f",
+      };
+    } catch (err) {
+      throw new Error(`Failed to create OAuth user: ${err.message}`);
+    }
+  }
+
   static async getById(id) {
     try {
       const user = await DB.get(`SELECT * FROM users WHERE id = ?`, [id]);
