@@ -15,7 +15,6 @@ import ContentContainer from "../../../components/ContentContainer/ContentContai
 import ComponentLoader from "../../../components/ComponentLoader/ComponentLoader";
 import DbError from "../../../components/DbError/DbError";
 import ManageDbNoEntries from "../../../components/Admin/ManageDb/ManageDbNoEntries/ManageDbNoEntries";
-import ManageDbHeader from "../../../components/Admin/ManageDb/ManageDbHeader/ManageDbHeader";
 import EntryTable from "../../../components/Admin/ManageDb/EntryTable/EntryTable";
 import AdminSlideout from "../../../components/Admin/ManageDb/Slideout/AdminSlideout/AdminSlideout";
 import ManageDbFilter from "../../../components/Admin/ManageDb/ManageDbFilter/ManageDbFilter";

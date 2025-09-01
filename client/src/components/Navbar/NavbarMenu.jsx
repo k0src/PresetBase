@@ -2,6 +2,7 @@ import { useState, useRef, useCallback } from "react";
 import { NavLink } from "react-router-dom";
 
 import styles from "./NavbarMenu.module.css";
+import classNames from "classnames";
 
 import { FaChevronDown } from "react-icons/fa6";
 
@@ -42,9 +43,9 @@ export default function NavbarMenu({ title, menuItems }) {
         <>
           <div className={styles.navbarMenuBridge} />
           <menu
-            className={`${styles.navbarMenu} ${
-              !isOpen ? styles.navbarMenuClosing : ""
-            }`}
+            className={classNames(styles.navbarMenu, {
+              [styles.navbarMenuClosing]: !isOpen,
+            })}
           >
             {menuItems.map((item, index) => (
               <NavLink

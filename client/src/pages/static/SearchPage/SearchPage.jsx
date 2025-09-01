@@ -3,7 +3,7 @@ import { generalAPI } from "../../../api/general";
 
 import { useSearchParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { memo, useMemo } from "react";
+import { useMemo } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import PageLoader from "../../../components/PageLoader/PageLoader";
@@ -11,7 +11,7 @@ import SearchResults from "../../../components/Search/SearchResults";
 
 import styles from "./SearchPage.module.css";
 
-export default memo(function SearchPage() {
+export default function SearchPage() {
   const [searchParams] = useSearchParams();
   const query = searchParams.get("query");
 
@@ -76,4 +76,4 @@ export default memo(function SearchPage() {
       </ContentContainer>
     </>
   );
-});
+}

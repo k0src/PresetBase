@@ -32,7 +32,8 @@
   top: 100%;
   left: 0;
   right: 0;
-  height: 0.8rem;
+  height: 1rem;
+  width: 100%;
   background: transparent;
   z-index: 1;
 }

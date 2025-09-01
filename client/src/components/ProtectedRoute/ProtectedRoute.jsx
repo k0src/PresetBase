@@ -1,4 +1,4 @@
-import { Navigate } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useAuth } from "../../contexts/AuthContext";
 import PageLoader from "../PageLoader/PageLoader";
 
@@ -13,5 +13,5 @@ export default function ProtectedRoute({ children }) {
     return <Navigate to="/login" replace />;
   }
 
-  return children;
+  return children || <Outlet />;
 }

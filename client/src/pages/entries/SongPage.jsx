@@ -3,7 +3,7 @@ import { entryAPI } from "../../api/entry";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import { memo, useMemo } from "react";
+import {  useMemo } from "react";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer";
 import DbError from "../../components/DbError/DbError";
@@ -15,7 +15,7 @@ import EntryList from "../../components/Entries/EntryList/EntryList";
 import EntryExternalLink from "../../components/Entries/EntryExternalLink/EntryExternalLink";
 import styles from "./EntryPage.module.css";
 
-export default memo(function SongPage() {
+export default function SongPage() {
   const { id } = useParams();
 
   const { data, loading, error } = useAsyncData(
@@ -112,4 +112,4 @@ export default memo(function SongPage() {
       )}
     </ContentContainer>
   );
-});
+}
