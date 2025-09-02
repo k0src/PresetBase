@@ -6,7 +6,6 @@ import { useAsyncData } from "../../../hooks/useAsyncData";
 import { adminAPI } from "../../../api/admin";
 
 import { useState, useCallback, useMemo, useEffect, useRef } from "react";
-import { useParams, useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 
 import { dbEntryConfigs } from "../../../components/Admin/ManageDb/dbEntryConfigs";
@@ -37,7 +36,7 @@ function AdminManageUsersContent() {
     { cacheKey: `adminManageUsers-${sortBy}-${sortDirection}` }
   );
 
-  const usersData = data.users?.data || null;
+  const usersData = data.users || null;
   const totalUsers = usersData ? usersData.length : 0;
   const usersConfig = useMemo(() => dbEntryConfigs.users, []);
 

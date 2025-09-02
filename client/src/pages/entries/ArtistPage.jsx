@@ -28,10 +28,10 @@ export default function ArtistPage() {
     { cacheKey: `artist-${id}` }
   );
 
-  const artist = data.artist?.data || null;
-  const totalSongs = data.totalSongs?.data || 0;
-  const albums = data.albums?.data || [];
-  const favoriteSynth = data.favoriteSynth?.data || null;
+  const artist = data.artist || null;
+  const totalSongs = data.totalSongs || 0;
+  const albums = data.albums || [];
+  const favoriteSynth = data.favoriteSynth || null;
 
   const songEntries = useMemo(() => {
     if (!artist) return [];

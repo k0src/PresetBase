@@ -20,7 +20,7 @@ const SongEntryRow = memo(({ entry, index, getImageSrc }) => (
     <span className={styles.resultEntryTertiary}>
       {entry.album.title === "[SINGLE]" ? "Single" : entry.album.title}
     </span>
-    <GenreTag genre={entry.genre} />
+    <GenreTag>{entry.genre}</GenreTag>
     <span className={styles.resultEntryQuaternary}>{entry.year}</span>
   </>
 ));
@@ -52,7 +52,7 @@ const AlbumEntryRow = memo(({ entry, index, getImageSrc }) => (
       <span className={styles.resultEntryPrimary}>{entry.title}</span>
     </div>
     <span className={styles.resultEntrySecondary}>{entry.artist.name}</span>
-    <GenreTag genre={entry.genre} />
+    <GenreTag>{entry.genre}</GenreTag>
     <span className={styles.resultEntryTertiary}>{entry.year}</span>
   </>
 ));

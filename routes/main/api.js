@@ -9,6 +9,13 @@ import DB from "../../models/DB.js";
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  res.json({
+    message: "PresetBase API Server",
+    version: "1.0.0",
+  });
+});
+
 router.get("/latest-entry", async (req, res) => {
   try {
     const latestEntry = await Song.getLatestSong();
@@ -137,7 +144,7 @@ router.get("/autofill/data/:type", async (req, res) => {
 
   try {
     const data = await DB.all(queries[type], [`%${query}%`]);
-    return res.json(data);
+    return res.json({ data: data });
   } catch (err) {
     console.error(err);
     res
@@ -261,8 +268,8 @@ router.get("/autofill/suggestions/:type", async (req, res) => {
   };
 
   try {
-    const results = await DB.all(queries[type], [`%${query}%`, limitNum]);
-    return res.json(results);
+    const data = await DB.all(queries[type], [`%${query}%`, limitNum]);
+    return res.json({ data: data });
   } catch (err) {
     console.error(err);
     res
@@ -307,8 +314,8 @@ router.get("/entry-names", async (req, res) => {
     LIMIT ?`;
 
   try {
-    const results = await DB.all(q, [`%${query}%`, limitNum]);
-    return res.json(results);
+    const data = await DB.all(q, [`%${query}%`, limitNum]);
+    return res.json({ data: data });
   } catch (err) {
     console.error(err);
     res
@@ -373,11 +380,11 @@ router.get("/number-entries", async (req, res) => {
       (SELECT COUNT(*) FROM artists) +
       (SELECT COUNT(*) FROM synths) +
       (SELECT COUNT(*) FROM presets)
-    ) AS total_count`;
+    ) AS totalCount`;
 
   try {
     const totalCount = await DB.get(query);
-    return res.json({ data: totalCount.total_count });
+    return res.json({ data: totalCount.totalCount });
   } catch (err) {
     console.error(err);
     res
@@ -391,13 +398,13 @@ router.get("/submissions-per-day", async (req, res) => {
     SELECT
       ROUND(CAST(COUNT(*) AS FLOAT) / 
       COUNT(DISTINCT DATE(timestamp)), 2) 
-      AS avg_submissions_per_day
+      AS avgSubmissionsPerDay
     FROM song_presets
     WHERE timestamp IS NOT NULL`;
 
   try {
     const avgSubmissions = await DB.get(query);
-    return res.json(avgSubmissions.avg_submissions_per_day);
+    return res.json({ data: avgSubmissions.avgSubmissionsPerDay });
   } catch (err) {
     console.error(err);
     res

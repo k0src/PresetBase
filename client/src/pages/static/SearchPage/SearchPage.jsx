@@ -23,7 +23,7 @@ export default function SearchPage() {
     { cacheKey: `search-${query}`, ttl: 1000 * 60 }
   );
 
-  const searchData = data.search?.data || null;
+  const searchData = data.search || null;
 
   const memoizedProps = useMemo(
     () => ({

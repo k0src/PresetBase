@@ -26,8 +26,8 @@ export default function BrowseAlbums() {
     { cacheKey: `browseAlbums-${sortBy}-${sortDirection}` }
   );
 
-  const albumsData = data.albums?.data || null;
-  const totalEntries = data.total?.data || null;
+  const albumsData = data.albums || null;
+  const totalEntries = data.total || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

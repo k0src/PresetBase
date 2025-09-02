@@ -14,14 +14,7 @@ import ManageDbHeader from "../../components/Admin/ManageDb/ManageDbHeader/Manag
 import EntryTable from "../../components/Admin/ManageDb/EntryTable/EntryTable";
 import AdminSlideout from "../../components/Admin/ManageDb/Slideout/AdminSlideout/AdminSlideout";
 
-const validTables = [
-  "songs",
-  "artists",
-  "albums",
-  "synths",
-  "presets",
-  "genres",
-];
+const validTables = ["songs", "artists", "albums", "synths", "presets"];
 
 function AdminManageDbContent() {
   const { table } = useParams();

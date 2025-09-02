@@ -26,8 +26,8 @@ export default function AlbumPage() {
     { cacheKey: `album-${id}` }
   );
 
-  const album = data.album?.data || null;
-  const moreAlbums = data.moreAlbums?.data || null;
+  const album = data.album || null;
+  const moreAlbums = data.moreAlbums || null;
 
   const songEntries = useMemo(() => {
     if (!album || !album.songs) return [];

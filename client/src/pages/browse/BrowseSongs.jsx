@@ -26,8 +26,8 @@ export default function BrowseSongs() {
     { cacheKey: `browseSongs-${sortBy}-${sortDirection}` }
   );
 
-  const songsData = data.songs?.data || null;
-  const totalEntries = data.total?.data || null;
+  const songsData = data.songs || null;
+  const totalEntries = data.total || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

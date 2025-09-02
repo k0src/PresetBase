@@ -6,7 +6,6 @@ const tableOptions = [
   { value: "albums", label: "Albums" },
   { value: "synths", label: "Synths" },
   { value: "presets", label: "Presets" },
-  { value: "genres", label: "Genres" },
 ];
 
 export default function TableSelector({ selectedTable, onTableChange }) {

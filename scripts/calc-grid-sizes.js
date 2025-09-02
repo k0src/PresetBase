@@ -230,7 +230,6 @@ async function calculateOptimalGrids() {
       "albums",
       "synths",
       "presets",
-      "genre_tags",
       "users",
     ];
 

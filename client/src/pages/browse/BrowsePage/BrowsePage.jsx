@@ -34,14 +34,14 @@ export default function BrowsePage() {
     { cacheKey: "browsePageData" }
   );
 
-  const numberEntries = data.numberEntries?.data || null;
-  const hotSongsData = data.hotSongs?.data || null;
-  const latestEntryData = data.latestEntry?.data || null;
-  const topGenresData = data.topGenres?.data || null;
-  const topSynthsData = data.topSynths?.data || null;
-  const recentSongsData = data.recentSongs?.data || null;
-  const popularSongsData = data.popularSongs?.data || null;
-  const topPresetsData = data.topPresets?.data || null;
+  const numberEntries = data.numberEntries || null;
+  const hotSongsData = data.hotSongs || null;
+  const latestEntryData = data.latestEntry || null;
+  const topGenresData = data.topGenres || null;
+  const topSynthsData = data.topSynths || null;
+  const recentSongsData = data.recentSongs || null;
+  const popularSongsData = data.popularSongs || null;
+  const topPresetsData = data.topPresets || null;
 
   if (loading) return <PageLoader />;
 

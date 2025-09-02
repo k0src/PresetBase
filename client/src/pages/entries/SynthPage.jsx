@@ -26,8 +26,8 @@ export default function SynthPage() {
     { cacheKey: `synth-${id}` }
   );
 
-  const synth = data.synth?.data || null;
-  const moreSynths = data.moreSynths?.data || null;
+  const synth = data.synth || null;
+  const moreSynths = data.moreSynths || null;
 
   const presetEntries = useMemo(() => {
     if (!synth || !synth.presets) return [];

@@ -55,9 +55,8 @@ export const sortKeys = {
     added: "presets.timestamp",
   },
   genres: {
-    genre: "genre_tags.name",
+    genre: "genre",
     songCount: "songCount",
-    added: "genre_tags.timestamp",
   },
   users: {
     username: "users.username",

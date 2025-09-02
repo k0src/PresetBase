@@ -68,13 +68,12 @@ api.interceptors.response.use(
       originalRequest._retry = true;
 
       try {
-        const response = await axios.post(
-          `${api.defaults.baseURL}/auth/refresh`,
-          { refreshToken }
-        );
+        const res = await axios.post(`${api.defaults.baseURL}/auth/refresh`, {
+          refreshToken,
+        });
 
         const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
-          response.data;
+          res.data;
 
         setTokens(newAccessToken, newRefreshToken);
 
@@ -126,70 +125,71 @@ api.interceptors.response.use(
   }
 );
 
+// Auth API
 export const authAPI = {
   setTokens,
   clearTokens,
   setTokenRefreshHandler,
 
   async login(email, password) {
-    const response = await api.post("/auth/login", { email, password });
-    return response.data;
+    const res = await api.post("/auth/login", { email, password });
+    return res.data;
   },
 
   async register(username, email, password) {
-    const response = await api.post("/auth/register", {
+    const res = await api.post("/auth/register", {
       username,
       email,
       password,
     });
-    return response.data;
+    return res.data;
   },
 
   async logout(refreshToken) {
-    const response = await api.post("/auth/logout", { refreshToken });
-    return response.data;
+    const res = await api.post("/auth/logout", { refreshToken });
+    return res.data;
   },
 
   async getUserProfile() {
-    const response = await api.get("/auth/me");
-    return response.data;
+    const res = await api.get("/auth/me");
+    return res.data;
   },
 
   async updateUserProfile(updates) {
-    const response = await api.put("/auth/me", updates);
-    return response.data;
+    const res = await api.put("/auth/me", updates);
+    return res.data;
   },
 
   async changePassword(currentPassword, newPassword) {
-    const response = await api.put("/auth/password", {
+    const res = await api.put("/auth/password", {
       currentPassword,
       newPassword,
     });
-    return response.data;
+    return res.data;
   },
 
   async deleteAccount(refreshToken) {
-    const response = await api.delete("/auth/me", {
+    const res = await api.delete("/auth/me", {
       data: { refreshToken },
     });
-    return response.data;
+    return res.data;
   },
 
   async getUserPendingSubmissions() {
-    const response = await api.get("/auth/me/pending-submissions");
-    return response.data;
+    const res = await api.get("/auth/me/pending-submissions");
+    return res.data;
   },
 
   async getUserApprovedSubmissions() {
-    const response = await api.get("/auth/me/approved-submissions");
-    return response.data;
+    const res = await api.get("/auth/me/approved-submissions");
+    return res.data;
   },
 
   async deletePendingSubmission(submissionId) {
-    const response = await api.delete(
+    const res = await api.delete(
       `/auth/me/pending-submissions/${submissionId}`
     );
-    return response.data;
+    return res.data;
   },
 };
 

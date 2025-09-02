@@ -26,8 +26,8 @@ export default function BrowsePresets() {
     { cacheKey: `browsePresets-${sortBy}-${sortDirection}` }
   );
 
-  const presetsData = data.presets?.data || null;
-  const totalEntries = data.total?.data || null;
+  const presetsData = data.presets || null;
+  const totalEntries = data.total || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

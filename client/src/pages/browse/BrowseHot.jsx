@@ -25,7 +25,7 @@ export default function BrowseHot() {
     { cacheKey: `browseHot-${sortBy}-${sortDirection}` }
   );
 
-  const hotSongsData = data.songs?.data || null;
+  const hotSongsData = data.songs || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

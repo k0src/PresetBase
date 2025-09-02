@@ -1,9 +1,11 @@
 import express from "express";
-import DB from "../../models/DB.js";
 import multer from "../../middleware/multer.js";
-import AdminManager from "../../models/AdminManager.js";
+
 import { authenticateToken } from "../../middleware/auth.js";
 import { sortKeys, sortDirections } from "../../util/sortConfig.js";
+
+import AdminManager from "../../models/AdminManager.js";
+import DB from "../../models/DB.js";
 import User from "../../models/User.js";
 
 const router = express.Router();
@@ -49,7 +51,7 @@ router.get("/pending-submissions", async (req, res) => {
           userId: submission.user_id,
           username: submission.username,
         })) || [];
-      res.json(submissions);
+      res.json({ data: submissions });
     }
   } catch (err) {
     console.error(err);
@@ -81,7 +83,7 @@ router.get("/entry/:table/:id", async (req, res) => {
   try {
     const { table, id } = req.params;
     const data = await AdminManager.getEntryDataById({ table, entryId: id });
-    res.json(data);
+    res.json({ data: data });
   } catch (err) {
     console.error(err);
     res
@@ -137,7 +139,7 @@ router.get("/field-data/:table", async (req, res) => {
       limit: parseInt(limit),
     });
 
-    res.json(results);
+    res.json({ data: results });
   } catch (err) {
     console.error(err);
     res

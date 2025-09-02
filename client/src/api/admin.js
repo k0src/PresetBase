@@ -3,7 +3,7 @@ import api from "./api";
 export const adminAPI = {
   async getPendingSubmissions() {
     const res = await api.get("/admin/pending-submissions");
-    return res.data;
+    return res.data?.data;
   },
 
   async approveSubmission(submission) {
@@ -37,7 +37,7 @@ export const adminAPI = {
 
   async getEntryData(table, id) {
     const res = await api.get(`/admin/entry/${table}/${id}`);
-    return res.data;
+    return res.data?.data;
   },
 
   async updateEntry(table, id, data) {
@@ -61,13 +61,13 @@ export const adminAPI = {
     const res = await api.get(`/admin/field-data/${table}`, {
       params: { query, limit },
     });
-    return res.data;
+    return res.data?.data;
   },
 
   async getUsers(sort = null, direction = "ASC", limit = null) {
-    const response = await api.get("/admin/users", {
+    const res = await api.get("/admin/users", {
       params: { sort, direction, limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 };

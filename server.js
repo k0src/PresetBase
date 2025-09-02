@@ -7,6 +7,8 @@ import path from "path";
 import session from "express-session";
 import passport from "./config/passport.js";
 
+import * as Routes from "./routes/index.js";
+
 dotenv.config();
 
 if (!process.env.JWT_SECRET || !process.env.JWT_REFRESH_SECRET) {
@@ -72,59 +74,25 @@ app.get("/health", (req, res) => {
   res.json({ status: "OK", timestamp: new Date().toISOString() });
 });
 
-// API routes
-import apiRoutes from "./routes/api/api.js";
-app.use("/api", apiRoutes);
+app.use("/api", Routes.apiRoutes);
+app.use("/api/auth", Routes.authRoutes);
+app.use("/api/admin", Routes.adminRoutes);
 
-// Auth routes
-import authRoutes from "./routes/auth/auth.js";
-app.use("/api/auth", authRoutes);
+app.use("/api/stats", Routes.statsRoutes);
+app.use("/api/search", Routes.searchRoutes);
+app.use("/api/submit", Routes.submitRoute);
 
-// Main routes
-import statsRoutes from "./routes/main/stats.js";
-app.use("/api/stats", statsRoutes);
+app.use("/api/album", Routes.albumRoutes);
+app.use("/api/artist", Routes.artistRoutes);
+app.use("/api/song", Routes.songRoutes);
+app.use("/api/synth", Routes.synthRoutes);
 
-import searchRoutes from "./routes/main/search.js";
-app.use("/api/search", searchRoutes);
-
-import submitRoute from "./routes/main/submit.js";
-app.use("/api/submit", submitRoute);
-
-// Entry routes
-import songRoutes from "./routes/entries/song.js";
-app.use("/api/song", songRoutes);
-
-import synthRoutes from "./routes/entries/synth.js";
-app.use("/api/synth", synthRoutes);
-
-import artistsRoutes from "./routes/entries/artist.js";
-app.use("/api/artist", artistsRoutes);
-
-import albumsRoutes from "./routes/entries/album.js";
-app.use("/api/album", albumsRoutes);
-
-// Browse routes
-import browseSongsRoute from "./routes/main/browse/songs.js";
-app.use("/api/browse/songs", browseSongsRoute);
-
-import browseArtistsRoute from "./routes/main/browse/artists.js";
-app.use("/api/browse/artists", browseArtistsRoute);
-
-import browseAlbumsRoute from "./routes/main/browse/albums.js";
-app.use("/api/browse/albums", browseAlbumsRoute);
-
-import browseSynthsRoute from "./routes/main/browse/synths.js";
-app.use("/api/browse/synths", browseSynthsRoute);
-
-import browsePresetsRoute from "./routes/main/browse/presets.js";
-app.use("/api/browse/presets", browsePresetsRoute);
-
-import browseGenresRoutes from "./routes/main/browse/genres.js";
-app.use("/api/browse/genres", browseGenresRoutes);
-
-// Admin routes
-import adminRoute from "./routes/admin/admin.js";
-app.use("/api/admin", adminRoute);
+app.use("/api/browse/albums", Routes.browseAlbumsRoutes);
+app.use("/api/browse/artists", Routes.browseArtistsRoutes);
+app.use("/api/browse/genres", Routes.browsGenresRoutes);
+app.use("/api/browse/presets", Routes.browsePresetsRoutes);
+app.use("/api/browse/songs", Routes.browseSongsRoutes);
+app.use("/api/browse/synths", Routes.browseSynthsRoutes);
 
 async function startServer() {
   try {

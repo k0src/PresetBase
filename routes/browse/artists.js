@@ -1,16 +1,16 @@
 import express from "express";
-import Genre from "../../../models/Genre.js";
-import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
+import Artist from "../../models/Artist.js";
+import { sortKeys, sortDirections } from "../../util/sortConfig.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const sortKey = sortKeys.genres[req.query.sort] || sortKeys.genres.genre;
+  const sortKey = sortKeys.artists[req.query.sort] || sortKeys.artists.added;
   const sortDirection = sortDirections[req.query.direction] || "ASC";
 
   try {
-    const genresData = await Genre.getAll(sortKey, sortDirection);
-    res.json({ data: genresData });
+    const artistsData = await Artist.getAll(sortKey, sortDirection);
+    res.json({ data: artistsData });
   } catch (err) {
     console.error(err);
     return res
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 
 router.get("/total-entries", async (req, res) => {
   try {
-    const totalEntries = await Genre.totalEntries();
+    const totalEntries = await Artist.totalEntries();
     res.json({ data: totalEntries });
   } catch (err) {
     console.error(err);

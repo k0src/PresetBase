@@ -3,63 +3,63 @@ import api from "./api";
 export const entryAPI = {
   // Song functions
   async getSong(id) {
-    const response = await api.get(`/song/${id}`);
-    return response.data;
+    const res = await api.get(`/song/${id}`);
+    return res.data?.data;
   },
 
   async getRelatedSongs(id, limit = null) {
-    const response = await api.get(`/song/${id}/related`, {
+    const res = await api.get(`/song/${id}/related`, {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 
   // Album functions
   async getAlbum(id) {
-    const response = await api.get(`/album/${id}`);
-    return response.data;
+    const res = await api.get(`/album/${id}`);
+    return res.data?.data;
   },
 
   async getRelatedAlbums(id, limit = null) {
-    const response = await api.get(`/album/${id}/related`, {
+    const res = await api.get(`/album/${id}/related`, {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 
   // Artist functions
   async getArtist(id) {
-    const response = await api.get(`/artist/${id}`);
-    return response.data;
+    const res = await api.get(`/artist/${id}`);
+    return res.data?.data;
   },
 
   async getArtistTotalSongs(id) {
-    const response = await api.get(`/artist/${id}/total-songs`);
-    return response.data;
+    const res = await api.get(`/artist/${id}/total-songs`);
+    return res.data?.data;
   },
 
   async getArtistAlbums(id, limit) {
-    const response = await api.get(`/artist/${id}/albums`, {
+    const res = await api.get(`/artist/${id}/albums`, {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 
   async getArtistFavoriteSynth(id) {
-    const response = await api.get(`/artist/${id}/favorite-synth`);
-    return response.data;
+    const res = await api.get(`/artist/${id}/favorite-synth`);
+    return res.data?.data;
   },
 
   // Synth functions
   async getSynth(id) {
-    const response = await api.get(`/synth/${id}`);
-    return response.data;
+    const res = await api.get(`/synth/${id}`);
+    return res.data?.data;
   },
 
   async getRelatedSynths(id, limit = null) {
-    const response = await api.get(`/synth/${id}/related`, {
+    const res = await api.get(`/synth/${id}/related`, {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 };

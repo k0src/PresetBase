@@ -11,7 +11,7 @@ export default function DbError({ errorMessage }) {
 
   return (
     <div className={styles.pageWrapper}>
-      <Navbar isAuth={true} userIsAdmin={true} />
+      <Navbar />
       <div className={styles.contentWrapper}>
         <main className={styles.container}>
           <div className={styles.errorContainer}>

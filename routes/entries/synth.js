@@ -4,6 +4,12 @@ import ClickManager from "../../models/ClickManager.js";
 
 const router = express.Router();
 
+router.get("/", async (req, res) => {
+  res.json({
+    message: 'Use "/synth/:id" to access song details.',
+  });
+});
+
 router.get("/:id", async (req, res) => {
   const synthId = req.params.id;
 

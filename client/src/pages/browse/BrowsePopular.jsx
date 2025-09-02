@@ -25,7 +25,7 @@ export default function BrowsePopular() {
     { cacheKey: `browsePopular-${sortBy}-${sortDirection}` }
   );
 
-  const popularSongsData = data.songs?.data || null;
+  const popularSongsData = data.songs || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

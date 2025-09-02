@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { generalAPI } from "../api/general";
+import { statsAPI } from "../api/stats";
 
 export function useStatsData() {
   const [totalEntries, setTotalEntries] = useState(null);
@@ -19,9 +21,6 @@ export function useStatsData() {
         setLoading(true);
         setError(null);
 
-        const { generalAPI } = await import("../api/general");
-        const { statsAPI } = await import("../api/stats");
-
         const [
           totalEntriesData,
           topPresetsResult,
@@ -40,7 +39,7 @@ export function useStatsData() {
           statsAPI.getHeatmapData(),
         ]);
 
-        setTotalEntries(totalEntriesData.data);
+        setTotalEntries(totalEntriesData);
         setTopPresets(topPresetsResult);
         setPresetsPerSynth(presetsPerSynthResult);
         setTopSynths(topSynthsResult);

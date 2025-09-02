@@ -95,7 +95,7 @@ const BrowseTableView = memo(function BrowseTableView({
       <span className={styles.rowTextTertiary}>
         {song.album.title === "[SINGLE]" ? "Single" : song.album.title}
       </span>
-      <GenreTag genreTag={song.genreTag} />
+      <GenreTag>{song.genre}</GenreTag>
       <span className={styles.rowTextQuaternary}>{song.year}</span>
     </Link>
   ));
@@ -149,7 +149,7 @@ const BrowseTableView = memo(function BrowseTableView({
         <span className={styles.rowTextPrimary}>{album.title}</span>
       </div>
       <span className={styles.rowTextSecondary}>{album.artist.name}</span>
-      <GenreTag genreTag={album.genreTag} />
+      <GenreTag>{album.genre}</GenreTag>
       <span className={styles.rowTextQuaternary}>{album.year}</span>
     </Link>
   ));
@@ -225,11 +225,11 @@ const BrowseTableView = memo(function BrowseTableView({
           <img
             src={`/uploads/images/approved/${genre.imageUrl}`}
             className={styles.rowImg}
-            alt={genre.name}
+            alt={genre.genre}
             loading="lazy"
           />
         </div>
-        <span className={styles.rowTextPrimary}>{genre.name}</span>
+        <span className={styles.rowTextPrimary}>{genre.genre}</span>
       </div>
       <span className={styles.rowTextSecondary}>{genre.songCount}</span>
     </div>

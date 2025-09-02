@@ -282,7 +282,7 @@ export default class Genre extends Entry {
   static async totalEntries() {
     try {
       const totalResults = await DB.get(
-        `SELECT COUNT(*) AS total_results FROM genre_tags`
+        `SELECT COUNT(DISTINCT genre) AS total_results FROM songs`
       );
       return totalResults ? totalResults.total_results : 0;
     } catch (err) {
@@ -377,14 +377,14 @@ export default class Genre extends Entry {
   }
 
   // Get all genres
-  static async getAll(sort = "genre_tags.timestamp", direction = "ASC") {
+  static async getAll(sort = "songCount", direction = "DESC") {
     try {
       // For case-insensitive sorting on text fields
-      const textFields = ["genre_tags.name"];
+      const textFields = ["genre"];
 
       let sortClause;
       if (sort === "songCount") {
-        sortClause = `COUNT(songs.id) ${direction}`;
+        sortClause = `songCount ${direction}`;
       } else if (textFields.includes(sort)) {
         sortClause = `${sort} COLLATE NOCASE ${direction}`;
       } else {
@@ -393,18 +393,15 @@ export default class Genre extends Entry {
 
       const query = `
         SELECT
-          genre_tags.id AS id,
-          genre_tags.name AS name,
-          genre_tags.slug AS slug,
-          genre_tags.text_color AS textColor,
-          genre_tags.border_color AS borderColor,
-          genre_tags.bg_color AS backgroundColor,
-          genre_tags.timestamp AS timestamp,
-          COUNT(songs.id) AS songCount,
-          MAX(songs.image_url) AS imageUrl
-        FROM genre_tags
-        LEFT JOIN songs ON songs.genre = genre_tags.name
-        GROUP BY genre_tags.id
+          genre,
+          COUNT(*) AS songCount,
+          (SELECT image_url
+          FROM songs s2
+          WHERE s2.genre = s1.genre
+          ORDER BY RANDOM()
+          LIMIT 1) AS imageUrl
+        FROM songs s1
+        GROUP BY genre
         ORDER BY ${sortClause}`;
 
       return await DB.all(query);
@@ -418,20 +415,15 @@ export default class Genre extends Entry {
     try {
       const query = `
         SELECT
-          genre_tags.id AS id,
-          genre_tags.name AS name,
-          genre_tags.slug AS slug,
-          genre_tags.text_color AS textColor,
-          genre_tags.border_color AS borderColor,
-          genre_tags.bg_color AS backgroundColor,
-          genre_tags.timestamp AS timestamp,
-          COUNT(songs.id) AS songCount,
-          MAX(songs.image_url) AS imageUrl
-        FROM genre_tags
-        LEFT JOIN songs ON songs.genre = genre_tags.name
-        GROUP BY genre_tags.id, genre_tags.name, genre_tags.slug, 
-          genre_tags.text_color, genre_tags.border_color, genre_tags.bg_color
-        HAVING songCount > 0
+          genre,
+          COUNT(*) AS songCount,
+          (SELECT image_url
+          FROM songs s2
+          WHERE s2.genre = s1.genre
+          ORDER BY RANDOM()
+          LIMIT 1) AS imageUrl
+        FROM songs s1
+        GROUP BY genre
         ORDER BY songCount DESC
         ${limit ? "LIMIT ?" : ""}`;
 

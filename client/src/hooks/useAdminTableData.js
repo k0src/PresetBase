@@ -23,10 +23,6 @@ const dataFetchers = {
     data: browseAPI.getPresets,
     total: browseAPI.getTotalPresetEntries,
   },
-  genres: {
-    data: browseAPI.getGenres,
-    total: browseAPI.getTotalGenreEntries,
-  },
 };
 
 export function useAdminTableData(selectedTable, sortBy, sortDirection) {
@@ -53,8 +49,8 @@ export function useAdminTableData(selectedTable, sortBy, sortDirection) {
   }, [refetch]);
 
   return {
-    tableData: data.data?.data || null,
-    totalEntries: data.total?.data || null,
+    tableData: data.data || null,
+    totalEntries: data.total || null,
     loading,
     error,
     refreshTableData,

@@ -259,7 +259,7 @@ export default class AdminManager {
     try {
       await DB.beginTransaction();
 
-      let song = await DB.get(
+      const song = await DB.get(
         `SELECT id FROM songs WHERE title = ? AND release_year = ?`,
         [submissionData.songTitle, submissionData.songYear]
       );

@@ -1,16 +1,16 @@
 import express from "express";
-import Synth from "../../../models/Synth.js";
-import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
+import Preset from "../../models/Preset.js";
+import { sortKeys, sortDirections } from "../../util/sortConfig.js";
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const sortKey = sortKeys.synths[req.query.sort] || sortKeys.synths.added;
+  const sortKey = sortKeys.presets[req.query.sort] || sortKeys.presets.added;
   const sortDirection = sortDirections[req.query.direction] || "ASC";
 
   try {
-    const synthsData = await Synth.getAll(sortKey, sortDirection);
-    res.json({ data: synthsData });
+    const presetsData = await Preset.getAll(sortKey, sortDirection);
+    res.json({ data: presetsData });
   } catch (err) {
     console.error(err);
     return res
@@ -21,7 +21,7 @@ router.get("/", async (req, res) => {
 
 router.get("/total-entries", async (req, res) => {
   try {
-    const totalEntries = await Synth.totalEntries();
+    const totalEntries = await Preset.totalEntries();
     res.json({ data: totalEntries });
   } catch (err) {
     console.error(err);

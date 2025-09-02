@@ -3,7 +3,7 @@ import { entryAPI } from "../../api/entry";
 
 import { useParams } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
-import {  useMemo } from "react";
+import { useMemo } from "react";
 
 import ContentContainer from "../../components/ContentContainer/ContentContainer";
 import DbError from "../../components/DbError/DbError";
@@ -27,8 +27,8 @@ export default function SongPage() {
     { cacheKey: `song-${id}` }
   );
 
-  const song = data.song?.data || null;
-  const moreSongs = data.moreSongs?.data || null;
+  const song = data.song || null;
+  const moreSongs = data.moreSongs || null;
 
   const { mainArtist, otherArtists, presetEntries } = useMemo(() => {
     if (!song) return { mainArtist: null, otherArtists: [], presetEntries: [] };

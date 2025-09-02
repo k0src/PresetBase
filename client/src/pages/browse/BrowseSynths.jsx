@@ -26,8 +26,8 @@ export default function BrowseSynths() {
     { cacheKey: `browseSynths-${sortBy}-${sortDirection}` }
   );
 
-  const synthsData = data.synths?.data || null;
-  const totalEntries = data.total?.data || null;
+  const synthsData = data.synths || null;
+  const totalEntries = data.total || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

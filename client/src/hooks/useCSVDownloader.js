@@ -8,7 +8,6 @@ const dataFetchers = {
   albums: browseAPI.getAlbums,
   synths: browseAPI.getSynths,
   presets: browseAPI.getPresets,
-  genres: browseAPI.getGenres,
 };
 
 export function useCSVDownloader(
@@ -59,7 +58,7 @@ export function useCSVDownloader(
       const tableData = await fetchData(sortBy, sortDirection);
 
       const config = dbEntryConfigs[entryType];
-      const csvData = generateCSVData(tableData.data, config);
+      const csvData = generateCSVData(tableData, config);
       downloadCSVData(csvData);
     } catch {
       setError(true);

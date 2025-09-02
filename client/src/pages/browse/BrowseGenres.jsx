@@ -26,8 +26,8 @@ export default function BrowseGenres() {
     { cacheKey: `browseGenres-${sortBy}-${sortDirection}` }
   );
 
-  const genresData = data.genres?.data || null;
-  const totalEntries = data.total?.data || null;
+  const genresData = data.genres || null;
+  const totalEntries = data.total || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

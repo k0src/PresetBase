@@ -1,6 +1,6 @@
 import express from "express";
-import Song from "../../../models/Song.js";
-import { sortKeys, sortDirections } from "../../../util/sortConfig.js";
+import Song from "../../models/Song.js";
+import { sortKeys, sortDirections } from "../../util/sortConfig.js";
 
 const router = express.Router();
 

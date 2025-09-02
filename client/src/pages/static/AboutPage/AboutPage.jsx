@@ -22,7 +22,7 @@ export default function AboutPage() {
         setLoading(true);
         setError(null);
         const totalEntriesData = await generalAPI.getTotalEntries();
-        setTotalEntries(totalEntriesData.data);
+        setTotalEntries(totalEntriesData);
       } catch (err) {
         console.error("Error fetching total entries:", err);
         setError(err.message);

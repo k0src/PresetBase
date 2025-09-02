@@ -140,22 +140,6 @@ export const slideoutConfigs = {
       },
     ],
   },
-  genres: {
-    title: "Genre",
-    fields: [
-      { key: "id", label: "Genre ID" },
-      { key: "timestamp", label: "Date Added" },
-    ],
-    inputs: [
-      { key: "name", label: "Name" },
-      { key: "slug", label: "Slug" },
-    ],
-    colorPickers: [
-      { key: "textColor", label: "Text Color" },
-      { key: "backgroundColor", label: "Background Color" },
-      { key: "borderColor", label: "Border Color" },
-    ],
-  },
   users: {
     title: "User",
     fields: [

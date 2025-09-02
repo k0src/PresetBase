@@ -5,11 +5,6 @@
   position: relative;
 }
 
-.colorPickers {
-  display: flex;
-  justify-content: space-between;
-}
-
 .toggles {
   display: flex;
   align-items: center;

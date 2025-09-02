@@ -1,10 +1,11 @@
 import express from "express";
 import multer from "../../middleware/multer.js";
+import { generalRateLimit } from "../../middleware/security.js";
 import UserSubmissionManager from "../../models/UserSubmissionManager.js";
 
 const router = express.Router();
 
-router.post("/", multer, async (req, res) => {
+router.post("/", generalRateLimit, multer, async (req, res) => {
   try {
     await UserSubmissionManager.processSubmission({
       formData: req.body,

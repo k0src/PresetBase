@@ -608,21 +608,13 @@ export default class Song extends Entry {
           json_object(
             'id', albums.id,
             'title', albums.title
-          ) AS album,
-          json_object(
-            'name', genre_tags.name,
-            'textColor', genre_tags.text_color,
-            'bgColor', genre_tags.bg_color,
-            'borderColor', genre_tags.border_color
-          ) AS genreTag
+          ) AS album
         FROM songs
         LEFT JOIN song_artists ON songs.id = song_artists.song_id
           AND song_artists.role = 'Main'
         LEFT JOIN artists ON song_artists.artist_id = artists.id
         LEFT JOIN album_songs ON songs.id = album_songs.song_id
         LEFT JOIN albums ON album_songs.album_id = albums.id
-        LEFT JOIN song_genres ON songs.id = song_genres.song_id
-        LEFT JOIN genre_tags ON song_genres.genre_id = genre_tags.id
         GROUP BY songs.id
         ORDER BY ${sortClause}
         ${limit ? "LIMIT ?" : ""}`;
@@ -636,7 +628,6 @@ export default class Song extends Entry {
         songsData.forEach((song) => {
           song.artist = JSON.parse(song.artist || "{}");
           song.album = JSON.parse(song.album || "{}");
-          song.genreTag = JSON.parse(song.genreTag || "{}");
         });
       }
 
@@ -681,12 +672,6 @@ export default class Song extends Entry {
               'id', albums.id,
               'title', albums.title
             ) AS album,
-            json_object(
-              'name', genre_tags.name,
-              'textColor', genre_tags.text_color,
-              'bgColor', genre_tags.bg_color,
-              'borderColor', genre_tags.border_color
-            ) AS genreTag,
             (
               0.6 * COALESCE(MAX(song_clicks.recent_click), 0) +
               0.3 * COALESCE(MAX(song_clicks.clicks), 0) +
@@ -700,8 +685,6 @@ export default class Song extends Entry {
           LEFT JOIN album_songs ON songs.id = album_songs.song_id
           LEFT JOIN albums ON album_songs.album_id = albums.id
           LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
-          LEFT JOIN song_genres ON songs.id = song_genres.song_id
-          LEFT JOIN genre_tags ON song_genres.genre_id = genre_tags.id
           WHERE song_artists.role = 'Main'
           GROUP BY songs.id
           ORDER BY hotScore DESC
@@ -720,7 +703,6 @@ export default class Song extends Entry {
         hotSongsData.forEach((song) => {
           song.artist = JSON.parse(song.artist || "{}");
           song.album = JSON.parse(song.album || "{}");
-          song.genreTag = JSON.parse(song.genreTag || "{}");
         });
       }
 
@@ -765,12 +747,6 @@ export default class Song extends Entry {
                 'id', albums.id,
                 'title', albums.title
               ) AS album,
-              json_object(
-                'name', genre_tags.name,
-                'textColor', genre_tags.text_color,
-                'bgColor', genre_tags.bg_color,
-                'borderColor', genre_tags.border_color
-              ) AS genreTag,
               COALESCE(MAX(song_clicks.clicks), 0) AS clicks
           FROM songs
           LEFT JOIN song_artists ON songs.id = song_artists.song_id
@@ -778,8 +754,6 @@ export default class Song extends Entry {
           LEFT JOIN album_songs ON songs.id = album_songs.song_id
           LEFT JOIN albums ON album_songs.album_id = albums.id
           LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
-          LEFT JOIN song_genres ON songs.id = song_genres.song_id
-          LEFT JOIN genre_tags ON song_genres.genre_id = genre_tags.id
           WHERE song_artists.role = 'Main'
           GROUP BY songs.id
           ORDER BY song_clicks.clicks DESC
@@ -798,7 +772,6 @@ export default class Song extends Entry {
         popularSongsData.forEach((song) => {
           song.artist = JSON.parse(song.artist || "{}");
           song.album = JSON.parse(song.album || "{}");
-          song.genreTag = JSON.parse(song.genreTag || "{}");
         });
       }
 
@@ -842,21 +815,13 @@ export default class Song extends Entry {
               json_object (
                 'id', albums.id,
                 'title', albums.title
-              ) AS album,
-              json_object(
-                'name', genre_tags.name,
-                'textColor', genre_tags.text_color,
-                'bgColor', genre_tags.bg_color,
-                'borderColor', genre_tags.border_color
-              ) AS genreTag
+              ) AS album
           FROM songs
           LEFT JOIN song_artists ON songs.id = song_artists.song_id
           LEFT JOIN artists ON song_artists.artist_id = artists.id
           LEFT JOIN album_songs ON songs.id = album_songs.song_id
           LEFT JOIN albums ON album_songs.album_id = albums.id
           LEFT JOIN song_clicks ON songs.id = song_clicks.song_id
-          LEFT JOIN song_genres ON songs.id = song_genres.song_id
-          LEFT JOIN genre_tags ON song_genres.genre_id = genre_tags.id
           WHERE song_artists.role = 'Main'
           GROUP BY songs.id
           ORDER BY songs.timestamp DESC
@@ -875,7 +840,6 @@ export default class Song extends Entry {
         recentSongsData.forEach((song) => {
           song.artist = JSON.parse(song.artist || "{}");
           song.album = JSON.parse(song.album || "{}");
-          song.genreTag = JSON.parse(song.genreTag || "{}");
         });
       }
 

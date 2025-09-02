@@ -24,7 +24,7 @@ export default function BrowseRecent() {
     { cacheKey: `browseRecent-${sortBy}-${sortDirection}` }
   );
 
-  const recentSongsData = data.songs?.data || null;
+  const recentSongsData = data.songs || null;
 
   const handleSortChange = useCallback(async (sort, direction) => {
     setSortBy(sort);

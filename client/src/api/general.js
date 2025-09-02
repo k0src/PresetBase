@@ -2,20 +2,20 @@ import api from "./api";
 
 export const generalAPI = {
   async getTotalEntries() {
-    const response = await api.get("/total-entries");
-    return response.data;
+    const res = await api.get("/total-entries");
+    return res.data?.data;
   },
 
   async getNumberEntries() {
-    const response = await api.get("/number-entries");
-    return response.data;
+    const res = await api.get("/number-entries");
+    return res.data?.data;
   },
 
   async searchDatabase(query) {
-    const response = await api.get("/search", {
+    const res = await api.get("/search", {
       params: { query },
     });
-    return response.data;
+    return res.data?.data;
   },
 
   async submitData(data) {
@@ -26,53 +26,50 @@ export const generalAPI = {
       };
     }
 
-    const response = await api.post("/submit", data, config);
-    return response.data;
+    const res = await api.post("/submit", data, config);
+    return res.data;
   },
 
   async getAutofillSuggestions(type, query, limit = 5) {
-    const response = await api.get(
+    const res = await api.get(
       `/autofill/suggestions/${encodeURIComponent(type)}`,
       {
         params: { query, limit },
       }
     );
-    return response.data;
+    return res.data?.data;
   },
 
   async getAutofillData(type, query) {
-    const response = await api.get(
-      `/autofill/data/${encodeURIComponent(type)}`,
-      {
-        params: { query },
-      }
-    );
-    return response.data;
+    const res = await api.get(`/autofill/data/${encodeURIComponent(type)}`, {
+      params: { query },
+    });
+    return res.data?.data;
   },
 
   async getLatestEntry() {
-    const response = await api.get("/latest-entry");
-    return response.data;
+    const res = await api.get("/latest-entry");
+    return res.data?.data;
   },
 
   async getTopGenres(limit = null) {
-    const response = await api.get("/top-genres", {
+    const res = await api.get("/top-genres", {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 
   async getTopSynths(limit = null) {
-    const response = await api.get("/top-synths", {
+    const res = await api.get("/top-synths", {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 
   async getTopPresets(limit = null) {
-    const response = await api.get("/top-presets", {
+    const res = await api.get("/top-presets", {
       params: { limit },
     });
-    return response.data;
+    return res.data?.data;
   },
 };

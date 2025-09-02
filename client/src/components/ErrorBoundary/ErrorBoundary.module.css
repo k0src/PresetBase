@@ -18,8 +18,7 @@
 }
 
 .errorContainer {
-  min-height: 60vh;
-  padding-top: 10vh;
+  min-height: 80vh;
   color: #899096;
   display: flex;
   gap: 2.4rem;
@@ -37,4 +36,11 @@
   text-align: center;
   font-size: 2.4rem;
   line-height: 1.3;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 1.8rem;
+  justify-content: center;
+  flex-wrap: wrap;
 }
