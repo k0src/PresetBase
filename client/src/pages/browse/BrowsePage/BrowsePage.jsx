@@ -22,13 +22,13 @@ export default function BrowsePage() {
   const { data, loading, error } = useAsyncData(
     {
       numberEntries: () => generalAPI.getNumberEntries(),
-      hotSongs: () => browseAPI.getHotSongs(null, "DESC", 9),
       latestEntry: () => generalAPI.getLatestEntry(),
-      topGenres: () => generalAPI.getTopGenres(6),
-      topSynths: () => generalAPI.getTopSynths(6),
+      hotSongs: () => browseAPI.getHotSongs(null, "DESC", 9),
+      topGenres: () => browseAPI.getTopGenres(6),
+      topSynths: () => browseAPI.getTopSynths(6),
       recentSongs: () => browseAPI.getRecentSongs(null, "DESC", 6),
       popularSongs: () => browseAPI.getPopularSongs(null, "DESC", 6),
-      topPresets: () => generalAPI.getTopPresets(10),
+      topPresets: () => browseAPI.getTopPresets(10),
     },
     [],
     { cacheKey: "browsePageData" }

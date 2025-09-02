@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect, useCallback, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { generalAPI } from "../../../api/general";
 
 import { FaMagnifyingGlass } from "react-icons/fa6";
 import AutofillDropdown from "../../../components/AutofillDropdown/AutofillDropdown";
@@ -32,25 +33,17 @@ export default function SearchBoxSmall({ limit }) {
 
   const fetchSuggestions = useCallback(
     async (q) => {
-      // Cancel previous request
       if (abortController.current) {
         abortController.current.abort();
       }
 
       abortController.current = new AbortController();
 
-      const url = `/api/entry-names?query=${encodeURIComponent(
-        q
-      )}&limit=${limit}`;
-
       try {
-        const res = await fetch(url, {
+        const data = await generalAPI.getEntryNames(q, limit, {
           signal: abortController.current.signal,
         });
 
-        if (!res.ok) throw new Error("Fetch failed");
-
-        const data = await res.json();
         const suggestionList = data.map((row) => row.name);
 
         setSuggestions(suggestionList);
@@ -172,7 +165,6 @@ export default function SearchBoxSmall({ limit }) {
     };
   }, []);
 
-  // Memoize the dropdown
   const dropdown = useMemo(() => {
     if (showDropdown && suggestions.length > 0) {
       return (

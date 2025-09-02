@@ -1,11 +1,10 @@
-// FIX ME
-
 import express from "express";
-import Synth from "../../models/Synth.js";
 import Song from "../../models/Song.js";
-import Genre from "../../models/Genre.js";
-import Preset from "../../models/Preset.js";
 import DB from "../../models/DB.js";
+import SearchManager from "../../models/SearchManager.js";
+import UserSubmissionManager from "../../models/UserSubmissionManager.js";
+import { generalRateLimit } from "../../middleware/security.js";
+import multer from "../../middleware/multer.js";
 
 const router = express.Router();
 
@@ -14,6 +13,41 @@ router.get("/", async (req, res) => {
     message: "PresetBase API Server",
     version: "1.0.0",
   });
+});
+
+router.get("/search", generalRateLimit, async (req, res) => {
+  try {
+    const searchQuery = req.query.query?.toLowerCase().trim();
+
+    if (!searchQuery) {
+      return res.status(400).json({ error: "Search query is required" });
+    }
+
+    const searchData = await SearchManager.getSearchResults(searchQuery);
+
+    res.json({ data: searchData });
+  } catch (err) {
+    console.error(err);
+    res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
+router.post("/submit", generalRateLimit, multer, async (req, res) => {
+  try {
+    await UserSubmissionManager.processSubmission({
+      formData: req.body,
+      fileData: req.files,
+    });
+
+    res.status(200).json({ message: "Submission processed successfully" });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
 });
 
 router.get("/latest-entry", async (req, res) => {
@@ -31,49 +65,88 @@ router.get("/latest-entry", async (req, res) => {
   }
 });
 
-router.get("/top-genres", async (req, res) => {
-  const limit = Number.isInteger(parseInt(req.query.limit))
-    ? parseInt(req.query.limit)
-    : null;
+router.get("/number-entries", async (req, res) => {
+  const query = `
+    SELECT
+    (
+      (SELECT COUNT(*) FROM songs) +
+      (SELECT COUNT(*) FROM albums) +
+      (SELECT COUNT(*) FROM artists) +
+      (SELECT COUNT(*) FROM synths) +
+      (SELECT COUNT(*) FROM presets)
+    ) AS totalCount`;
 
   try {
-    const topGenres = await Genre.getTopGenres(limit);
-    res.json({ data: topGenres });
+    const totalCount = await DB.get(query);
+    return res.json({ data: totalCount.totalCount });
   } catch (err) {
     console.error(err);
-    return res
+    res
       .status(500)
       .json({ error: "Internal Server Error", message: err.message });
   }
 });
 
-router.get("/top-synths", async (req, res) => {
-  const limit = Number.isInteger(parseInt(req.query.limit))
-    ? parseInt(req.query.limit)
-    : null;
-
+router.get("/total-entries", async (req, res) => {
+  const query = `
+      SELECT
+        (SELECT COUNT(*) FROM songs) AS songs,
+        (SELECT COUNT(*) FROM albums) AS albums,
+        (SELECT COUNT(*) FROM artists) AS artists,
+        (SELECT COUNT(*) FROM synths) AS synths,
+        (SELECT COUNT(*) FROM presets) AS presets`;
   try {
-    const topSynths = await Synth.getTopSynths(limit);
-    res.json({ data: topSynths });
+    const totalEntries = await DB.get(query);
+    return res.json({ data: totalEntries });
   } catch (err) {
     console.error(err);
-    return res
+    res
       .status(500)
       .json({ error: "Internal Server Error", message: err.message });
   }
 });
 
-router.get("/top-presets", async (req, res) => {
-  const limit = Number.isInteger(parseInt(req.query.limit))
-    ? parseInt(req.query.limit)
-    : null;
+router.get("/entry-names", async (req, res) => {
+  const { query, limit } = req.query;
+  const limitNum = Math.min(Number(limit));
+
+  const q = `
+    WITH search_results AS (
+      SELECT 'song' AS type, songs.id AS id, songs.title AS name
+      FROM songs
+      
+      UNION ALL
+      
+      SELECT 'artist' AS type, artists.id AS id, artists.name AS name
+      FROM artists
+      
+      UNION ALL
+      
+      SELECT 'album' AS type, albums.id AS id, albums.title AS name
+      FROM albums
+      WHERE albums.id != 0
+      
+      UNION ALL
+      
+      SELECT 'synth' AS type, synths.id AS id, synths.synth_name AS name
+      FROM synths
+      
+      UNION ALL
+      
+      SELECT 'preset' AS type, presets.id AS id, presets.preset_name AS name
+      FROM presets
+    )
+    SELECT * FROM search_results 
+    WHERE name LIKE ?
+    ORDER BY type, name
+    LIMIT ?`;
 
   try {
-    const topPresets = await Preset.getTopPresets(limit);
-    res.json({ data: topPresets });
+    const data = await DB.all(q, [`%${query}%`, limitNum]);
+    return res.json({ data: data });
   } catch (err) {
     console.error(err);
-    return res
+    res
       .status(500)
       .json({ error: "Internal Server Error", message: err.message });
   }
@@ -270,141 +343,6 @@ router.get("/autofill/suggestions/:type", async (req, res) => {
   try {
     const data = await DB.all(queries[type], [`%${query}%`, limitNum]);
     return res.json({ data: data });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", message: err.message });
-  }
-});
-
-router.get("/entry-names", async (req, res) => {
-  const { query, limit } = req.query;
-  const limitNum = Math.min(Number(limit));
-
-  const q = `
-    WITH search_results AS (
-      SELECT 'song' AS type, songs.id AS id, songs.title AS name
-      FROM songs
-      
-      UNION ALL
-      
-      SELECT 'artist' AS type, artists.id AS id, artists.name AS name
-      FROM artists
-      
-      UNION ALL
-      
-      SELECT 'album' AS type, albums.id AS id, albums.title AS name
-      FROM albums
-      WHERE albums.id != 0
-      
-      UNION ALL
-      
-      SELECT 'synth' AS type, synths.id AS id, synths.synth_name AS name
-      FROM synths
-      
-      UNION ALL
-      
-      SELECT 'preset' AS type, presets.id AS id, presets.preset_name AS name
-      FROM presets
-    )
-    SELECT * FROM search_results 
-    WHERE name LIKE ?
-    ORDER BY type, name
-    LIMIT ?`;
-
-  try {
-    const data = await DB.all(q, [`%${query}%`, limitNum]);
-    return res.json({ data: data });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", message: err.message });
-  }
-});
-
-router.get("/checktags", async (req, res) => {
-  const { name, slug } = req.query;
-
-  if (!name && !slug) {
-    return res
-      .status(400)
-      .json({ error: "Missing 'name' or 'slug' query parameter" });
-  }
-
-  const q = `
-    SELECT EXISTS(
-      SELECT 1 FROM genre_tags 
-      WHERE name = ? OR slug = ?
-    ) AS tag_exists;
-  `;
-
-  try {
-    const result = await DB.all(q, [name, slug]);
-    return res.json(result[0]);
-  } catch (err) {
-    return res.status(500).render("static/db-error", {
-      err,
-      isAuth: req.isAuthenticated(),
-      PATH_URL: "db-error",
-    });
-  }
-});
-
-router.get("/total-entries", async (req, res) => {
-  const query = `
-      SELECT
-        (SELECT COUNT(*) FROM songs) AS songs,
-        (SELECT COUNT(*) FROM albums) AS albums,
-        (SELECT COUNT(*) FROM artists) AS artists,
-        (SELECT COUNT(*) FROM synths) AS synths,
-        (SELECT COUNT(*) FROM presets) AS presets`;
-  try {
-    const totalEntries = await DB.get(query);
-    return res.json({ data: totalEntries });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", message: err.message });
-  }
-});
-
-router.get("/number-entries", async (req, res) => {
-  const query = `
-    SELECT
-    (
-      (SELECT COUNT(*) FROM songs) +
-      (SELECT COUNT(*) FROM albums) +
-      (SELECT COUNT(*) FROM artists) +
-      (SELECT COUNT(*) FROM synths) +
-      (SELECT COUNT(*) FROM presets)
-    ) AS totalCount`;
-
-  try {
-    const totalCount = await DB.get(query);
-    return res.json({ data: totalCount.totalCount });
-  } catch (err) {
-    console.error(err);
-    res
-      .status(500)
-      .json({ error: "Internal Server Error", message: err.message });
-  }
-});
-
-router.get("/submissions-per-day", async (req, res) => {
-  const query = `
-    SELECT
-      ROUND(CAST(COUNT(*) AS FLOAT) / 
-      COUNT(DISTINCT DATE(timestamp)), 2) 
-      AS avgSubmissionsPerDay
-    FROM song_presets
-    WHERE timestamp IS NOT NULL`;
-
-  try {
-    const avgSubmissions = await DB.get(query);
-    return res.json({ data: avgSubmissions.avgSubmissionsPerDay });
   } catch (err) {
     console.error(err);
     res

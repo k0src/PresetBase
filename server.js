@@ -79,8 +79,6 @@ app.use("/api/auth", Routes.authRoutes);
 app.use("/api/admin", Routes.adminRoutes);
 
 app.use("/api/stats", Routes.statsRoutes);
-app.use("/api/search", Routes.searchRoutes);
-app.use("/api/submit", Routes.submitRoute);
 
 app.use("/api/album", Routes.albumRoutes);
 app.use("/api/artist", Routes.artistRoutes);

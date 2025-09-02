@@ -1,6 +1,13 @@
 import api from "./api";
 
 export const generalAPI = {
+  async searchDatabase(query) {
+    const res = await api.get("/search", {
+      params: { query },
+    });
+    return res.data?.data;
+  },
+
   async getTotalEntries() {
     const res = await api.get("/total-entries");
     return res.data?.data;
@@ -11,9 +18,14 @@ export const generalAPI = {
     return res.data?.data;
   },
 
-  async searchDatabase(query) {
-    const res = await api.get("/search", {
-      params: { query },
+  async getLatestEntry() {
+    const res = await api.get("/latest-entry");
+    return res.data?.data;
+  },
+
+  async getEntryNames(query, limit) {
+    const res = await api.get("/entry-names", {
+      params: { query, limit },
     });
     return res.data?.data;
   },
@@ -43,32 +55,6 @@ export const generalAPI = {
   async getAutofillData(type, query) {
     const res = await api.get(`/autofill/data/${encodeURIComponent(type)}`, {
       params: { query },
-    });
-    return res.data?.data;
-  },
-
-  async getLatestEntry() {
-    const res = await api.get("/latest-entry");
-    return res.data?.data;
-  },
-
-  async getTopGenres(limit = null) {
-    const res = await api.get("/top-genres", {
-      params: { limit },
-    });
-    return res.data?.data;
-  },
-
-  async getTopSynths(limit = null) {
-    const res = await api.get("/top-synths", {
-      params: { limit },
-    });
-    return res.data?.data;
-  },
-
-  async getTopPresets(limit = null) {
-    const res = await api.get("/top-presets", {
-      params: { limit },
     });
     return res.data?.data;
   },

@@ -13,6 +13,4 @@ export { default as synthRoutes } from "./entries/synth.js";
 export { default as adminRoutes } from "./main/admin.js";
 export { default as apiRoutes } from "./main/api.js";
 export { default as authRoutes } from "./main/auth.js";
-export { default as searchRoutes } from "./main/search.js";
 export { default as statsRoutes } from "./main/stats.js";
-export { default as submitRoute } from "./main/submit.js";

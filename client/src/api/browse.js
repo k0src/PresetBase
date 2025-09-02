@@ -75,6 +75,13 @@ export const browseAPI = {
     return res.data?.data;
   },
 
+  async getTopSynths(limit = null) {
+    const res = await api.get("/browse/synths/top", {
+      params: { limit },
+    });
+    return res.data?.data;
+  },
+
   // Presets
   async getPresets(sort = null, direction = "ASC") {
     const res = await api.get("/browse/presets", {
@@ -88,6 +95,13 @@ export const browseAPI = {
     return res.data?.data;
   },
 
+  async getTopPresets(limit = null) {
+    const res = await api.get("/browse/presets/top", {
+      params: { limit },
+    });
+    return res.data?.data;
+  },
+
   // Genres
   async getGenres(sort = null, direction = "ASC") {
     const res = await api.get("/browse/genres", {
@@ -98,6 +112,13 @@ export const browseAPI = {
 
   async getTotalGenreEntries() {
     const res = await api.get("/browse/genres/total-entries");
+    return res.data?.data;
+  },
+
+  async getTopGenres(limit = null) {
+    const res = await api.get("/browse/genres/top", {
+      params: { limit },
+    });
     return res.data?.data;
   },
 };

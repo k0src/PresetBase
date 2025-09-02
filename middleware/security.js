@@ -14,7 +14,7 @@ export const authRateLimit = rateLimit({
   legacyHeaders: false,
   skipSuccessfulRequests: true,
   keyGenerator: (req) => {
-    return req.body.email || ipKeyGenerator(req);
+    return (req.body && req.body.email) || ipKeyGenerator(req);
   },
 });
 
@@ -30,7 +30,7 @@ export const generalRateLimit = rateLimit({
   standardHeaders: true,
   legacyHeaders: false,
   keyGenerator: (req) => {
-    return req.body.email || ipKeyGenerator(req);
+    return (req.body && req.body.email) || ipKeyGenerator(req);
   },
 });
 

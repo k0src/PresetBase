@@ -31,4 +31,20 @@ router.get("/total-entries", async (req, res) => {
   }
 });
 
+router.get("/top", async (req, res) => {
+  const limit = Number.isInteger(parseInt(req.query.limit))
+    ? parseInt(req.query.limit)
+    : null;
+
+  try {
+    const topSynths = await Synth.getTopSynths(limit);
+    res.json({ data: topSynths });
+  } catch (err) {
+    console.error(err);
+    return res
+      .status(500)
+      .json({ error: "Internal Server Error", message: err.message });
+  }
+});
+
 export default router;
