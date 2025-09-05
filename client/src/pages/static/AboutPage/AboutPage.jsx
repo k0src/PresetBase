@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 
 import ContentContainer from "../../../components/ContentContainer/ContentContainer";
 import GitHubRepoCard from "../../../components/GitHubRepoCard/GitHubRepoCard";
-import DbStatsCards from "../../../components/Stats/DbStatsCards/DbStatsCards";
+import DbStatsCards from "../../../components/DbStatsCards/DbStatsCards";
 import PageLoader from "../../../components/PageLoader/PageLoader";
 import DbError from "../../../components/DbError/DbError";
 import { generalAPI } from "../../../api/general";

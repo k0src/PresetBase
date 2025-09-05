@@ -6,6 +6,7 @@ import dotenv from "dotenv";
 import path from "path";
 import session from "express-session";
 import passport from "./config/passport.js";
+import { bandwidthGuard } from "./middleware/bandwidth-guard.js";
 
 import * as Routes from "./routes/index.js";
 
@@ -21,6 +22,8 @@ const PORT = process.env.PORT || 3000;
 const isProd = process.env.NODE_ENV === "production";
 const PROJECT_ROOT = process.env.PROJECT_ROOT || ".";
 
+app.use(bandwidthGuard);
+
 app.use(helmet());
 app.use(
   cors({
@@ -29,6 +32,9 @@ app.use(
   })
 );
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 100,
@@ -36,9 +42,6 @@ const limiter = rateLimit({
   keyGenerator: ipKeyGenerator,
 });
 app.use("/api/", limiter);
-
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // Session configuration for passport
 app.use(

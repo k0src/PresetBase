@@ -17,49 +17,61 @@
   padding-bottom: 1.6rem;
 }
 
-.textCentered {
-  text-align: center;
-}
-
-.statsHeaderSecondaryLink {
-  padding: 3.2rem 0 0.8rem 0;
+.chartsContainer {
   display: flex;
-  align-items: baseline;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 0.8rem;
 }
 
-.statsLink {
-  color: #899096 !important;
-  font-size: 1.6rem;
-  transition: color 0.2s ease;
-}
-
-.statsLink:hover {
-  color: #e3e5e4 !important;
-}
-
-.statsHeaderSecondary {
-  padding: 3.2rem 0 0.8rem 0;
-}
-
-.wideChartContainer {
-  width: 100%;
-  padding: 3.6rem;
-  position: relative;
-  flex-shrink: 0;
-  background: #171b1f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  border-radius: 0.8rem;
-  border: 0.2rem solid #2d343a;
-  box-shadow: 0 0.4rem 0.8rem rgba(0, 0, 0, 0.05);
-}
-
-.communityStatsContainer,
-.synthChartsContainer {
+.chartsContainerTop {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 3.2rem;
+  grid-template-columns: 2fr 1fr;
+  column-gap: 0.8rem;
+}
+
+.barCharts {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  column-gap: 0.8rem;
+}
+
+.chartsLeft {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.chartsRight {
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.sparkLineCharts {
+  display: flex;
+  gap: 0.8rem;
+}
+
+.chartTitleWrapper {
+  display: flex;
+  flex-direction: column;
+  background: #171b1f;
+  border: 0.1rem solid #2d343a;
+  border-radius: 0.8rem;
+  padding: 1.8rem;
+  gap: 0.8rem;
+  transition: background-color 0.2s ease;
+}
+
+.chartTitleWrapper:hover {
+  background-color: #15181c;
+}
+
+.chartTitle {
+  font-size: 1.4rem;
+  color: #899096;
+}
+
+.chartContainer {
+  width: 100%;
 }
